@@ -2,6 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import Header from "../components/Header";
 import Company from "../components/Company";
 import Swal from "sweetalert2";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  getCompanies,
+  addCompany,
+  updateCompany,
+  changeCompanyStatus,
+  deleteCompanyTest,
+} from "../store/company/CompanySlice.js";
+
 import {
   checkCompanyLogo,
   checkCompanyName,
@@ -9,25 +18,32 @@ import {
   showAlert,
 } from "../../assets/global";
 
-const SelectCompany = () => {
-  let data = [];
-  let initialFormData = {
-    id: "",
-    logo: "",
-    company_name: "",
-    sec_cert: "",
-    status: true,
-  };
+import axios from "axios";
 
-  const [companies, setCompanies] = useState(data);
-  const [formData, setFormData] = useState(initialFormData);
+const SelectCompany = () => {
+  // let initialFormData = {
+  //   id: "",
+  //   logo: "",
+  //   companyName: "",
+  //   secNumber: "",
+  //   status: true,
+  // };
+
+  let data = [];
+
+  // const [companies, setCompanies] = useState(data);
+  const companies = useSelector((state) => state.company.companies);
+  const company = useSelector((state) => state.company.company);
+  const dispatch = useDispatch();
+  const [formData, setFormData] = useState(company);
   const [logo, setLogo] = useState(null);
-  const [errors, setErrors] = useState(initialFormData);
+  const [errors, setErrors] = useState(company);
   const addInputFile = useRef(null);
   const editInputFile = useRef(null);
+  const [search, setSearch] = useState("");
 
   const toggleAdd = () => {
-    setFormData(initialFormData);
+    setFormData(company);
     addInputFile.current.value = null;
     document.getElementById("addModal").showModal();
   };
@@ -57,17 +73,33 @@ const SelectCompany = () => {
   };
 
   const toggleEdit = (company) => {
-    setFormData(initialFormData);
+    setFormData(company);
     editInputFile.current.value = null;
     setFormData({
       ...formData,
       id: company.id,
       logo: company.logo,
-      company_name: company.company_name,
-      sec_cert: company.sec_cert,
+      companyName: company.companyName,
+      secNumber: company.secNumber,
       status: company.status,
     });
     document.getElementById("editModal").showModal();
+  };
+
+  const toggleStatus = (id, status) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to change its status?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#273069",
+      confirmButtonText: "Yes, change it!",
+      cancelButtonColor: "#B4B4B8",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        changeStatus(id, status);
+      }
+    });
   };
 
   //toggle button for submit
@@ -77,11 +109,135 @@ const SelectCompany = () => {
     //checks if the form is valid
     if (await isFormValid(isEdit)) {
       if (isEdit) {
-        //call the update function
-        updateCompany();
+        //update function
+        // setIsLoadingSubmit(true);
+
+        // console.log("Form Data: ", formData);
+        // const form = new FormData();
+        // form.append("id", formData.id);
+        // form.append("account_id", formData.account_id);
+        // form.append("companyName", formData.companyName);
+        // form.append("tin", formData.tin);
+        // form.append("address", formData.address);
+        // form.append("logo", logo);
+
+        let status = "";
+        let message = "";
+        try {
+          // let response = await axios.patch(`/company/edit/${recordID}`, form, {
+          //   headers: {
+          //     "Content-Type": "multipart/form-data",
+          //   },
+          // });
+          // if (response.status === 200) {
+          //   console.log("Record updated successfully!");
+          //   props.action(props.accountID);
+          //   // getCompanies(accountID);
+          //   document.getElementById(`edit-form-${props.row.id}`).close();
+          //   status = "success";
+          //   message = "Record updated successfully!";
+          // } else {
+          //   status = "error";
+          //   message = "Failed to update record";
+          //   console.error("Failed to update record");
+          // }
+
+          // console.log(formData);
+          // let newData = {
+          //   id: formData.id,
+          //   logo: logo === null ? formData.logo : logo.name,
+          //   companyName: formData.companyName,
+          //   secNumber: formData.secNumber,
+          //   status: formData.status ? 1 : 0,
+          // };
+
+          // // console.log(newData);
+          // // return;
+
+          // let editCompany = companies.filter(
+          //   (company) => company.id !== formData.id
+          // );
+
+          // editCompany.push(newData);
+
+          // setCompanies(editCompany);
+          // setFormData(initialFormData);
+
+          // let newCompany = companies.map((obj) => {
+          //   if (obj.id === formData.id) {
+          //     obj.logo = logo === null ? formData.logo : logo.name;
+          //     obj.companyName = formData.companyName;
+          //     obj.secNumber = formData.secNumber;
+          //     obj.status = formData.status ? 1 : 0;
+          //   }
+          //   return obj;
+          // });
+
+          let newCompany = {
+            id: formData.id,
+            logo: logo === null ? formData.logo : logo.name,
+            companyName: formData.companyName,
+            secNumber: formData.secNumber,
+            status: formData.status ? 1 : 0,
+          };
+
+          // setCompanies(newCompany);
+          dispatch(updateCompany(newCompany));
+          setFormData(company);
+
+          status = "success";
+          message = "Record updated successfully!";
+        } catch (error) {
+          status = "error";
+          message = "Error updating company";
+          console.error("Error updating company: ", error);
+        } finally {
+          showAlert(status, message);
+          document.getElementById("editModal").close();
+          // setIsLoadingSubmit(false);
+        }
       } else {
-        //call the add function
-        addCompany();
+        let status = "";
+        let message = "";
+
+        let form = new FormData();
+        form.append("companyName", formData.companyName);
+        form.append("secNumber", formData.secNumber);
+        form.append("logo", logo);
+
+        try {
+          let response = await axios.post("/company", form, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+          if (response.status === 200) {
+            let data = response.data;
+
+            console.log(data);
+
+            let newData = {
+              logo: data.logo,
+              companyName: data.companyName,
+              secNumber: data.secNumber,
+              status: data.status,
+            };
+            dispatch(addCompany(newData));
+            setFormData(company);
+            status = "success";
+            message = "Company was added successfully.";
+          } else {
+            status = "error";
+            message = "Error adding company";
+          }
+        } catch (error) {
+          status = "error";
+          message = "Error adding company";
+          console.error("Error adding company: ", error);
+        } finally {
+          document.getElementById("addModal").close();
+          showAlert(status, message);
+        }
       }
     } else {
       console.log("invalid");
@@ -115,36 +271,25 @@ const SelectCompany = () => {
     }
 
     //sets error message for company name input
-    if (name == "company_name") {
+    if (name == "companyName") {
       if (checkCompanyName(value) != "") {
         setErrors({
           ...errors,
-          company_name: checkCompanyName(value),
+          companyName: checkCompanyName(value),
         });
       } else {
-        setErrors({ ...errors, company_name: "" });
+        setErrors({ ...errors, companyName: "" });
       }
     }
 
-    if (name == "sec_cert") {
+    if (name == "secNumber") {
       if (checkSECCert(value) != "") {
         setErrors({
           ...errors,
-          sec_cert: checkSECCert(value),
+          secNumber: checkSECCert(value),
         });
       } else {
-        setErrors({ ...errors, sec_cert: "" });
-      }
-    }
-
-    if (name == "sec_cert") {
-      if (checkSECCert(value) != "") {
-        setErrors({
-          ...errors,
-          sec_cert: checkSECCert(value),
-        });
-      } else {
-        setErrors({ ...errors, sec_cert: "" });
+        setErrors({ ...errors, secNumber: "" });
       }
     }
   };
@@ -152,12 +297,12 @@ const SelectCompany = () => {
   const isFormValid = async (isEdit) => {
     let newErrors = {};
 
-    if (checkCompanyName(formData.company_name) != "") {
-      newErrors.company_name = checkCompanyName(formData.company_name);
+    if (checkCompanyName(formData.companyName) != "") {
+      newErrors.companyName = checkCompanyName(formData.companyName);
     }
 
-    if (checkSECCert(formData.sec_cert) != "") {
-      newErrors.sec_cert = checkSECCert(formData.sec_cert);
+    if (checkSECCert(formData.secNumber) != "") {
+      newErrors.secNumber = checkSECCert(formData.secNumber);
     }
 
     if (checkCompanyLogo(logo) != "" && !isEdit) {
@@ -167,147 +312,6 @@ const SelectCompany = () => {
     setErrors({ ...errors, ...newErrors });
 
     return Object.keys(newErrors).length == 0;
-  };
-
-  const getCompanies = async () => {
-    let fetchData = [
-      {
-        id: 1,
-        logo: "/company_logos/fs.png",
-        company_name: "Full Suite",
-        sec_cert: "SEC-2022-1234567890-ABCD",
-        status: 1,
-      },
-      {
-        id: 2,
-        logo: "/logo.png",
-        company_name: "Company A",
-        sec_cert: "SEC-2022-1234567890-ABCD",
-        status: 1,
-      },
-      {
-        id: 3,
-        logo: "/logo.png",
-        company_name: "Company B",
-        sec_cert: "SEC-2022-1234567890-ABCD",
-        status: 0,
-      },
-    ];
-
-    setCompanies(fetchData);
-  };
-
-  const addCompany = async () => {
-    let status = "";
-    let message = "";
-
-    try {
-      // let response = await axios.post("/company", formData, {
-      //   headers: {
-      //     "Content-Type": "multipart/form-data",
-      //   },
-      // });
-      // if (response.status === 200) {
-
-      //   props.action(props.accountID);
-      //   setFormData(data);
-      //   document.getElementById("add-form").close();
-      // } else {
-      //   status = "error";
-      //   message = "Error adding account";
-      // }
-
-      let newData = {
-        id: data.length + 1,
-        logo: logo.name,
-        company_name: formData.company_name,
-        sec_cert: formData.sec_cert,
-        status: formData.status ? 1 : 0,
-      };
-      console.log(newData);
-
-      let newCompany = companies;
-      newCompany.push(newData);
-
-      setCompanies(newCompany);
-      setFormData(initialFormData);
-      document.getElementById("addModal").close();
-      status = "success";
-      message = "Company was added successfully.";
-    } catch (error) {
-      status = "error";
-      message = "Error adding account";
-      console.error("Error adding account: ", error);
-    } finally {
-      showAlert(status, message);
-    }
-  };
-
-  const updateCompany = async () => {
-    // setIsLoadingSubmit(true);
-
-    // console.log("Form Data: ", formData);
-    // const form = new FormData();
-    // form.append("id", formData.id);
-    // form.append("account_id", formData.account_id);
-    // form.append("company_name", formData.company_name);
-    // form.append("tin", formData.tin);
-    // form.append("address", formData.address);
-    // form.append("logo", logo);
-
-    let status = "";
-    let message = "";
-    try {
-      // let response = await axios.patch(`/company/edit/${recordID}`, form, {
-      //   headers: {
-      //     "Content-Type": "multipart/form-data",
-      //   },
-      // });
-      // if (response.status === 200) {
-      //   console.log("Record updated successfully!");
-      //   props.action(props.accountID);
-      //   // getCompanies(accountID);
-      //   document.getElementById(`edit-form-${props.row.id}`).close();
-      //   status = "success";
-      //   message = "Record updated successfully!";
-      // } else {
-      //   status = "error";
-      //   message = "Failed to update record";
-      //   console.error("Failed to update record");
-      // }
-
-      console.log(formData);
-      let newData = {
-        id: formData.id,
-        logo: logo === null ? formData.logo : logo.name,
-        company_name: formData.company_name,
-        sec_cert: formData.sec_cert,
-        status: formData.status ? 1 : 0,
-      };
-
-      // console.log(newData);
-      // return;
-
-      let editCompany = companies.filter(
-        (company) => company.id !== formData.id
-      );
-
-      editCompany.push(newData);
-
-      setCompanies(editCompany);
-      setFormData(initialFormData);
-
-      status = "success";
-      message = "Record updated successfully!";
-      document.getElementById("editModal").close();
-    } catch (error) {
-      status = "error";
-      message = "Error updating account";
-      console.error("Error updating account: ", error);
-    } finally {
-      showAlert(status, message);
-      // setIsLoadingSubmit(false);
-    }
   };
 
   const deleteCompany = async (id) => {
@@ -336,7 +340,8 @@ const SelectCompany = () => {
       // }
       status = "success";
       message = "Record deleted successfully!";
-      setCompanies((data) => data.filter((u) => u.id !== id));
+      // setCompanies((data) => data.filter((u) => u.id !== id));
+      dispatch(deleteCompanyTest({ id: id }));
     } catch (error) {
       status = "error";
       message = "Failed to delete record";
@@ -346,16 +351,64 @@ const SelectCompany = () => {
     }
   };
 
-  const elements = companies.map(function (company, index) {
-    return (
-      <Company
-        key={`${company.company_name}${index}`}
-        company={company}
-        toggleDelete={toggleDelete}
-        toggleEdit={toggleEdit}
-      />
-    );
-  });
+  const changeStatus = async (id, status) => {
+    let statusSwal = "";
+    let message = "";
+    try {
+      let response = await axios.patch(`/company/${id}/changeStatus`, {
+        companyId: id,
+        status: status,
+      });
+
+
+      if (response.status === 200) {
+        dispatch(
+          changeCompanyStatus({
+            companyId: id,
+            status: status,
+          })
+        );
+        statusSwal = "success";
+        message = "Status changed successfully!";
+      } else {
+        statusSwal = "error";
+        message = "Failed to update the status";
+      }
+    } catch (error) {
+      statusSwal = "error";
+      message = "Failed to update the status";
+      console.error("Error updating status: ", error);
+    } finally {
+      showAlert(statusSwal, message);
+    }
+  };
+
+  const elements = companies
+    .filter((company) => {
+      if (search == "") {
+        return company;
+      } else if (
+        company.companyName
+          .toLocaleLowerCase()
+          .includes(search.toLocaleLowerCase()) ||
+        company.secNumber
+          .toLocaleLowerCase()
+          .includes(search.toLocaleLowerCase())
+      ) {
+        return company;
+      }
+    })
+    .map(function (company, index) {
+      return (
+        <Company
+          key={`${company.companyName}${index}`}
+          company={company}
+          toggleDelete={toggleDelete}
+          toggleEdit={toggleEdit}
+          toggleStatus={toggleStatus}
+        />
+      );
+    });
 
   const noRecord = (
     <>
@@ -416,7 +469,14 @@ const SelectCompany = () => {
         </svg>
 
         <h1 className="text-center">No Company was found.</h1>
-        <button onClick={()=>{toggleAdd()}} className="btn btn-outline btn-primary">Add New Company</button>
+        <button
+          onClick={() => {
+            toggleAdd();
+          }}
+          className="btn btn-outline btn-primary"
+        >
+          Add New Company
+        </button>
       </div>
     </>
   );
@@ -437,49 +497,163 @@ const SelectCompany = () => {
               <th className="w-[5%]">Actions</th>
             </tr>
           </thead>
-          <tbody>{elements}</tbody>
+          <tbody>
+            {elements.length > 0 ? (
+              elements
+            ) : (
+              <>
+                <tr>
+                  <td className="text-center" colSpan={6}>
+                    No records found.
+                  </td>
+                </tr>
+              </>
+            )}
+          </tbody>
         </table>
       </div>
     </>
   );
 
-  useEffect(() => {
-    getCompanies();
-  }, []);
+  const addButton = (
+    <button
+      onClick={() => {
+        toggleAdd();
+      }}
+      className="flex flex-row justify-center items-center gap-1 bg-[#667A8A] text-white rounded-xl px-5 py-2 "
+    >
+      <svg
+        width="13"
+        height="10"
+        viewBox="0 0 13 10"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M12.0418 4.33337H7.29183V0.333374H5.7085V4.33337H0.958496V5.66671H5.7085V9.66671H7.29183V5.66671H12.0418V4.33337Z"
+          fill="white"
+        />
+      </svg>
+      Add
+    </button>
+  );
+
+  const searchInput = (
+    <input
+      type="text"
+      placeholder="Search"
+      className="input input-bordered w-full text-[12px] h-10"
+      onChange={(e) => {
+        setSearch(e.target.value);
+      }}
+    />
+  );
 
   return (
-    <div className="min-h-screen pl-[129px] pr-[84px] py-[77px]">
-      <div>
-        <Header />
-      </div>
-      <div className="flex flex-row w-full justify-between items-center mt-5">
-        <div className="poppins-bold text-color-2 text-[24px]">Companies</div>
-        <div>
-          <button
-            onClick={() => {
-              toggleAdd();
-            }}
-            className="flex flex-row justify-center items-center gap-1 bg-[#667A8A] text-white rounded-xl px-5 py-2 "
-          >
-            <svg
-              width="13"
-              height="10"
-              viewBox="0 0 13 10"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12.0418 4.33337H7.29183V0.333374H5.7085V4.33337H0.958496V5.66671H5.7085V9.66671H7.29183V5.66671H12.0418V4.33337Z"
-                fill="white"
-              />
-            </svg>
-            Add
-          </button>
+    <>
+      <div className="flex flex-col min-h-screen px-2 py-5 lg:py-10 w-[90%] lg:w-[80%] mx-auto">
+        <div className="flex flex-col my-5">
+          <Header />
         </div>
-      </div>
 
-      <div className="flex flex-col w-full mt-10">
-        {companies.length > 0 ? table : noRecord}
+        <div className="flex flex-col md:flex-row w-full gap-3 justify-between mb-2">
+          <div className="flex flex-row w-full">
+            <h1 className="poppins-bold text-color-2 text-[24px]">Companies</h1>
+            <div className="flex w-full justify-end md:hidden">{addButton}</div>
+          </div>
+          <div className="flex w-full justify-center">{searchInput}</div>
+          <div className="hidden md:flex w-full justify-end">{addButton}</div>
+        </div>
+
+        {/* bg-white p-5 md:p-10 rounded-[20px] shadow-lg */}
+        <div className="flex flex-col w-full mt-5 min-h-full h-full max-h-full ">
+          {companies.length > 0 ? table : noRecord}
+        </div>
+
+        {/* <div className="flex flex-col w-full mt-5 gap-5">
+          <div className="flex flex-row bg-white shadow-lg rounded-xl p-5 gap-5 min-h-32 hover:cursor-pointer">
+            <div className="flex justify-center w-[200px] aspect-square">
+              <img
+                className="w-[100%] object-contain aspect-square"
+                src="/logo.png"
+                alt="Logo..."
+              />
+            </div>
+            <div className="flex flex-col justify-evenly w-full">
+                <h1 className="poppins-bold text-color-2 text-[24px]">
+                  FullSuite
+                </h1>
+                <p className="poppins-medium text-color-2 text-[12px]">
+                SEC-2022-1234567890-ABCD
+                </p>
+              
+            </div>
+            <div className="flex flex-col justify-center items-center w-full">
+              <span className="badge badge-success badge-lg text-white">
+                Active
+              </span>
+            </div>
+            <div className="flex flex-col justify-center">
+              <button className="btn btn-ghost rounded-badge">
+                
+              
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4.5 12a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-row bg-white shadow-lg rounded-xl p-5 gap-5 min-h-32 hover:cursor-pointer">
+            <div className="flex justify-center w-[200px] aspect-square">
+              <img
+                className="w-[100%] object-contain aspect-square"
+                src="/company_logos/fs.png"
+                alt="Logo..."
+              />
+            </div>
+            <div className="flex flex-col justify-evenly w-full">
+                <h1 className="poppins-bold text-color-2 text-[24px]">
+                  FullSuite
+                </h1>
+                <p className="poppins-medium text-color-2 text-[12px]">
+                SEC-2022-1234567890-ABCD
+                </p>
+              
+            </div>
+            <div className="flex flex-col justify-center items-center w-full">
+              <span className="badge badge-success badge-lg text-white">
+                Active
+              </span>
+            </div>
+            <div className="flex flex-col justify-center">
+              <button className="btn btn-ghost rounded-badge">
+                
+              
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4.5 12a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              </button>
+            </div>
+          </div>
+        </div> */}
       </div>
 
       <dialog id="addModal" className="modal">
@@ -502,17 +676,17 @@ const SelectCompany = () => {
               <input
                 type="text"
                 className={`input input-bordered w-full ${
-                  errors.company_name && `input-error`
+                  errors.companyName && `input-error`
                 }`}
-                name="company_name"
-                value={formData.company_name}
+                name="companyName"
+                value={formData.companyName}
                 onChange={(e) => {
                   handleOnChange(e);
                 }}
               />
-              {errors.company_name && (
+              {errors.companyName && (
                 <span className="text-[12px] text-red-500">
-                  {errors.company_name}
+                  {errors.companyName}
                 </span>
               )}
             </label>
@@ -525,17 +699,17 @@ const SelectCompany = () => {
               <input
                 type="text"
                 className={`input input-bordered w-full ${
-                  errors.sec_cert && `input-error`
+                  errors.secNumber && `input-error`
                 }`}
-                name="sec_cert"
-                value={formData.sec_cert}
+                name="secNumber"
+                value={formData.secNumber}
                 onChange={(e) => {
                   handleOnChange(e);
                 }}
               />
-              {errors.sec_cert && (
+              {errors.secNumber && (
                 <span className="text-[12px] text-red-500">
-                  {errors.sec_cert}
+                  {errors.secNumber}
                 </span>
               )}
             </label>
@@ -561,7 +735,7 @@ const SelectCompany = () => {
                 <span className="text-[12px] text-red-500">{errors.logo}</span>
               )}
             </label>
-            <label className="form-control w-full my-2">
+            {/* <label className="form-control w-full my-2">
               <div className="label">
                 <span className="poppins-regular text-[12px]">
                   Status <span className="text-red-500">*</span>
@@ -579,13 +753,13 @@ const SelectCompany = () => {
                   setFormData({ ...formData, status: e.target.checked });
                 }}
               />
-            </label>
+            </label> */}
 
             <button
               onClick={(e) => {
                 handleSubmit(e, false);
               }}
-              className="btn btn-primary"
+              className="btn bg-primary text-white mt-2"
             >
               Submit
             </button>
@@ -613,17 +787,17 @@ const SelectCompany = () => {
               <input
                 type="text"
                 className={`input input-bordered w-full ${
-                  errors.company_name && `input-error`
+                  errors.companyName && `input-error`
                 }`}
-                name="company_name"
-                value={formData.company_name}
+                name="companyName"
+                value={formData.companyName}
                 onChange={(e) => {
                   handleOnChange(e);
                 }}
               />
-              {errors.company_name && (
+              {errors.companyName && (
                 <span className="text-[12px] text-red-500">
-                  {errors.company_name}
+                  {errors.companyName}
                 </span>
               )}
             </label>
@@ -636,17 +810,17 @@ const SelectCompany = () => {
               <input
                 type="text"
                 className={`input input-bordered w-full ${
-                  errors.sec_cert && `input-error`
+                  errors.secNumber && `input-error`
                 }`}
-                name="sec_cert"
-                value={formData.sec_cert}
+                name="secNumber"
+                value={formData.secNumber}
                 onChange={(e) => {
                   handleOnChange(e);
                 }}
               />
-              {errors.sec_cert && (
+              {errors.secNumber && (
                 <span className="text-[12px] text-red-500">
-                  {errors.sec_cert}
+                  {errors.secNumber}
                 </span>
               )}
             </label>
@@ -677,7 +851,7 @@ const SelectCompany = () => {
                 <span className="text-[12px] text-red-500">{errors.logo}</span>
               )}
             </label>
-            <label className="form-control w-full my-2">
+            {/* <label className="form-control w-full my-2">
               <div className="label">
                 <span className="poppins-regular text-[12px]">
                   Status <span className="text-red-500">*</span>
@@ -695,20 +869,20 @@ const SelectCompany = () => {
                   setFormData({ ...formData, status: e.target.checked });
                 }}
               />
-            </label>
+            </label> */}
 
             <button
               onClick={(e) => {
                 handleSubmit(e, true);
               }}
-              className="btn btn-primary"
+              className="btn bg-primary text-white mt-2"
             >
               Save
             </button>
           </div>
         </div>
       </dialog>
-    </div>
+    </>
   );
 };
 

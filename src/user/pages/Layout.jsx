@@ -116,8 +116,98 @@ const Layout = () => {
 
   const content = (
     <>
-      <div className="flex flex-row min-h-screen max-h-screen text-[15px]">
-        <div className="w-1/4 bg-[#031C30] min-h-screen max-h-screen px-5 py-[30px] flex flex-col justify-between">
+      <div className="drawer lg:drawer-open">
+        <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
+        <div className="drawer-content flex flex-col">
+          <label
+            htmlFor="my-drawer-2"
+            className="btn btn-primary w-[100px] drawer-button lg:hidden"
+          >
+            Open drawer
+          </label>
+          <div className="w-full pt-6 px-10">
+            <Outlet />
+          </div>
+        </div>
+        <div className="drawer-side">
+          <label
+            htmlFor="my-drawer-2"
+            aria-label="close sidebar"
+            className="drawer-overlay"
+          ></label>
+          <ul className="menu p-4 w-80 min-h-full bg-[#031C30] py-[30px] text-base-content">
+            {/* Sidebar content here */}
+
+            <div className="">
+              <div>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => {
+                    navigate(-1);
+                  }}
+                >
+                  Go back
+                </button>
+              </div>
+              <div className="">
+                <svg
+                  width="37"
+                  height="35"
+                  viewBox="0 0 37 35"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="0.522949"
+                    y="0.0307693"
+                    width="35.8685"
+                    height="34.9054"
+                    rx="7.50769"
+                    fill="white"
+                  />
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M13.6951 9.8475C13.1835 9.34316 13.1835 8.52546 13.6951 8.02112L17.5027 4.26758C18.0143 3.76324 18.8438 3.76324 19.3554 4.26758L23.163 8.02112C23.6746 8.52546 23.6746 9.34316 23.163 9.8475L19.3554 13.601C18.8438 14.1054 18.0143 14.1054 17.5027 13.601L13.6951 9.8475ZM17.7309 17.9513C17.4751 17.6991 17.4751 17.2902 17.7309 17.0381L17.9837 16.7888C18.2396 16.5366 18.6543 16.5366 18.9101 16.7888L19.163 17.0381C19.4188 17.2902 19.4188 17.6991 19.163 17.9513L18.9101 18.2006C18.6543 18.4527 18.2396 18.4527 17.9837 18.2006L17.7309 17.9513ZM22.6811 16.6008C22.1694 17.1051 22.1694 17.9228 22.6811 18.4272L26.4887 22.1807C27.0003 22.6851 27.8298 22.6851 28.3414 22.1807L32.149 18.4272C32.6606 17.9228 32.6606 17.1051 32.149 16.6008L28.3414 12.8473C27.8298 12.3429 27.0003 12.3429 26.4887 12.8473L22.6811 16.6008ZM4.76505 18.4175C4.25345 17.9132 4.25345 17.0955 4.76505 16.5912L8.57268 12.8376C9.08428 12.3333 9.91376 12.3333 10.4254 12.8376L14.233 16.5912C14.7446 17.0955 14.7446 17.9132 14.233 18.4175L10.4254 22.1711C9.91376 22.6754 9.08428 22.6754 8.57268 22.1711L4.76505 18.4175ZM13.6951 25.1194C13.1835 25.6238 13.1835 26.4415 13.6951 26.9458L17.5027 30.6994C18.0143 31.2037 18.8438 31.2037 19.3554 30.6994L23.163 26.9458C23.6746 26.4415 23.6746 25.6238 23.163 25.1194L19.3554 21.3659C18.8438 20.8616 18.0143 20.8616 17.5027 21.3659L13.6951 25.1194Z"
+                    fill="#2196F3"
+                  />
+                </svg>
+              </div>
+              <div className="mt-10">
+                <Link
+                  to="/user/1"
+                  onClick={() => {
+                    setActive("dashboard");
+                  }}
+                >
+                  <NavBar
+                    isActive={active === "dashboard"}
+                    text="Dashboard"
+                    icon={dashboardIcon}
+                  />
+                </Link>
+
+                <Link
+                  to="/user/gis-tracker"
+                  onClick={() => {
+                    setActive("gis-tracker");
+                  }}
+                >
+                  <NavBar
+                    isActive={active === "gis-tracker"}
+                    text="GIS Tracker"
+                    icon={trackerIcon}
+                  />
+                </Link>
+              </div>
+            </div>
+
+
+          </ul>
+        </div>
+      </div>
+      <div className="min-h-screen flex flex-row text-[15px]">
+        {/* <div className="w-1/4 bg-[#031C30] min-h-screen max-h-screen px-5 py-[30px] flex flex-col justify-between">
           <div className="">
             <div>
               <button
@@ -216,10 +306,7 @@ const Layout = () => {
               <div className={"poppins-semibold text-white"}>Logout</div>
             </div>
           </div>
-        </div>
-        <div className="w-full pt-6 px-10">
-          <Outlet />
-        </div>
+        </div> */}
       </div>
     </>
   );

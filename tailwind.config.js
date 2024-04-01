@@ -11,13 +11,23 @@ export default {
   },
   plugins: [daisyui],
   daisyui: {
-    themes: ["light"],
+    themes: {
+      extend: {
+        colors: {
+          "primary": "#273069",
+        },
+      },
+    },
   },
   theme: {
     extend: {
       backgroundImage: {
         "login-bg": "url('/TPLogin.jpeg')",
       },
+      colors: {
+        "primary": "#273069",
+      },
+
     },
   },
 };

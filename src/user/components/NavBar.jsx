@@ -2,6 +2,7 @@ import React from "react";
 
 const NavBar = ({isActive, icon, text}) => {
   return (
+    
     <div
       className={`flex flex-row hover:bg-[#667A8A] h-[45px] rounded-[3px] items-center my-4 ${
         isActive ? "bg-[#667A8A]" : ""

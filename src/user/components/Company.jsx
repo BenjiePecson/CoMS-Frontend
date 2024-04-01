@@ -1,14 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 
-const Company = ({ company, toggleDelete, toggleEdit }) => {
+const Company = ({ company, toggleDelete, toggleEdit, toggleStatus }) => {
   const tableRowStyle =
-    company.status === 1 ? "cursor-pointer hover:bg-gray-200" : "hover:bg-gray-200";
+    company.status ? "cursor-pointer hover:bg-gray-200" : "grayscale bg-gray-200";
   const active = (
-    <span className="badge badge-success badge-lg text-white">Active</span>
+    <button
+      onClick={() => {
+        toggleStatus(company.id, 0);
+      }}
+      disabled={company.status === 0}
+      className="badge badge-success badge-lg text-white"
+    >
+      Active
+    </button>
   );
   const inactive = (
-    <span className="badge badge-error badge-lg text-white">Inactive</span>
+    <button
+      onClick={() => {
+        toggleStatus(company.id, 1);
+      }}
+      disabled={company.status === 0}
+      className="badge badge-error badge-lg text-white"
+    >
+      Inactive
+    </button>
   );
+
 
   return (
     <>
@@ -16,8 +33,8 @@ const Company = ({ company, toggleDelete, toggleEdit }) => {
         className={tableRowStyle}
         onClick={() => {
           //check if the status is active
-          if (company.status === 1) {
-            window.location.href = "/user/"+company.id;
+          if (company.status) {
+            window.location.href = "/user/" + company.id;
           }
         }}
       >
@@ -30,10 +47,20 @@ const Company = ({ company, toggleDelete, toggleEdit }) => {
           />
         </td>
         <td>
-          <div className="mx-10">{company.company_name}</div>
+          <div className="mx-10">{company.companyName}</div>
         </td>
-        <td>{company.sec_cert}</td>
-        <td>{company.status === 1 ? active : inactive}</td>
+        <td>{company.secNumber}</td>
+        <td
+          onClick={(e) => {
+            e.stopPropagation();
+            return false;
+          }}
+        >
+          {/* {company.status === 1 ? active : inactive} */}
+          <input type="checkbox" className="toggle toggle-success"  disabled={!company.status} checked={company.status} onChange={(e)=>{
+            toggleStatus(company.companyId, !company.status);
+          }} />
+        </td>
         <td
           onClick={(e) => {
             e.stopPropagation();
@@ -42,7 +69,10 @@ const Company = ({ company, toggleDelete, toggleEdit }) => {
         >
           <div className="flex flex-row justify-between gap-2">
             <button
-              onClick={() => {toggleEdit(company)}}
+              onClick={() => {
+                toggleEdit(company);
+              }}
+              disabled={!company.status}
             >
               <svg
                 width="44"
@@ -61,7 +91,8 @@ const Company = ({ company, toggleDelete, toggleEdit }) => {
                 />
               </svg>
             </button>
-            <button
+            
+            {/* <button
               onClick={() => {
                 toggleDelete(company.id);
               }}
@@ -82,7 +113,7 @@ const Company = ({ company, toggleDelete, toggleEdit }) => {
                   strokeLinejoin="round"
                 />
               </svg>
-            </button>
+            </button> */}
           </div>
         </td>
       </tr>

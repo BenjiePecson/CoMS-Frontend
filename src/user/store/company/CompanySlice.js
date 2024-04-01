@@ -108,11 +108,10 @@ const companySlice = createSlice({
 
     updateCompany: (state, action) => {
       state.companies.map((obj) => {
-        if (obj.id === action.payload.id) {
+        if (obj.companyId === action.payload.companyId) {
           obj.logo = action.payload.logo;
-          obj.company_name = action.payload.company_name;
-          obj.sec_cert = action.payload.sec_cert;
-          obj.status = action.payload.status;
+          obj.companyName = action.payload.companyName;
+          obj.secNumber = action.payload.secNumber;
         }
       });
     },

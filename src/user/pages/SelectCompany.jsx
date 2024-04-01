@@ -49,7 +49,6 @@ const SelectCompany = () => {
   };
 
   const toggleDelete = (id) => {
-    console.log(id);
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -77,7 +76,7 @@ const SelectCompany = () => {
     editInputFile.current.value = null;
     setFormData({
       ...formData,
-      id: company.id,
+      companyId: company.companyId,
       logo: company.logo,
       companyName: company.companyName,
       secNumber: company.secNumber,
@@ -110,83 +109,39 @@ const SelectCompany = () => {
     if (await isFormValid(isEdit)) {
       if (isEdit) {
         //update function
-        // setIsLoadingSubmit(true);
-
-        // console.log("Form Data: ", formData);
-        // const form = new FormData();
-        // form.append("id", formData.id);
-        // form.append("account_id", formData.account_id);
-        // form.append("companyName", formData.companyName);
-        // form.append("tin", formData.tin);
-        // form.append("address", formData.address);
-        // form.append("logo", logo);
 
         let status = "";
         let message = "";
+
         try {
-          // let response = await axios.patch(`/company/edit/${recordID}`, form, {
-          //   headers: {
-          //     "Content-Type": "multipart/form-data",
-          //   },
-          // });
-          // if (response.status === 200) {
-          //   console.log("Record updated successfully!");
-          //   props.action(props.accountID);
-          //   // getCompanies(accountID);
-          //   document.getElementById(`edit-form-${props.row.id}`).close();
-          //   status = "success";
-          //   message = "Record updated successfully!";
-          // } else {
-          //   status = "error";
-          //   message = "Failed to update record";
-          //   console.error("Failed to update record");
-          // }
+          const form = new FormData();
+          form.append("companyName", formData.companyName);
+          form.append("secNumber", formData.secNumber);
+          form.append("logo", logo);
 
-          // console.log(formData);
-          // let newData = {
-          //   id: formData.id,
-          //   logo: logo === null ? formData.logo : logo.name,
-          //   companyName: formData.companyName,
-          //   secNumber: formData.secNumber,
-          //   status: formData.status ? 1 : 0,
-          // };
+          let response = await axios.patch(`/company/${formData.companyId}`, form, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
 
-          // // console.log(newData);
-          // // return;
+          if (response.status === 200) {
 
-          // let editCompany = companies.filter(
-          //   (company) => company.id !== formData.id
-          // );
+            let data = response.data;
 
-          // editCompany.push(newData);
+            let newCompany = {
+              companyId: data.companyId,
+              logo: data.logo,
+              companyName: data.companyName,
+              secNumber: data.secNumber,
+            };
 
-          // setCompanies(editCompany);
-          // setFormData(initialFormData);
+            dispatch(updateCompany(newCompany));
+            setFormData(company);
 
-          // let newCompany = companies.map((obj) => {
-          //   if (obj.id === formData.id) {
-          //     obj.logo = logo === null ? formData.logo : logo.name;
-          //     obj.companyName = formData.companyName;
-          //     obj.secNumber = formData.secNumber;
-          //     obj.status = formData.status ? 1 : 0;
-          //   }
-          //   return obj;
-          // });
-
-          let newCompany = {
-            id: formData.id,
-            logo: logo === null ? formData.logo : logo.name,
-            companyName: formData.companyName,
-            secNumber: formData.secNumber,
-            status: formData.status ? 1 : 0,
-          };
-
-          // setCompanies(newCompany);
-          dispatch(updateCompany(newCompany));
-          setFormData(company);
-
-          status = "success";
-          message = "Record updated successfully!";
+            status = "success";
+            message = "Record updated successfully!";
+          }
         } catch (error) {
           status = "error";
           message = "Error updating company";
@@ -194,7 +149,6 @@ const SelectCompany = () => {
         } finally {
           showAlert(status, message);
           document.getElementById("editModal").close();
-          // setIsLoadingSubmit(false);
         }
       } else {
         let status = "";
@@ -213,8 +167,6 @@ const SelectCompany = () => {
           });
           if (response.status === 200) {
             let data = response.data;
-
-            console.log(data);
 
             let newData = {
               logo: data.logo,
@@ -305,7 +257,9 @@ const SelectCompany = () => {
       newErrors.secNumber = checkSECCert(formData.secNumber);
     }
 
-    if (checkCompanyLogo(logo) != "" && !isEdit) {
+    // if (checkCompanyLogo(logo) != "" && !isEdit) {
+    if (checkCompanyLogo(logo) != "") {
+
       newErrors.logo = checkCompanyLogo(logo);
     }
 
@@ -359,7 +313,6 @@ const SelectCompany = () => {
         companyId: id,
         status: status,
       });
-
 
       if (response.status === 200) {
         dispatch(

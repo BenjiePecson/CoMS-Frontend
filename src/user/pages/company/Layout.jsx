@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
-import NavBar from "../components/NavBar";
+import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
+import NavBar from "../../components/NavBar";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCompany } from "../../store/company/CompanySlice.js";
 
 const Layout = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [active, setActive] = useState("dashboard");
+  const { companyId } = useParams();
   const navigate = useNavigate();
+  const companies = useSelector((state) => state.company.companies);
+  const selectedCompany = useSelector((state) => state.company.selectedCompany);
+  const status = useSelector((state) => state.company.status);
+
+  const dispatch = useDispatch();
 
   const loading = (
     <>
@@ -53,36 +60,6 @@ const Layout = () => {
     </svg>
   );
 
-  const companyIcon = (
-    <svg
-      width="23"
-      height="26"
-      viewBox="0 0 23 26"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M16.7981 0.115601C20.6634 0.115601 22.8156 2.34288 22.8156 6.15929V19.085C22.8156 22.964 20.6634 25.1412 16.7981 25.1412H6.31115C2.50725 25.1412 0.29248 22.964 0.29248 19.085V6.15929C0.29248 2.34288 2.50725 0.115601 6.31115 0.115601H16.7981ZM6.64899 17.3082C6.27361 17.2707 5.91074 17.4459 5.71053 17.7712C5.51033 18.084 5.51033 18.4969 5.71053 18.8223C5.91074 19.1351 6.27361 19.3228 6.64899 19.2727H16.459C16.9583 19.2227 17.3349 18.796 17.3349 18.2967C17.3349 17.7837 16.9583 17.3583 16.459 17.3082H6.64899ZM16.459 11.6011H6.64899C6.10969 11.6011 5.67299 12.0403 5.67299 12.5784C5.67299 13.1164 6.10969 13.5544 6.64899 13.5544H16.459C16.9971 13.5544 17.435 13.1164 17.435 12.5784C17.435 12.0403 16.9971 11.6011 16.459 11.6011ZM10.3891 5.93406H6.64899V5.94657C6.10969 5.94657 5.67299 6.38452 5.67299 6.92257C5.67299 7.46063 6.10969 7.89857 6.64899 7.89857H10.3891C10.9284 7.89857 11.3663 7.46063 11.3663 6.90881C11.3663 6.37201 10.9284 5.93406 10.3891 5.93406Z"
-        fill="#EFF2F4"
-      />
-    </svg>
-  );
-
-  const settingsIcon = (
-    <svg
-      width="25"
-      height="26"
-      viewBox="0 0 25 26"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M13.4511 0.23877C14.3974 0.23877 15.2542 0.764308 15.7273 1.5401C15.9575 1.91549 16.1109 2.37846 16.0726 2.86646C16.047 3.24185 16.1621 3.61723 16.3667 3.96759C17.0189 5.03118 18.4639 5.43159 19.5892 4.83097C20.8551 4.10523 22.4536 4.54318 23.1825 5.78195L24.0392 7.25846C24.7809 8.49723 24.3717 10.0864 23.093 10.7996C22.006 11.4377 21.6224 12.8517 22.2746 13.9278C22.4792 14.2656 22.7093 14.5534 23.0674 14.7286C23.515 14.9664 23.8602 15.3417 24.1032 15.7171C24.5763 16.4929 24.538 17.4439 24.0776 18.2823L23.1825 19.7838C22.7093 20.5846 21.827 21.0851 20.9191 21.0851C20.4715 21.0851 19.9728 20.96 19.5636 20.7097C19.2311 20.497 18.8475 20.4219 18.4383 20.4219C17.1723 20.4219 16.1109 21.4605 16.0726 22.6993C16.0726 24.1383 14.8961 25.2644 13.4256 25.2644H11.6865C10.2031 25.2644 9.02664 24.1383 9.02664 22.6993C9.00106 21.4605 7.93969 20.4219 6.67372 20.4219C6.25173 20.4219 5.86811 20.497 5.54842 20.7097C5.13922 20.96 4.62771 21.0851 4.19293 21.0851C3.27223 21.0851 2.38989 20.5846 1.91675 19.7838L1.03441 18.2823C0.561266 17.4689 0.53569 16.4929 1.00883 15.7171C1.21343 15.3417 1.59706 14.9664 2.03184 14.7286C2.38989 14.5534 2.62006 14.2656 2.83745 13.9278C3.47683 12.8517 3.0932 11.4377 2.00626 10.7996C0.740292 10.0864 0.331089 8.49723 1.05998 7.25846L1.91675 5.78195C2.65843 4.54318 4.24409 4.10523 5.52284 4.83097C6.63536 5.43159 8.08036 5.03118 8.73252 3.96759C8.93712 3.61723 9.05221 3.24185 9.02664 2.86646C9.00106 2.37846 9.14172 1.91549 9.38469 1.5401C9.85783 0.764308 10.7146 0.263795 11.6481 0.23877H13.4511ZM12.5688 9.22297C10.5611 9.22297 8.93712 10.7996 8.93712 12.7641C8.93712 14.7286 10.5611 16.2927 12.5688 16.2927C14.5764 16.2927 16.1621 14.7286 16.1621 12.7641C16.1621 10.7996 14.5764 9.22297 12.5688 9.22297Z"
-        fill="#EFF2F4"
-      />
-    </svg>
-  );
-
   const lightMode = (
     <>
       <svg
@@ -114,18 +91,80 @@ const Layout = () => {
     </>
   );
 
+  const arrowBack = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="white"
+      className="w-6 h-6"
+    >
+      <path
+        fillRule="evenodd"
+        d="M11.03 3.97a.75.75 0 0 1 0 1.06l-6.22 6.22H21a.75.75 0 0 1 0 1.5H4.81l6.22 6.22a.75.75 0 1 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 0Z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+
   const content = (
     <>
       <div className="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-        <div className="drawer-content flex flex-col">
-          <label
-            htmlFor="my-drawer-2"
-            className="btn btn-primary w-[100px] drawer-button lg:hidden"
-          >
-            Open drawer
-          </label>
-          <div className="w-full pt-6 px-10">
+        <div className="drawer-content flex flex-col w-full min-h-screen">
+          <div className="flex w-full justify-between items-center bg-[#FFFFFF] shadow-md">
+            <label
+              htmlFor="my-drawer-2"
+              className="btn btn-ghost bg-[#f7f7f7] lg:hidden shadow-sm w-16 m-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </label>
+            <div className="w-full flex-col justify-center items-center text-center">
+              <div className="dropdown dropdown-bottom dropdown-end">
+                <div tabIndex={0} role="" className="btn btn-ghost m-2">
+                  <div className="flex flex-row gap-2 justify-center items-center">
+                    <img
+                      className="w-12 aspect-square object-contain rounded-full border p-2"
+                      src={selectedCompany.logo}
+                      alt=""
+                    />
+                    <h1 className="poppins-bold text-[15px]">
+                      {selectedCompany.companyName}
+                    </h1>
+                  </div>
+                </div>
+                <div
+                  tabIndex={0}
+                  className="dropdown-content z-[1] card card-compact w-64 p-2 shadow bg-white border"
+                >
+                  <div className="card-body flex flex-col gap-5 text-center justify-center items-center">
+                    <img
+                      className="w-24 aspect-square object-contain rounded-full border p-2"
+                      src={selectedCompany.logo}
+                      alt=""
+                    />
+                    <h1 className="poppins-bold text-[20px]">
+                      {selectedCompany.companyName}
+                    </h1>
+                    <p className="poppins-medium text-[15px]">
+                      {selectedCompany.secNumber}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="w-full pt-5 px-2 md:px-5 min-h-screen">
             <Outlet />
           </div>
         </div>
@@ -135,21 +174,19 @@ const Layout = () => {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu p-4 w-80 min-h-full bg-[#031C30] py-[30px] text-base-content">
+          <ul className="menu m-0 p-0 w-80 min-h-full bg-[#031C30] pt-4 text-base-content flex flex-col justify-between">
             {/* Sidebar content here */}
 
-            <div className="">
-              <div>
-                <button
-                  className="btn btn-primary"
-                  onClick={() => {
-                    navigate(-1);
-                  }}
-                >
-                  Go back
-                </button>
+            <div className="flex flex-col divide-y-[.1px] gap-4">
+              <div className="px-4">
+                <Link to={"/company"}>
+                  <button className="btn btn-sm btn-ghost flex flex-row gap-2 items-center text-white">
+                    {arrowBack} Back
+                  </button>
+                </Link>
               </div>
-              <div className="">
+
+              {/* <div className="">
                 <svg
                   width="37"
                   height="35"
@@ -172,10 +209,10 @@ const Layout = () => {
                     fill="#2196F3"
                   />
                 </svg>
-              </div>
-              <div className="mt-10">
+              </div> */}
+              <div className="px-4">
                 <Link
-                  to="/user/1"
+                  to={`/company/${companyId}/`}
                   onClick={() => {
                     setActive("dashboard");
                   }}
@@ -188,7 +225,7 @@ const Layout = () => {
                 </Link>
 
                 <Link
-                  to="/user/gis-tracker"
+                  to={`/company/${companyId}/gis-tracker`}
                   onClick={() => {
                     setActive("gis-tracker");
                   }}
@@ -201,13 +238,46 @@ const Layout = () => {
                 </Link>
               </div>
             </div>
+            <div className="px-4">
+              <div className="flex flex-row text-white justify-between items-center">
+                <div className="flex flex-row items-center gap-5">
+                  {lightMode}
+                </div>
+                <div>
+                  <input
+                    type="checkbox"
+                    className="toggle"
+                    onChange={() => {
+                      setIsDarkMode(!isDarkMode);
+                    }}
+                    value={isDarkMode}
+                  />
+                </div>
+              </div>
 
-
+              <div className="flex flex-row hover:bg-[#667A8A] h-[45px] rounded-[3px] items-center my-4 bg-[#667A8A]">
+                <div className="px-5">
+                  <svg
+                    width="27"
+                    height="26"
+                    viewBox="0 0 27 26"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M11.9191 0.933289C15.0255 0.933289 17.559 3.42334 17.559 6.48898V12.4826H9.92032C9.37289 12.4826 8.94003 12.9081 8.94003 13.4461C8.94003 13.9716 9.37289 14.4096 9.92032 14.4096H17.559V20.3907C17.559 23.4564 15.0255 25.9589 11.8936 25.9589H5.69361C2.5745 25.9589 0.0410156 23.4689 0.0410156 20.4032V6.50149C0.0410156 3.42334 2.58723 0.933289 5.70634 0.933289H11.9191ZM20.7375 9.12944C21.1129 8.74154 21.726 8.74154 22.1014 9.11692L25.7551 12.7582C25.9428 12.9458 26.0429 13.1836 26.0429 13.4464C26.0429 13.6966 25.9428 13.9469 25.7551 14.1221L22.1014 17.7633C21.9137 17.951 21.6634 18.0511 21.4257 18.0511C21.1754 18.0511 20.9252 17.951 20.7375 17.7633C20.3621 17.3879 20.3621 16.7748 20.7375 16.3994L22.7395 14.4098H17.5592V12.4829H22.7395L20.7375 10.4933C20.3621 10.1179 20.3621 9.50482 20.7375 9.12944Z"
+                      fill="white"
+                    />
+                  </svg>
+                </div>
+                <div className={"poppins-semibold text-white"}>Logout</div>
+              </div>
+            </div>
           </ul>
         </div>
       </div>
-      <div className="min-h-screen flex flex-row text-[15px]">
-        {/* <div className="w-1/4 bg-[#031C30] min-h-screen max-h-screen px-5 py-[30px] flex flex-col justify-between">
+      {/* <div className="min-h-screen flex flex-row text-[15px]">
+        <div className="w-1/4 bg-[#031C30] min-h-screen max-h-screen px-5 py-[30px] flex flex-col justify-between">
           <div className="">
             <div>
               <button
@@ -306,12 +376,46 @@ const Layout = () => {
               <div className={"poppins-semibold text-white"}>Logout</div>
             </div>
           </div>
-        </div> */}
+        </div>
+      </div> */}
+    </>
+  );
+
+  const companyNotFound = (
+    <>
+      <div>Company not found.</div>
+      <div>
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          Go Back
+        </button>
       </div>
     </>
   );
 
-  return <>{isLoading ? loading : content}</>;
+  useEffect(() => {
+    setActive(
+      window.location.pathname.split("/")[3] === "" ||
+        window.location.pathname.split("/")[3] === undefined
+        ? "dashboard"
+        : window.location.pathname.split("/")[3]
+    );
+    dispatch(fetchCompany(companyId));
+  }, []);
+
+  return (
+    <>
+      {status === "pending"
+        ? loading
+        : status === "rejected"
+        ? companyNotFound
+        : content}
+    </>
+  );
 };
 
 export default Layout;

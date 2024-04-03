@@ -1,8 +1,11 @@
 import React from "react";
-import Header from "../components/Header";
-import { Link } from "react-router-dom";
+import Header from "../../components/Header";
+import { Link, useParams } from "react-router-dom";
 
 const GISTracker = () => {
+
+  const { companyId } = useParams();
+
   return (
     <div>
       <div>
@@ -13,7 +16,7 @@ const GISTracker = () => {
           <div className="poppins-bold text-color-2 text-[24px] flex items-center">
             GIS Tracker
           </div>
-          <Link to={"/user/gis-tracker/create"}>
+          <Link to={`/company/${companyId}/gis-tracker/create`}>
             <button className="btn btn-md bg-[#273069] border-none text-white flex flex-row justify-center items-center rounded-[15px]">
               <svg
                 width="20"
@@ -33,18 +36,7 @@ const GISTracker = () => {
             </button>
           </Link>
         </div>
-        <div className="">
-          <div className="poppins-semibold text-color-2 text-[16px]">
-            Company
-          </div>
-          <div>
-            <select className="select select-bordered" name="test" id="">
-              <option value="">FullSuite</option>
-              <option value="">Company A</option>
-              <option value="">Company B</option>
-            </select>
-          </div>
-        </div>
+        
       </div>
       <div className="flex flex-col w-full mt-5">
         <div className="flex flex-row w-full gap-5 items-center">
@@ -111,7 +103,7 @@ const GISTracker = () => {
               <td>Approved</td>
               <td></td>
               <td>
-                <Link to={"/user/gis-tracker/view/1"}>
+                <Link to={`/company/${companyId}/gis-tracker/view/${1}`}>
                 <button>
                   <svg
                     width="54"

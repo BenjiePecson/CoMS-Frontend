@@ -1,18 +1,18 @@
 import React from "react";
-import Header from "../components/Header";
+import Header from "../../components/Header";
 
 const Settings = () => {
   return (
     <div>
-      <div>
+      {/* <div>
         <Header />
-      </div>
+      </div> */}
       <div className="flex flex-row w-full justify-between items-center mt-5">
         <div className="poppins-bold text-color-2 text-[24px]">Settings</div>
       </div>
 
-      <div className="flex flex-row gap-8 mt-8">
-        <div className="card w-1/2 bg-base-100 shadow-xl">
+      <div className="flex flex-col md:flex-row gap-8 mt-8">
+        <div className="card w-full md:w-1/2 bg-base-100 shadow-xl">
           <div className="card-body">
             <div className="flex flex-col w-full gap-2">
               <h1 className="poppins-bold text-[15px]">Account Information</h1>
@@ -54,7 +54,7 @@ const Settings = () => {
             </div>
           </div>
         </div>
-        <div className="card w-1/2 bg-base-100 shadow-xl">
+        <div className="card  w-full md:w-1/2 bg-base-100 shadow-xl">
           <div className="card-body">
             <div className="flex flex-col w-full gap-2">
               <h1 className="poppins-bold text-[15px]">Change My Password</h1>

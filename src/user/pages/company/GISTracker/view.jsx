@@ -14,6 +14,7 @@ const view = () => {
       >
         Go back
       </button>
+      
     </div>
   );
 };

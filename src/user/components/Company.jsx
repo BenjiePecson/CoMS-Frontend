@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 
 const Company = ({ company, toggleDelete, toggleEdit, toggleStatus }) => {
-  const tableRowStyle =
-    company.status ? "cursor-pointer hover:bg-gray-200" : "grayscale bg-gray-200";
+  const tableRowStyle = company.status
+    ? "cursor-pointer hover:bg-gray-200"
+    : "grayscale bg-gray-200";
   const active = (
     <button
       onClick={() => {
@@ -26,7 +27,6 @@ const Company = ({ company, toggleDelete, toggleEdit, toggleStatus }) => {
     </button>
   );
 
-
   return (
     <>
       <tr
@@ -34,7 +34,7 @@ const Company = ({ company, toggleDelete, toggleEdit, toggleStatus }) => {
         onClick={() => {
           //check if the status is active
           if (company.status) {
-            window.location.href = "/user/" + company.id;
+            window.location.href = `/company/${company.companyId}/`;
           }
         }}
       >
@@ -57,9 +57,15 @@ const Company = ({ company, toggleDelete, toggleEdit, toggleStatus }) => {
           }}
         >
           {/* {company.status === 1 ? active : inactive} */}
-          <input type="checkbox" className="toggle toggle-success"  disabled={!company.status} checked={company.status} onChange={(e)=>{
-            toggleStatus(company.companyId, !company.status);
-          }} />
+          <input
+            type="checkbox"
+            className="toggle toggle-success"
+            disabled={!company.status}
+            checked={company.status}
+            onChange={(e) => {
+              toggleStatus(company.companyId, !company.status);
+            }}
+          />
         </td>
         <td
           onClick={(e) => {
@@ -91,7 +97,7 @@ const Company = ({ company, toggleDelete, toggleEdit, toggleStatus }) => {
                 />
               </svg>
             </button>
-            
+
             {/* <button
               onClick={() => {
                 toggleDelete(company.id);

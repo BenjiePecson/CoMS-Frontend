@@ -1,39 +1,32 @@
 import React, { useEffect, useRef, useState } from "react";
-import Header from "../components/Header";
-import Company from "../components/Company";
+import Header from "../../components/Header.jsx";
+import Company from "../../components/Company.jsx";
 import Swal from "sweetalert2";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  getCompanies,
   addCompany,
   updateCompany,
   changeCompanyStatus,
   deleteCompanyTest,
-} from "../store/company/CompanySlice.js";
+  fetchCompanies,
+} from "../../store/company/CompanySlice.js";
 
 import {
   checkCompanyLogo,
   checkCompanyName,
   checkSECCert,
   showAlert,
-} from "../../assets/global";
+} from "../../../assets/global.js";
 
 import axios from "axios";
 
 const SelectCompany = () => {
-  // let initialFormData = {
-  //   id: "",
-  //   logo: "",
-  //   companyName: "",
-  //   secNumber: "",
-  //   status: true,
-  // };
-
-  let data = [];
-
   // const [companies, setCompanies] = useState(data);
   const companies = useSelector((state) => state.company.companies);
   const company = useSelector((state) => state.company.company);
+  const status = useSelector((state) => state.company.status);
+  const error = useSelector((state) => state.company.error);
+
   const dispatch = useDispatch();
   const [formData, setFormData] = useState(company);
   const [logo, setLogo] = useState(null);
@@ -119,14 +112,17 @@ const SelectCompany = () => {
           form.append("secNumber", formData.secNumber);
           form.append("logo", logo);
 
-          let response = await axios.patch(`/company/${formData.companyId}`, form, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
+          let response = await axios.patch(
+            `/company/${formData.companyId}`,
+            form,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
 
           if (response.status === 200) {
-
             let data = response.data;
 
             let newCompany = {
@@ -259,7 +255,6 @@ const SelectCompany = () => {
 
     // if (checkCompanyLogo(logo) != "" && !isEdit) {
     if (checkCompanyLogo(logo) != "") {
-
       newErrors.logo = checkCompanyLogo(logo);
     }
 
@@ -502,14 +497,18 @@ const SelectCompany = () => {
     />
   );
 
+  useEffect(() => {
+    dispatch(fetchCompanies());
+  }, []);
+
   return (
     <>
-      <div className="flex flex-col min-h-screen px-2 py-5 lg:py-10 w-[90%] lg:w-[80%] mx-auto">
-        <div className="flex flex-col my-5">
+      <div>
+        {/* <div className="flex flex-col mb-5">
           <Header />
-        </div>
+        </div> */}
 
-        <div className="flex flex-col md:flex-row w-full gap-3 justify-between mb-2">
+        <div className="flex flex-col md:flex-row w-full gap-3 justify-between mt-5">
           <div className="flex flex-row w-full">
             <h1 className="poppins-bold text-color-2 text-[24px]">Companies</h1>
             <div className="flex w-full justify-end md:hidden">{addButton}</div>
@@ -519,94 +518,13 @@ const SelectCompany = () => {
         </div>
 
         {/* bg-white p-5 md:p-10 rounded-[20px] shadow-lg */}
-        <div className="flex flex-col w-full mt-5 min-h-full h-full max-h-full ">
-          {companies.length > 0 ? table : noRecord}
+        <div className="flex flex-col w-full mt-5">
+          {status === "pending"
+            ? "Loading..."
+            : companies.length > 0
+            ? table
+            : noRecord}
         </div>
-
-        {/* <div className="flex flex-col w-full mt-5 gap-5">
-          <div className="flex flex-row bg-white shadow-lg rounded-xl p-5 gap-5 min-h-32 hover:cursor-pointer">
-            <div className="flex justify-center w-[200px] aspect-square">
-              <img
-                className="w-[100%] object-contain aspect-square"
-                src="/logo.png"
-                alt="Logo..."
-              />
-            </div>
-            <div className="flex flex-col justify-evenly w-full">
-                <h1 className="poppins-bold text-color-2 text-[24px]">
-                  FullSuite
-                </h1>
-                <p className="poppins-medium text-color-2 text-[12px]">
-                SEC-2022-1234567890-ABCD
-                </p>
-              
-            </div>
-            <div className="flex flex-col justify-center items-center w-full">
-              <span className="badge badge-success badge-lg text-white">
-                Active
-              </span>
-            </div>
-            <div className="flex flex-col justify-center">
-              <button className="btn btn-ghost rounded-badge">
-                
-              
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M4.5 12a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              </button>
-            </div>
-          </div>
-          <div className="flex flex-row bg-white shadow-lg rounded-xl p-5 gap-5 min-h-32 hover:cursor-pointer">
-            <div className="flex justify-center w-[200px] aspect-square">
-              <img
-                className="w-[100%] object-contain aspect-square"
-                src="/company_logos/fs.png"
-                alt="Logo..."
-              />
-            </div>
-            <div className="flex flex-col justify-evenly w-full">
-                <h1 className="poppins-bold text-color-2 text-[24px]">
-                  FullSuite
-                </h1>
-                <p className="poppins-medium text-color-2 text-[12px]">
-                SEC-2022-1234567890-ABCD
-                </p>
-              
-            </div>
-            <div className="flex flex-col justify-center items-center w-full">
-              <span className="badge badge-success badge-lg text-white">
-                Active
-              </span>
-            </div>
-            <div className="flex flex-col justify-center">
-              <button className="btn btn-ghost rounded-badge">
-                
-              
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M4.5 12a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              </button>
-            </div>
-          </div>
-        </div> */}
       </div>
 
       <dialog id="addModal" className="modal">

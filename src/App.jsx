@@ -2,12 +2,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import "./App.css";
 import Login from "./user/pages/Login";
-import SelectCompany from "./user/pages/SelectCompany";
-import Dashboard from "./user/pages/Dashboard";
-import Layout from "./user/pages/Layout";
-import GISTracker from "./user/pages/GISTracker";
-import GIScreate from "./user/pages/GISTracker/create";
-import GISview from "./user/pages/GISTracker/view";
+import SelectCompany from "./user/pages/user/SelectCompany";
+import Dashboard from "./user/pages/company/Dashboard";
+import UserLayout from "./user/pages/company/Layout";
+import CompanyLayout from "./user/pages/user/Layout";
+import GISTracker from "./user/pages/company/GISTracker";
+import GIScreate from "./user/pages/company/GISTracker/create";
+import GISview from "./user/pages/company/GISTracker/view";
+import Settings from "./user/pages/user/Settings";
 
 axios.defaults.baseURL = "http://localhost:3000/";
 
@@ -18,12 +20,24 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Login />} />
-          <Route path="/company" element={<SelectCompany />} />
-          <Route element={<Layout />}>
-            <Route path="/user/:company" element={<Dashboard />} />
-            <Route path="/user/gis-tracker" element={<GISTracker />} />
-            <Route path="/user/gis-tracker/create" element={<GIScreate />} />
-            <Route path="/user/gis-tracker/view/:id" element={<GISview />} />
+          <Route element={<CompanyLayout />}>
+            <Route path="/company" element={<SelectCompany />} />
+            <Route path="/settings" element={<Settings />} />
+          </Route>
+          <Route element={<UserLayout />}>
+            <Route path="company/:companyId/" element={<Dashboard />} />
+            <Route
+              path="company/:companyId/gis-tracker"
+              element={<GISTracker />}
+            />
+            <Route
+              path="company/:companyId/gis-tracker/create"
+              element={<GIScreate />}
+            />
+            <Route
+              path="company/:companyId/gis-tracker/view/:id"
+              element={<GISview />}
+            />
           </Route>
           <Route path="/manager/" element={<Login />} />
         </Routes>

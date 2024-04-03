@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const CompanyState = {
@@ -9,87 +9,20 @@ const CompanyState = {
   status: true,
 };
 
-const fetchCompanies = async () => {
-
-  let response = await axios.get("http://localhost:3000/company/");
-
+export const fetchCompanies = createAsyncThunk("company/fetchCompanies", async () => {
+  let response = await axios.get("/company/");
   return response.data;
+});
 
-  let data = [
-    {
-      logo: "/company_logos/fs.png",
-      company_name: "Viascari, Inc.",
-      sec_cert: "CS20178898",
-      status: true,
-    },
-    {
-      logo: "/logo.png",
-      company_name: "Offshore Concept BPO Services Inc.",
-      sec_cert: "CS201419616",
-      status: true,
-    },
-    {
-      logo: "/logo.png",
-      company_name: "WeStitch Philippines Inc.",
-      sec_cert: "2023110125337-11",
-      status: true,
-    },
-    {
-      logo: "/logo.png",
-      company_name: "Ananda Wellness Corporation",
-      sec_cert: "2023110123775-11",
-      status: true,
-    },
-    {
-      logo: "/logo.png",
-      company_name: "Cacha Corporation",
-      sec_cert: "2023110123777-03",
-      status: true,
-    },
-    {
-      logo: "/logo.png",
-      company_name: "CloudEats Ph, Inc.",
-      sec_cert: "2022060054609-86",
-      status: true,
-    },
-    {
-      logo: "/logo.png",
-      company_name: "Movet Petcare Inc.",
-      sec_cert: "2021020006629-05",
-      status: true,
-    },
-    {
-      logo: "/logo.png",
-      company_name: "Envie Food Concept Inc.",
-      sec_cert: "CS201819204",
-      status: true,
-    },
-    {
-      logo: "/logo.png",
-      company_name: "IZA Branding Concept Inc.",
-      sec_cert: "2021090024931-02",
-      status: true,
-    },
-    {
-      logo: "/logo.png",
-      company_name: "Teetalk.PH, Inc.",
-      sec_cert: "CS201419619",
-      status: true,
-    },
-    {
-      logo: "/logo.png",
-      company_name: "Kapon Pilipinas Inc.",
-      sec_cert: "2023110123777-03",
-      status: true,
-    },
-  ];
-
-  return data;
-};
+export const fetchCompany = createAsyncThunk("company/fetchCompany", async (companyId) => {
+  let response = await axios.get(`/company/${companyId}`);
+  return response.data;
+});
 
 const initialState = {
-  companies: await fetchCompanies(),
+  companies: [],
   company: CompanyState,
+  selectedCompany: CompanyState,
   status: "idle",
   error: null,
 };
@@ -98,9 +31,6 @@ const companySlice = createSlice({
   name: "company",
   initialState,
   reducers: {
-    getCompanies: async (state, action) => {
-      state.companies = await fetchCompanies();
-    },
 
     addCompany: (state, action) => {
       state.companies.push(action.payload);
@@ -130,10 +60,37 @@ const companySlice = createSlice({
       );
     },
   },
+  extraReducers: (builder) => {
+
+    //Companies
+    builder.addCase(fetchCompanies.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(fetchCompanies.fulfilled, (state, action) => {
+      state.status = "fulfilled";
+      state.companies = action.payload;
+    });
+    builder.addCase(fetchCompanies.rejected, (state, action) => {
+      state.status = "rejected";
+      state.companies = [];
+    });
+
+    //Company
+    builder.addCase(fetchCompany.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(fetchCompany.fulfilled, (state, action) => {
+      state.status = "fulfilled";
+      state.selectedCompany = action.payload[0];
+    });
+    builder.addCase(fetchCompany.rejected, (state, action) => {
+      state.status = "rejected";
+      state.selectedCompany = CompanyState;
+    });
+  },
 });
 
 export const {
-  getCompanies,
   addCompany,
   updateCompany,
   changeCompanyStatus,

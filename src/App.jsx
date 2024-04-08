@@ -10,6 +10,7 @@ import GISTracker from "./user/pages/company/GISTracker";
 import GIScreate from "./user/pages/company/GISTracker/create";
 import GISview from "./user/pages/company/GISTracker/view";
 import Settings from "./user/pages/user/Settings";
+import Hello from "./user/pages/Hello";
 
 axios.defaults.baseURL = "http://localhost:3000/";
 
@@ -18,6 +19,8 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
+          <Route path="/hello" element={<Hello />} />
+
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Login />} />
           <Route element={<CompanyLayout />}>
@@ -31,11 +34,11 @@ function App() {
               element={<GISTracker />}
             />
             <Route
-              path="company/:companyId/gis-tracker/create"
+              path="company/:companyId/gis-tracker/create/:recordId?"
               element={<GIScreate />}
             />
             <Route
-              path="company/:companyId/gis-tracker/view/:id"
+              path="company/:companyId/gis-tracker/view/:id?"
               element={<GISview />}
             />
           </Route>

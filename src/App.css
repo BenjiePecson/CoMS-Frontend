@@ -1,4 +1,4 @@
-body{
+body {
   background-color: #f7f7f7;
 }
 
@@ -110,10 +110,21 @@ body{
   font-style: italic;
 }
 
-.text-color-1{
-  color: #7C807B;
+.text-color-1 {
+  color: #7c807b;
 }
 
-.text-color-2{
-  color: #1F384C;
+.text-color-2 {
+  color: #1f384c;
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }

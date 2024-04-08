@@ -1,10 +1,74 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../../components/Header";
 import { Link, useParams } from "react-router-dom";
 
-const GISTracker = () => {
+import { fetchRecords } from "../../store/GIS/GISRecordSlice";
+import { useDispatch, useSelector } from "react-redux";
 
+const GISTracker = () => {
   const { companyId } = useParams();
+  const companyRecords = useSelector((state) => state.records.records);
+  const dispatch = useDispatch();
+
+  const table = (
+    <>
+      <table className="table">
+        {/* head */}
+        <thead>
+          <tr>
+            <th>GIS Name</th>
+            <th>Status</th>
+            <th>Files</th>
+            <th className="w-[10%]">View Process</th>
+          </tr>
+        </thead>
+        <tbody>
+          {companyRecords.length !== 0 ? (
+            companyRecords.map((record, index) => (
+              <tr key={index}>
+                <td>{record.recordName}</td>
+                <td>{record.status}</td>
+                <td></td>
+                <td>
+                  <Link to={`/company/${companyId}/gis-tracker/view/${1}`}>
+                    <button>
+                      <svg
+                        width="54"
+                        height="38"
+                        viewBox="0 0 54 38"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <rect width="54" height="38" rx="4" fill="#273069" />
+                        <path
+                          d="M27.0003 20C28.1048 20 29.0003 19.1046 29.0003 18C29.0003 16.8954 28.1048 16 27.0003 16C25.8957 16 25.0003 16.8954 25.0003 18C25.0003 19.1046 25.8957 20 27.0003 20Z"
+                          fill="white"
+                        />
+                        <path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M17.458 18C18.7323 13.9429 22.5226 11 27.0002 11C31.4778 11 35.2681 13.9429 36.5424 18C35.2682 22.0571 31.4778 25 27.0002 25C22.5226 25 18.7323 22.0571 17.458 18ZM31.0003 18C31.0003 20.2091 29.2094 22 27.0003 22C24.7911 22 23.0003 20.2091 23.0003 18C23.0003 15.7909 24.7911 14 27.0003 14C29.2094 14 31.0003 15.7909 31.0003 18Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </button>
+                  </Link>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr className="text-center">
+              <td colSpan={4}>No records found.</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </>
+  );
+
+  useEffect(() => {
+    dispatch(fetchRecords(companyId));
+  }, []);
 
   return (
     <div>
@@ -36,7 +100,6 @@ const GISTracker = () => {
             </button>
           </Link>
         </div>
-        
       </div>
       <div className="flex flex-col w-full mt-5">
         <div className="flex flex-row w-full gap-5 items-center">
@@ -83,114 +146,7 @@ const GISTracker = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="table">
-          {/* head */}
-          <thead>
-            <tr>
-              <th></th>
-              <th>GIS Name</th>
-              <th>Status</th>
-              <th>Files</th>
-              <th className="w-[10%]">View Process</th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* row 1 */}
-            <tr>
-              <th>1</th>
-              <td>FSGIS 2023</td>
-              <td>Approved</td>
-              <td></td>
-              <td>
-                <Link to={`/company/${companyId}/gis-tracker/view/${1}`}>
-                <button>
-                  <svg
-                    width="54"
-                    height="38"
-                    viewBox="0 0 54 38"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <rect width="54" height="38" rx="4" fill="#273069" />
-                    <path
-                      d="M27.0003 20C28.1048 20 29.0003 19.1046 29.0003 18C29.0003 16.8954 28.1048 16 27.0003 16C25.8957 16 25.0003 16.8954 25.0003 18C25.0003 19.1046 25.8957 20 27.0003 20Z"
-                      fill="white"
-                    />
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M17.458 18C18.7323 13.9429 22.5226 11 27.0002 11C31.4778 11 35.2681 13.9429 36.5424 18C35.2682 22.0571 31.4778 25 27.0002 25C22.5226 25 18.7323 22.0571 17.458 18ZM31.0003 18C31.0003 20.2091 29.2094 22 27.0003 22C24.7911 22 23.0003 20.2091 23.0003 18C23.0003 15.7909 24.7911 14 27.0003 14C29.2094 14 31.0003 15.7909 31.0003 18Z"
-                      fill="white"
-                    />
-                  </svg>
-                </button>
-                </Link>
-              </td>
-            </tr>
-            {/* row 2 */}
-            <tr>
-              <th>2</th>
-              <td>FSGIS 2022</td>
-              <td>Completed</td>
-              <td>FSGIS 2022.pdf</td>
-              <td>
-                <button>
-                  <svg
-                    width="54"
-                    height="38"
-                    viewBox="0 0 54 38"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <rect width="54" height="38" rx="4" fill="#273069" />
-                    <path
-                      d="M27.0003 20C28.1048 20 29.0003 19.1046 29.0003 18C29.0003 16.8954 28.1048 16 27.0003 16C25.8957 16 25.0003 16.8954 25.0003 18C25.0003 19.1046 25.8957 20 27.0003 20Z"
-                      fill="white"
-                    />
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M17.458 18C18.7323 13.9429 22.5226 11 27.0002 11C31.4778 11 35.2681 13.9429 36.5424 18C35.2682 22.0571 31.4778 25 27.0002 25C22.5226 25 18.7323 22.0571 17.458 18ZM31.0003 18C31.0003 20.2091 29.2094 22 27.0003 22C24.7911 22 23.0003 20.2091 23.0003 18C23.0003 15.7909 24.7911 14 27.0003 14C29.2094 14 31.0003 15.7909 31.0003 18Z"
-                      fill="white"
-                    />
-                  </svg>
-                </button>
-              </td>
-            </tr>
-            {/* row 3 */}
-            <tr>
-              <th>3</th>
-              <td>FSGIS 2021</td>
-              <td>Completed</td>
-              <td>FSGIS 2021.pdf</td>
-              <td>
-                <button>
-                  <svg
-                    width="54"
-                    height="38"
-                    viewBox="0 0 54 38"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <rect width="54" height="38" rx="4" fill="#273069" />
-                    <path
-                      d="M27.0003 20C28.1048 20 29.0003 19.1046 29.0003 18C29.0003 16.8954 28.1048 16 27.0003 16C25.8957 16 25.0003 16.8954 25.0003 18C25.0003 19.1046 25.8957 20 27.0003 20Z"
-                      fill="white"
-                    />
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M17.458 18C18.7323 13.9429 22.5226 11 27.0002 11C31.4778 11 35.2681 13.9429 36.5424 18C35.2682 22.0571 31.4778 25 27.0002 25C22.5226 25 18.7323 22.0571 17.458 18ZM31.0003 18C31.0003 20.2091 29.2094 22 27.0003 22C24.7911 22 23.0003 20.2091 23.0003 18C23.0003 15.7909 24.7911 14 27.0003 14C29.2094 14 31.0003 15.7909 31.0003 18Z"
-                      fill="white"
-                    />
-                  </svg>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <div className="overflow-x-auto">{table}</div>
     </div>
   );
 };

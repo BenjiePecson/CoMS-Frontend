@@ -67,14 +67,14 @@ const SelectCompany = () => {
   const toggleEdit = (company) => {
     setFormData(company);
     editInputFile.current.value = null;
-    setFormData({
-      ...formData,
-      companyId: company.companyId,
-      logo: company.logo,
-      companyName: company.companyName,
-      secNumber: company.secNumber,
-      status: company.status,
-    });
+    // setFormData({
+    //   ...formData,
+    //   companyId: company.companyId,
+    //   logo: company.logo,
+    //   companyName: company.companyName,
+    //   secNumber: company.secNumber,
+    //   status: company.status,
+    // });
     document.getElementById("editModal").showModal();
   };
 

@@ -19,13 +19,6 @@ const Layout = () => {
     <>
       <div className="min-h-screen flex flex-col justify-center items-center">
         <div className="loading loading-spinner loading-lg"></div>
-        <button
-          onClick={() => {
-            setIsLoading(false);
-          }}
-        >
-          Done
-        </button>
       </div>
     </>
   );
@@ -398,14 +391,17 @@ const Layout = () => {
   );
 
   useEffect(() => {
+    dispatch(fetchCompany(companyId));
+  }, []);
+  
+  useEffect(() => {
     setActive(
       window.location.pathname.split("/")[3] === "" ||
         window.location.pathname.split("/")[3] === undefined
         ? "dashboard"
         : window.location.pathname.split("/")[3]
     );
-    dispatch(fetchCompany(companyId));
-  }, []);
+  }, [window.location.pathname]);
 
   return (
     <>

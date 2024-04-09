@@ -2,6 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { showAlert } from "../../../../assets/global";
+import {
+  Page,
+  Text,
+  View,
+  Document,
+  PDFViewer,
+  StyleSheet,
+} from "@react-pdf/renderer";
 import axios from "axios";
 
 const authCapitalStock = {
@@ -3268,7 +3276,17 @@ const create = () => {
           <h1 className="text-[32px]">PREVIEW GIS FILE</h1>
           <div>
             <div className="my-5 w-full text-start">
-              <pre>{JSON.stringify(formData, null, 2)}</pre>
+              <PDFViewer>
+                <Document>
+                  <Page>
+                    <View>
+                      <Text>
+                        <pre>{JSON.stringify(formData, null, 2)}</pre>
+                      </Text>
+                    </View>
+                  </Page>
+                </Document>
+              </PDFViewer>
             </div>
           </div>
         </div>

@@ -18,7 +18,7 @@ const RecordState = {
 export const fetchRecords = createAsyncThunk(
   "records/fetchRecords",
   async (companyId) => {
-    let response = await axios.get(`/record/${companyId}`);
+    let response = await axios.get(`/record/company/${companyId}`);
     return response.data;
   }
 );

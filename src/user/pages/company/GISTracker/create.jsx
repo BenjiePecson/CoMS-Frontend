@@ -522,6 +522,16 @@ const create = () => {
     return "Next";
   };
 
+  const updateFormData = async () => {
+    try {
+      let response = await axios.get(`/record/${recordId}`);
+      const data = response.data[0];
+      setFormData(data.draftingInput);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   //#endregion
 
   //#region toggle functions
@@ -3298,11 +3308,15 @@ const create = () => {
   //#region use effects
   useEffect(() => {
     //setformrecord
-    setFormRecord({
-      ...formRecord,
-      companyId: companyId,
-      createdBy: "Michael",
-    });
+    if (recordId !== undefined) {
+      updateFormData();
+    } else {
+      setFormRecord({
+        ...formRecord,
+        companyId: companyId,
+        createdBy: "Michael",
+      });
+    }
   }, []);
 
   useEffect(() => {

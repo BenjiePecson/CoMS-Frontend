@@ -24,38 +24,46 @@ const GISTracker = () => {
         </thead>
         <tbody>
           {companyRecords.length !== 0 ? (
-            companyRecords.map((record, index) => (
-              <tr key={index}>
-                <td>{record.recordName}</td>
-                <td>{record.status}</td>
-                <td></td>
-                <td>
-                  <Link to={`/company/${companyId}/gis-tracker/view/${1}`}>
-                    <button>
-                      <svg
-                        width="54"
-                        height="38"
-                        viewBox="0 0 54 38"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <rect width="54" height="38" rx="4" fill="#273069" />
-                        <path
-                          d="M27.0003 20C28.1048 20 29.0003 19.1046 29.0003 18C29.0003 16.8954 28.1048 16 27.0003 16C25.8957 16 25.0003 16.8954 25.0003 18C25.0003 19.1046 25.8957 20 27.0003 20Z"
-                          fill="white"
-                        />
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M17.458 18C18.7323 13.9429 22.5226 11 27.0002 11C31.4778 11 35.2681 13.9429 36.5424 18C35.2682 22.0571 31.4778 25 27.0002 25C22.5226 25 18.7323 22.0571 17.458 18ZM31.0003 18C31.0003 20.2091 29.2094 22 27.0003 22C24.7911 22 23.0003 20.2091 23.0003 18C23.0003 15.7909 24.7911 14 27.0003 14C29.2094 14 31.0003 15.7909 31.0003 18Z"
-                          fill="white"
-                        />
-                      </svg>
-                    </button>
-                  </Link>
-                </td>
-              </tr>
-            ))
+            companyRecords.map((record, index) => {
+              let goto = "view";
+              if (record.status === "Saved as Draft") {
+                goto = "create";
+              }
+              return (
+                <tr key={index}>
+                  <td>{record.recordName}</td>
+                  <td>{record.status}</td>
+                  <td></td>
+                  <td>
+                    <Link
+                      to={`/company/${companyId}/gis-tracker/${goto}/${record.recordId}`}
+                    >
+                      <button>
+                        <svg
+                          width="54"
+                          height="38"
+                          viewBox="0 0 54 38"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <rect width="54" height="38" rx="4" fill="#273069" />
+                          <path
+                            d="M27.0003 20C28.1048 20 29.0003 19.1046 29.0003 18C29.0003 16.8954 28.1048 16 27.0003 16C25.8957 16 25.0003 16.8954 25.0003 18C25.0003 19.1046 25.8957 20 27.0003 20Z"
+                            fill="white"
+                          />
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M17.458 18C18.7323 13.9429 22.5226 11 27.0002 11C31.4778 11 35.2681 13.9429 36.5424 18C35.2682 22.0571 31.4778 25 27.0002 25C22.5226 25 18.7323 22.0571 17.458 18ZM31.0003 18C31.0003 20.2091 29.2094 22 27.0003 22C24.7911 22 23.0003 20.2091 23.0003 18C23.0003 15.7909 24.7911 14 27.0003 14C29.2094 14 31.0003 15.7909 31.0003 18Z"
+                            fill="white"
+                          />
+                        </svg>
+                      </button>
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })
           ) : (
             <tr className="text-center">
               <td colSpan={4}>No records found.</td>

@@ -8,9 +8,10 @@ import {
   View,
   Document,
   PDFViewer,
-  StyleSheet,
+  PDFDownloadLink,
 } from "@react-pdf/renderer";
 import axios from "axios";
+
 
 const authCapitalStock = {
   type_of_shares: "",
@@ -153,6 +154,8 @@ const create = () => {
   const { recordId } = useParams();
 
   const record = useSelector((state) => state.records.record);
+  const selectedCompany = useSelector((state) => state.company.selectedCompany);
+
   // const company = useSelector((state) => state.company.company);
   // const status = useSelector((state) => state.company.status);
   // const error = useSelector((state) => state.company.error);
@@ -560,6 +563,7 @@ const create = () => {
       showAlert(status, message);
     }
   };
+
   const toggleSubmit = () => {
     if (step >= 1 && step < 7) {
       setStep(step + 1);
@@ -3279,23 +3283,24 @@ const create = () => {
     );
   };
 
+  const GISFormDocument = (
+    <Document title={`${formData.corporate_name} GIS ${formData.year}`}>
+      <Page>
+        <View>
+          <Text>{JSON.stringify(formData, null, 2)}</Text>
+        </View>
+      </Page>
+    </Document>
+  );
+
   const step7 = () => {
     return (
       <>
-        <div className="flex flex-col">
-          <h1 className="text-[32px]">PREVIEW GIS FILE</h1>
-          <div>
-            <div className="my-5 w-full text-start">
-              <PDFViewer>
-                <Document>
-                  <Page>
-                    <View>
-                      <Text>
-                        <pre>{JSON.stringify(formData, null, 2)}</pre>
-                      </Text>
-                    </View>
-                  </Page>
-                </Document>
+        <div className="flex flex-col w-full">
+          <div className="flex flex-col w-full p-5">
+            <div className="my-5 w-full text-start h-screen">
+              <PDFViewer className="h-screen w-full">
+                {GISFormDocument}
               </PDFViewer>
             </div>
           </div>
@@ -3311,12 +3316,16 @@ const create = () => {
     if (recordId !== undefined) {
       updateFormData();
     } else {
-      setFormRecord({
-        ...formRecord,
-        companyId: companyId,
-        createdBy: "Michael",
-      });
+      if (formData.corporate_name === "") {
+        formData.corporate_name = selectedCompany.companyName;
+        setFormData(formData);
+      }
     }
+    setFormRecord({
+      ...formRecord,
+      companyId: companyId,
+      createdBy: "Michael",
+    });
   }, []);
 
   useEffect(() => {
@@ -3382,16 +3391,15 @@ const create = () => {
               {btnCancelText()}
             </button>
             <div className="flex flex-row gap-10">
-              <button
+              <PDFDownloadLink
                 className={
                   `btn bg-primary text-white ` + (step != 7 && "hidden")
                 }
-                onClick={() => {
-                  toggleDownloadPDF();
-                }}
+                fileName={`${formData.corporate_name} GIS ${formData.year}`}
+                document={GISFormDocument}
               >
                 Download PDF
-              </button>
+              </PDFDownloadLink>
               <button
                 className={
                   `btn bg-primary text-white ` + (step != 7 && "hidden")

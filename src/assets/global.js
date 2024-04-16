@@ -39,6 +39,14 @@ const checkCompanyLogo = (value, isEdit = false) => {
   return error;
 };
 
+const checkDateRegistered = (value) => {
+  let error = "";
+  if (value == "") {
+    error = "Date is required";
+  }
+  return error;
+};
+
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -53,5 +61,6 @@ export {
   formatDate,
   checkCompanyName,
   checkSECCert,
-  checkCompanyLogo
+  checkCompanyLogo,
+  checkDateRegistered
 };

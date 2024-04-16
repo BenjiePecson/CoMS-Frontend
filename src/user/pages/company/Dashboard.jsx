@@ -12,7 +12,7 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-5">
-        <Link to={`/company/${companyId}/gis-tracker/create`}>
+        {/* <Link to={`/company/${companyId}/gis-tracker/create`}>
           <div className="card w-full aspect-square bg-base-100 shadow-xl cursor-pointer">
             <div className="flex flex-col items-center justify-center my-auto py-5 gap-2 w-full">
               <h1 className="poppins-semibold text-[20px]">Draft GIS</h1>
@@ -29,7 +29,7 @@ const Dashboard = () => {
               </svg>
             </div>
           </div>
-        </Link>
+        </Link> */}
       </div>
     </div>
   );

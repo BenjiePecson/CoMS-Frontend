@@ -16,6 +16,7 @@ import {
   checkCompanyName,
   checkSECCert,
   showAlert,
+  checkDateRegistered
 } from "../../../assets/global.js";
 
 import axios from "axios";
@@ -110,6 +111,8 @@ const SelectCompany = () => {
           const form = new FormData();
           form.append("companyName", formData.companyName);
           form.append("secNumber", formData.secNumber);
+          form.append("corporateTin", formData.corporateTin);
+          form.append("dateRegistered", formData.dateRegistered);
           form.append("logo", logo);
 
           let response = await axios.patch(
@@ -129,6 +132,8 @@ const SelectCompany = () => {
               companyId: data.companyId,
               logo: data.logo,
               companyName: data.companyName,
+              corporateTin: data.corporateTin,
+              dateRegistered: data.dateRegistered,
               secNumber: data.secNumber,
             };
 
@@ -153,6 +158,8 @@ const SelectCompany = () => {
         let form = new FormData();
         form.append("companyName", formData.companyName);
         form.append("secNumber", formData.secNumber);
+        form.append("corporateTin", formData.corporateTin);
+        form.append("dateRegistered", formData.dateRegistered);
         form.append("logo", logo);
 
         try {
@@ -165,11 +172,15 @@ const SelectCompany = () => {
             let data = response.data;
 
             let newData = {
+              companyId: data.companyId,
               logo: data.logo,
               companyName: data.companyName,
               secNumber: data.secNumber,
+              corporateTin: data.corporateTin,
+              dateRegistered: data.dateRegistered,
               status: data.status,
             };
+
             dispatch(addCompany(newData));
             setFormData(company);
             status = "success";
@@ -195,6 +206,9 @@ const SelectCompany = () => {
   //on change event for inputs
   const handleOnChange = async (e) => {
     const { name, value } = e.target;
+
+    console.log(name);
+    console.log(value);
 
     if (name === "logo") {
       setLogo(e.target.files[0]);
@@ -238,6 +252,17 @@ const SelectCompany = () => {
         });
       } else {
         setErrors({ ...errors, secNumber: "" });
+      }
+    }
+
+    if (name == "dateRegistered") {
+      if (checkDateRegistered(value) != "") {
+        setErrors({
+          ...errors,
+          dateRegistered: checkDateRegistered(value),
+        });
+      } else {
+        setErrors({ ...errors, dateRegistered: "" });
       }
     }
   };
@@ -587,6 +612,52 @@ const SelectCompany = () => {
             <label className="form-control w-full">
               <div className="label">
                 <span className="poppins-regular text-[12px]">
+                  Date Registered <span className="text-red-500">*</span>
+                </span>
+              </div>
+              <input
+                type="date"
+                className={`input input-bordered w-full ${
+                  errors.dateRegistered && `input-error`
+                }`}
+                name="dateRegistered"
+                value={formData.dateRegistered}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.companyName && (
+                <span className="text-[12px] text-red-500">
+                  {errors.dateRegistered}
+                </span>
+              )}
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">
+                  Corporate Tax Identification Number (TIN)
+                </span>
+              </div>
+              <input
+                type="text"
+                className={`input input-bordered w-full ${
+                  errors.corporateTin && `input-error`
+                }`}
+                name="corporateTin"
+                value={formData.corporateTin}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.corporateTin && (
+                <span className="text-[12px] text-red-500">
+                  {errors.corporateTin}
+                </span>
+              )}
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">
                   Company Logo <span className="text-red-500">*</span>
                 </span>
               </div>
@@ -606,26 +677,7 @@ const SelectCompany = () => {
                 <span className="text-[12px] text-red-500">{errors.logo}</span>
               )}
             </label>
-            {/* <label className="form-control w-full my-2">
-              <div className="label">
-                <span className="poppins-regular text-[12px]">
-                  Status <span className="text-red-500">*</span>
-                </span>
-              </div>
-
-              <input
-                type="checkbox"
-                className="toggle"
-                name="status"
-                value={formData.status}
-                checked={formData.status}
-                onChange={(e) => {
-                  // handleOnChange(e);
-                  setFormData({ ...formData, status: e.target.checked });
-                }}
-              />
-            </label> */}
-
+            
             <button
               onClick={(e) => {
                 handleSubmit(e, false);
@@ -698,6 +750,54 @@ const SelectCompany = () => {
             <label className="form-control w-full">
               <div className="label">
                 <span className="poppins-regular text-[12px]">
+                  Date Registered
+                  <span className="text-red-500">*</span>
+                </span>
+              </div>
+              <input
+                type="date"
+                className={`input input-bordered w-full ${
+                  errors.dateRegistered && `input-error`
+                }`}
+                name="dateRegistered"
+                value={formData.dateRegistered}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.dateRegistered && (
+                <span className="text-[12px] text-red-500">
+                  {errors.dateRegistered}
+                </span>
+              )}
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">
+                  Corporate Tax Identification Number (TIN){" "}
+                  <span className="text-red-500">*</span>
+                </span>
+              </div>
+              <input
+                type="text"
+                className={`input input-bordered w-full ${
+                  errors.corporateTin && `input-error`
+                }`}
+                name="corporateTin"
+                value={formData.corporateTin}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.corporateTin && (
+                <span className="text-[12px] text-red-500">
+                  {errors.corporateTin}
+                </span>
+              )}
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">
                   Company Logo <span className="text-red-500">*</span>
                 </span>
               </div>
@@ -722,25 +822,6 @@ const SelectCompany = () => {
                 <span className="text-[12px] text-red-500">{errors.logo}</span>
               )}
             </label>
-            {/* <label className="form-control w-full my-2">
-              <div className="label">
-                <span className="poppins-regular text-[12px]">
-                  Status <span className="text-red-500">*</span>
-                </span>
-              </div>
-
-              <input
-                type="checkbox"
-                className="toggle"
-                name="status"
-                value={formData.status}
-                checked={formData.status}
-                onChange={(e) => {
-                  // handleOnChange(e);
-                  setFormData({ ...formData, status: e.target.checked });
-                }}
-              />
-            </label> */}
 
             <button
               onClick={(e) => {

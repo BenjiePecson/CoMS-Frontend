@@ -6,6 +6,8 @@ const CompanyState = {
   companyName: "",
   logo: "",
   secNumber: "",
+  corporateTin: "",
+  dateRegistered: "",
   status: true,
 };
 
@@ -42,6 +44,9 @@ const companySlice = createSlice({
           obj.logo = action.payload.logo;
           obj.companyName = action.payload.companyName;
           obj.secNumber = action.payload.secNumber;
+          obj.corporateTin = action.payload.corporateTin;
+          obj.dateRegistered = action.payload.dateRegistered;
+
         }
       });
     },

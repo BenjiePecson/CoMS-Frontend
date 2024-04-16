@@ -13,6 +13,8 @@ import Settings from "./user/pages/user/Settings";
 import Hello from "./user/pages/Hello";
 
 axios.defaults.baseURL = "http://localhost:3000/";
+// axios.defaults.baseURL = "http://192.168.88.162:3000/";
+
 
 function App() {
   return (

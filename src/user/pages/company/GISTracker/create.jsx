@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { showAlert } from "../../../../assets/global";
 import {
@@ -11,7 +11,6 @@ import {
   PDFDownloadLink,
 } from "@react-pdf/renderer";
 import axios from "axios";
-
 
 const authCapitalStock = {
   type_of_shares: "",
@@ -116,17 +115,17 @@ const formDataInitial = {
   corporate_tin: "",
   official_mobile_number: "",
   sec_registration_number: "",
-  website_url_address: "",
-  name_of_external_editor: "",
+  website_url_address: "N/A",
+  name_of_external_auditor: "",
   date_of_annual_meeting: "",
-  fax_number: "",
+  fax_number: "N/A",
   sec_accreditation_number: "",
   actual_date_of_annual_meeting: "",
   alternate_phone_number: "",
   industry_classification: "",
   complete_principal_office_address: "",
   telephone_number: "",
-  geographical_code: "",
+  geographical_code: "N/A",
   is_under_amla: false,
   has_complied_with_the_requirements: false,
   auth_capital_stock: {
@@ -155,6 +154,7 @@ const create = () => {
 
   const record = useSelector((state) => state.records.record);
   const selectedCompany = useSelector((state) => state.company.selectedCompany);
+  const dispatch = useDispatch();
 
   // const company = useSelector((state) => state.company.company);
   // const status = useSelector((state) => state.company.status);
@@ -169,6 +169,41 @@ const create = () => {
   );
 
   const [formRecord, setFormRecord] = useState(record);
+
+  // const [isEnable, setIsEnable] = useState(true);
+  const [formDataEnabled, setFormDataEnabled] = useState(formDataInitial);
+
+  const editSVG = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className="w-4 h-4"
+    >
+      <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
+    </svg>
+  );
+
+  const saveSVG = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className="w-4 h-4"
+    >
+      <path
+        fillRule="evenodd"
+        d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+
+  const isEnable = (input) => {
+    if (typeof input == "string" || !input) return true;
+
+    return false;
+  };
 
   //#region Functions in Object Form Data
 
@@ -535,6 +570,21 @@ const create = () => {
     }
   };
 
+  const handleIconButton = (key, isTrue) => {
+    setFormDataEnabled({
+      ...formDataEnabled,
+      [key]: isTrue ? true : false,
+    });
+  };
+
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
   //#endregion
 
   //#region toggle functions
@@ -553,7 +603,6 @@ const create = () => {
       let response = await axios.post(`/record`, form);
 
       const data = response.data;
-      console.log(data);
       status = "success";
       message = "Saved as Draft.";
       navigate(`/company/${companyId}/gis-tracker`);
@@ -583,6 +632,163 @@ const create = () => {
     return (
       <>
         <div className="grid grid-cols-3 gap-4 w-full">
+          <div>
+            <div className="label">
+              <span className="label-text">
+                SEC Registration Number <span className="text-red-500">*</span>
+              </span>
+            </div>
+            <label className="input input-bordered flex items-center gap-2 input-sm">
+              <input
+                type="text"
+                className="grow"
+                disabled={isEnable(formDataEnabled.sec_registration_number)}
+                name="sec_registration_number"
+                value={formData.sec_registration_number}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              <button
+                onClick={() => {
+                  let isTrue =
+                    typeof formDataEnabled.sec_registration_number ==
+                      "string" || !formDataEnabled.sec_registration_number;
+                  handleIconButton("sec_registration_number", isTrue);
+                }}
+              >
+                {isEnable(formDataEnabled.sec_registration_number)
+                  ? editSVG
+                  : saveSVG}
+              </button>
+            </label>
+          </div>
+          <div>
+            <div className="label">
+              <span className="label-text">
+                Corporate Tax Identification Number (TIN){" "}
+                <span className="text-red-500">*</span>
+              </span>
+            </div>
+            <label className="input input-bordered flex items-center gap-2 input-sm">
+              <input
+                type="text"
+                className="grow"
+                disabled={isEnable(formDataEnabled.corporate_tin)}
+                name="corporate_tin"
+                value={formData.corporate_tin}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              <button
+                onClick={() => {
+                  let isTrue =
+                    typeof formDataEnabled.corporate_tin == "string" ||
+                    !formDataEnabled.corporate_tin;
+
+                  handleIconButton("corporate_tin", isTrue);
+                }}
+              >
+                {isEnable(formDataEnabled.corporate_tin) ? editSVG : saveSVG}
+              </button>
+            </label>
+          </div>
+          <div>
+            <div className="label">
+              <span className="label-text">
+                Date Registered <span className="text-red-500">*</span>
+              </span>
+            </div>
+            <label className="input input-bordered flex items-center gap-2 input-sm">
+              <input
+                type="date"
+                className="grow"
+                disabled={isEnable(formDataEnabled.date_registered)}
+                name="date_registered"
+                value={formData.date_registered}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              <button
+                onClick={() => {
+                  let isTrue =
+                    typeof formDataEnabled.date_registered == "string" ||
+                    !formDataEnabled.date_registered;
+                  handleIconButton("date_registered", isTrue);
+                }}
+              >
+                {isEnable(formDataEnabled.date_registered) ? editSVG : saveSVG}
+              </button>
+            </label>
+          </div>
+
+          {/* <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">
+                SEC Registration Number <span className="text-red-500">*</span>
+              </span>
+            </div>
+            <input
+              type="text"
+              placeholder=""
+              className="input input-bordered w-full input-sm"
+              name="sec_registration_number"
+              value={formData.sec_registration_number}
+              // disabled={true}
+              onChange={(e) => {
+                const { name, value } = e.target;
+                setFormData({
+                  ...formData,
+                  [name]: value,
+                });
+              }}
+            />
+          </label> */}
+          {/* <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">
+                Corporate Tax Identification Number (TIN){" "}
+                <span className="text-red-500">*</span>
+              </span>
+            </div>
+            <input
+              type="text"
+              placeholder=""
+              className="input input-bordered w-full input-sm"
+              name="corporate_tin"
+              value={formData.corporate_tin}
+              onChange={(e) => {
+                const { name, value } = e.target;
+                setFormData({
+                  ...formData,
+                  [name]: value,
+                });
+              }}
+            />
+          </label> */}
+          {/* <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">
+                Date Registered <span className="text-red-500">*</span>
+              </span>
+            </div>
+            <input
+              type="date"
+              placeholder=""
+              className="input input-bordered w-full input-sm"
+              name="date_registered"
+              value={formData.date_registered}
+              onChange={(e) => {
+                const { name, value } = e.target;
+                setFormData({
+                  ...formData,
+                  [name]: value,
+                });
+              }}
+            />
+          </label> */}
           <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
@@ -604,48 +810,7 @@ const create = () => {
               }}
             />
           </label>
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">
-                Date Registered <span className="text-red-500">*</span>
-              </span>
-            </div>
-            <input
-              type="date"
-              placeholder=""
-              className="input input-bordered w-full input-sm"
-              name="date_registered"
-              value={formData.date_registered}
-              onChange={(e) => {
-                const { name, value } = e.target;
-                setFormData({
-                  ...formData,
-                  [name]: value,
-                });
-              }}
-            />
-          </label>
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">
-                Official Email Address <span className="text-red-500">*</span>
-              </span>
-            </div>
-            <input
-              type="email"
-              placeholder=""
-              className="input input-bordered w-full input-sm"
-              name="official_email_address"
-              value={formData.official_email_address}
-              onChange={(e) => {
-                const { name, value } = e.target;
-                setFormData({
-                  ...formData,
-                  [name]: value,
-                });
-              }}
-            />
-          </label>
+
           <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
@@ -667,6 +832,7 @@ const create = () => {
               }}
             />
           </label>
+
           <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
@@ -688,11 +854,52 @@ const create = () => {
               }}
             />
           </label>
+
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Business / Trade Name</span>
+            </div>
+            <input
+              type="text"
+              placeholder=""
+              className="input input-bordered w-full input-sm"
+              name="business_or_trade_name"
+              value={formData.business_or_trade_name}
+              onChange={(e) => {
+                const { name, value } = e.target;
+                setFormData({
+                  ...formData,
+                  [name]: value,
+                });
+              }}
+            />
+          </label>
+
           <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
-                Alternate Email Address <span className="text-red-500">*</span>
+                Official Email Address <span className="text-red-500">*</span>
               </span>
+            </div>
+            <input
+              type="email"
+              placeholder=""
+              className="input input-bordered w-full input-sm"
+              name="official_email_address"
+              value={formData.official_email_address}
+              onChange={(e) => {
+                const { name, value } = e.target;
+                setFormData({
+                  ...formData,
+                  [name]: value,
+                });
+              }}
+            />
+          </label>
+
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Alternate Email Address</span>
             </div>
             <input
               type="email"
@@ -713,28 +920,7 @@ const create = () => {
           <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
-                Business / Trade Name <span className="text-red-500">*</span>
-              </span>
-            </div>
-            <input
-              type="text"
-              placeholder=""
-              className="input input-bordered w-full input-sm"
-              name="business_or_trade_name"
-              value={formData.business_or_trade_name}
-              onChange={(e) => {
-                const { name, value } = e.target;
-                setFormData({
-                  ...formData,
-                  [name]: value,
-                });
-              }}
-            />
-          </label>
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">
-                Corporate Tax Identification Number (TIN){" "}
+                Complete Principal Office Address{" "}
                 <span className="text-red-500">*</span>
               </span>
             </div>
@@ -742,8 +928,8 @@ const create = () => {
               type="text"
               placeholder=""
               className="input input-bordered w-full input-sm"
-              name="corporate_tin"
-              value={formData.corporate_tin}
+              name="complete_principal_office_address"
+              value={formData.complete_principal_office_address}
               onChange={(e) => {
                 const { name, value } = e.target;
                 setFormData({
@@ -753,6 +939,7 @@ const create = () => {
               }}
             />
           </label>
+
           <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
@@ -774,18 +961,17 @@ const create = () => {
               }}
             />
           </label>
+
           <label className="form-control w-full">
             <div className="label">
-              <span className="label-text">
-                SEC Registration Number <span className="text-red-500">*</span>
-              </span>
+              <span className="label-text">Alternate Phone Number</span>
             </div>
             <input
-              type="text"
+              type="tel"
               placeholder=""
               className="input input-bordered w-full input-sm"
-              name="sec_registration_number"
-              value={formData.sec_registration_number}
+              name="alternate_phone_number"
+              value={formData.alternate_phone_number}
               onChange={(e) => {
                 const { name, value } = e.target;
                 setFormData({
@@ -795,58 +981,16 @@ const create = () => {
               }}
             />
           </label>
+
           <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
-                Website URL Address <span className="text-red-500">*</span>
-              </span>
-            </div>
-            <input
-              type="text"
-              placeholder=""
-              className="input input-bordered w-full input-sm"
-              name="website_url_address"
-              value={formData.website_url_address}
-              onChange={(e) => {
-                const { name, value } = e.target;
-                setFormData({
-                  ...formData,
-                  [name]: value,
-                });
-              }}
-            />
-          </label>
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">
-                Name of External Editor & Signing Partner{" "}
+                Date of Annual Meeting Per By-Laws{" "}
                 <span className="text-red-500">*</span>
               </span>
             </div>
             <input
               type="text"
-              placeholder=""
-              className="input input-bordered w-full input-sm"
-              name="name_of_external_editor"
-              value={formData.name_of_external_editor}
-              onChange={(e) => {
-                const { name, value } = e.target;
-                setFormData({
-                  ...formData,
-                  [name]: value,
-                });
-              }}
-            />
-          </label>
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">
-                Date of Annual Meeting
-                <span className="text-red-500">*</span>
-              </span>
-            </div>
-            <input
-              type="date"
               placeholder=""
               className="input input-bordered w-full input-sm"
               name="date_of_annual_meeting"
@@ -860,12 +1004,98 @@ const create = () => {
               }}
             />
           </label>
+
           <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
-                Fax Number
+                Actual Date of Annual Meeting{" "}
                 <span className="text-red-500">*</span>
               </span>
+            </div>
+            <input
+              type="date"
+              placeholder=""
+              className="input input-bordered w-full input-sm"
+              name="actual_date_of_annual_meeting"
+              value={formData.actual_date_of_annual_meeting}
+              onChange={(e) => {
+                const { name, value } = e.target;
+                setFormData({
+                  ...formData,
+                  [name]: value,
+                });
+              }}
+            />
+          </label>
+
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Telephone Number</span>
+            </div>
+            <input
+              type="tel"
+              placeholder=""
+              className="input input-bordered w-full input-sm"
+              name="telephone_number"
+              value={formData.telephone_number}
+              onChange={(e) => {
+                const { name, value } = e.target;
+                setFormData({
+                  ...formData,
+                  [name]: value,
+                });
+              }}
+            />
+          </label>
+
+          <label className="form-control w-full">
+            <div className="label text-start">
+              <span className="label-text">
+                Name of External Auditor & Signing Partner
+                <span className="text-red-500">*</span>
+              </span>
+            </div>
+            <input
+              type="text"
+              placeholder=""
+              className="input input-bordered w-full input-sm"
+              name="name_of_external_editor"
+              value={formData.name_of_external_auditor}
+              onChange={(e) => {
+                const { name, value } = e.target;
+                setFormData({
+                  ...formData,
+                  [name]: value,
+                });
+              }}
+            />
+          </label>
+
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">
+                Industry Classification <span className="text-red-500">*</span>
+              </span>
+            </div>
+            <input
+              type="text"
+              placeholder=""
+              className="input input-bordered w-full input-sm"
+              name="industry_classification"
+              value={formData.industry_classification}
+              onChange={(e) => {
+                const { name, value } = e.target;
+                setFormData({
+                  ...formData,
+                  [name]: value,
+                });
+              }}
+            />
+          </label>
+
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Fax Number</span>
             </div>
             <input
               type="text"
@@ -907,14 +1137,14 @@ const create = () => {
 
           <label className="form-control w-full">
             <div className="label">
-              <span className="label-text">Actual Date of Annual Meeting</span>
+              <span className="label-text">Website URL Address</span>
             </div>
             <input
-              type="date"
+              type="text"
               placeholder=""
               className="input input-bordered w-full input-sm"
-              name="actual_date_of_annual_meeting"
-              value={formData.actual_date_of_annual_meeting}
+              name="website_url_address"
+              value={formData.website_url_address}
               onChange={(e) => {
                 const { name, value } = e.target;
                 setFormData({
@@ -925,84 +1155,6 @@ const create = () => {
             />
           </label>
 
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">Alternate Phone Number</span>
-            </div>
-            <input
-              type="tel"
-              placeholder=""
-              className="input input-bordered w-full input-sm"
-              name="alternate_phone_number"
-              value={formData.alternate_phone_number}
-              onChange={(e) => {
-                const { name, value } = e.target;
-                setFormData({
-                  ...formData,
-                  [name]: value,
-                });
-              }}
-            />
-          </label>
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">Industry Classification</span>
-            </div>
-            <input
-              type="text"
-              placeholder=""
-              className="input input-bordered w-full input-sm"
-              name="industry_classification"
-              value={formData.industry_classification}
-              onChange={(e) => {
-                const { name, value } = e.target;
-                setFormData({
-                  ...formData,
-                  [name]: value,
-                });
-              }}
-            />
-          </label>
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">
-                Complete Principal Office Address
-              </span>
-            </div>
-            <input
-              type="text"
-              placeholder=""
-              className="input input-bordered w-full input-sm"
-              name="complete_principal_office_address"
-              value={formData.complete_principal_office_address}
-              onChange={(e) => {
-                const { name, value } = e.target;
-                setFormData({
-                  ...formData,
-                  [name]: value,
-                });
-              }}
-            />
-          </label>
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">Telephone Number</span>
-            </div>
-            <input
-              type="tel"
-              placeholder=""
-              className="input input-bordered w-full input-sm"
-              name="telephone_number"
-              value={formData.telephone_number}
-              onChange={(e) => {
-                const { name, value } = e.target;
-                setFormData({
-                  ...formData,
-                  [name]: value,
-                });
-              }}
-            />
-          </label>
           <label className="form-control w-full">
             <div className="label">
               <span className="label-text">Geographical Code</span>
@@ -1131,6 +1283,7 @@ const create = () => {
                         </h1>
                         <button
                           onClick={() => {
+                            // document.getElementById("addModal").showModal();
                             setFormData((prevState) => ({
                               ...prevState,
                               auth_capital_stock: {
@@ -1312,6 +1465,48 @@ const create = () => {
                 </tbody>
               </table>
             </div>
+
+            <dialog id="addAuthCapitalStockModal" className="modal">
+              <div className="modal-box">
+                <div className="flex flex-row justify-between">
+                  <h3 className="font-bold text-lg">
+                    Add Authorized Capital Stock
+                  </h3>
+                  <form method="dialog">
+                    <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                      ✕
+                    </button>
+                  </form>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label className="form-control w-full">
+                    <div className="label">
+                      <span className="poppins-regular text-[12px]">
+                        Company Name <span className="text-red-500">*</span>
+                      </span>
+                    </div>
+                    <input
+                      type="text"
+                      className={`input input-bordered w-full`}
+                      name="companyName"
+                      // value={formData.companyName}
+                      onChange={(e) => {
+                        // handleOnChange(e);
+                      }}
+                    />
+                  </label>
+
+                  <button
+                    onClick={(e) => {
+                      // handleSubmit(e, true);
+                    }}
+                    className="btn bg-primary text-white mt-2"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+            </dialog>
 
             {/* Subscribed Capital */}
             <div className="flex flex-col  overflow-x-auto">
@@ -3313,19 +3508,31 @@ const create = () => {
   //#region use effects
   useEffect(() => {
     //setformrecord
+
     if (recordId !== undefined) {
       updateFormData();
+      setFormRecord({
+        ...formRecord,
+        companyId: companyId,
+        recordId: recordId,
+        createdBy: "Michael",
+      });
     } else {
+      setFormRecord({
+        ...formRecord,
+        companyId: companyId,
+        createdBy: "Michael",
+      });
       if (formData.corporate_name === "") {
         formData.corporate_name = selectedCompany.companyName;
+        formData.sec_registration_number = selectedCompany.secNumber;
+        // get tin & date registered
+        // formData.corporate_name = selectedCompany.companyName;
+        // formData.corporate_name = selectedCompany.companyName;
+
         setFormData(formData);
       }
     }
-    setFormRecord({
-      ...formRecord,
-      companyId: companyId,
-      createdBy: "Michael",
-    });
   }, []);
 
   useEffect(() => {

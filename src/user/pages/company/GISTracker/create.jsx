@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { showAlert } from "../../../../assets/global";
@@ -9,8 +9,15 @@ import {
   Document,
   PDFViewer,
   PDFDownloadLink,
+  Image,
+  StyleSheet,
 } from "@react-pdf/renderer";
 import axios from "axios";
+import Input from "../../../components/Input";
+import DataTable from "react-data-table-component";
+
+import ComponentStep3 from "./steppers/step3";
+import imagePage1 from "../../../../assets/images/page1.jpg";
 
 const authCapitalStock = {
   type_of_shares: "",
@@ -172,6 +179,56 @@ const create = () => {
 
   // const [isEnable, setIsEnable] = useState(true);
   const [formDataEnabled, setFormDataEnabled] = useState(formDataInitial);
+
+  const removeIconSVG = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className="w-6 h-6 mx-auto text-[#ff5858]"
+    >
+      <path
+        fillRule="evenodd"
+        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+
+  const subscribedCapitalFilipinoColumn = [
+    {
+      name: "Filipino",
+      selector: (row) => {},
+    },
+    {
+      name: "Number of Stock Holders",
+      selector: (row) => row.number_of_stock_holders,
+    },
+    {
+      name: "Types of Shares",
+      selector: (row) => row.types_of_shares,
+    },
+    {
+      name: "Number of Shares",
+      selector: (row) => row.number_of_shares,
+    },
+    {
+      name: "Number of Shares in the Hands of the Public",
+      selector: (row) => row.number_of_shares_in_hands,
+    },
+    {
+      name: "Par/Stated Value",
+      selector: (row) => row.par_or_stated_value,
+    },
+    {
+      name: "Amount (PhP)",
+      selector: (row) => row.amount,
+    },
+    {
+      name: "% of Ownership",
+      selector: (row) => `${row.percent_of_ownership}%`,
+    },
+  ];
 
   const editSVG = (
     <svg
@@ -603,6 +660,7 @@ const create = () => {
       let response = await axios.post(`/record`, form);
 
       const data = response.data;
+      console.log(data);
       status = "success";
       message = "Saved as Draft.";
       navigate(`/company/${companyId}/gis-tracker`);
@@ -723,6 +781,40 @@ const create = () => {
               </button>
             </label>
           </div>
+          <Input
+            title="Year"
+            type="number"
+            name="year"
+            required={true}
+            disabled={isEnable(formDataEnabled.year)}
+            value={formData.year}
+            handleOnChange={(e) => {
+              handleOnChange(e);
+            }}
+            handleIconButton={() => {
+              let isTrue =
+                typeof formDataEnabled.year == "string" ||
+                !formDataEnabled.year;
+              handleIconButton("year", isTrue);
+            }}
+          />
+          <Input
+            title="Corporate Name"
+            type="text"
+            name="corporate_name"
+            required={true}
+            disabled={isEnable(formDataEnabled.corporate_name)}
+            value={formData.corporate_name}
+            handleOnChange={(e) => {
+              handleOnChange(e);
+            }}
+            handleIconButton={() => {
+              let isTrue =
+                typeof formDataEnabled.corporate_name == "string" ||
+                !formDataEnabled.corporate_name;
+              handleIconButton("corporate_name", isTrue);
+            }}
+          />
 
           {/* <label className="form-control w-full">
             <div className="label">
@@ -789,7 +881,7 @@ const create = () => {
               }}
             />
           </label> */}
-          <label className="form-control w-full">
+          {/* <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
                 Year <span className="text-red-500">*</span>
@@ -809,9 +901,9 @@ const create = () => {
                 });
               }}
             />
-          </label>
+          </label> */}
 
-          <label className="form-control w-full">
+          {/* <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
                 Corporate Name <span className="text-red-500">*</span>
@@ -831,9 +923,27 @@ const create = () => {
                 });
               }}
             />
-          </label>
+          </label> */}
 
-          <label className="form-control w-full">
+          <Input
+            title="Fiscal Year End"
+            type="text"
+            name="fiscal_year_end"
+            required={true}
+            disabled={isEnable(formDataEnabled.fiscal_year_end)}
+            value={formData.fiscal_year_end}
+            handleOnChange={(e) => {
+              handleOnChange(e);
+            }}
+            handleIconButton={() => {
+              let isTrue =
+                typeof formDataEnabled.fiscal_year_end == "string" ||
+                !formDataEnabled.fiscal_year_end;
+              handleIconButton("fiscal_year_end", isTrue);
+            }}
+          />
+
+          {/* <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
                 Fiscal Year End <span className="text-red-500">*</span>
@@ -853,9 +963,27 @@ const create = () => {
                 });
               }}
             />
-          </label>
+          </label> */}
 
-          <label className="form-control w-full">
+          <Input
+            title="Business / Trade Name"
+            type="text"
+            name="business_or_trade_name"
+            // required={true}
+            disabled={isEnable(formDataEnabled.business_or_trade_name)}
+            value={formData.business_or_trade_name}
+            handleOnChange={(e) => {
+              handleOnChange(e);
+            }}
+            handleIconButton={() => {
+              let isTrue =
+                typeof formDataEnabled.business_or_trade_name == "string" ||
+                !formDataEnabled.business_or_trade_name;
+              handleIconButton("business_or_trade_name", isTrue);
+            }}
+          />
+
+          {/* <label className="form-control w-full">
             <div className="label">
               <span className="label-text">Business / Trade Name</span>
             </div>
@@ -873,9 +1001,27 @@ const create = () => {
                 });
               }}
             />
-          </label>
+          </label> */}
 
-          <label className="form-control w-full">
+          <Input
+            title="Official Email Address"
+            type="email"
+            name="official_email_address"
+            required={true}
+            disabled={isEnable(formDataEnabled.official_email_address)}
+            value={formData.official_email_address}
+            handleOnChange={(e) => {
+              handleOnChange(e);
+            }}
+            handleIconButton={() => {
+              let isTrue =
+                typeof formDataEnabled.official_email_address == "string" ||
+                !formDataEnabled.official_email_address;
+              handleIconButton("official_email_address", isTrue);
+            }}
+          />
+
+          {/* <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
                 Official Email Address <span className="text-red-500">*</span>
@@ -895,9 +1041,27 @@ const create = () => {
                 });
               }}
             />
-          </label>
+          </label> */}
 
-          <label className="form-control w-full">
+          <Input
+            title="Alternate Email Address"
+            type="email"
+            name="alternate_email_address"
+            // required={true}
+            disabled={isEnable(formDataEnabled.alternate_email_address)}
+            value={formData.alternate_email_address}
+            handleOnChange={(e) => {
+              handleOnChange(e);
+            }}
+            handleIconButton={() => {
+              let isTrue =
+                typeof formDataEnabled.alternate_email_address == "string" ||
+                !formDataEnabled.alternate_email_address;
+              handleIconButton("alternate_email_address", isTrue);
+            }}
+          />
+
+          {/* <label className="form-control w-full">
             <div className="label">
               <span className="label-text">Alternate Email Address</span>
             </div>
@@ -915,9 +1079,30 @@ const create = () => {
                 });
               }}
             />
-          </label>
+          </label> */}
 
-          <label className="form-control w-full">
+          <Input
+            title="Complete Principal Office Address"
+            type="text"
+            name="complete_principal_office_address"
+            required={true}
+            disabled={isEnable(
+              formDataEnabled.complete_principal_office_address
+            )}
+            value={formData.complete_principal_office_address}
+            handleOnChange={(e) => {
+              handleOnChange(e);
+            }}
+            handleIconButton={() => {
+              let isTrue =
+                typeof formDataEnabled.complete_principal_office_address ==
+                  "string" ||
+                !formDataEnabled.complete_principal_office_address;
+              handleIconButton("complete_principal_office_address", isTrue);
+            }}
+          />
+
+          {/* <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
                 Complete Principal Office Address{" "}
@@ -938,9 +1123,27 @@ const create = () => {
                 });
               }}
             />
-          </label>
+          </label> */}
 
-          <label className="form-control w-full">
+          <Input
+            title="Official Mobile Number"
+            type="text"
+            name="official_mobile_number"
+            required={true}
+            disabled={isEnable(formDataEnabled.official_mobile_number)}
+            value={formData.official_mobile_number}
+            handleOnChange={(e) => {
+              handleOnChange(e);
+            }}
+            handleIconButton={() => {
+              let isTrue =
+                typeof formDataEnabled.official_mobile_number == "string" ||
+                !formDataEnabled.official_mobile_number;
+              handleIconButton("official_mobile_number", isTrue);
+            }}
+          />
+
+          {/* <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
                 Official Mobile Number <span className="text-red-500">*</span>
@@ -960,9 +1163,27 @@ const create = () => {
                 });
               }}
             />
-          </label>
+          </label> */}
 
-          <label className="form-control w-full">
+          <Input
+            title="Alternate Phone Number"
+            type="tel"
+            name="alternate_phone_number"
+            // required={true}
+            disabled={isEnable(formDataEnabled.alternate_phone_number)}
+            value={formData.alternate_phone_number}
+            handleOnChange={(e) => {
+              handleOnChange(e);
+            }}
+            handleIconButton={() => {
+              let isTrue =
+                typeof formDataEnabled.alternate_phone_number == "string" ||
+                !formDataEnabled.alternate_phone_number;
+              handleIconButton("alternate_phone_number", isTrue);
+            }}
+          />
+
+          {/* <label className="form-control w-full">
             <div className="label">
               <span className="label-text">Alternate Phone Number</span>
             </div>
@@ -980,9 +1201,27 @@ const create = () => {
                 });
               }}
             />
-          </label>
+          </label> */}
 
-          <label className="form-control w-full">
+          <Input
+            title="Date of Annual Meeting Per By-Laws"
+            type="text"
+            name="date_of_annual_meeting"
+            required={true}
+            disabled={isEnable(formDataEnabled.date_of_annual_meeting)}
+            value={formData.date_of_annual_meeting}
+            handleOnChange={(e) => {
+              handleOnChange(e);
+            }}
+            handleIconButton={() => {
+              let isTrue =
+                typeof formDataEnabled.date_of_annual_meeting == "string" ||
+                !formDataEnabled.date_of_annual_meeting;
+              handleIconButton("date_of_annual_meeting", isTrue);
+            }}
+          />
+
+          {/* <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
                 Date of Annual Meeting Per By-Laws{" "}
@@ -1003,9 +1242,27 @@ const create = () => {
                 });
               }}
             />
-          </label>
+          </label> */}
 
-          <label className="form-control w-full">
+          <Input
+            title="Actual Date of Annual Meeting"
+            type="date"
+            name="actual_date_of_annual_meeting"
+            required={true}
+            disabled={isEnable(formDataEnabled.actual_date_of_annual_meeting)}
+            value={formData.actual_date_of_annual_meeting}
+            handleOnChange={(e) => {
+              handleOnChange(e);
+            }}
+            handleIconButton={() => {
+              let isTrue =
+                typeof formDataEnabled.actual_date_of_annual_meeting ==
+                  "string" || !formDataEnabled.actual_date_of_annual_meeting;
+              handleIconButton("actual_date_of_annual_meeting", isTrue);
+            }}
+          />
+
+          {/* <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
                 Actual Date of Annual Meeting{" "}
@@ -1026,9 +1283,27 @@ const create = () => {
                 });
               }}
             />
-          </label>
+          </label> */}
 
-          <label className="form-control w-full">
+          <Input
+            title="Telephone Number"
+            type="tel"
+            name="telephone_number"
+            // required={true}
+            disabled={isEnable(formDataEnabled.telephone_number)}
+            value={formData.telephone_number}
+            handleOnChange={(e) => {
+              handleOnChange(e);
+            }}
+            handleIconButton={() => {
+              let isTrue =
+                typeof formDataEnabled.telephone_number == "string" ||
+                !formDataEnabled.telephone_number;
+              handleIconButton("telephone_number", isTrue);
+            }}
+          />
+
+          {/* <label className="form-control w-full">
             <div className="label">
               <span className="label-text">Telephone Number</span>
             </div>
@@ -1046,9 +1321,27 @@ const create = () => {
                 });
               }}
             />
-          </label>
+          </label> */}
 
-          <label className="form-control w-full">
+          <Input
+            title="Name of External Auditor & Signing Partner"
+            type="text"
+            name="name_of_external_auditor"
+            required={true}
+            disabled={isEnable(formDataEnabled.name_of_external_auditor)}
+            value={formData.name_of_external_auditor}
+            handleOnChange={(e) => {
+              handleOnChange(e);
+            }}
+            handleIconButton={() => {
+              let isTrue =
+                typeof formDataEnabled.name_of_external_auditor == "string" ||
+                !formDataEnabled.name_of_external_auditor;
+              handleIconButton("name_of_external_auditor", isTrue);
+            }}
+          />
+
+          {/* <label className="form-control w-full">
             <div className="label text-start">
               <span className="label-text">
                 Name of External Auditor & Signing Partner
@@ -1059,7 +1352,7 @@ const create = () => {
               type="text"
               placeholder=""
               className="input input-bordered w-full input-sm"
-              name="name_of_external_editor"
+              name="name_of_external_auditor"
               value={formData.name_of_external_auditor}
               onChange={(e) => {
                 const { name, value } = e.target;
@@ -1069,9 +1362,27 @@ const create = () => {
                 });
               }}
             />
-          </label>
+          </label> */}
 
-          <label className="form-control w-full">
+          <Input
+            title="Industry Classification"
+            type="text"
+            name="industry_classification"
+            required={true}
+            disabled={isEnable(formDataEnabled.industry_classification)}
+            value={formData.industry_classification}
+            handleOnChange={(e) => {
+              handleOnChange(e);
+            }}
+            handleIconButton={() => {
+              let isTrue =
+                typeof formDataEnabled.industry_classification == "string" ||
+                !formDataEnabled.industry_classification;
+              handleIconButton("industry_classification", isTrue);
+            }}
+          />
+
+          {/* <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
                 Industry Classification <span className="text-red-500">*</span>
@@ -1091,9 +1402,27 @@ const create = () => {
                 });
               }}
             />
-          </label>
+          </label> */}
 
-          <label className="form-control w-full">
+          <Input
+            title="Fax Number"
+            type="text"
+            name="fax_number"
+            // required={true}
+            disabled={isEnable(formDataEnabled.fax_number)}
+            value={formData.fax_number}
+            handleOnChange={(e) => {
+              handleOnChange(e);
+            }}
+            handleIconButton={() => {
+              let isTrue =
+                typeof formDataEnabled.fax_number == "string" ||
+                !formDataEnabled.fax_number;
+              handleIconButton("fax_number", isTrue);
+            }}
+          />
+
+          {/* <label className="form-control w-full">
             <div className="label">
               <span className="label-text">Fax Number</span>
             </div>
@@ -1111,9 +1440,27 @@ const create = () => {
                 });
               }}
             />
-          </label>
+          </label> */}
 
-          <label className="form-control w-full">
+          <Input
+            title="SEC Accreditation Number(if applicable)"
+            type="text"
+            name="sec_accreditation_number"
+            // required={true}
+            disabled={isEnable(formDataEnabled.sec_accreditation_number)}
+            value={formData.sec_accreditation_number}
+            handleOnChange={(e) => {
+              handleOnChange(e);
+            }}
+            handleIconButton={() => {
+              let isTrue =
+                typeof formDataEnabled.sec_accreditation_number == "string" ||
+                !formDataEnabled.sec_accreditation_number;
+              handleIconButton("sec_accreditation_number", isTrue);
+            }}
+          />
+
+          {/* <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
                 SEC Accreditation Number(if applicable)
@@ -1133,9 +1480,27 @@ const create = () => {
                 });
               }}
             />
-          </label>
+          </label> */}
 
-          <label className="form-control w-full">
+          <Input
+            title="Website URL Address"
+            type="text"
+            name="website_url_address"
+            // required={true}
+            disabled={isEnable(formDataEnabled.website_url_address)}
+            value={formData.website_url_address}
+            handleOnChange={(e) => {
+              handleOnChange(e);
+            }}
+            handleIconButton={() => {
+              let isTrue =
+                typeof formDataEnabled.website_url_address == "string" ||
+                !formDataEnabled.website_url_address;
+              handleIconButton("website_url_address", isTrue);
+            }}
+          />
+
+          {/* <label className="form-control w-full">
             <div className="label">
               <span className="label-text">Website URL Address</span>
             </div>
@@ -1153,9 +1518,27 @@ const create = () => {
                 });
               }}
             />
-          </label>
+          </label> */}
 
-          <label className="form-control w-full">
+          <Input
+            title="Geographical Code"
+            type="text"
+            name="geographical_code"
+            // required={true}
+            disabled={isEnable(formDataEnabled.geographical_code)}
+            value={formData.geographical_code}
+            handleOnChange={(e) => {
+              handleOnChange(e);
+            }}
+            handleIconButton={() => {
+              let isTrue =
+                typeof formDataEnabled.geographical_code == "string" ||
+                !formDataEnabled.geographical_code;
+              handleIconButton("geographical_code", isTrue);
+            }}
+          />
+
+          {/* <label className="form-control w-full">
             <div className="label">
               <span className="label-text">Geographical Code</span>
             </div>
@@ -1173,7 +1556,7 @@ const create = () => {
                 });
               }}
             />
-          </label>
+          </label> */}
         </div>
       </>
     );
@@ -1271,6 +1654,76 @@ const create = () => {
       <>
         <div className="w-full p-5">
           <div className="flex flex-col gap-5">
+            {/* <div>
+              <div className="p-5">
+                <div className="flex flex-row justify-between">
+                  <h1>Auth Capital Stock</h1>
+                  <button
+                    className="p-2 bg-blue-200 rounded-lg"
+                    onClick={() => {
+                      document
+                        .getElementById("authCapitalStockModal")
+                        .showModal();
+                    }}
+                  >
+                    Edit Table
+                  </button>
+                </div>
+                <DataTable
+                  columns={subscribedCapitalFilipinoData}
+                  data={subscribedCapitalFilipinotable}
+                  persistTableHead={true}
+                />
+              </div>
+            </div> */}
+
+            {/* <dialog id="authCapitalStockModal" className="modal">
+              <div className="modal-box w-full max-w-7xl">
+                <div className="flex flex-row justify-between">
+                  <h3 className="font-bold text-lg">
+                    Authorized Capital Stock
+                  </h3>
+                  <form method="dialog">
+                    <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                      ✕
+                    </button>
+                  </form>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <button
+                    className="bg-green-400 p-2 rounded-lg"
+                    onClick={(e) => {
+                      setEditSubscribedCapitalFilipinoTable([
+                        ...editSubscribedCapitalFilipinoTable,
+                        filipinoSubscribeCapital,
+                      ]);
+                    }}
+                  >
+                    Add
+                  </button>
+                  <DataTable
+                    title="Desserts - Conditional Cells"
+                    columns={editSubscribedCapitalFilipinoData}
+                    data={editSubscribedCapitalFilipinoTable}
+                    persistTableHead={true}
+                  />
+
+                  <button
+                    onClick={(e) => {
+                      setSubscribedCapitalFilipinotable(
+                        editSubscribedCapitalFilipinoTable
+                      );
+
+                      document.getElementById("authCapitalStockModal").close();
+                    }}
+                    className="btn bg-green-200 text-white mt-2"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </dialog> */}
+
             {/* Authorized Capital Stock */}
             <div className="flex flex-col  overflow-x-auto">
               <table className="table w-full card bg-[#f7f7f7]">
@@ -1465,48 +1918,6 @@ const create = () => {
                 </tbody>
               </table>
             </div>
-
-            <dialog id="addAuthCapitalStockModal" className="modal">
-              <div className="modal-box">
-                <div className="flex flex-row justify-between">
-                  <h3 className="font-bold text-lg">
-                    Add Authorized Capital Stock
-                  </h3>
-                  <form method="dialog">
-                    <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
-                      ✕
-                    </button>
-                  </form>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label className="form-control w-full">
-                    <div className="label">
-                      <span className="poppins-regular text-[12px]">
-                        Company Name <span className="text-red-500">*</span>
-                      </span>
-                    </div>
-                    <input
-                      type="text"
-                      className={`input input-bordered w-full`}
-                      name="companyName"
-                      // value={formData.companyName}
-                      onChange={(e) => {
-                        // handleOnChange(e);
-                      }}
-                    />
-                  </label>
-
-                  <button
-                    onClick={(e) => {
-                      // handleSubmit(e, true);
-                    }}
-                    className="btn bg-primary text-white mt-2"
-                  >
-                    Add
-                  </button>
-                </div>
-              </div>
-            </dialog>
 
             {/* Subscribed Capital */}
             <div className="flex flex-col  overflow-x-auto">
@@ -3478,12 +3889,41 @@ const create = () => {
     );
   };
 
+  const styles = StyleSheet.create({
+    year: {
+      position: "absolute",
+      margin: "5px",
+      fontSize: "10px",
+      fontWeight: 700,
+      marginTop: 67,
+      marginLeft: 290,
+    },
+    corporate_name: {
+      position: "absolute",
+      margin: "5px",
+      fontSize: "10px",
+      fontWeight: 700,
+      marginTop: 200,
+      marginLeft: 290,
+    },
+    image: {
+      position: "absolute",
+      zIndex: -1,
+      top: 0,
+      width: "592px",
+    },
+    page: { position: "relative" },
+  });
+
   const GISFormDocument = (
     <Document title={`${formData.corporate_name} GIS ${formData.year}`}>
-      <Page>
-        <View>
-          <Text>{JSON.stringify(formData, null, 2)}</Text>
-        </View>
+      <Page size={"A4"} style={styles.page}>
+        <Text style={styles.year}>{formData.year}</Text>
+        <Text style={styles.corporate_name}>{formData.corporate_name}</Text>
+        <Text style={styles.business_or_trade_name}>{formData.business_or_trade_name}</Text>
+        <Text style={styles.sec_registration_number}>{formData.sec_registration_number}</Text>
+
+        <Image style={styles.image} src={imagePage1}></Image>
       </Page>
     </Document>
   );
@@ -3494,7 +3934,13 @@ const create = () => {
         <div className="flex flex-col w-full">
           <div className="flex flex-col w-full p-5">
             <div className="my-5 w-full text-start h-screen">
-              <PDFViewer className="h-screen w-full">
+              <PDFViewer
+                style={{
+                  position: "relative",
+                  height: "100vh",
+                  width: "100%",
+                }}
+              >
                 {GISFormDocument}
               </PDFViewer>
             </div>
@@ -3526,9 +3972,8 @@ const create = () => {
       if (formData.corporate_name === "") {
         formData.corporate_name = selectedCompany.companyName;
         formData.sec_registration_number = selectedCompany.secNumber;
-        // get tin & date registered
-        // formData.corporate_name = selectedCompany.companyName;
-        // formData.corporate_name = selectedCompany.companyName;
+        formData.corporate_tin = selectedCompany.corporateTin;
+        formData.date_registered = selectedCompany.dateRegistered;
 
         setFormData(formData);
       }
@@ -3571,7 +4016,7 @@ const create = () => {
             </div>
           )}
 
-          <div className="w-full flex items-center justify-center my-5">
+          <div className="w-full flex-col items-center justify-center my-5">
             {step === 1 && step1()}
             {step === 2 && step2()}
             {step === 3 && step3()}

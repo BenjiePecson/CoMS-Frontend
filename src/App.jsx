@@ -11,10 +11,15 @@ import GIScreate from "./user/pages/company/GISTracker/create";
 import GISview from "./user/pages/company/GISTracker/view";
 import Settings from "./user/pages/user/Settings";
 import Hello from "./user/pages/Hello";
+import NoticeOfMeetings from "./user/pages/company/BoardMeetings/NoticeOfMeetings";
+import MinutesOfMeetings from "./user/pages/company/BoardMeetings/MinutesOfMeetings";
+import BoardResolutions from "./user/pages/company/BoardMeetings/BoardResolutions";
+import SecretaryCertificate from "./user/pages/company/BoardMeetings/SecretaryCertificate";
+import TreasurerCertificate from "./user/pages/company/BoardMeetings/TreasurerCertificate";
 
 axios.defaults.baseURL = "http://localhost:3000/";
-// axios.defaults.baseURL = "http://192.168.88.162:3000/";
-
+// axios.defaults.baseURL = "http://192.168.88.214:3000/";
+// http://192.168.88.214:5173/
 
 function App() {
   return (
@@ -42,6 +47,26 @@ function App() {
             <Route
               path="company/:companyId/gis-tracker/view/:id?"
               element={<GISview />}
+            />
+            <Route
+              path="company/:companyId/notice-of-meeting"
+              element={<NoticeOfMeetings />}
+            />
+            <Route
+              path="company/:companyId/minutes-of-meeting"
+              element={<MinutesOfMeetings />}
+            />
+            <Route
+              path="company/:companyId/board-resolution"
+              element={<BoardResolutions />}
+            />
+            <Route
+              path="company/:companyId/secretary-certificate"
+              element={<SecretaryCertificate />}
+            />
+            <Route
+              path="company/:companyId/treasurer-certificate"
+              element={<TreasurerCertificate />}
             />
           </Route>
           <Route path="/manager/" element={<Login />} />

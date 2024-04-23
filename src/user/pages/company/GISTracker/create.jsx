@@ -275,10 +275,6 @@ const create = () => {
     return false;
   };
 
-  //#region
-  console.log("test");
-  //#endregion
-
   //#region Functions in Object Form Data
 
   // Function to update authCapitalStock in formData

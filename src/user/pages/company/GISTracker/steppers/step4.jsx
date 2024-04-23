@@ -93,8 +93,8 @@ const step4 = () => {
         return (
           <InputComponent
             type={"text"}
-            value={row.par_or_stated_value}
-            name={"par_or_stated_value"}
+            value={row.incorporator}
+            name={"incorporator"}
             rowIndex={rowIndex}
             state={directorsOrOfficersData}
             setState={setDirectorsOrOfficersData}
@@ -139,7 +139,7 @@ const step4 = () => {
           <InputComponent
             type={"text"}
             value={row.stock_holder}
-            name={"board"}
+            name={"stock_holder"}
             rowIndex={rowIndex}
             state={directorsOrOfficersData}
             setState={setDirectorsOrOfficersData}
@@ -256,10 +256,7 @@ const step4 = () => {
           tableDataState={directorsOrOfficersState}
           editColumn={editDirectorsOrOfficersColumn}
           addFunction={() => {
-            console.log(directorsOrOfficersData);
-            // dispatch(
-            //   setAuthCapitalStock(directorsOrOfficersData)
-            // );
+            dispatch(setDirectorsOrOfficers(directorsOrOfficersData));
           }}
         />
       </div>

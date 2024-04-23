@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const authCapitalStockState = {
+export const authCapitalStockState = {
   type_of_shares: "",
   number_of_shares: "",
   par_or_stated_value: "",
   amount: "",
 };
 
-const filipinoSubscribeCapitalState = {
+export const filipinoSubscribeCapitalState = {
   number_of_stock_holders: "",
   types_of_shares: "",
   number_of_shares: "",
@@ -18,7 +18,7 @@ const filipinoSubscribeCapitalState = {
   percent_of_ownership: "",
 };
 
-const foreignSubscribeCapitalState = {
+export const foreignSubscribeCapitalState = {
   nationality: "",
   number_of_stock_holders: "",
   types_of_shares: "",
@@ -30,8 +30,8 @@ const foreignSubscribeCapitalState = {
 };
 
 const subscribeCapitalState = {
-  filipino: [filipinoSubscribeCapitalState],
-  foreign: [foreignSubscribeCapitalState],
+  filipino: [],
+  foreign: [],
   sub_total_number_of_shares_filipino: 0,
   sub_total_amount_filipino: 0,
   sub_total_ownership_filipino: 0,
@@ -45,8 +45,8 @@ const subscribeCapitalState = {
 };
 
 const paidUpCapitalState = {
-  filipino: [filipinoSubscribeCapitalState],
-  foreign: [foreignSubscribeCapitalState],
+  filipino: [],
+  foreign: [],
   sub_total_number_of_shares_filipino: 0,
   sub_total_amount_filipino: 0,
   sub_total_ownership_filipino: 0,
@@ -58,7 +58,7 @@ const paidUpCapitalState = {
   total_percent_of_ownership: 0,
 };
 
-const directorsOrOfficersState = {
+export const directorsOrOfficersState = {
   name_or_current_residual_address: "",
   nationality: "",
   incorporator: "",
@@ -70,7 +70,7 @@ const directorsOrOfficersState = {
   tax_id_number: "",
 };
 
-const beneficialOwnershipDeclarationState = {
+export const beneficialOwnershipDeclarationState = {
   complete_name: "",
   specific_residual_address: "",
   nationality: "",
@@ -81,7 +81,7 @@ const beneficialOwnershipDeclarationState = {
   category_of_beneficial_ownership: "",
 };
 
-const stockholdersInformationState = {
+export const stockholdersInformationState = {
   name_etc: "",
   type: "",
   number: "",
@@ -115,21 +115,22 @@ const formDataState = {
   complete_principal_office_address: "",
   telephone_number: "",
   geographical_code: "N/A",
+  nature_of_business: "",
   is_under_amla: false,
   has_complied_with_the_requirements: false,
   auth_capital_stock: {
-    capital_stocks: [authCapitalStockState],
+    capital_stocks: [],
     total_number_of_shares: 0,
     total_amount: 0,
   },
   subscribe_capital: subscribeCapitalState,
   paid_up_capital: paidUpCapitalState,
-  directors_or_officers: [directorsOrOfficersState],
+  directors_or_officers: [],
   total_number_of_stockholders: "",
   number_of_stockholders_with_more_shares_each: "",
   total_assets_based_on_latest_audited: "",
   stock_holders_information: {
-    information: [stockholdersInformationState],
+    information: [],
     total_amount: 0,
     total_percent_of_ownership: 0,
   },
@@ -140,7 +141,6 @@ const formDataState = {
 const initialState = {
   // records: [],
   formData: formDataState,
-  selectedRecord: RecordState,
   status: "idle",
   error: null,
 };
@@ -150,11 +150,32 @@ const GISFormSlice = createSlice({
   initialState,
   reducers: {
     setFormData: (state, action) => {
-      state.formData = action.payload.formData;
+      state.formData = action.payload;
+    },
+    setAuthCapitalStock: (state, action) => {
+      state.formData.auth_capital_stock = action.payload;
+    },
+    setSubscribeCapital: (state, action) => {
+      state.formData.subscribe_capital = action.payload;
+    },
+    setPaidUpCapital: (state, action) => {
+      state.formData.paid_up_capital = action.payload;
+    },
+    setDirectorsOrOfficers: (state, action) => {
+      state.formData.directors_or_officers = action.payload;
+    },
+    setStockHoldersInformation: (state, action) => {
+      state.formData.stock_holders_information.information = action.payload;
     },
   },
 });
 
-export const { setFormData } =
-GISFormSlice.actions;
+export const {
+  setFormData,
+  setAuthCapitalStock,
+  setSubscribeCapital,
+  setPaidUpCapital,
+  setDirectorsOrOfficers,
+  setStockHoldersInformation
+} = GISFormSlice.actions;
 export default GISFormSlice.reducer;

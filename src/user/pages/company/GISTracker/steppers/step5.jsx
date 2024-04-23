@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setFormData,
-  directorsOrOfficersState,
-  setDirectorsOrOfficers,
   setStockHoldersInformation,
   stockholdersInformationState,
 } from "../../../../store/GIS/GISFormSlice";
@@ -14,14 +12,14 @@ const step5 = () => {
   const formData = useSelector((state) => state.formGIS.formData);
   const dispatch = useDispatch();
 
-  const [directorsOrOfficersData, setDirectorsOrOfficersData] = useState(
+  const [stockHoldersData, setStockHoldersData] = useState(
     formData.stock_holders_information.information
   );
 
   const [formStep5, setformStep5] = useState(formData);
 
 
-  const directorsOrOfficersColumn = [
+  const stockHoldersInformationColumn = [
     {
       name: "Name, Nationality, and Current Residual Address",
       selector: (row) => row.name_etc,
@@ -52,7 +50,7 @@ const step5 = () => {
     },
   ];
 
-  const editDirectorsOrOfficersColumn = [
+  const editStockHoldersInformationColumn = [
     {
       name: "Name, Nationality, and Current Residual Address",
       cell: (row, rowIndex) => {
@@ -62,8 +60,8 @@ const step5 = () => {
             value={row.name_etc}
             name={"name_etc"}
             rowIndex={rowIndex}
-            state={directorsOrOfficersData}
-            setState={setDirectorsOrOfficersData}
+            state={stockHoldersData}
+            setState={setStockHoldersData}
           />
         );
       },
@@ -77,8 +75,8 @@ const step5 = () => {
             value={row.type}
             name={"type"}
             rowIndex={rowIndex}
-            state={directorsOrOfficersData}
-            setState={setDirectorsOrOfficersData}
+            state={stockHoldersData}
+            setState={setStockHoldersData}
           />
         );
       },
@@ -93,8 +91,8 @@ const step5 = () => {
             value={row.number}
             name={"number"}
             rowIndex={rowIndex}
-            state={directorsOrOfficersData}
-            setState={setDirectorsOrOfficersData}
+            state={stockHoldersData}
+            setState={setStockHoldersData}
           />
         );
       },
@@ -108,8 +106,8 @@ const step5 = () => {
             value={row.amount}
             name={"amount"}
             rowIndex={rowIndex}
-            state={directorsOrOfficersData}
-            setState={setDirectorsOrOfficersData}
+            state={stockHoldersData}
+            setState={setStockHoldersData}
           />
         );
       },
@@ -123,8 +121,23 @@ const step5 = () => {
             value={row.percent_of_ownership}
             name={"percent_of_ownership"}
             rowIndex={rowIndex}
-            state={directorsOrOfficersData}
-            setState={setDirectorsOrOfficersData}
+            state={stockHoldersData}
+            setState={setStockHoldersData}
+          />
+        );
+      },
+    },
+    {
+      name: "Amount Paid",
+      cell: (row, rowIndex) => {
+        return (
+          <InputComponent
+            type={"text"}
+            value={row.amount_paid}
+            name={"amount_paid"}
+            rowIndex={rowIndex}
+            state={stockHoldersData}
+            setState={setStockHoldersData}
           />
         );
       },
@@ -138,53 +151,8 @@ const step5 = () => {
             value={row.tax_id_number}
             name={"tax_id_number"}
             rowIndex={rowIndex}
-            state={directorsOrOfficersData}
-            setState={setDirectorsOrOfficersData}
-          />
-        );
-      },
-    },
-    {
-      name: "Officer",
-      cell: (row, rowIndex) => {
-        return (
-          <InputComponent
-            type={"text"}
-            value={row.officer}
-            name={"officer"}
-            rowIndex={rowIndex}
-            state={directorsOrOfficersData}
-            setState={setDirectorsOrOfficersData}
-          />
-        );
-      },
-    },
-    {
-      name: "Executive Committe",
-      cell: (row, rowIndex) => {
-        return (
-          <InputComponent
-            type={"text"}
-            value={row.executive_committe}
-            name={"executive_committe"}
-            rowIndex={rowIndex}
-            state={directorsOrOfficersData}
-            setState={setDirectorsOrOfficersData}
-          />
-        );
-      },
-    },
-    {
-      name: "Tax Identification Number",
-      cell: (row, rowIndex) => {
-        return (
-          <InputComponent
-            type={"text"}
-            value={row.tax_id_number}
-            name={"tax_id_number"}
-            rowIndex={rowIndex}
-            state={directorsOrOfficersData}
-            setState={setDirectorsOrOfficersData}
+            state={stockHoldersData}
+            setState={setStockHoldersData}
           />
         );
       },
@@ -196,10 +164,10 @@ const step5 = () => {
           <>
             <button
               onClick={(e) => {
-                const updatedTable = directorsOrOfficersData.filter(
+                const updatedTable = stockHoldersData.filter(
                   (_, index) => index !== rowIndex
                 );
-                setDirectorsOrOfficersData(updatedTable);
+                setStockHoldersData(updatedTable);
               }}
             >
               {removeIconSVG}
@@ -234,12 +202,10 @@ const step5 = () => {
   const handleOnChange = (e) => {
     const { name, value } = e.target;
 
-    console.log(name);
-
-    // setformStep2({
-    //   ...formStep2,
-    //   [name]: value,
-    // });
+    setformStep5({
+      ...formStep5,
+      [name]: value,
+    });
   };
 
   const editSVG = (
@@ -273,7 +239,8 @@ const step5 = () => {
             setStockHoldersInformation(
               formData.stock_holders_information.information
             );
-            document.getElementById("directorsOrOfficersTable").showModal();
+            // setformStep5(formData);
+            document.getElementById("stockHoldersTable").showModal();
           }}
         >
           {editSVG} Update Details
@@ -349,13 +316,13 @@ const step5 = () => {
           </div>
           <DataTable
             customStyles={tableCustomStyles}
-            columns={directorsOrOfficersColumn}
+            columns={stockHoldersInformationColumn}
             data={formData.stock_holders_information.information}
             persistTableHead={true}
           />
         </div>
 
-        <dialog id={"directorsOrOfficersTable"} className="modal">
+        <dialog id={"stockHoldersTable"} className="modal">
           <div className="modal-box w-full max-w-7xl">
             <div className="flex flex-row justify-between">
               <h3 className="font-bold text-lg">Update Details</h3>
@@ -380,7 +347,7 @@ const step5 = () => {
                     placeholder=""
                     className="input input-bordered w-full input-sm"
                     name="total_number_of_stockholders"
-                    value={formData.total_number_of_stockholders}
+                    value={formStep5.total_number_of_stockholders}
                     onChange={(e) => {
                       handleOnChange(e);
                     }}
@@ -399,7 +366,7 @@ const step5 = () => {
                     className="input input-bordered w-full input-sm"
                     name="number_of_stockholders_with_more_shares_each"
                     value={
-                      formData.number_of_stockholders_with_more_shares_each
+                      formStep5.number_of_stockholders_with_more_shares_each
                     }
                     onChange={(e) => {
                       handleOnChange(e);
@@ -418,7 +385,7 @@ const step5 = () => {
                     placeholder=""
                     className="input input-bordered w-full input-sm"
                     name="total_assets_based_on_latest_audited"
-                    value={formData.total_assets_based_on_latest_audited}
+                    value={formStep5.total_assets_based_on_latest_audited}
                     onChange={(e) => {
                       handleOnChange(e);
                     }}
@@ -433,8 +400,8 @@ const step5 = () => {
                 <button
                   className="btn btn-outline btn-primary btn-sm"
                   onClick={(e) => {
-                    setDirectorsOrOfficersData([
-                      ...directorsOrOfficersData,
+                    setStockHoldersData([
+                      ...stockHoldersData,
                       stockholdersInformationState,
                     ]);
                   }}
@@ -444,8 +411,8 @@ const step5 = () => {
               </div>
 
               <DataTable
-                columns={editDirectorsOrOfficersColumn}
-                data={directorsOrOfficersData}
+                columns={editStockHoldersInformationColumn}
+                data={stockHoldersData}
                 persistTableHead={true}
                 customStyles={tableCustomStyles}
               />
@@ -454,7 +421,7 @@ const step5 = () => {
             <div className="flex flex-row justify-between mt-10">
               <button
                 onClick={(e) => {
-                  document.getElementById("directorsOrOfficersTable").close();
+                  document.getElementById("stockHoldersTable").close();
                 }}
                 className="btn"
               >
@@ -462,8 +429,23 @@ const step5 = () => {
               </button>
               <button
                 onClick={(e) => {
-                  console.log(directorsOrOfficersData);
-                  document.getElementById("directorsOrOfficersTable").close();
+                  dispatch(
+                    setFormData({
+                      ...formData,
+                      stock_holders_information: {
+                        information: stockHoldersData,
+                        total_amount: 0,
+                        total_percent_of_ownership: 0
+                      },
+                      total_number_of_stockholders:
+                        formStep5.total_number_of_stockholders,
+                      number_of_stockholders_with_more_shares_each:
+                        formStep5.number_of_stockholders_with_more_shares_each,
+                      total_assets_based_on_latest_audited:
+                        formStep5.total_assets_based_on_latest_audited,
+                    })
+                  );
+                  document.getElementById("stockHoldersTable").close();
                 }}
                 className="btn btn-primary"
               >

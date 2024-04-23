@@ -15,10 +15,6 @@ const step2 = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setformStep2(formData);
-  }, []);
-
-  useEffect(() => {
     setformStep2({ ...formStep2, is_under_amla: isUnderAMLA });
   }, [isUnderAMLA]);
 
@@ -159,7 +155,9 @@ const step2 = () => {
                   name="radio-11-1"
                   className="radio checked:bg-blue-500"
                   value={false}
-                  checked={formData.has_complied_with_the_requirements === false}
+                  checked={
+                    formData.has_complied_with_the_requirements === false
+                  }
                   disabled={true}
                   onChange={(e) => {
                     // setHasCompiled(false);
@@ -297,6 +295,7 @@ const step2 = () => {
             </button>
             <button
               onClick={(e) => {
+                console.log(formStep2);
                 dispatch(setFormData(formStep2));
                 document.getElementById("step2FormModal").close();
               }}

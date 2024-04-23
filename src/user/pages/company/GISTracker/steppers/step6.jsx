@@ -16,6 +16,8 @@ const step6 = () => {
   const [beneficialOwnershipDeclaration, setBeneficialOwnershipDeclaration] =
     useState(formData.beneficial_ownership_declaration);
 
+  const [formStep6, setFormStep6] = useState(formData);
+
   const beneficialOwnershipDeclarationColumn = [
     {
       name: "Complete Name (Surname, Given Name, Middle Name, Name Extension(i.e. Jr., Sr., III))",
@@ -216,12 +218,10 @@ const step6 = () => {
   const handleOnChange = (e) => {
     const { name, value } = e.target;
 
-    console.log(name);
-
-    // setformStep2({
-    //   ...formStep2,
-    //   [name]: value,
-    // });
+    setFormStep6({
+      ...formStep6,
+      [name]: value,
+    });
   };
 
   const editSVG = (
@@ -255,7 +255,9 @@ const step6 = () => {
             setBeneficialOwnershipDeclaration(
               formData.beneficial_ownership_declaration
             );
-            document.getElementById("directorsOrOfficersTable").showModal();
+            document
+              .getElementById("beneficialOwnershipDeclarationTable")
+              .showModal();
           }}
         >
           {editSVG} Update Details
@@ -297,88 +299,97 @@ const step6 = () => {
             persistTableHead={true}
           />
         </div>
-
-        <dialog id={"directorsOrOfficersTable"} className="modal">
-          <div className="modal-box w-full max-w-7xl">
-            <div className="flex flex-row justify-between">
-              <h3 className="font-bold text-lg">Update Details</h3>
-              <form method="dialog">
-                <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
-                  ✕
-                </button>
-              </form>
-            </div>
-            <div className="divider"></div>
-            <div className="flex flex-col gap-2">
-              <div className="max-w-sm">
-                <label className="form-control w-full">
-                  <div className="label text-start">
-                    <span className="label-text">
-                      Corporate Secretary{" "}
-                      <span className="text-red-500">*</span>
-                    </span>
-                  </div>
-                  <input
-                    type="text"
-                    placeholder=""
-                    className="input input-bordered w-full input-sm"
-                    name="corporate_secretary"
-                    value={formData.corporate_secretary}
-                    onChange={(e) => {
-                      handleOnChange(e);
-                    }}
-                  />
-                </label>
-              </div>
-
-              <div className="flex flex-row justify-between mt-5">
-                <h1 className="poppins-semibold text-[15px] text-black">
-                  Beneficial Ownership Declaration
-                </h1>
-                <button
-                  className="btn btn-outline btn-primary btn-sm"
-                  onClick={(e) => {
-                    setBeneficialOwnershipDeclaration([
-                      ...beneficialOwnershipDeclaration,
-                      beneficialOwnershipDeclarationState,
-                    ]);
-                  }}
-                >
-                  Add row
-                </button>
-              </div>
-
-              <DataTable
-                columns={editBeneficialOwnershipDeclarationColumn}
-                data={beneficialOwnershipDeclaration}
-                persistTableHead={true}
-                customStyles={tableCustomStyles}
-              />
-            </div>
-
-            <div className="flex flex-row justify-between mt-10">
-              <button
-                onClick={(e) => {
-                  document.getElementById("directorsOrOfficersTable").close();
-                }}
-                className="btn"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={(e) => {
-                  console.log(beneficialOwnershipDeclaration);
-
-                  document.getElementById("directorsOrOfficersTable").close();
-                }}
-                className="btn btn-primary"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </dialog>
       </div>
+
+      <dialog id={"beneficialOwnershipDeclarationTable"} className="modal">
+        <div className="modal-box w-full max-w-7xl">
+          <div className="flex flex-row justify-between">
+            <h3 className="font-bold text-lg">Update Details</h3>
+            <form method="dialog">
+              <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                ✕
+              </button>
+            </form>
+          </div>
+          <div className="divider"></div>
+          <div className="flex flex-col gap-2">
+            <div className="max-w-sm">
+              <label className="form-control w-full">
+                <div className="label text-start">
+                  <span className="label-text">
+                    Corporate Secretary <span className="text-red-500">*</span>
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  placeholder=""
+                  className="input input-bordered w-full input-sm"
+                  name="corporate_secretary"
+                  value={formStep6.corporate_secretary}
+                  onChange={(e) => {
+                    handleOnChange(e);
+                  }}
+                />
+              </label>
+            </div>
+
+            <div className="flex flex-row justify-between mt-5">
+              <h1 className="poppins-semibold text-[15px] text-black">
+                Beneficial Ownership Declaration
+              </h1>
+              <button
+                className="btn btn-outline btn-primary btn-sm"
+                onClick={(e) => {
+                  setBeneficialOwnershipDeclaration([
+                    ...beneficialOwnershipDeclaration,
+                    beneficialOwnershipDeclarationState,
+                  ]);
+                }}
+              >
+                Add row
+              </button>
+            </div>
+
+            <DataTable
+              columns={editBeneficialOwnershipDeclarationColumn}
+              data={beneficialOwnershipDeclaration}
+              persistTableHead={true}
+              customStyles={tableCustomStyles}
+            />
+          </div>
+
+          <div className="flex flex-row justify-between mt-10">
+            <button
+              onClick={(e) => {
+                document
+                  .getElementById("beneficialOwnershipDeclarationTable")
+                  .close();
+              }}
+              className="btn"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={(e) => {
+                dispatch(
+                  setFormData({
+                    ...formData,
+                    corporate_secretary: formStep6.corporate_secretary,
+                    beneficial_ownership_declaration:
+                      beneficialOwnershipDeclaration,
+                  })
+                );
+                document
+                  .getElementById("beneficialOwnershipDeclarationTable")
+                  .close();
+              }}
+              className="btn btn-primary"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </dialog>
     </>
   );
 };

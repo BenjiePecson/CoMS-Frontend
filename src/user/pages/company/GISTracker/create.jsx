@@ -13,11 +13,22 @@ import {
   StyleSheet,
 } from "@react-pdf/renderer";
 import axios from "axios";
-import Input from "../../../components/Input";
+import Input from "../../../components/InputComponent";
 import DataTable from "react-data-table-component";
 
-import ComponentStep3 from "./steppers/step3";
+// import ComponentStep3 from "./steppers/step3";
 import imagePage1 from "../../../../assets/images/page1.jpg";
+
+import Step1 from "./steppers/step1";
+import Step2 from "./steppers/step2";
+import Step3 from "./steppers/step3";
+import Step4 from "./steppers/step4";
+import Step5 from "./steppers/step5";
+import Step6 from "./steppers/step6";
+
+import { setFormData } from "../../../store/GIS/GISFormSlice";
+
+// import { setFormData } from "../../../store/GIS/GISFormSlice";
 
 const authCapitalStock = {
   type_of_shares: "",
@@ -161,6 +172,8 @@ const create = () => {
 
   const record = useSelector((state) => state.records.record);
   const selectedCompany = useSelector((state) => state.company.selectedCompany);
+  const formData = useSelector((state) => state.formGIS.formData);
+
   const dispatch = useDispatch();
 
   // const company = useSelector((state) => state.company.company);
@@ -169,7 +182,7 @@ const create = () => {
 
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState(formDataInitial);
+  // const [formData, setFormData] = useState(formDataInitial);
   const [isUnderAMLA, setIsUnderAMLA] = useState(formData.is_under_amla);
   const [hasCompiled, setHasCompiled] = useState(
     formData.has_complied_with_the_requirements
@@ -261,6 +274,10 @@ const create = () => {
 
     return false;
   };
+
+  //#region
+  console.log("test");
+  //#endregion
 
   //#region Functions in Object Form Data
 
@@ -621,7 +638,7 @@ const create = () => {
     try {
       let response = await axios.get(`/record/${recordId}`);
       const data = response.data[0];
-      setFormData(data.draftingInput);
+      dispatch(setFormData(data.draftingInput));
     } catch (error) {
       console.log(error);
     }
@@ -686,7 +703,7 @@ const create = () => {
   //#endregion
 
   //#region steps
-  const step1 = () => {
+  const step1_old = () => {
     return (
       <>
         <div className="grid grid-cols-3 gap-4 w-full">
@@ -1562,7 +1579,7 @@ const create = () => {
     );
   };
 
-  const step2 = () => {
+  const step2_old = () => {
     return (
       <>
         <div className="flex flex-col w-[70%] mx-auto gap-10 my-5">
@@ -1649,7 +1666,7 @@ const create = () => {
     );
   };
 
-  const step3 = () => {
+  const step3_old = () => {
     return (
       <>
         <div className="w-full p-5">
@@ -3920,8 +3937,12 @@ const create = () => {
       <Page size={"A4"} style={styles.page}>
         <Text style={styles.year}>{formData.year}</Text>
         <Text style={styles.corporate_name}>{formData.corporate_name}</Text>
-        <Text style={styles.business_or_trade_name}>{formData.business_or_trade_name}</Text>
-        <Text style={styles.sec_registration_number}>{formData.sec_registration_number}</Text>
+        <Text style={styles.business_or_trade_name}>
+          {formData.business_or_trade_name}
+        </Text>
+        <Text style={styles.sec_registration_number}>
+          {formData.sec_registration_number}
+        </Text>
 
         <Image style={styles.image} src={imagePage1}></Image>
       </Page>
@@ -3969,26 +3990,30 @@ const create = () => {
         companyId: companyId,
         createdBy: "Michael",
       });
-      if (formData.corporate_name === "") {
-        formData.corporate_name = selectedCompany.companyName;
-        formData.sec_registration_number = selectedCompany.secNumber;
-        formData.corporate_tin = selectedCompany.corporateTin;
-        formData.date_registered = selectedCompany.dateRegistered;
 
-        setFormData(formData);
+      if (formData.corporate_name === "") {
+        dispatch(
+          setFormData({
+            ...formData,
+            company_name: selectedCompany.companyName,
+            sec_registration_number: selectedCompany.secNumber,
+            corporate_tin: selectedCompany.corporateTin,
+            date_registered: selectedCompany.dateRegistered,
+          })
+        );
       }
     }
   }, []);
 
   useEffect(() => {
-    setFormData({ ...formData, is_under_amla: isUnderAMLA });
+    // setFormData({ ...formData, is_under_amla: isUnderAMLA });
   }, [isUnderAMLA]);
 
   useEffect(() => {
-    setFormData({
-      ...formData,
-      has_complied_with_the_requirements: hasCompiled,
-    });
+    // setFormData({
+    //   ...formData,
+    //   has_complied_with_the_requirements: hasCompiled,
+    // });
   }, [hasCompiled]);
   //#endregion
 
@@ -4017,12 +4042,12 @@ const create = () => {
           )}
 
           <div className="w-full flex-col items-center justify-center my-5">
-            {step === 1 && step1()}
-            {step === 2 && step2()}
-            {step === 3 && step3()}
-            {step === 4 && step4()}
-            {step === 5 && step5()}
-            {step === 6 && step6()}
+            {step === 1 && <Step1 />}
+            {step === 2 && <Step2 />}
+            {step === 3 && <Step3 />}
+            {step === 4 && <Step4 />}
+            {step === 5 && <Step5 />}
+            {step === 6 && <Step6 />}
             {step === 7 && step7()}
           </div>
 

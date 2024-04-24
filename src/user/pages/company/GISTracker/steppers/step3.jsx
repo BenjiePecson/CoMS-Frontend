@@ -907,6 +907,24 @@ const step3 = () => {
             );
           }}
         />
+        <div className="flex flex-row justify-start gap-5 text-start px-5">
+          <div className="flex flex-col">
+            <h1>Total Number of Shares:</h1>
+            <h1>Total Amount (PhP):</h1>
+          </div>
+          <div className="flex flex-col">
+            <h1 className="poppins-semibold">
+              {formatNumberWithComma(
+                formData.auth_capital_stock.total_number_of_shares
+              )}
+            </h1>
+            <h1 className="poppins-semibold">
+              {formatNumberWithComma(
+                formData.auth_capital_stock.total_amount.toFixed(2)
+              )}
+            </h1>
+          </div>
+        </div>
       </div>
 
       <div className="divider"></div>
@@ -977,6 +995,35 @@ const step3 = () => {
               );
             }}
           />
+          <div className="flex flex-row justify-start gap-5 text-start px-5">
+            <div className="flex flex-col">
+              <h1>Total Number of Shares:</h1>
+              <h1>Total Amount (PhP):</h1>
+              <h1>Total % of Ownership:</h1>
+            </div>
+            <div className="flex flex-col">
+              <h1 className="poppins-semibold">
+                {formatNumberWithComma(
+                  formData.subscribe_capital.sub_total_number_of_shares_filipino
+                )}
+              </h1>
+              <h1 className="poppins-semibold">
+                {formatNumberWithComma(
+                  formData.subscribe_capital.sub_total_amount_filipino.toFixed(
+                    2
+                  )
+                )}
+              </h1>
+              <h1 className="poppins-semibold">
+                {formatNumberWithComma(
+                  formData.subscribe_capital.sub_total_ownership_filipino.toFixed(
+                    2
+                  )
+                )}
+                %
+              </h1>
+            </div>
+          </div>
         </div>
 
         {/* Subscribed Capital Foreign */}
@@ -1041,11 +1088,69 @@ const step3 = () => {
               );
             }}
           />
+          <div className="flex flex-row justify-start gap-5 text-start px-5">
+            <div className="flex flex-col">
+              <h1>Total Number of Shares:</h1>
+              <h1>Total Amount (PhP):</h1>
+              <h1>Total % of Ownership:</h1>
+            </div>
+            <div className="flex flex-col">
+              <h1 className="poppins-semibold">
+                {formatNumberWithComma(
+                  formData.subscribe_capital.sub_total_number_of_shares_foreign
+                )}
+              </h1>
+              <h1 className="poppins-semibold">
+                {formatNumberWithComma(
+                  formData.subscribe_capital.sub_total_amount_foreign.toFixed(2)
+                )}
+              </h1>
+              <h1 className="poppins-semibold">
+                {formatNumberWithComma(
+                  formData.subscribe_capital.sub_total_ownership_foreign.toFixed(
+                    2
+                  )
+                )}
+                %
+              </h1>
+            </div>
+          </div>
+
+          <div className="flex flex-row justify-start gap-5 text-start px-5 mt-5">
+            <div className="flex flex-col">
+              <h1>Percentage of Foreign Equity:</h1>
+              <h1>Total Subscribed:</h1>
+              <h1>Total % of Ownership:</h1>
+            </div>
+            <div className="flex flex-col">
+              <h1 className="poppins-semibold">
+                {formatNumberWithComma(
+                  formData.subscribe_capital.percentage_of_foreign_equity.toFixed(
+                    3
+                  )
+                )}
+                %
+              </h1>
+              <h1 className="poppins-semibold">
+                {formatNumberWithComma(
+                  formData.subscribe_capital.total_amount.toFixed(2)
+                )}
+              </h1>
+              <h1 className="poppins-semibold">
+                {formatNumberWithComma(
+                  formData.subscribe_capital.total_percent_of_ownership.toFixed(
+                    2
+                  )
+                )}
+                %
+              </h1>
+            </div>
+          </div>
         </div>
       </div>
 
       <div className="divider"></div>
-      
+
       {/* Paid-Up Capital */}
       <div>
         {/* Paid-Up Capital Filipino */}
@@ -1108,6 +1213,34 @@ const step3 = () => {
               );
             }}
           />
+
+          <div className="flex flex-row justify-start gap-5 text-start px-5">
+            <div className="flex flex-col">
+              <h1>Total Number of Shares:</h1>
+              <h1>Total Amount (PhP):</h1>
+              <h1>Total % of Ownership:</h1>
+            </div>
+            <div className="flex flex-col">
+              <h1 className="poppins-semibold">
+                {formatNumberWithComma(
+                  formData.paid_up_capital.sub_total_number_of_shares_filipino
+                )}
+              </h1>
+              <h1 className="poppins-semibold">
+                {formatNumberWithComma(
+                  formData.paid_up_capital.sub_total_amount_filipino.toFixed(2)
+                )}
+              </h1>
+              <h1 className="poppins-semibold">
+                {formatNumberWithComma(
+                  formData.paid_up_capital.sub_total_ownership_filipino.toFixed(
+                    2
+                  )
+                )}
+                %
+              </h1>
+            </div>
+          </div>
         </div>
         {/* Paid-Up Capital Foreign */}
         <div>
@@ -1169,6 +1302,53 @@ const step3 = () => {
               );
             }}
           />
+          <div className="flex flex-row justify-start gap-5 text-start px-5">
+            <div className="flex flex-col">
+              <h1>Total Number of Shares:</h1>
+              <h1>Total Amount (PhP):</h1>
+              <h1>Total % of Ownership:</h1>
+            </div>
+            <div className="flex flex-col">
+              <h1 className="poppins-semibold">
+                {formatNumberWithComma(
+                  formData.paid_up_capital.sub_total_number_of_shares_foreign
+                )}
+              </h1>
+              <h1 className="poppins-semibold">
+                {formatNumberWithComma(
+                  formData.paid_up_capital.sub_total_amount_foreign.toFixed(2)
+                )}
+              </h1>
+              <h1 className="poppins-semibold">
+                {formatNumberWithComma(
+                  formData.paid_up_capital.sub_total_ownership_foreign.toFixed(
+                    2
+                  )
+                )}
+                %
+              </h1>
+            </div>
+          </div>
+
+          <div className="flex flex-row justify-start gap-5 text-start px-5 mt-5">
+            <div className="flex flex-col">
+              <h1>Total Paid-Up:</h1>
+              <h1>Total % of Ownership:</h1>
+            </div>
+            <div className="flex flex-col">
+              <h1 className="poppins-semibold">
+                {formatNumberWithComma(
+                  formData.paid_up_capital.total_amount.toFixed(2)
+                )}
+              </h1>
+              <h1 className="poppins-semibold">
+                {formatNumberWithComma(
+                  formData.paid_up_capital.total_percent_of_ownership.toFixed(2)
+                )}
+                %
+              </h1>
+            </div>
+          </div>
         </div>
       </div>
     </>

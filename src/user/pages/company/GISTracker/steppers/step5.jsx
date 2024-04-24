@@ -18,11 +18,23 @@ const step5 = () => {
 
   const [formStep5, setformStep5] = useState(formData);
 
+  // Function to format number with comma for thousands and above
+  const formatNumberWithComma = (number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
 
   const stockHoldersInformationColumn = [
     {
-      name: "Name, Nationality, and Current Residual Address",
-      selector: (row) => row.name_etc,
+      name: "Name",
+      selector: (row) => row.name,
+    },
+    {
+      name: "Nationality",
+      selector: (row) => row.nationality,
+    },
+    {
+      name: "Current Residual Address",
+      selector: (row) => row.current_residual_address,
     },
     {
       name: "Type",
@@ -30,19 +42,27 @@ const step5 = () => {
     },
     {
       name: "Number",
-      selector: (row) => row.number,
+      selector: (row) => formatNumberWithComma(row.number),
     },
     {
       name: "Amount",
-      selector: (row) => row.amount,
+      selector: (row) => formatNumberWithComma(row.amount),
     },
     {
       name: "% of Ownership",
-      selector: (row) => row.percent_of_ownership,
+      selector: (row) => `${row.percent_of_ownership}%`,
     },
     {
-      name: "Amount Paid in (Php)",
-      selector: (row) => row.amount_paid,
+      name: "Amount Paid in (PhP)",
+      selector: (row) => {
+        let amount_paid = row.amount_paid;
+        if(amount_paid != ""){
+          amount_paid = Number(row.amount_paid);
+        }else{
+          amount_paid = 0;
+        }
+        return formatNumberWithComma(amount_paid.toFixed(2));
+      },
     },
     {
       name: "Tax Identification Number",
@@ -52,19 +72,51 @@ const step5 = () => {
 
   const editStockHoldersInformationColumn = [
     {
-      name: "Name, Nationality, and Current Residual Address",
+      name: "Name",
       cell: (row, rowIndex) => {
         return (
           <InputComponent
             type={"text"}
-            value={row.name_etc}
-            name={"name_etc"}
+            value={row.name}
+            name={"name"}
             rowIndex={rowIndex}
             state={stockHoldersData}
             setState={setStockHoldersData}
           />
         );
       },
+      width: "15%",
+    },
+    {
+      name: "Nationality",
+      cell: (row, rowIndex) => {
+        return (
+          <InputComponent
+            type={"text"}
+            value={row.nationality}
+            name={"nationality"}
+            rowIndex={rowIndex}
+            state={stockHoldersData}
+            setState={setStockHoldersData}
+          />
+        );
+      },
+    },
+    {
+      name: "Current Residual Address",
+      cell: (row, rowIndex) => {
+        return (
+          <InputComponent
+            type={"text"}
+            value={row.current_residual_address}
+            name={"current_residual_address"}
+            rowIndex={rowIndex}
+            state={stockHoldersData}
+            setState={setStockHoldersData}
+          />
+        );
+      },
+      width: "20%",
     },
     {
       name: "Type",
@@ -80,6 +132,7 @@ const step5 = () => {
           />
         );
       },
+      width: "10%",
     },
     {
       name: "Number",
@@ -116,16 +169,22 @@ const step5 = () => {
       name: "% of Ownership",
       cell: (row, rowIndex) => {
         return (
-          <InputComponent
-            type={"text"}
-            value={row.percent_of_ownership}
-            name={"percent_of_ownership"}
-            rowIndex={rowIndex}
-            state={stockHoldersData}
-            setState={setStockHoldersData}
-          />
+          <>
+            <div className="flex flex-row gap-2 items-center">
+              <InputComponent
+                type={"text"}
+                value={row.percent_of_ownership}
+                name={"percent_of_ownership"}
+                rowIndex={rowIndex}
+                state={stockHoldersData}
+                setState={setStockHoldersData}
+              />
+              %
+            </div>
+          </>
         );
       },
+      width: "15%",
     },
     {
       name: "Amount Paid",
@@ -156,6 +215,7 @@ const step5 = () => {
           />
         );
       },
+      width: "15%",
     },
     {
       name: "",
@@ -178,11 +238,6 @@ const step5 = () => {
       width: "65px",
     },
   ];
-
-  // Function to format number with comma for thousands and above
-  const formatNumberWithComma = (number) => {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
 
   const removeIconSVG = (
     <svg
@@ -236,10 +291,8 @@ const step5 = () => {
         <button
           className="btn btn-outline btn-primary btn-sm"
           onClick={(e) => {
-            setStockHoldersInformation(
-              formData.stock_holders_information.information
-            );
-            // setformStep5(formData);
+            setStockHoldersData(formData.stock_holders_information.information);
+            setformStep5(formData);
             document.getElementById("stockHoldersTable").showModal();
           }}
         >
@@ -435,7 +488,7 @@ const step5 = () => {
                       stock_holders_information: {
                         information: stockHoldersData,
                         total_amount: 0,
-                        total_percent_of_ownership: 0
+                        total_percent_of_ownership: 0,
                       },
                       total_number_of_stockholders:
                         formStep5.total_number_of_stockholders,

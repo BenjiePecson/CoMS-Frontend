@@ -18,8 +18,14 @@ const step4 = () => {
 
   const directorsOrOfficersColumn = [
     {
-      name: "Name or Current Residual Address",
-      selector: (row) => row.name_or_current_residual_address,
+      name: "Name",
+      selector: (row) => row.name,
+      width: "15%"
+    },
+    {
+      name: "Current Residual Address",
+      selector: (row) => row.current_residual_address,
+      width: "20%"
     },
     {
       name: "Nationality",
@@ -52,24 +58,42 @@ const step4 = () => {
     {
       name: "Tax Identification Number",
       selector: (row) => row.tax_id_number,
+      width: "15%"
     },
   ];
 
   const editDirectorsOrOfficersColumn = [
     {
-      name: "Name or Current Residual Address",
+      name: "Name",
       cell: (row, rowIndex) => {
         return (
           <InputComponent
             type={"text"}
-            value={row.name_or_current_residual_address}
-            name={"name_or_current_residual_address"}
+            value={row.name}
+            name={"name"}
             rowIndex={rowIndex}
             state={directorsOrOfficersData}
             setState={setDirectorsOrOfficersData}
           />
         );
       },
+      width: "15%"
+    },
+    {
+      name: "Current Residual Address",
+      cell: (row, rowIndex) => {
+        return (
+          <InputComponent
+            type={"text"}
+            value={row.current_residual_address}
+            name={"current_residual_address"}
+            rowIndex={rowIndex}
+            state={directorsOrOfficersData}
+            setState={setDirectorsOrOfficersData}
+          />
+        );
+      },
+      width: "20%"
     },
     {
       name: "Nationality",
@@ -191,6 +215,7 @@ const step4 = () => {
           />
         );
       },
+      width: "15%"
     },
     {
       name: "",

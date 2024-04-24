@@ -19,9 +19,10 @@ import TreasurerCertificate from "./user/pages/company/BoardMeetings/TreasurerCe
 import GISPage from "./user/pages/user/GISPage";
 import GISPageView from "./user/pages/user/GISRecord/view";
 
-axios.defaults.baseURL = "http://localhost:3000/";
-// axios.defaults.baseURL = "http://192.168.88.214:3000/";
+// axios.defaults.baseURL = "http://localhost:3000/";
+axios.defaults.baseURL = "http://192.168.88.214:3000/";
 // http://192.168.88.214:5173/
+// http://192.168.88.214:5173
 
 function App() {
   return (

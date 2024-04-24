@@ -664,9 +664,6 @@ const create = () => {
   const toggleSaveAsDraft = async () => {
     // setFormRecord();
 
-    console.log(formData);
-    return;
-
     let status = "error";
     let message = "Failed to save as draft. Please try again.";
 
@@ -4080,6 +4077,7 @@ const create = () => {
                 className={
                   `btn bg-primary text-white ` + (step != 7 && "hidden")
                 }
+                // className={`btn bg-primary text-white `}
                 onClick={() => {
                   toggleSaveAsDraft();
                 }}

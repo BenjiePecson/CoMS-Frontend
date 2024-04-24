@@ -59,7 +59,8 @@ const paidUpCapitalState = {
 };
 
 export const directorsOrOfficersState = {
-  name_or_current_residual_address: "",
+  name: "",
+  current_residual_address: "",
   nationality: "",
   incorporator: "",
   board: "",
@@ -82,7 +83,9 @@ export const beneficialOwnershipDeclarationState = {
 };
 
 export const stockholdersInformationState = {
-  name_etc: "",
+  name: "",
+  nationality: "",
+  current_residual_address: "",
   type: "",
   number: "",
   amount: "",

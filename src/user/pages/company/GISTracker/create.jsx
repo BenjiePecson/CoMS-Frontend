@@ -664,6 +664,9 @@ const create = () => {
   const toggleSaveAsDraft = async () => {
     // setFormRecord();
 
+    console.log(formData);
+    return;
+
     let status = "error";
     let message = "Failed to save as draft. Please try again.";
 

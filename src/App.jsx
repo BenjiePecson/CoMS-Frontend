@@ -16,6 +16,8 @@ import MinutesOfMeetings from "./user/pages/company/BoardMeetings/MinutesOfMeeti
 import BoardResolutions from "./user/pages/company/BoardMeetings/BoardResolutions";
 import SecretaryCertificate from "./user/pages/company/BoardMeetings/SecretaryCertificate";
 import TreasurerCertificate from "./user/pages/company/BoardMeetings/TreasurerCertificate";
+import GISPage from "./user/pages/user/GISPage";
+import GISPageView from "./user/pages/user/GISRecord/view";
 
 axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
@@ -33,6 +35,9 @@ function App() {
           <Route element={<CompanyLayout />}>
             <Route path="/company" element={<SelectCompany />} />
             <Route path="/settings" element={<Settings />} />
+            {/* GISPage */}
+            <Route path="/gis" element={<GISPage />} />
+            <Route path="/gis/:recordId" element={<GISPageView />} />
           </Route>
           <Route element={<UserLayout />}>
             <Route path="company/:companyId/" element={<Dashboard />} />

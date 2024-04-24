@@ -7,7 +7,6 @@ const RecordState = {
   recordName: "",
   status: "",
   draftingInput: {},
-  pdfInput: {},
   pdfFileLink: "",
   secFileLink: "",
   createdBy: "",

@@ -423,6 +423,18 @@ const step1 = () => {
             }}
           />
         </label>
+        <label className="form-control w-full text-start">
+          <div className="label">
+            <span className="label-text">
+              Primary Purpose/Activity/Industry Presently Engaged In
+            </span>
+          </div>
+          <textarea
+            className="textarea textarea-bordered"
+            disabled
+            value={formData.primary_purpose}
+          ></textarea>
+        </label>
       </div>
 
       <dialog id="step1FormModal" className="modal">
@@ -800,6 +812,21 @@ const step1 = () => {
                     handleOnChange(e);
                   }}
                 />
+              </label>
+              <label className="form-control w-full text-start">
+                <div className="label">
+                  <span className="label-text">
+                    Primary Purpose/Activity/Industry Presently Engaged In
+                  </span>
+                </div>
+                <textarea
+                  className="textarea textarea-bordered"
+                  value={formStep1.primary_purpose}
+                  name="primary_purpose"
+                  onChange={(e) => {
+                    handleOnChange(e);
+                  }}
+                ></textarea>
               </label>
             </div>
           </div>

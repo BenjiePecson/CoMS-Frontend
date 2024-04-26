@@ -7,6 +7,8 @@ import {
   setSubscribeCapital,
   foreignSubscribeCapitalState,
   setPaidUpCapital,
+  filipinoPaidUpCapitalState,
+  foreignPaidUpCapitalState,
 } from "../../../../store/GIS/GISFormSlice";
 import InputComponent from "../../../../components/InputComponent";
 import TableComponent from "../../../../components/TableComponent";
@@ -506,10 +508,6 @@ const step3 = () => {
       selector: (row) => row.number_of_shares,
     },
     {
-      name: "Number of Shares in the Hands of the Public",
-      selector: (row) => row.number_of_shares_in_hands,
-    },
-    {
       name: "Par/Stated Value",
       selector: (row) => row.par_or_stated_value,
     },
@@ -566,21 +564,6 @@ const step3 = () => {
             type={"number"}
             value={row.number_of_shares}
             name={"number_of_shares"}
-            rowIndex={rowIndex}
-            state={paidUpCapitalFilipinoData}
-            setState={setPaidUpCapitalFilipinoData}
-          />
-        );
-      },
-    },
-    {
-      name: "Number of Shares in the Hands of the Public",
-      cell: (row, rowIndex) => {
-        return (
-          <InputComponent
-            type={"number"}
-            value={row.number_of_shares_in_hands}
-            name={"number_of_shares_in_hands"}
             rowIndex={rowIndex}
             state={paidUpCapitalFilipinoData}
             setState={setPaidUpCapitalFilipinoData}
@@ -679,10 +662,6 @@ const step3 = () => {
       selector: (row) => row.number_of_shares,
     },
     {
-      name: "Number of Shares in the Hands of the Public",
-      selector: (row) => row.number_of_shares_in_hands,
-    },
-    {
       name: "Par/Stated Value",
       selector: (row) => row.par_or_stated_value,
     },
@@ -750,21 +729,6 @@ const step3 = () => {
             type={"number"}
             value={row.number_of_shares}
             name={"number_of_shares"}
-            rowIndex={rowIndex}
-            state={paidUpCapitalForeignData}
-            setState={setPaidUpCapitalForeignData}
-          />
-        );
-      },
-    },
-    {
-      name: "Number of Shares in the Hands of the Public",
-      cell: (row, rowIndex) => {
-        return (
-          <InputComponent
-            type={"number"}
-            value={row.number_of_shares_in_hands}
-            name={"number_of_shares_in_hands"}
             rowIndex={rowIndex}
             state={paidUpCapitalForeignData}
             setState={setPaidUpCapitalForeignData}
@@ -1164,13 +1128,13 @@ const step3 = () => {
             setAddTable={() => {
               setPaidUpCapitalFilipinoData([
                 ...paidUpCapitalFilipinoData,
-                filipinoSubscribeCapitalState,
+                filipinoPaidUpCapitalState,
               ]);
             }}
             column={paidUpCapitalFilipinoColumn}
             data={formData.paid_up_capital.filipino}
             tableData={paidUpCapitalFilipinoData}
-            tableDataState={filipinoSubscribeCapitalState}
+            tableDataState={filipinoPaidUpCapitalState}
             editColumn={editPaidUpCapitalFilipinoColumn}
             addFunction={() => {
               console.log(paidUpCapitalFilipinoData);
@@ -1253,13 +1217,13 @@ const step3 = () => {
             setAddTable={() => {
               setPaidUpCapitalForeignData([
                 ...paidUpCapitalForeignData,
-                foreignSubscribeCapitalState,
+                foreignPaidUpCapitalState,
               ]);
             }}
             column={paidUpCapitalForeignColumn}
             data={formData.paid_up_capital.foreign}
             tableData={paidUpCapitalForeignData}
-            tableDataState={foreignSubscribeCapitalState}
+            tableDataState={foreignPaidUpCapitalState}
             editColumn={editPaidUpCapitalForeignColumn}
             addFunction={() => {
               // Recalculate subtotal and total values

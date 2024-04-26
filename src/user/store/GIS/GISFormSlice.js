@@ -29,6 +29,25 @@ export const foreignSubscribeCapitalState = {
   percent_of_ownership: "",
 };
 
+export const filipinoPaidUpCapitalState = {
+  number_of_stock_holders: "",
+  types_of_shares: "",
+  number_of_shares: "",
+  par_or_stated_value: "",
+  amount: "",
+  percent_of_ownership: "",
+};
+
+export const foreignPaidUpCapitalState = {
+  nationality: "",
+  number_of_stock_holders: "",
+  types_of_shares: "",
+  number_of_shares: "",
+  par_or_stated_value: "",
+  amount: "",
+  percent_of_ownership: "",
+};
+
 const subscribeCapitalState = {
   filipino: [],
   foreign: [],
@@ -119,6 +138,7 @@ const formDataState = {
   telephone_number: "",
   geographical_code: "N/A",
   nature_of_business: "",
+  primary_purpose: "",
   is_under_amla: false,
   has_complied_with_the_requirements: false,
   auth_capital_stock: {
@@ -138,7 +158,7 @@ const formDataState = {
     total_percent_of_ownership: 0,
   },
   corporate_secretary: "",
-  beneficial_ownership_declaration: [beneficialOwnershipDeclarationState],
+  beneficial_ownership_declaration: [],
 };
 
 const initialState = {

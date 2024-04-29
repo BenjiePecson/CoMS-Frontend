@@ -35,6 +35,7 @@ const create = () => {
   const record = useSelector((state) => state.records.record);
   const selectedCompany = useSelector((state) => state.company.selectedCompany);
   const formData = useSelector((state) => state.formGIS.formData);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
@@ -452,7 +453,6 @@ const create = () => {
   };
   //#endregion
 
-  
   //#region use effects
   useEffect(() => {
     //setformrecord
@@ -469,11 +469,12 @@ const create = () => {
         draftingInput: formData,
       });
 
+      
       if (formData.corporate_name === "") {
         dispatch(
           setFormData({
             ...formData,
-            company_name: selectedCompany.companyName,
+            corporate_name: selectedCompany.companyName,
             sec_registration_number: selectedCompany.secNumber,
             corporate_tin: selectedCompany.corporateTin,
             date_registered: selectedCompany.dateRegistered,
@@ -515,7 +516,7 @@ const create = () => {
           )}
 
           <div className="w-full flex-col items-center justify-center my-5">
-            {step === 1 && <Step1 />}
+            {step === 1 && <Step3 />}
             {step === 2 && <Step2 />}
             {step === 3 && <Step3 />}
             {step === 4 && <Step4 />}

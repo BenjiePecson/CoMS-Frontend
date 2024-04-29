@@ -42,7 +42,7 @@ const step3 = () => {
     },
     {
       name: "Number of Shares",
-      selector: (row) => row.number_of_shares,
+      selector: (row) => formatNumberWithComma(row.number_of_shares),
     },
     {
       name: "Par/Stated Value",
@@ -50,7 +50,11 @@ const step3 = () => {
     },
     {
       name: "Amount (PhP)",
-      selector: (row) => row.amount,
+      selector: (row) => {
+        let amount = row.amount;
+        amount = Number(amount);
+        return formatNumberWithComma(amount.toFixed(2));
+      },
     },
   ];
 
@@ -112,6 +116,7 @@ const step3 = () => {
             rowIndex={rowIndex}
             state={authCapitalStockData}
             setState={setAuthCapitalStockData}
+            disabled={true}
           />
         );
       },
@@ -165,7 +170,11 @@ const step3 = () => {
     },
     {
       name: "Amount (PhP)",
-      selector: (row) => row.amount,
+      selector: (row) => {
+        let amount = row.amount;
+        amount = Number(amount);
+        return formatNumberWithComma(amount.toFixed(2));
+      },
     },
     {
       name: "% of Ownership",
@@ -264,6 +273,7 @@ const step3 = () => {
             rowIndex={rowIndex}
             state={subscribeCapitalFilipinoData}
             setState={setSubscribeCapitalFilipinoData}
+            disabled={true}
           />
         );
       },
@@ -338,7 +348,11 @@ const step3 = () => {
     },
     {
       name: "Amount (PhP)",
-      selector: (row) => row.amount,
+      selector: (row) => {
+        let amount = row.amount;
+        amount = Number(amount);
+        return formatNumberWithComma(amount.toFixed(2));
+      },
     },
     {
       name: "% of Ownership",
@@ -448,6 +462,7 @@ const step3 = () => {
             rowIndex={rowIndex}
             state={subscribeCapitalForeignData}
             setState={setSubscribeCapitalForeignData}
+            disabled={true}
           />
         );
       },
@@ -513,7 +528,11 @@ const step3 = () => {
     },
     {
       name: "Amount (PhP)",
-      selector: (row) => row.amount,
+      selector: (row) => {
+        let amount = row.amount;
+        amount = Number(amount);
+        return formatNumberWithComma(amount.toFixed(2));
+      },
     },
     {
       name: "% of Ownership",
@@ -597,6 +616,7 @@ const step3 = () => {
             rowIndex={rowIndex}
             state={paidUpCapitalFilipinoData}
             setState={setPaidUpCapitalFilipinoData}
+            disabled={true}
           />
         );
       },
@@ -667,11 +687,20 @@ const step3 = () => {
     },
     {
       name: "Amount (PhP)",
-      selector: (row) => row.amount,
+      selector: (row) => {
+        let amount = row.amount;
+        amount = Number(amount);
+        return formatNumberWithComma(amount.toFixed(2));
+      },
     },
     {
       name: "% of Ownership",
-      selector: (row) => `${row.percent_of_ownership}%`,
+      selector: (row) => {
+        let percent_of_ownership = row.percent_of_ownership;
+        percent_of_ownership = Number(percent_of_ownership);
+        // `${row.percent_of_ownership}%`
+        return `${percent_of_ownership.toFixed(2)}%`;
+      },
     },
   ];
 
@@ -762,6 +791,7 @@ const step3 = () => {
             rowIndex={rowIndex}
             state={paidUpCapitalForeignData}
             setState={setPaidUpCapitalForeignData}
+            disabled={true}
           />
         );
       },
@@ -1048,6 +1078,8 @@ const step3 = () => {
                   total_percent_of_ownership:
                     subTotalOwnershipForeign +
                     formData.subscribe_capital.sub_total_ownership_filipino,
+                  percentage_of_foreign_equity:
+                    subTotalOwnershipForeign
                 })
               );
             }}
@@ -1137,7 +1169,6 @@ const step3 = () => {
             tableDataState={filipinoPaidUpCapitalState}
             editColumn={editPaidUpCapitalFilipinoColumn}
             addFunction={() => {
-              console.log(paidUpCapitalFilipinoData);
               const subTotalNumberOfSharesFilipino =
                 paidUpCapitalFilipinoData.reduce(
                   (total, item) =>

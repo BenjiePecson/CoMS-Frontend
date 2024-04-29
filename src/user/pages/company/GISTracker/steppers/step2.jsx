@@ -295,7 +295,6 @@ const step2 = () => {
             </button>
             <button
               onClick={(e) => {
-                console.log(formStep2);
                 dispatch(setFormData(formStep2));
                 document.getElementById("step2FormModal").close();
               }}

@@ -1,4 +1,10 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 import axios from "axios";
 import "./App.css";
 import Login from "./user/pages/Login";
@@ -18,25 +24,35 @@ import SecretaryCertificate from "./user/pages/company/BoardMeetings/SecretaryCe
 import TreasurerCertificate from "./user/pages/company/BoardMeetings/TreasurerCertificate";
 import GISPage from "./user/pages/user/GISPage";
 import GISPageView from "./user/pages/user/GISRecord/view";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "./user/store/user/UserSlice";
 
 axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
 // http://192.168.88.214:5173/
 // http://192.168.88.214:5173
+axios.defaults.headers.common["Authorization"] =
+  localStorage.getItem("accessToken");
 
 function App() {
+  const user = useSelector((state) => state.user.user);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, []);
+
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/hello" element={<Hello />} />
-
           <Route path="/login" element={<Login />} />
+
           <Route path="/" element={<Login />} />
           <Route element={<CompanyLayout />}>
             <Route path="/company" element={<SelectCompany />} />
             <Route path="/settings" element={<Settings />} />
-            {/* GISPage */}
             <Route path="/gis" element={<GISPage />} />
             <Route path="/gis/:recordId" element={<GISPageView />} />
           </Route>

@@ -514,9 +514,7 @@ const create = () => {
           )}
 
           <div className="w-full flex-col items-center justify-center my-5">
-
-            {step === 1 && <Step7 />}
-
+            {step === 1 && <Step1 />}
             {step === 2 && <Step2 />}
             {step === 3 && <Step3 />}
             {step === 4 && <Step4 />}

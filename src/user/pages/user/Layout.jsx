@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import NavBar from "../../components/NavBar";
+import axios from "axios";
 
 const Layout = () => {
   const [active, setActive] = useState("dashboard");
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const navigate = useNavigate();
 
   const lightMode = (
     <>
@@ -64,9 +66,21 @@ const Layout = () => {
     </svg>
   );
 
-  // useEffect(() => {
-  //   setActive(window.location.pathname);
-  // }, []);
+  const logout = async () => {
+    let response = await axios.get("/logout", { withCredentials: true });
+    // setUser(response.data.user);
+    if (response.data) {
+      localStorage.removeItem("accessToken");
+      navigate("/login");
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token == null || token == undefined) {
+      navigate("/login");
+    }
+  }, []);
 
   useEffect(() => {
     console.log(window.location.pathname.split("/")[1]);
@@ -218,6 +232,15 @@ const Layout = () => {
                   <div className={"poppins-semibold text-white"}>Logout</div>
                 </div>
               </Link>
+
+              <button
+                className="btn btn-red-500 w-full"
+                onClick={() => {
+                  logout();
+                }}
+              >
+                Logout
+              </button>
             </div>
           </ul>
         </div>

@@ -16,10 +16,11 @@ import {
   checkCompanyName,
   checkSECCert,
   showAlert,
-  checkDateRegistered
+  checkDateRegistered,
 } from "../../../assets/global.js";
 
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const SelectCompany = () => {
   // const [companies, setCompanies] = useState(data);
@@ -35,6 +36,7 @@ const SelectCompany = () => {
   const addInputFile = useRef(null);
   const editInputFile = useRef(null);
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
   const toggleAdd = () => {
     setFormData(company);
@@ -677,7 +679,7 @@ const SelectCompany = () => {
                 <span className="text-[12px] text-red-500">{errors.logo}</span>
               )}
             </label>
-            
+
             <button
               onClick={(e) => {
                 handleSubmit(e, false);

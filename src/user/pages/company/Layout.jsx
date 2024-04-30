@@ -561,7 +561,12 @@ const Layout = () => {
   );
 
   useEffect(() => {
-    dispatch(fetchCompany(companyId));
+    const token = localStorage.getItem("accessToken");
+    if (token == null || token == undefined) {
+      navigate("/login");
+    } else {
+      dispatch(fetchCompany(companyId));
+    }
   }, []);
 
   useEffect(() => {

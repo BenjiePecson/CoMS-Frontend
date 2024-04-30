@@ -70,6 +70,15 @@ const GISRecordSlice = createSlice({
         (item) => item.id !== action.payload.id
       );
     },
+
+    renameRecordName: (state, action) => {
+      state.records.map((obj) => {
+        console.log(action.payload.recordName);
+        if (obj.recordId === action.payload.recordId) {
+          obj.recordName = action.payload.recordName;
+        }
+      });
+    },
   },
   extraReducers: (builder) => {
     //fetch records
@@ -100,6 +109,11 @@ const GISRecordSlice = createSlice({
   },
 });
 
-export const { addRecord, updateRecord, changeRecordStatus, deleteRecord } =
-  GISRecordSlice.actions;
+export const {
+  addRecord,
+  updateRecord,
+  changeRecordStatus,
+  deleteRecord,
+  renameRecordName,
+} = GISRecordSlice.actions;
 export default GISRecordSlice.reducer;

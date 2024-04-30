@@ -1,14 +1,31 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import { Link, useParams } from "react-router-dom";
 
-import { fetchRecords } from "../../store/GIS/GISRecordSlice";
+import { fetchRecords, renameRecordName } from "../../store/GIS/GISRecordSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { showAlert } from "../../../assets/global";
+import axios from "axios";
 
 const GISTracker = () => {
   const { companyId } = useParams();
   const companyRecords = useSelector((state) => state.records.records);
+  const record = useSelector((state) => state.records.record);
   const dispatch = useDispatch();
+
+  const [errors, setErrors] = useState([]);
+  const [formData, setFormData] = useState(record);
+
+  const editSVG = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className="w-4 h-4"
+    >
+      <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
+    </svg>
+  );
 
   const table = (
     <>
@@ -31,7 +48,17 @@ const GISTracker = () => {
               }
               return (
                 <tr key={index}>
-                  <td>{record.recordName}</td>
+                  <td className="flex flex-row gap-2">
+                    {record.recordName}{" "}
+                    <button
+                      onClick={() => {
+                        setFormData(record);
+                        document.getElementById("renameModal").showModal();
+                      }}
+                    >
+                      {editSVG}
+                    </button>
+                  </td>
                   <td>{record.status}</td>
                   <td></td>
                   <td>
@@ -73,6 +100,105 @@ const GISTracker = () => {
       </table>
     </>
   );
+
+  //toggle button for submit
+  const handleSubmit = async (e, isEdit) => {
+    e.preventDefault();
+
+    let status = "error";
+    let message = "";
+
+    try {
+      status = "success";
+      message = "Error updating the record.";
+
+      let response = await axios.patch(`/record/${formData.recordId}`, {
+        recordName: formData.recordName,
+      });
+
+      if (response.status === 200) {
+        dispatch(renameRecordName(formData));
+        setFormData(record);
+        status = "success";
+        message = "Record updated successfully!";
+      }
+    } catch (error) {
+      status = "error";
+      message = "Error updating the record.";
+      console.error("Error updating the record.: ", error);
+    } finally {
+      showAlert(status, message);
+      document.getElementById("renameModal").close();
+    }
+  };
+
+  //on change event for inputs
+  const handleOnChange = async (e) => {
+    const { name, value } = e.target;
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+
+    return;
+
+    if (name === "logo") {
+      setLogo(e.target.files[0]);
+      // setFormData({
+      //   ...formData,
+      //   [name]: "",
+      // });
+
+      if (checkCompanyLogo(value) != "") {
+        setErrors({
+          ...errors,
+          logo: checkCompanyLogo(value),
+        });
+      } else {
+        setErrors({ ...errors, logo: "" });
+      }
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+
+    //sets error message for company name input
+    if (name == "companyName") {
+      if (checkCompanyName(value) != "") {
+        setErrors({
+          ...errors,
+          companyName: checkCompanyName(value),
+        });
+      } else {
+        setErrors({ ...errors, companyName: "" });
+      }
+    }
+
+    if (name == "secNumber") {
+      if (checkSECCert(value) != "") {
+        setErrors({
+          ...errors,
+          secNumber: checkSECCert(value),
+        });
+      } else {
+        setErrors({ ...errors, secNumber: "" });
+      }
+    }
+
+    if (name == "dateRegistered") {
+      if (checkDateRegistered(value) != "") {
+        setErrors({
+          ...errors,
+          dateRegistered: checkDateRegistered(value),
+        });
+      } else {
+        setErrors({ ...errors, dateRegistered: "" });
+      }
+    }
+  };
 
   useEffect(() => {
     dispatch(fetchRecords(companyId));
@@ -155,6 +281,53 @@ const GISTracker = () => {
       </div>
 
       <div className="overflow-x-auto">{table}</div>
+
+      <dialog id="renameModal" className="modal">
+        <div className="modal-box">
+          <div className="flex flex-row justify-between">
+            <h3 className="font-bold text-lg">Rename GIS Record</h3>
+            <form method="dialog">
+              <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                ✕
+              </button>
+            </form>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">
+                  Record Name <span className="text-red-500">*</span>
+                </span>
+              </div>
+              <input
+                type="text"
+                className={`input input-bordered w-full ${
+                  errors.recordName && `input-error`
+                }`}
+                name="recordName"
+                value={formData.recordName}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.companyName && (
+                <span className="text-[12px] text-red-500">
+                  {errors.companyName}
+                </span>
+              )}
+            </label>
+
+            <button
+              onClick={(e) => {
+                handleSubmit(e, true);
+              }}
+              className="btn bg-primary text-white mt-2"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </dialog>
     </div>
   );
 };

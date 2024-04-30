@@ -59,54 +59,24 @@ const styles = StyleSheet.create({
   },
 });
 
-const PageTen = () => {
+const PageTen = ({ beneficial_ownership_declaration, year }) => {
   return (
     <Page size="A4" style={{ position: "relative" }}>
-      <Text style={styles.year}>2024</Text>
+      <Text style={styles.year}>{year}</Text>
 
       <View style={styles.view1}>
-        <View style={styles.view1_1}>
-          <Text style={styles.text1}>Po, Ma. Rona B.</Text>
-
-          <Text style={styles.text2}>
-            UP-HO5 North Flair Towers Reliance Street cor Pines Highway Hills,
-            Mandaluyong City
-          </Text>
-          <Text style={styles.text3}>FILIPINO</Text>
-          <Text style={styles.text4}>########</Text>
-          <Text style={styles.text5}>208-762-432-000</Text>
-          <Text style={styles.text6}>87.19%</Text>
-          <Text style={styles.text7}>D</Text>
-          <Text>A and E</Text>
-        </View>
-        <View style={styles.view1_1}>
-          <Text style={styles.text1}>Po, Ma. Rona B.</Text>
-
-          <Text style={styles.text2}>
-            UP-HO5 North Flair Towers Reliance Street cor Pines Highway Hills,
-            Mandaluyong City
-          </Text>
-          <Text style={styles.text3}>FILIPINO</Text>
-          <Text style={styles.text4}>########</Text>
-          <Text style={styles.text5}>208-762-432-000</Text>
-          <Text style={styles.text6}>87.19%</Text>
-          <Text style={styles.text7}>D</Text>
-          <Text>A and E</Text>
-        </View>
-        <View style={styles.view1_1}>
-          <Text style={styles.text1}>Po, Ma. Rona B.</Text>
-
-          <Text style={styles.text2}>
-            UP-HO5 North Flair Towers Reliance Street cor Pines Highway Hills,
-            Mandaluyong City
-          </Text>
-          <Text style={styles.text3}>FILIPINO</Text>
-          <Text style={styles.text4}>########</Text>
-          <Text style={styles.text5}>208-762-432-000</Text>
-          <Text style={styles.text6}>87.19%</Text>
-          <Text style={styles.text7}>D</Text>
-          <Text>A and E</Text>
-        </View>
+        {beneficial_ownership_declaration.map((text, index) => (
+          <View key={index} style={styles.view1_1}>
+            <Text style={styles.text1}>{text.complete_name}</Text>
+            <Text style={styles.text2}>{text.specific_residual_address}</Text>
+            <Text style={styles.text3}>{text.nationality}</Text>
+            <Text style={styles.text4}>{text.date_of_birth}</Text>
+            <Text style={styles.text5}>{text.tax_id_number}</Text>
+            <Text style={styles.text6}>{text.percent_of_ownership}</Text>
+            <Text style={styles.text7}>{text.type_of_beneficial_owner}</Text>
+            <Text>{text.category_of_beneficial_ownership}</Text>
+          </View>
+        ))}
       </View>
 
       <Image

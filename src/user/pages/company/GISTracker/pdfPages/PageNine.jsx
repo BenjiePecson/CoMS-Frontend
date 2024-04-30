@@ -35,15 +35,15 @@ const styles = StyleSheet.create({
   },
 });
 
-const PageNine = () => {
+const PageNine = ({ corporate_secretary, coporate_name }) => {
   return (
     <Page size="A4" style={{ position: "relative" }}>
-      <Text style={styles.corporateSecretary}>Ma. Ruby Po</Text>
-      <Text style={styles.corporateName}>
-        OFFSHORE CONCEPT BPO SERVICES INC. ,
-      </Text>
+      <Text style={styles.corporateSecretary}>{corporate_secretary}</Text>
+      <Text style={styles.corporateName}>{coporate_name}</Text>
       <View style={styles.coporateSignature}>
-        <Text style={styles.corporateNameSignature}>MA. RUBY PO</Text>
+        <Text style={styles.corporateNameSignature}>
+          {corporate_secretary.toUpperCase()}
+        </Text>
         <Text style={styles.corporateSecretaryTitle}>Coporate Secretary</Text>
       </View>
       <Image

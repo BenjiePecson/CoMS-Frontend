@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     margin: "3px",
+    height: "23px",
   },
   nameAddress: {
     width: "162px",
@@ -110,16 +111,16 @@ const styles = StyleSheet.create({
   execCom: { width: "35px", fontFamily: "Times-Bold", fontSize: "10px" },
   tin: { width: "", fontFamily: "Times-Bold", fontSize: "10px" },
 });
-function PageFour() {
+function PageFour({ directors_or_officers, corporate_name }) {
   return (
     <Page size="A4" style={{ position: "relative" }}>
-      <Text style={styles.corporateName}>Offshore BPO Services</Text>
+      <Text style={styles.corporateName}>{corporate_name}</Text>
       <View style={styles.directorsOfficer}>
-        {directorsOrOfficers.map((txt, index) => (
+        {directors_or_officers.map((txt, index) => (
           <View key={index} style={styles.directorsOfficerInfo}>
             <View style={styles.nameAddress}>
-              <Text style={styles.name}>{txt.name_or_current}</Text>
-              <Text style={styles.address}>{txt.residual_address}</Text>
+              <Text style={styles.name}>{txt.name}</Text>
+              <Text style={styles.address}>{txt.current_residual_address}</Text>
             </View>
             <Text style={styles.nationality}>{txt.nationality}</Text>
             <Text style={styles.incr}>{txt.incorporator}</Text>

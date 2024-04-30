@@ -12,6 +12,8 @@ const Layout = () => {
   const companies = useSelector((state) => state.company.companies);
   const selectedCompany = useSelector((state) => state.company.selectedCompany);
   const status = useSelector((state) => state.company.status);
+  const user = useSelector((state) => state.user.user);
+
 
   const dispatch = useDispatch();
 
@@ -401,7 +403,7 @@ const Layout = () => {
                 </div>
               </div>
             </div>
-            <div className="px-4">
+            {/* <div className="px-4">
               <div className="flex flex-row text-white justify-between items-center">
                 <div className="flex flex-row items-center gap-5">
                   {lightMode}
@@ -435,7 +437,7 @@ const Layout = () => {
                 </div>
                 <div className={"poppins-semibold text-white"}>Logout</div>
               </div>
-            </div>
+            </div> */}
           </ul>
         </div>
       </div>
@@ -561,13 +563,15 @@ const Layout = () => {
   );
 
   useEffect(() => {
+    dispatch(fetchCompany(companyId));
+  }, []);
+
+  useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (token == null || token == undefined) {
       navigate("/login");
-    } else {
-      dispatch(fetchCompany(companyId));
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     setActive(
@@ -580,11 +584,12 @@ const Layout = () => {
 
   return (
     <>
-      {status === "pending"
+      {content}
+      {/* {status === "pending"
         ? loading
         : status === "rejected"
         ? companyNotFound
-        : content}
+        : content} */}
     </>
   );
 };

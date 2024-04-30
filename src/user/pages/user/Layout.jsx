@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import NavBar from "../../components/NavBar";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const Layout = () => {
   const [active, setActive] = useState("dashboard");
   const [isDarkMode, setIsDarkMode] = useState(false);
   const navigate = useNavigate();
+
+  const user = useSelector((state) => state.user.user);
 
   const lightMode = (
     <>
@@ -80,10 +83,9 @@ const Layout = () => {
     if (token == null || token == undefined) {
       navigate("/login");
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
-    console.log(window.location.pathname.split("/")[1]);
     setActive(
       window.location.pathname.split("/")[1] === "" ||
         window.location.pathname.split("/")[1] === undefined
@@ -213,34 +215,28 @@ const Layout = () => {
                 </div>
               </div>
 
-              <Link to={"/"}>
-                <div className="flex flex-row hover:bg-[#667A8A] h-[45px] rounded-[3px] items-center my-4 bg-[#667A8A]">
-                  <div className="px-5">
-                    <svg
-                      width="27"
-                      height="26"
-                      viewBox="0 0 27 26"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M11.9191 0.933289C15.0255 0.933289 17.559 3.42334 17.559 6.48898V12.4826H9.92032C9.37289 12.4826 8.94003 12.9081 8.94003 13.4461C8.94003 13.9716 9.37289 14.4096 9.92032 14.4096H17.559V20.3907C17.559 23.4564 15.0255 25.9589 11.8936 25.9589H5.69361C2.5745 25.9589 0.0410156 23.4689 0.0410156 20.4032V6.50149C0.0410156 3.42334 2.58723 0.933289 5.70634 0.933289H11.9191ZM20.7375 9.12944C21.1129 8.74154 21.726 8.74154 22.1014 9.11692L25.7551 12.7582C25.9428 12.9458 26.0429 13.1836 26.0429 13.4464C26.0429 13.6966 25.9428 13.9469 25.7551 14.1221L22.1014 17.7633C21.9137 17.951 21.6634 18.0511 21.4257 18.0511C21.1754 18.0511 20.9252 17.951 20.7375 17.7633C20.3621 17.3879 20.3621 16.7748 20.7375 16.3994L22.7395 14.4098H17.5592V12.4829H22.7395L20.7375 10.4933C20.3621 10.1179 20.3621 9.50482 20.7375 9.12944Z"
-                        fill="white"
-                      />
-                    </svg>
-                  </div>
-                  <div className={"poppins-semibold text-white"}>Logout</div>
-                </div>
-              </Link>
-
-              <button
-                className="btn btn-red-500 w-full"
+              <div
+                className="flex flex-row hover:bg-[#667A8A] h-[45px] rounded-[3px] items-center my-4 bg-[#667A8A] cursor-pointer"
                 onClick={() => {
                   logout();
                 }}
               >
-                Logout
-              </button>
+                <div className="px-5">
+                  <svg
+                    width="27"
+                    height="26"
+                    viewBox="0 0 27 26"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M11.9191 0.933289C15.0255 0.933289 17.559 3.42334 17.559 6.48898V12.4826H9.92032C9.37289 12.4826 8.94003 12.9081 8.94003 13.4461C8.94003 13.9716 9.37289 14.4096 9.92032 14.4096H17.559V20.3907C17.559 23.4564 15.0255 25.9589 11.8936 25.9589H5.69361C2.5745 25.9589 0.0410156 23.4689 0.0410156 20.4032V6.50149C0.0410156 3.42334 2.58723 0.933289 5.70634 0.933289H11.9191ZM20.7375 9.12944C21.1129 8.74154 21.726 8.74154 22.1014 9.11692L25.7551 12.7582C25.9428 12.9458 26.0429 13.1836 26.0429 13.4464C26.0429 13.6966 25.9428 13.9469 25.7551 14.1221L22.1014 17.7633C21.9137 17.951 21.6634 18.0511 21.4257 18.0511C21.1754 18.0511 20.9252 17.951 20.7375 17.7633C20.3621 17.3879 20.3621 16.7748 20.7375 16.3994L22.7395 14.4098H17.5592V12.4829H22.7395L20.7375 10.4933C20.3621 10.1179 20.3621 9.50482 20.7375 9.12944Z"
+                      fill="white"
+                    />
+                  </svg>
+                </div>
+                <div className={"poppins-semibold text-white"}>Logout</div>
+              </div>
             </div>
           </ul>
         </div>

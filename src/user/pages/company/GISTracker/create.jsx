@@ -27,7 +27,6 @@ import Step7 from "./steppers/step7";
 
 import { setFormData } from "../../../store/GIS/GISFormSlice";
 
-
 const create = () => {
   const { companyId } = useParams();
   const { recordId } = useParams();
@@ -419,7 +418,6 @@ const create = () => {
     console.log("Download PDF");
   };
   const toggleSaveAsDraft = async () => {
-
     let status = "error";
     let message = "Failed to save as draft. Please try again.";
 

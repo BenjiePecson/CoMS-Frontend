@@ -1,51 +1,6 @@
 import { Page, Text, Image, StyleSheet, View } from "@react-pdf/renderer";
 import pageFive from "../photos/page5.jpg";
 
-const stockholdersInformation = [
-  {
-    name_etc: "MA. RONA B. PO",
-    nationality: "FILIPINO",
-    address:
-      "UP-HO5 North Flair Towers Reliance Street cor Pines Highway Hills, Mandaluyong City",
-    type: "COMMON",
-    number: "1,189,998",
-    amount: "1,189,998.00",
-    percent_of_ownership: "53.4801%",
-    amount_paid: "1,189,998.00",
-    tax_id_number: "208-762-432-000",
-    total_number: "1,189,998",
-    total_amount: "1,189,998",
-  },
-  {
-    name_etc: "MA. RONA B. PO",
-    nationality: "FILIPINO",
-    address:
-      "UP-HO5 North Flair Towers Reliance Street cor Pines Highway Hills, Mandaluyong City",
-    type: "COMMON",
-    number: "1,189,998",
-    amount: "1,189,998.00",
-    percent_of_ownership: "53.4801%",
-    amount_paid: "1,189,998.00",
-    tax_id_number: "208-762-432-000",
-    total_number: "1,189,998",
-    total_amount: "1,189,998",
-  },
-  {
-    name_etc: "MA. RONA B. PO",
-    nationality: "FILIPINO",
-    address:
-      "UP-HO5 North Flair Towers Reliance Street cor Pines Highway Hills, Mandaluyong City",
-    type: "COMMON",
-    number: "1,189,998",
-    amount: "1,189,998.00",
-    percent_of_ownership: "53.4801%",
-    amount_paid: "1,189,998.00",
-    tax_id_number: "208-762-432-000",
-    total_number: "1,189,998",
-    total_amount: "1,189,998",
-  },
-];
-
 const styles = StyleSheet.create({
   corporateName: {
     marginTop: 95,
@@ -82,6 +37,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     margin: "2px",
+    height: "53px",
   },
   nameNationalityAddress: {
     display: "flex",
@@ -164,54 +120,61 @@ const styles = StyleSheet.create({
   },
 });
 
-const PageFive = () => {
+const PageFive = ({
+  corporate_name,
+  total_number_of_stockholders,
+  number_of_stockholders_with_more_shares_each,
+  total_assets_based_on_latest_audited,
+  stock_holders_information,
+}) => {
   return (
     <Page size="A4" style={{ position: "relative" }}>
-      <Text style={styles.corporateName}>
-        Offshore Concept BPO Services Inc.
-      </Text>
+      <Text style={styles.corporateName}>{corporate_name}</Text>
       <View style={styles.stockHolders}>
-        <Text style={styles.totalNumberOfStockHolder}>10</Text>
-        <Text>9</Text>
+        <Text style={styles.totalNumberOfStockHolder}>
+          {total_number_of_stockholders}
+        </Text>
+        <Text>{number_of_stockholders_with_more_shares_each}</Text>
       </View>
 
       <View style={styles.stockHolderInformation}>
-        {stockholdersInformation.map((txt, index) => (
+        {stock_holders_information.slice(0, 7).map((txt, index) => (
           <View key={index} style={styles.stockHolderInformationView}>
             <View style={styles.nameNationalityAddress}>
-              <Text style={styles.name}>MA. RUBI B. PO</Text>
-              <Text>FILIPINO</Text>
-              <Text style={styles.address}>
-                Unit 1 Ballesteros Townhomes, Ballesteros Street, Mandaluyong
-                Cit
-              </Text>
+              <Text style={styles.name}>{txt.name}</Text>
+              <Text>{txt.nationality}</Text>
+              <Text style={styles.address}>{txt.current_residual_address}</Text>
             </View>
             <View style={styles.shareSubscribeView}>
               <View style={styles.shareSubscribe}>
-                <Text style={styles.type}>COMMON</Text>
-                <Text style={styles.number}>1</Text>
-                <Text style={styles.ammount}>1.00</Text>
+                <Text style={styles.type}>{txt.type}</Text>
+                <Text style={styles.number}>{txt.number}</Text>
+                <Text style={styles.ammount}>{txt.amount}</Text>
               </View>
               <View style={styles.shareSubscribeTotal}>
-                <Text style={styles.totalNumber}>1189998</Text>
-                <Text style={styles.totalAmmount}>123123</Text>
+                <Text style={styles.totalNumber}>{txt.total_number}</Text>
+                <Text style={styles.totalAmmount}>{txt.total_amount}</Text>
               </View>
             </View>
 
             <View style={styles.shareSView}>
-              <Text style={styles.percentOfOwnership}>0.01%</Text>
-              <Text style={styles.ammountPaid}>1.00</Text>
-              <Text>306-557-791-000</Text>
+              <Text style={styles.percentOfOwnership}>
+                {txt.percent_of_ownership}
+              </Text>
+              <Text style={styles.ammountPaid}>{txt.amount_paid}</Text>
+              <Text>{txt.tax_id_number}</Text>
             </View>
           </View>
         ))}
       </View>
-      <Text style={styles.totalAsset}>7,566,724.00</Text>
-      <View style={styles.totalAmountSubscribeCapital}>
+      <Text style={styles.totalAsset}>
+        {total_assets_based_on_latest_audited}
+      </Text>
+      {/* <View style={styles.totalAmountSubscribeCapital}>
         <Text>0000000</Text>
         <Text>100%</Text>
-      </View>
-      <View style={styles.removePercent}></View>
+      </View> */}
+
       <Image
         style={{
           position: "absolute",

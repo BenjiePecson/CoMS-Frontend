@@ -75,13 +75,38 @@ const step7 = () => {
                   }
                   auth_capital_total_amount={formData.auth_capital_total_amount}
                 /> */}
-                <PageFour />
-                <PageFive />
+                <PageFour
+                  directors_or_officers={formData.directors_or_officers}
+                  corporate_name={formData.corporate_name}
+                />
+                <PageFive
+                  corporate_name={formData.corporate_name}
+                  total_number_of_stockholders={
+                    formData.total_number_of_stockholders
+                  }
+                  number_of_stockholders_with_more_shares_each={
+                    formData.number_of_stockholders_with_more_shares_each
+                  }
+                  total_assets_based_on_latest_audited={
+                    formData.total_assets_based_on_latest_audited
+                  }
+                  stock_holders_information={
+                    formData.stock_holders_information.information
+                  }
+                />
                 <PageSix />
                 <PageSeven />
                 <PageEight />
-                <PageNine />
-                <PageTen />
+                <PageNine
+                  corporate_secretary={formData.corporate_secretary}
+                  coporate_name={formData.corporate_name}
+                />
+                <PageTen
+                  beneficial_ownership_declaration={
+                    formData.beneficial_ownership_declaration
+                  }
+                  year={formData.year}
+                />
               </Document>
             </PDFViewer>
           </div>

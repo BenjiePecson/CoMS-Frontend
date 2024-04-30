@@ -74,6 +74,9 @@ const styles = StyleSheet.create({
   text2_1: {
     width: "51%",
   },
+  text2_2_1: {
+    width: "140px",
+  },
   view4: {
     fontFamily: "Times-Bold",
     fontSize: "10px",
@@ -141,9 +144,9 @@ function PageOne({
         <Text>{complete_principal_office_address}</Text>
       </View>
       <View style={styles.view3}>
-        <Text style={styles.text2_1}>{official_email_address}</Text>
-        <Text style={styles.text2_1}>{alternate_email_address}</Text>
-        <Text style={styles.text2_1}>{official_mobile_number}</Text>
+        <Text style={styles.text2_2_1}>{official_email_address}</Text>
+        <Text style={styles.text2_2_1}>{alternate_email_address}</Text>
+        <Text style={styles.text2_2_1}>{official_mobile_number}</Text>
       </View>
       <View style={styles.view4}>
         <Text style={styles.text2_1}>{name_of_external_auditor}</Text>

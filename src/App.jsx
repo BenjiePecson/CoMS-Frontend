@@ -30,8 +30,7 @@ import { fetchUser } from "./user/store/user/UserSlice";
 
 // axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
-axios.defaults.baseURL = import.meta.env.VITE_SERVER_URL;
-
+axios.defaults.baseURL = import.meta.env.VITE_VERCEL_LOCALHOST_SERVER_URL;
 
 // http://192.168.88.214:5173/
 // http://192.168.88.214:5173

@@ -28,8 +28,11 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUser } from "./user/store/user/UserSlice";
 
-axios.defaults.baseURL = "http://localhost:3000/";
+// axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
+axios.defaults.baseURL = import.meta.env.VITE_SERVER_URL;
+
+
 // http://192.168.88.214:5173/
 // http://192.168.88.214:5173
 axios.defaults.headers.common["Authorization"] =

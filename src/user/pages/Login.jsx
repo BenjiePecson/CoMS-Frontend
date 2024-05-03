@@ -6,11 +6,10 @@ const Login = () => {
   const navigate = useNavigate();
   const handleLogin = async (e) => {
     window.open(
-      `${import.meta.env.VITE_VERCEL_LOCALHOST_SERVER_URL}/auth/google`,
+      `${import.meta.env.VITE_SERVER_URL}/auth/google`,
       "_self",
     );
   };
-  
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");

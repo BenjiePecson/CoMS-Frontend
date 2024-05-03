@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+
   const navigate = useNavigate();
   const handleLogin = async (e) => {
     window.open(
-      `http://localhost:3000/auth/google`,
+      `${import.meta.env.VITE_SERVER_URL}/auth/google`,
       "_self",
     );
   };

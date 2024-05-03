@@ -198,7 +198,10 @@ const MinutesOfMeetings = () => {
                     type="radio"
                     name="radio-2"
                     className="radio radio-primary"
-                    checked
+                    value={"Yes"}
+                    onChange={(e)=>{
+                      console.log(e.target.value);
+                    }}
                   />
                 </div>
                 <div className="flex flex-row gap-2">
@@ -207,6 +210,10 @@ const MinutesOfMeetings = () => {
                     type="radio"
                     name="radio-2"
                     className="radio radio-primary"
+                    value={"No"}
+                    onChange={(e)=>{
+                      console.log(e.target.value);
+                    }}
                   />
                 </div>
               </div>

@@ -8,7 +8,6 @@ const UserState = {
 
 export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
   let response = await axios.get(`/login/success`, { withCredentials: true });
-  console.log(response.data.user);
   if (response.data.user != null){
     localStorage.setItem("accessToken", response.data.user.jwtAccessToken);
   } else {

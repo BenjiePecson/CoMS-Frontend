@@ -36,8 +36,27 @@ axios.defaults.withCredentials = true;
 
 // http://192.168.88.214:5173/
 // http://192.168.88.214:5173
-axios.defaults.headers.common["Authorization"] =
-  localStorage.getItem("accessToken");
+// axios.defaults.headers.common["Authorization"] =
+//   localStorage.getItem("accessToken");
+
+
+
+function getCookie(cname) {
+  let name = cname + "=";
+  let ca = document.cookie.split(';');
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+console.log(getCookie("accessToken"));
 
 function App() {
   const user = useSelector((state) => state.user.user);

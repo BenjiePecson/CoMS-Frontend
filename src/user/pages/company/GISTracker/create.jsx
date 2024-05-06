@@ -467,7 +467,6 @@ const create = () => {
         draftingInput: formData,
       });
 
-      
       if (formData.corporate_name === "") {
         dispatch(
           setFormData({

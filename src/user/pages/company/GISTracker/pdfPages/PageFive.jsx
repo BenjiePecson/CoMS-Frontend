@@ -31,19 +31,18 @@ const styles = StyleSheet.create({
   },
   stockHolderInformation: {
     marginTop: 220,
-    marginLeft: 60,
+    marginLeft: 52,
   },
   stockHolderInformationView: {
     display: "flex",
     flexDirection: "row",
     margin: "2px",
-    height: "53px",
   },
   nameNationalityAddress: {
     display: "flex",
     flexDirection: "column",
     fontSize: "9px",
-    width: "158px",
+    width: "164px",
   },
   name: {
     fontFamily: "Times-Bold",
@@ -54,7 +53,7 @@ const styles = StyleSheet.create({
   shareSubscribeView: {
     display: "flex",
     flexDirection: "column ",
-    width: "190px",
+    width: "180px",
   },
   shareSubscribe: {
     display: "flex",
@@ -70,7 +69,7 @@ const styles = StyleSheet.create({
     marginLeft: 50,
   },
   type: {
-    width: "65px",
+    width: "47px",
     fontFamily: "Times-Bold",
     fontSize: "7px",
   },
@@ -107,25 +106,40 @@ const styles = StyleSheet.create({
   },
 
   totalAmountSubscribeCapital: {
-    marginTop: 228,
-    marginLeft: 325,
+    marginTop: 619,
+    marginLeft: 327,
     display: "flex",
     flexDirection: "row",
     fontFamily: "Times-Bold",
     fontSize: "9px",
+    position: "absolute",
   },
-
-  removePercent: {
-    backgroundColor: "#234123",
+  totalAmountSubscribeCapital1: {
+    width: "82px",
+    position: "absolute",
+  },
+  totalAmountSubscribeCapital2: {
+    padding: "1px",
+    width: "25px",
+    backgroundColor: "#ffffff",
+    position: "absolute",
+    marginLeft: 82,
+  },
+  totalAmountSubscribeCapital3: {
+    marginTop: 4,
+    marginLeft: 167,
+    padding: "1px",
+    width: "25px",
+    backgroundColor: "#ffffff",
   },
 });
 
 const PageFive = ({
+  stock_holders_information,
   corporate_name,
   total_number_of_stockholders,
   number_of_stockholders_with_more_shares_each,
   total_assets_based_on_latest_audited,
-  stock_holders_information,
 }) => {
   return (
     <Page size="A4" style={{ position: "relative" }}>
@@ -136,6 +150,9 @@ const PageFive = ({
         </Text>
         <Text>{number_of_stockholders_with_more_shares_each}</Text>
       </View>
+      <Text style={styles.totalAsset}>
+        {total_assets_based_on_latest_audited}
+      </Text>
 
       <View style={styles.stockHolderInformation}>
         {stock_holders_information.slice(0, 7).map((txt, index) => (
@@ -159,7 +176,7 @@ const PageFive = ({
 
             <View style={styles.shareSView}>
               <Text style={styles.percentOfOwnership}>
-                {txt.percent_of_ownership}
+                {txt.percent_of_ownership}%
               </Text>
               <Text style={styles.ammountPaid}>{txt.amount_paid}</Text>
               <Text>{txt.tax_id_number}</Text>
@@ -167,14 +184,12 @@ const PageFive = ({
           </View>
         ))}
       </View>
-      <Text style={styles.totalAsset}>
-        {total_assets_based_on_latest_audited}
-      </Text>
-      {/* <View style={styles.totalAmountSubscribeCapital}>
-        <Text>0000000</Text>
-        <Text>100%</Text>
-      </View> */}
 
+      <View style={styles.totalAmountSubscribeCapital}>
+        <Text style={styles.totalAmountSubscribeCapital1}>0000000</Text>
+        <Text style={styles.totalAmountSubscribeCapital2}>100%</Text>
+        <Text style={styles.totalAmountSubscribeCapital3}>0.00</Text>
+      </View>
       <Image
         style={{
           position: "absolute",

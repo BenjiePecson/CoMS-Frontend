@@ -8,13 +8,15 @@ const UserState = {
 
 export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
   let response = await axios.get(`/login/success`, { withCredentials: true });
-  console.log(response.data);
-  if (response.data.user != null) {
-    localStorage.setItem("accessToken", `BEARER ${response.data.user.jwtAccessToken}`);
+  if (response.data.session.accessToken != null) {
+    localStorage.setItem(
+      "accessToken",
+      `BEARER ${response.data.session.accessToken}`
+    );
   } else {
     localStorage.removeItem("accessToken");
   }
-  return response.data.user;
+  return response.data.session.passport.user;
 });
 
 const initialState = {

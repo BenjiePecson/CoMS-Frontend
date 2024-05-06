@@ -30,23 +30,20 @@ import { fetchUser } from "./user/store/user/UserSlice";
 
 // axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
-axios.defaults.baseURL = import.meta.env.VITE_VERCEL_SERVER_URL;
+axios.defaults.baseURL = import.meta.env.VITE_VERCEL_LOCALHOST_SERVER_URL;
 axios.defaults.withCredentials = true;
-
 
 // http://192.168.88.214:5173/
 // http://192.168.88.214:5173
 // axios.defaults.headers.common["Authorization"] =
 //   localStorage.getItem("accessToken");
 
-
-
 function getCookie(cname) {
   let name = cname + "=";
-  let ca = document.cookie.split(';');
-  for(let i = 0; i < ca.length; i++) {
+  let ca = document.cookie.split(";");
+  for (let i = 0; i < ca.length; i++) {
     let c = ca[i];
-    while (c.charAt(0) == ' ') {
+    while (c.charAt(0) == " ") {
       c = c.substring(1);
     }
     if (c.indexOf(name) == 0) {
@@ -56,10 +53,10 @@ function getCookie(cname) {
   return "";
 }
 
-console.log(getCookie("accessToken"));
+// console.log(getCookie("accessToken"));
 
 function App() {
-  const user = useSelector((state) => state.user.user);
+  
   const dispatch = useDispatch();
 
   useEffect(() => {

@@ -1,7 +1,6 @@
 import React from "react";
 import { Page, Text, Image, StyleSheet, View } from "@react-pdf/renderer";
 import pageThree from "../photos/page3.jpg";
-import { useSelector } from "react-redux";
 
 const authorizedCapitalStock = [
   {
@@ -20,6 +19,20 @@ const authorizedCapitalStock = [
   },
   {
     id: 3,
+    tos: "COMMON",
+    nos: "6,000,000",
+    psv: "1.0",
+    amt: "6,000,000",
+  },
+  {
+    id: 4,
+    tos: "COMMON",
+    nos: "6,000,000",
+    psv: "1.0",
+    amt: "6,000,000",
+  },
+  {
+    id: 5,
     tos: "COMMON",
     nos: "6,000,000",
     psv: "1.0",
@@ -57,6 +70,26 @@ const filipinosubscribeCapital = [
     amount: "1,475,099",
     percent_of_ownership: "66.290%",
   },
+  {
+    id: 4,
+    number_of_stock_holders: "8",
+    types_of_shares: "COMMON",
+    number_of_shares: "1,475,099",
+    number_of_shares_in_hands: "",
+    par_or_stated_value: "1",
+    amount: "1,475,099",
+    percent_of_ownership: "66.290%",
+  },
+  {
+    id: 5,
+    number_of_stock_holders: "8",
+    types_of_shares: "COMMON",
+    number_of_shares: "1,475,099",
+    number_of_shares_in_hands: "",
+    par_or_stated_value: "1",
+    amount: "1,475,099",
+    percent_of_ownership: "66.290%",
+  },
 ];
 const foreignSubscribeCapital = [
   {
@@ -81,6 +114,39 @@ const foreignSubscribeCapital = [
     amount: "1.00",
     percent_of_ownership: "0.00%",
   },
+  {
+    id: 3,
+    nationality: "AUSTRALIAN",
+    number_of_stock_holders: "1",
+    types_of_shares: "COMMON",
+    number_of_shares: "1",
+    number_of_shares_in_hands: "",
+    par_or_stated_value: "1.00",
+    amount: "1.00",
+    percent_of_ownership: "0.00%",
+  },
+  {
+    id: 4,
+    nationality: "AUSTRALIAN",
+    number_of_stock_holders: "1",
+    types_of_shares: "COMMON",
+    number_of_shares: "1",
+    number_of_shares_in_hands: "",
+    par_or_stated_value: "1.00",
+    amount: "1.00",
+    percent_of_ownership: "0.00%",
+  },
+  {
+    id: 5,
+    nationality: "AUSTRALIAN",
+    number_of_stock_holders: "1",
+    types_of_shares: "COMMON",
+    number_of_shares: "1",
+    number_of_shares_in_hands: "",
+    par_or_stated_value: "1.00",
+    amount: "1.00",
+    percent_of_ownership: "0.00%",
+  },
 ];
 
 const styles = StyleSheet.create({
@@ -94,14 +160,14 @@ const styles = StyleSheet.create({
   },
   //Authorize Capital Stock
   autorizedCapitalStock: {
-    marginTop: 169,
+    marginTop: 170,
     position: "absolute",
   },
   displayFlex1: {
     display: "flex",
     flexDirection: "row",
     fontFamily: "Times-Bold",
-    fontSize: "10px",
+    fontSize: "8px",
     marginLeft: 150,
   },
   authorizedCapitalStock1: { width: "20%" },
@@ -127,14 +193,14 @@ const styles = StyleSheet.create({
 
   //Filipino Subscribe Capital
   filipinosubscribeCapitalStyle: {
-    marginTop: 288,
+    marginTop: 285,
     position: "absolute",
   },
   displayFlex2: {
     display: "flex",
     flexDirection: "row",
     fontFamily: "Times-Bold",
-    fontSize: "10px",
+    fontSize: "8px",
     marginLeft: 50,
   },
   fcs1: {
@@ -159,7 +225,7 @@ const styles = StyleSheet.create({
     marginLeft: 236,
   },
   fcs9: { width: "58%" },
-  fcs10: { width: "30%" },
+  fcs10: { width: "28%" },
 
   //FOREIGN SUBSCRIBED CAPITAL
   foreignsubscribeCapitalStyle: {
@@ -170,11 +236,11 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     fontFamily: "Times-Bold",
-    fontSize: "10px",
+    fontSize: "8px",
     marginLeft: 20,
   },
   fSubCap1: {
-    fontSize: "8px",
+    fontSize: "7px",
     width: "15%",
   },
   fSubCap2: {
@@ -275,23 +341,27 @@ const styles = StyleSheet.create({
 });
 
 function PageThree({
-  auth_capital_stocks,
-  auth_capital_total_number_of_shares,
-  auth_capital_total_amount,
+  corporate_name,
+  auth_capital_stock,
+  auth_capital_stock_total_number_of_shares,
+  auth_capital_stock_total_amount,
   subscribe_capital_filipino,
-  sub_total_amount_filipino,
-  sub_total_number_of_shares_filipino,
-  sub_total_ownership_filipino,
   subscribe_capital_foreign,
+  sub_total_number_of_shares_filipino,
+  sub_total_amount_filipino,
+  sub_total_ownership_filipino,
+  percentage_of_foreign_equity,
+  sub_total_number_of_shares_foreign,
+  sub_total_amount_foreign,
+  sub_total_ownership_foreign,
 }) {
   return (
     <Page size="A4" style={{ position: "relative" }}>
-      <Text style={styles.corporateName}>Offshore BPO Concept Services</Text>
       <View style={styles.autorizedCapitalStock}>
-        {auth_capital_stocks.map((txt, index) => (
+        {auth_capital_stock.map((txt, index) => (
           <View key={index} style={styles.displayFlex1}>
             <Text style={styles.authorizedCapitalStock1}>
-              {txt.type_of_shares.toUpperCase()}
+              {txt.type_of_shares}
             </Text>
             <Text style={styles.authorizedCapitalStock2}>
               {txt.number_of_shares}
@@ -303,14 +373,7 @@ function PageThree({
           </View>
         ))}
       </View>
-      <View style={styles.displayFlexTotal}>
-        <Text style={styles.authorizedCapitalStockTotal1}>
-          {auth_capital_total_number_of_shares}
-        </Text>
-        <Text style={styles.authorizedCapitalStockTotal2}>
-          {auth_capital_total_amount}
-        </Text>
-      </View>
+
       <View style={styles.filipinosubscribeCapitalStyle}>
         {subscribe_capital_filipino.map((txt, index) => (
           <View key={index} style={styles.displayFlex2}>
@@ -325,16 +388,9 @@ function PageThree({
           </View>
         ))}
       </View>
-
-      <View style={styles.displayTotalFlex2}>
-        <Text style={styles.fcs9}>{sub_total_number_of_shares_filipino}</Text>
-        <Text style={styles.fcs10}>{sub_total_amount_filipino}</Text>
-        <Text>{sub_total_ownership_filipino}%</Text>
-      </View>
-
       <View style={styles.foreignsubscribeCapitalStyle}>
-        {subscribe_capital_foreign.map((txt) => (
-          <View key={txt.id} style={styles.displayFlex3}>
+        {subscribe_capital_foreign.map((txt, index) => (
+          <View key={index} style={styles.displayFlex3}>
             <Text style={styles.fSubCap1}>{txt.nationality}</Text>
             <Text style={styles.fSubCap2}>{txt.number_of_stock_holders}</Text>
             <Text style={styles.fSubCap3}>{txt.types_of_shares}</Text>
@@ -346,11 +402,37 @@ function PageThree({
           </View>
         ))}
       </View>
+
+      <Text style={styles.corporateName}>{corporate_name}</Text>
+
+      <View style={styles.displayFlexTotal}>
+        <Text style={styles.authorizedCapitalStockTotal1}>
+          {auth_capital_stock_total_number_of_shares}
+        </Text>
+        <Text style={styles.authorizedCapitalStockTotal2}>
+          {auth_capital_stock_total_amount}
+        </Text>
+      </View>
+
+      <View style={styles.displayTotalFlex2}>
+        <Text style={styles.fcs9}>{sub_total_number_of_shares_filipino}</Text>
+        <Text style={styles.fcs10}>{sub_total_amount_filipino}</Text>
+        <Text>{sub_total_ownership_filipino}%</Text>
+      </View>
+
       <View style={styles.foreignEquity}>
-        <Text style={styles.foreignEquityText1}>33.710%</Text>
-        <Text style={styles.foreignEquityText2}>750,000</Text>
-        <Text style={styles.foreignEquityText3}>750,000.00</Text>
-        <Text style={styles.foreignEquityText4}>37.710%</Text>
+        <Text style={styles.foreignEquityText1}>
+          {percentage_of_foreign_equity}%
+        </Text>
+        <Text style={styles.foreignEquityText2}>
+          {sub_total_number_of_shares_foreign}
+        </Text>
+        <Text style={styles.foreignEquityText3}>
+          {sub_total_amount_foreign}
+        </Text>
+        <Text style={styles.foreignEquityText4}>
+          {sub_total_ownership_foreign}%
+        </Text>
       </View>
 
       <View style={styles.foreignEquity2}>

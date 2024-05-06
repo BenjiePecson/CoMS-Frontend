@@ -17,44 +17,26 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   text1_1: {
-    marginBottom: 19,
+    height: "30px",
   },
   text1_1_1: {
-    marginBottom: 20,
+    height: "32px",
   },
   text1_2: {
-    marginBottom: 27,
+    height: "39px",
   },
   text1_3: {
-    marginBottom: 15,
+    height: "26px",
   },
-  text1_4: {
-    marginBottom: 18,
-  },
-  text1_5: {
-    marginBottom: 23,
-  },
-  text1_6: {
-    marginBottom: 30,
-  },
-  text2_1_1: {
-    marginBottom: 35,
-  },
-  text2_2: {
-    marginBottom: 35,
-  },
-  text2_3: {
-    marginBottom: 20,
-  },
-  text2_4: {
-    marginBottom: 20,
-  },
-  text2_5: {
-    marginBottom: 20,
-  },
-  text2_6: {
-    marginBottom: 30,
-  },
+  text1_4: { height: "30px" },
+  text1_5: { height: "34px" },
+  text1_6: {},
+  text2_1_1: { height: "45px" },
+  text2_2: { height: "48px" },
+  text2_3: { height: "33px" },
+  text2_4: { height: "30px" },
+  text2_5: { height: "32px" },
+  text2_6: { height: "40px" },
   view2: {
     fontFamily: "Times-Bold",
     fontSize: "10px",

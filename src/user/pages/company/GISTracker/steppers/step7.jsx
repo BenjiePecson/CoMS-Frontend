@@ -68,13 +68,45 @@ const step7 = () => {
                   industry_classification={formData.industry_classification}
                 />
                 <PageTwo natureOfService={formData.nature_of_business} />
-                {/* <PageThree
-                  auth_capital_stocks={formData.auth_capital_stocks}
-                  auth_capital_total_number_of_shares={
-                    formData.auth_capital_total_number_of_shares
+                <PageThree
+                  corporate_name={formData.corporate_name}
+                  auth_capital_stock={
+                    formData.auth_capital_stock.capital_stocks
                   }
-                  auth_capital_total_amount={formData.auth_capital_total_amount}
-                /> */}
+                  auth_capital_stock_total_number_of_shares={
+                    formData.auth_capital_stock.total_number_of_shares
+                  }
+                  auth_capital_stock_total_amount={
+                    formData.auth_capital_stock.total_amount
+                  }
+                  subscribe_capital_filipino={
+                    formData.subscribe_capital.filipino
+                  }
+                  subscribe_capital_foreign={formData.subscribe_capital.foreign}
+                  sub_total_number_of_shares_filipino={
+                    formData.subscribe_capital
+                      .sub_total_number_of_shares_filipino
+                  }
+                  sub_total_amount_filipino={
+                    formData.subscribe_capital.sub_total_amount_filipino
+                  }
+                  sub_total_ownership_filipino={
+                    formData.subscribe_capital.sub_total_ownership_filipino
+                  }
+                  percentage_of_foreign_equity={
+                    formData.subscribe_capital.percentage_of_foreign_equity
+                  }
+                  sub_total_number_of_shares_foreign={
+                    formData.subscribe_capital
+                      .sub_total_number_of_shares_foreign
+                  }
+                  sub_total_amount_foreign={
+                    formData.subscribe_capital.sub_total_amount_foreign
+                  }
+                  sub_total_ownership_foreign={
+                    formData.subscribe_capital.sub_total_ownership_foreign
+                  }
+                />
                 <PageFour
                   directors_or_officers={formData.directors_or_officers}
                   corporate_name={formData.corporate_name}
@@ -94,8 +126,36 @@ const step7 = () => {
                     formData.stock_holders_information.information
                   }
                 />
-                <PageSix />
-                <PageSeven />
+                <PageSix
+                  corporate_name={formData.corporate_name}
+                  total_number_of_stockholders={
+                    formData.total_number_of_stockholders
+                  }
+                  number_of_stockholders_with_more_shares_each={
+                    formData.number_of_stockholders_with_more_shares_each
+                  }
+                  total_assets_based_on_latest_audited={
+                    formData.total_assets_based_on_latest_audited
+                  }
+                  stock_holders_information={
+                    formData.stock_holders_information.information
+                  }
+                />
+                <PageSeven
+                  corporate_name={formData.corporate_name}
+                  total_number_of_stockholders={
+                    formData.total_number_of_stockholders
+                  }
+                  number_of_stockholders_with_more_shares_each={
+                    formData.number_of_stockholders_with_more_shares_each
+                  }
+                  total_assets_based_on_latest_audited={
+                    formData.total_assets_based_on_latest_audited
+                  }
+                  stock_holders_information={
+                    formData.stock_holders_information.information
+                  }
+                />
                 <PageEight />
                 <PageNine
                   corporate_secretary={formData.corporate_secretary}

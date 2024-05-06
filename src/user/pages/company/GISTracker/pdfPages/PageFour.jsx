@@ -79,14 +79,14 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   directorsOfficer: {
-    marginTop: 148,
-    marginLeft: 35,
+    marginTop: 146,
+    marginLeft: 32,
   },
   directorsOfficerInfo: {
     display: "flex",
     flexDirection: "row",
     margin: "3px",
-    height: "23px",
+    height: "24px",
   },
   nameAddress: {
     width: "162px",
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   incr: { width: "35px", fontFamily: "Times-Bold", fontSize: "10px" },
   board: { width: "35px", fontFamily: "Times-Bold", fontSize: "10px" },
   gender: { width: "38px", fontFamily: "Times-Bold", fontSize: "10px" },
-  stockHolder: { width: "35px", fontFamily: "Times-Bold", fontSize: "10px" },
+  stockHolder: { width: "37px", fontFamily: "Times-Bold", fontSize: "10px" },
   officer: { width: "50px", fontFamily: "Times-Bold", fontSize: "7px" },
   execCom: { width: "35px", fontFamily: "Times-Bold", fontSize: "10px" },
   tin: { width: "", fontFamily: "Times-Bold", fontSize: "10px" },

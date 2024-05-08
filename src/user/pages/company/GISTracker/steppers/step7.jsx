@@ -106,6 +106,12 @@ const step7 = () => {
                   sub_total_ownership_foreign={
                     formData.subscribe_capital.sub_total_ownership_foreign
                   }
+                  subscribe_capital_total_amount={
+                    formData.subscribe_capital.total_amount
+                  }
+                  subscribe_capital_total_percent_of_ownership={
+                    formData.subscribe_capital.total_percent_of_ownership
+                  }
                 />
                 <PageFour
                   directors_or_officers={formData.directors_or_officers}

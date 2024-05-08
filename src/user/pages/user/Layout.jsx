@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, Outlet, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import NavBar from "../../components/NavBar";
 import axios from "axios";
 import { useSelector } from "react-redux";
@@ -8,7 +8,6 @@ const Layout = () => {
   const [active, setActive] = useState("dashboard");
   const [isDarkMode, setIsDarkMode] = useState(false);
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
 
   const user = useSelector((state) => state.user.user);
 
@@ -71,21 +70,10 @@ const Layout = () => {
   );
 
   const logout = async () => {
-    let response = await axios.get("/logout", { withCredentials: true });
-    // setUser(response.data.user);
-    if (response.data) {
-      localStorage.removeItem("accessToken");
-      navigate("/login");
-    }
+    localStorage.removeItem("access_token");
+    navigate("/login");
+    return;
   };
-
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    console.log(token);
-    if (token == null || token == undefined) {
-      navigate("/login");
-    }
-  }, [user]);
 
   useEffect(() => {
     setActive(
@@ -95,6 +83,10 @@ const Layout = () => {
         : `/${window.location.pathname.split("/")[1]}`
     );
   }, [window.location.pathname]);
+
+  useEffect(() => {
+    console.log("test");
+  }, []);
 
   return (
     <div>

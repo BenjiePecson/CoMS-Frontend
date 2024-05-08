@@ -1,28 +1,47 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { fetchUser } from "../store/user/UserSlice";
+import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 
 const Login = () => {
-  
   const user = useSelector((state) => state.user.user);
   const navigate = useNavigate();
-  const handleLogin = async (e) => {
-    window.open(
-      `${import.meta.env.VITE_VERCEL_LOCALHOST_SERVER_URL}/auth/google`,
-      "_self"
-    );
-  };
+  const dispatch = useDispatch();
+
+  const googleLogin = useGoogleLogin({
+    flow: "auth-code",
+    onSuccess: async (codeResponse) => {
+      const response = await axios.post("/auth/google", {
+        code: codeResponse.code,
+      });
+
+      localStorage.setItem(
+        "access_token",
+        `${response.data.token_type} ${response.data.access_token}`
+      );
+      navigate("/company");
+      document.getElementById("overlay").close();
+    },
+    onError: (errorResponse) => {
+      console.log(errorResponse);
+      document.getElementById("overlay").close();
+    },
+    onNonOAuthError: (er) => {
+      document.getElementById("overlay").close();
+    },
+  });
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    console.log(token);
+    const token = localStorage.getItem("access_token");
     if (token != null && token != undefined) {
       navigate("/company");
     }
-  }, [user]);
+  }, []);
 
   return (
-    <>  
+    <>
       <div className="flex flex-row w-full min-h-screen justify-center min-w-screen">
         <div className="w-full md:w-2/5 px-[50px] mt-64">
           <div className="text-center text-color-1">
@@ -36,11 +55,12 @@ const Login = () => {
               Sign Up
             </span>
           </div>
-          {/* <Link to={"/company"}> */}
           <button
             className="poppins-regular text-color-1 w-full bg-white h-[61px] mx-auto text-center border border-[#70746F] rounded-xl flex flex-row justify-center gap-2 items-center mt-10"
             onClick={(e) => {
-              handleLogin(e);
+              document.getElementById("overlay").showModal();
+
+              googleLogin();
             }}
           >
             <img
@@ -50,7 +70,6 @@ const Login = () => {
             />
             Google
           </button>
-          {/* </Link> */}
         </div>
         <div className="w-full bg-white hidden md:flex">
           <img
@@ -60,6 +79,10 @@ const Login = () => {
           />
         </div>
       </div>
+
+      <dialog id="overlay" className="modal">
+        <span className="loading loading-spinner loading-lg"></span>
+      </dialog>
     </>
   );
 };

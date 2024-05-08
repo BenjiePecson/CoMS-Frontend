@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { fetchRecords } from "../../../store/GIS/GISRecordSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../../../components/Header";
+import { showAlert } from "../../../../assets/global";
 
 const MinutesOfMeetings = () => {
   const { companyId } = useParams();
@@ -12,7 +13,7 @@ const MinutesOfMeetings = () => {
     board_meeting_date: "",
     type_of_meeting: "",
     place_of_meeting: "",
-    qourum: "",
+    quorum: "",
   };
   const [errors, setErrors] = useState([]);
   const [formData, setFormData] = useState(minutesOfMeeting);
@@ -21,7 +22,7 @@ const MinutesOfMeetings = () => {
       board_meeting_date: "2024-05-01",
       type_of_meeting: "Regular",
       place_of_meeting: "",
-      qourum: "",
+      quorum: "",
     },
   ]);
   const [selectedIndex, setSelectedIndex] = useState();
@@ -49,7 +50,7 @@ const MinutesOfMeetings = () => {
                   <td>{record.board_meeting_date}</td>
                   <td>{record.type_of_meeting}</td>
                   <td>{record.place_of_meeting}</td>
-                  <td>{record.qourum}</td>
+                  <td>{record.quorum}</td>
                   <td>
                     <div className="flex flex-row justify-between gap-2">
                       <button
@@ -91,6 +92,140 @@ const MinutesOfMeetings = () => {
       </table>
     </>
   );
+
+  const handleSubmit = async (e, isEdit = false) => {
+    if (await isFormValid()) {
+      if (isEdit) {
+        //for edit function
+
+        let status = "error";
+        let message = "Failed to update the record.";
+
+        try {
+          console.log(formData);
+          let updatedRecords = records.map((record, index) => {
+            if (index === selectedIndex) {
+              return {
+                board_meeting_date: formData.board_meeting_date,
+                type_of_meeting: formData.type_of_meeting,
+                place_of_meeting: formData.place_of_meeting,
+                quorum: formData.quorum,
+              };
+            }
+            return record;
+          });
+          setRecords(updatedRecords);
+          status = "success";
+          message = "Record was added successfully.";
+
+          console.log("Save");
+        } catch (error) {
+          console.log(error);
+        } finally {
+          showAlert(status, message);
+          setFormData(minutesOfMeeting);
+          document.getElementById("editModal").close();
+        }
+      } else {
+        //for add function
+        // let status = "error";
+        // let message = "Failed to save the record.";
+        // try {
+        //   // let response = await axios.post(`/board-meetings/notice-of-meeting/${companyId}`, formData);
+        //   setRecords([...records, formData]);
+        //   status = "success";
+        //   message = "Record was added successfully.";
+        // } catch (error) {
+        //   console.log(error);
+        // } finally {
+        //   showAlert(status, message);
+        //   setFormData(noticeOfMeeting);
+        //   document.getElementById("addModal").close();
+        // }
+      }
+    } else {
+      console.log("Invalid");
+    }
+  };
+
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    console.log(name);
+    setFormData({ ...formData, [name]: value });
+
+    let error = "";
+    if (name == "board_meeting_date") {
+      if (value == "") {
+        error = "Board Meeting Date is required";
+        setErrors({
+          ...errors,
+          board_meeting_date: error,
+        });
+      } else {
+        setErrors({ ...errors, board_meeting_date: "" });
+      }
+    }
+
+    if (name == "type_of_meeting") {
+      if (value == "") {
+        error = "Type of Meeting is required";
+        setErrors({
+          ...errors,
+          type_of_meeting: error,
+        });
+      } else {
+        setErrors({ ...errors, type_of_meeting: "" });
+      }
+    }
+
+    if (name == "place_of_meeting") {
+      if (value == "") {
+        error = "Place of Meeting is required";
+        setErrors({
+          ...errors,
+          place_of_meeting: error,
+        });
+      } else {
+        setErrors({ ...errors, place_of_meeting: "" });
+      }
+    }
+
+    if (name == "quorum") {
+      if (value == "") {
+        error = "Quorum is required";
+        setErrors({
+          ...errors,
+          quorum: error,
+        });
+      } else {
+        setErrors({ ...errors, quorum: "" });
+      }
+    }
+  };
+
+  const isFormValid = async (isEdit) => {
+    let newErrors = {};
+
+    if (formData.board_meeting_date == "") {
+      newErrors.board_meeting_date = "Board Meeting Date is required";
+    }
+
+    if (formData.type_of_meeting == "") {
+      newErrors.type_of_meeting = "Type of Meeting is required";
+    }
+
+    if (formData.place_of_meeting == "") {
+      newErrors.place_of_meeting = "Place of Meeting is required";
+    }
+
+    if (formData.quorum == "") {
+      newErrors.quorum = "Quorum is required";
+    }
+
+    setErrors({ ...errors, ...newErrors });
+
+    return Object.keys(newErrors).length == 0;
+  };
 
   useEffect(() => {
     dispatch(fetchRecords(companyId));
@@ -134,7 +269,7 @@ const MinutesOfMeetings = () => {
                 className={`input input-bordered w-full ${
                   errors.board_meeting_date && `input-error`
                 }`}
-                name="notice_date"
+                name="board_meeting_date"
                 value={formData.board_meeting_date}
                 onChange={(e) => {
                   handleOnChange(e);
@@ -176,7 +311,16 @@ const MinutesOfMeetings = () => {
                   Place of Meeting <span className="text-red-500">*</span>
                 </span>
               </div>
-              <textarea className="textarea textarea-bordered h-24"></textarea>
+              <textarea
+                className={`textarea textarea-bordered h-24 w-full ${
+                  errors.place_of_meeting && `textarea-error`
+                }`}
+                name="place_of_meeting"
+                value={formData.place_of_meeting}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              ></textarea>
               {errors.place_of_meeting && (
                 <span className="text-[12px] text-red-500">
                   {errors.place_of_meeting}
@@ -196,11 +340,11 @@ const MinutesOfMeetings = () => {
                   <span>Yes</span>
                   <input
                     type="radio"
-                    name="radio-2"
+                    name="quorum"
                     className="radio radio-primary"
                     value={"Yes"}
-                    onChange={(e)=>{
-                      console.log(e.target.value);
+                    onChange={(e) => {
+                      handleOnChange(e);
                     }}
                   />
                 </div>
@@ -208,11 +352,11 @@ const MinutesOfMeetings = () => {
                   <span>No</span>
                   <input
                     type="radio"
-                    name="radio-2"
+                    name="quorum"
                     className="radio radio-primary"
                     value={"No"}
-                    onChange={(e)=>{
-                      console.log(e.target.value);
+                    onChange={(e) => {
+                      handleOnChange(e);
                     }}
                   />
                 </div>
@@ -239,5 +383,4 @@ const MinutesOfMeetings = () => {
     </div>
   );
 };
-``
 export default MinutesOfMeetings;

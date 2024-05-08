@@ -6,17 +6,36 @@ const UserState = {
   username: "",
 };
 
-export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
-  let response = await axios.get(`/login/success`, { withCredentials: true });
-  if (response.data.session.accessToken != null) {
-    localStorage.setItem(
-      "accessToken",
-      `BEARER ${response.data.session.accessToken}`
-    );
-  } else {
-    localStorage.removeItem("accessToken");
+export const fetchUser = createAsyncThunk("user/fetchUser", async (token) => {
+  const access_token = token.split(" ")[1];
+  try {
+    const response = await axios.post("/auth/check", {
+      token: access_token,
+    });
+    console.log(response.data);
+
+    // let response = await axios.get(
+    //   `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
+    // );
+
+    // console.log(response.data);
+  } catch (error) {
+    console.log(error);
   }
-  return response.data.session.passport.user;
+  // let response = await axios.post("auth/check", {
+  //   token,
+  // });
+  // console.log(response.data);
+
+  // if (response.data.session.accessToken != null) {
+  //   localStorage.setItem(
+  //     "accessToken",
+  //     `BEARER ${response.data.session.accessToken}`
+  //   );
+  // } else {
+  //   localStorage.removeItem("accessToken");
+  // }
+  return {};
 });
 
 const initialState = {
@@ -28,11 +47,7 @@ const initialState = {
 const UserSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {
-    setUser: (state, action) => {
-      state.user = action.payload.record;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     //fetch user
     builder.addCase(fetchUser.pending, (state) => {
@@ -49,5 +64,5 @@ const UserSlice = createSlice({
   },
 });
 
-export const { setUser } = UserSlice.actions;
+export const {} = UserSlice.actions;
 export default UserSlice.reducer;

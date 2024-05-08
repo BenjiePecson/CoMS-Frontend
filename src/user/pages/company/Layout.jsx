@@ -567,13 +567,6 @@ const Layout = () => {
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (token == null || token == undefined) {
-      navigate("/login");
-    }
-  }, [user]);
-
-  useEffect(() => {
     setActive(
       window.location.pathname.split("/")[3] === "" ||
         window.location.pathname.split("/")[3] === undefined

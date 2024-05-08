@@ -21,6 +21,7 @@ import {
 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { fetchUser } from "../../store/user/UserSlice.js";
 
 const SelectCompany = () => {
   // const [companies, setCompanies] = useState(data);

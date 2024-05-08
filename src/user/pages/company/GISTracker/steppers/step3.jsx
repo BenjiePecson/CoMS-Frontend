@@ -1078,8 +1078,7 @@ const step3 = () => {
                   total_percent_of_ownership:
                     subTotalOwnershipForeign +
                     formData.subscribe_capital.sub_total_ownership_filipino,
-                  percentage_of_foreign_equity:
-                    subTotalOwnershipForeign
+                  percentage_of_foreign_equity: subTotalOwnershipForeign,
                 })
               );
             }}

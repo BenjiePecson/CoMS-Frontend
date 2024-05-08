@@ -493,13 +493,48 @@ const create = () => {
       <div className="bg-white w-full rounded-xl shadow-lg">
         <div className="flex flex-col items-center justify-center py-5">
           <ul className="steps steps-horizontal w-full z-0">
-            <li className={stepStyle(1)}></li>
-            <li className={stepStyle(2)}></li>
-            <li className={stepStyle(3)}></li>
-            <li className={stepStyle(4)}></li>
-            <li className={stepStyle(5)}></li>
-            <li className={stepStyle(6)}></li>
-            <li className={stepStyle(7)}></li>
+            <li
+              className={stepStyle(1)}
+              onClick={() => {
+                setStep(1);
+              }}
+            ></li>
+            <li
+              className={stepStyle(2)}
+              onClick={() => {
+                setStep(2);
+              }}
+            ></li>
+            <li
+              className={stepStyle(3)}
+              onClick={() => {
+                setStep(3);
+              }}
+            ></li>
+            <li
+              className={stepStyle(4)}
+              onClick={() => {
+                setStep(4);
+              }}
+            ></li>
+            <li
+              className={stepStyle(5)}
+              onClick={() => {
+                setStep(5);
+              }}
+            ></li>
+            <li
+              className={stepStyle(6)}
+              onClick={() => {
+                setStep(6);
+              }}
+            ></li>
+            <li
+              className={stepStyle(7)}
+              onClick={() => {
+                setStep(7);
+              }}
+            ></li>
           </ul>
         </div>
         <hr />

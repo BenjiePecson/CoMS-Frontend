@@ -28,9 +28,9 @@ const styles = StyleSheet.create({
   text1_3: {
     height: "26px",
   },
-  text1_4: { height: "30px" },
-  text1_5: { height: "34px" },
-  text1_6: {},
+  text1_4: { height: "20px" },
+  text1_5: { height: "30px", width: "400px" },
+  text1_6: { width: "400px" },
   text2_1_1: { height: "45px" },
   text2_2: { height: "48px" },
   text2_3: { height: "33px" },

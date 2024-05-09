@@ -6,8 +6,12 @@ const UserState = {
   username: "",
 };
 
-export const fetchUser = createAsyncThunk("user/fetchUser", async (token) => {
-  const access_token = token.split(" ")[1];
+
+
+export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
+  const token = localStorage.getItem("access_token");
+  let access_token = token.split(" ")[1];
+
   try {
     const response = await axios.post("/auth/check", {
       token: access_token,
@@ -21,20 +25,8 @@ export const fetchUser = createAsyncThunk("user/fetchUser", async (token) => {
     // console.log(response.data);
   } catch (error) {
     console.log(error);
+    localStorage.removeItem("access_token");
   }
-  // let response = await axios.post("auth/check", {
-  //   token,
-  // });
-  // console.log(response.data);
-
-  // if (response.data.session.accessToken != null) {
-  //   localStorage.setItem(
-  //     "accessToken",
-  //     `BEARER ${response.data.session.accessToken}`
-  //   );
-  // } else {
-  //   localStorage.removeItem("accessToken");
-  // }
   return {};
 });
 

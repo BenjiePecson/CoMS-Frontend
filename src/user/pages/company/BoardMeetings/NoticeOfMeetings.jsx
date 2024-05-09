@@ -11,13 +11,16 @@ import Swal from "sweetalert2";
 const NoticeOfMeetings = () => {
   const { companyId } = useParams();
   const companyRecords = useSelector((state) => state.records.records);
+  const file = {
+    file: "",
+    fileName: "",
+  };
   const noticeOfMeeting = {
     notice_date: "",
     type_of_meeting: "",
     proposed_meeting_date: "",
     status: "",
-    file: "",
-    fileName: "",
+    files: [],
   };
 
   const dispatch = useDispatch();
@@ -30,8 +33,7 @@ const NoticeOfMeetings = () => {
       type_of_meeting: "Regular",
       proposed_meeting_date: "2024-05-01",
       status: "In Process",
-      file: "GIS_FORM_BLANK.pdf",
-      fileName: "GIS_FORM_BLANK.pdf",
+      files: []
     },
   ]);
   const [selectedIndex, setSelectedIndex] = useState();
@@ -94,12 +96,33 @@ const NoticeOfMeetings = () => {
                   <td>
                     {/* {record.status != "Notice Completed" && ( */}
                     <div className="flex flex-row justify-between gap-2">
+                      {/* <button>
+                        <svg
+                          width="44"
+                          height="37"
+                          viewBox="0 0 44 37"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <rect width="44" height="37" rx="10" fill="#273069" />
+                          <path
+                            d="M22.0003 20C23.1048 20 24.0003 19.1046 24.0003 18C24.0003 16.8954 23.1048 16 22.0003 16C20.8957 16 20.0003 16.8954 20.0003 18C20.0003 19.1046 20.8957 20 22.0003 20Z"
+                            fill="white"
+                          />
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M12.458 18C13.7323 13.9429 17.5226 11 22.0002 11C26.4778 11 30.2681 13.9429 31.5424 18C30.2682 22.0571 26.4778 25 22.0002 25C17.5226 25 13.7323 22.0571 12.458 18ZM26.0003 18C26.0003 20.2091 24.2094 22 22.0003 22C19.7911 22 18.0003 20.2091 18.0003 18C18.0003 15.7909 19.7911 14 22.0003 14C24.2094 14 26.0003 15.7909 26.0003 18Z"
+                            fill="white"
+                          />
+                        </svg>
+                      </button> */}
                       <button
                         onClick={() => {
                           if (record.status != "Notice Completed") {
                             setSelectedIndex(index);
                             setFormData(record);
-                            setErrors([]);
+                            // setErrors([]);
                             document.getElementById("editModal").showModal();
                           }
                         }}
@@ -172,6 +195,11 @@ const NoticeOfMeetings = () => {
         let status = "error";
         let message = "Failed to update the record.";
 
+        if(formData.status === "Notice Completed"){
+          toggleCompleted();
+          return;
+        }
+
         try {
           let updatedRecords = records.map((record, index) => {
             if (index === selectedIndex) {
@@ -242,6 +270,41 @@ const NoticeOfMeetings = () => {
         setErrors({ ...errors, notice_date: "" });
       }
     }
+    if (name == "type_of_meeting") {
+      if (value == "") {
+        error = "Type of Meeting is required";
+        setErrors({
+          ...errors,
+          type_of_meeting: error,
+        });
+      } else {
+        setErrors({ ...errors, type_of_meeting: "" });
+      }
+    }
+
+    if (name == "proposed_meeting_date") {
+      if (value == "") {
+        error = "Proposed Meeting Date is required";
+        setErrors({
+          ...errors,
+          proposed_meeting_date: error,
+        });
+      } else {
+        setErrors({ ...errors, proposed_meeting_date: "" });
+      }
+    }
+
+    if (name == "status") {
+      if (value == "") {
+        error = "Status is required";
+        setErrors({
+          ...errors,
+          status: error,
+        });
+      } else {
+        setErrors({ ...errors, status: "" });
+      }
+    }
   };
 
   const isFormValid = async (isEdit) => {
@@ -263,8 +326,8 @@ const NoticeOfMeetings = () => {
       newErrors.status = "Status is required";
     }
 
-    if (formData.file == "" && !isEdit) {
-      newErrors.file = "File is required";
+    if (formData.files.length === 0 && !isEdit) {
+      newErrors.files = "Please attach a file";
     }
 
     setErrors({ ...errors, ...newErrors });
@@ -289,6 +352,34 @@ const NoticeOfMeetings = () => {
           status = "success";
           message = "Record deleted successfully!";
           setRecords((data) => data.filter((u, idx) => idx !== index));
+        } catch (error) {
+          status = "error";
+          message = "Failed to delete record";
+          console.error("Error deleting a record: ", error);
+        } finally {
+          showAlert(status, message);
+        }
+      }
+    });
+  };
+
+  const toggleCompleted = (index) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#CF0404",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonColor: "#B4B4B8",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        let status = "";
+        let message = "";
+        try {
+          status = "success";
+          message = "Record deleted successfully!";
+          // setRecords((data) => data.filter((u, idx) => idx !== index));
         } catch (error) {
           status = "error";
           message = "Failed to delete record";
@@ -467,28 +558,98 @@ const NoticeOfMeetings = () => {
             <label className="form-control w-full">
               <div className="label">
                 <span className="poppins-regular text-[12px]">
-                  File <span className="text-red-500">*</span>
+                  Attach Files
                 </span>
+              </div>
+              <div className="flex flex-col w-full h-20 border border-dashed rounded-lg  justify-center items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-8 h-8 text-gray-400"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M11.47 2.47a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1-1.06 1.06l-3.22-3.22V16.5a.75.75 0 0 1-1.5 0V4.81L8.03 8.03a.75.75 0 0 1-1.06-1.06l4.5-4.5ZM3 15.75a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <h1 className="text-gray-400">Add files here</h1>
               </div>
               <input
                 type="file"
-                className={`file-input file-input-bordered w-full ${
-                  errors.file && `file-input-error`
-                }`}
+                hidden
                 name="file"
+                multiple
                 onChange={async (e) => {
                   const { name, value, files } = e.target;
+
+                  for (let i = 0; i < files.length; i++) {
+                    let file = {
+                      file: await convertBase64(files[i]),
+                      fileName: files[i].name,
+                    };
+                    formData.files.push(file);
+                  }
+
                   setFormData({
                     ...formData,
-                    file: await convertBase64(files[0]),
-                    fileName: files[0].name,
+                    files: formData.files,
                   });
+
+                  let error = "";
+
+                  if (formData.files.length == 0) {
+                    error = "Please attach a file";
+                    setErrors({
+                      ...errors,
+                      files: error,
+                    });
+                  } else {
+                    setErrors({ ...errors, files: "" });
+                  }
+
                 }}
               />
-              {errors.file && (
-                <span className="text-[12px] text-red-500">{errors.file}</span>
+              {errors.files && (
+                <span className="text-[12px] text-red-500">{errors.files}</span>
               )}
             </label>
+            <div className="flex flex-col gap-2">
+              {formData.files.map((file, index) => {
+                return (
+                  <div key={`file ${index}`}>
+                    <div className="flex flex-row items-center gap-2">
+                      <div className="badge badge-neutral">{file.fileName}</div>
+                      <button
+                        onClick={() => {
+                          console.log(`remove file ${index} ${file.fileName}`);
+                          setFormData({
+                            ...formData,
+                            files: formData.files.filter(
+                              (u, idx) => idx !== index
+                            ),
+                          });
+                        }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="w-6 h-6 text-red-400"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
             <button
               onClick={(e) => {
                 handleSubmit(e);
@@ -627,8 +788,8 @@ const NoticeOfMeetings = () => {
                   });
                 }}
               />
-              {errors.file && (
-                <span className="text-[12px] text-red-500">{errors.file}</span>
+              {errors.files && (
+                <span className="text-[12px] text-red-500">{errors.files}</span>
               )}
             </label>
             <button

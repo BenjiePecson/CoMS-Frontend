@@ -101,6 +101,7 @@ function PageOne({
   name_of_external_auditor,
   sec_accreditation_number,
   industry_classification,
+  primary_purpose,
 }) {
   return (
     <Page size="A4" style={{ position: "relative" }}>
@@ -123,7 +124,7 @@ function PageOne({
         <Text style={styles.text1_3}>{date_of_annual_meeting}</Text>
         <Text style={styles.text1_4}>{actual_date_of_annual_meeting}</Text>
         <Text style={styles.text1_5}>{complete_principal_office_address}</Text>
-        <Text>{complete_principal_office_address}</Text>
+        <Text style={styles.text1_5}>{complete_principal_office_address}</Text>
       </View>
       <View style={styles.view3}>
         <Text style={styles.text2_2_1}>{official_email_address}</Text>
@@ -135,7 +136,7 @@ function PageOne({
         <Text style={styles.text2_1}>{sec_accreditation_number}</Text>
       </View>
       <View style={styles.view5}>
-        <Text style={styles.text2_1}></Text>
+        <Text style={styles.text2_1}>{primary_purpose}</Text>
         <Text style={styles.text2_1}>{industry_classification}</Text>
       </View>
       <Image

@@ -47,8 +47,13 @@ const styles = StyleSheet.create({
   name: {
     fontFamily: "Times-Bold",
   },
+  nationality: { fontFamily: "Times-Roman" },
   address: {
     width: "130px",
+    fontFamily: "Times-Roman",
+  },
+  tin: {
+    textAlign: "center",
   },
   shareSubscribeView: {
     display: "flex",
@@ -105,7 +110,7 @@ const styles = StyleSheet.create({
     width: "42px",
   },
   ammountPaid: {
-    width: "48",
+    width: "58px",
   },
 
   totalAmountSubscribeCapital: {
@@ -170,7 +175,7 @@ const PageFive = ({
           <View key={index} style={styles.stockHolderInformationView}>
             <View style={styles.nameNationalityAddress}>
               <Text style={styles.name}>{txt.name}</Text>
-              <Text>{txt.nationality}</Text>
+              <Text style={styles.nationality}>{txt.nationality}</Text>
               <Text style={styles.address}>{txt.current_residual_address}</Text>
             </View>
             <View style={styles.shareSubscribeView}>
@@ -184,8 +189,12 @@ const PageFive = ({
                 </Text>
               </View>
               <View style={styles.shareSubscribeTotal}>
-                <Text style={styles.totalNumber}>{txt.total_number}</Text>
-                <Text style={styles.totalAmmount}>{txt.total_amount}</Text>
+                <Text style={styles.totalNumber}>
+                  {Number(txt.total_number).toFixed(2)}
+                </Text>
+                <Text style={styles.totalAmmount}>
+                  {formatNumberWithComma(Number(txt.total_amount).toFixed(2))}
+                </Text>
               </View>
             </View>
 
@@ -193,8 +202,10 @@ const PageFive = ({
               <Text style={styles.percentOfOwnership}>
                 {txt.percent_of_ownership}%
               </Text>
-              <Text style={styles.ammountPaid}>{txt.amount_paid}</Text>
-              <Text>{txt.tax_id_number}</Text>
+              <Text style={styles.ammountPaid}>
+                {formatNumberWithComma(Number(txt.amount_paid).toFixed(2))}
+              </Text>
+              <Text style={styles.tin}>{txt.tax_id_number}</Text>
             </View>
           </View>
         ))}

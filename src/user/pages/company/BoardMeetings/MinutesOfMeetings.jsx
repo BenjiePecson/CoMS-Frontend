@@ -1,33 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
-import { fetchRecords } from "../../../store/GIS/GISRecordSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../../../components/Header";
 import { showAlert } from "../../../../assets/global";
+import axios from "axios";
 
 const MinutesOfMeetings = () => {
   const { companyId } = useParams();
   const companyRecords = useSelector((state) => state.records.records);
   const minutesOfMeeting = {
-    board_meeting_date: "",
+    proposed_meeting_date: "",
     type_of_meeting: "",
     place_of_meeting: "",
     quorum: "",
   };
   const [errors, setErrors] = useState([]);
   const [formData, setFormData] = useState(minutesOfMeeting);
-  const [records, setRecords] = useState([
-    {
-      board_meeting_date: "2024-05-01",
-      type_of_meeting: "Regular",
-      place_of_meeting: "",
-      quorum: "",
-    },
-  ]);
+  const [records, setRecords] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState();
-
-  const dispatch = useDispatch();
 
   const table = (
     <>
@@ -47,7 +38,7 @@ const MinutesOfMeetings = () => {
             records.map((record, index) => {
               return (
                 <tr key={index}>
-                  <td>{record.board_meeting_date}</td>
+                  <td>{record.proposed_meeting_date}</td>
                   <td>{record.type_of_meeting}</td>
                   <td>{record.place_of_meeting}</td>
                   <td>{record.quorum}</td>
@@ -102,23 +93,27 @@ const MinutesOfMeetings = () => {
         let message = "Failed to update the record.";
 
         try {
-          console.log(formData);
-          let updatedRecords = records.map((record, index) => {
-            if (index === selectedIndex) {
-              return {
-                board_meeting_date: formData.board_meeting_date,
-                type_of_meeting: formData.type_of_meeting,
-                place_of_meeting: formData.place_of_meeting,
-                quorum: formData.quorum,
-              };
-            }
-            return record;
-          });
-          setRecords(updatedRecords);
-          status = "success";
-          message = "Record was added successfully.";
-
-          console.log("Save");
+          let response = await axios.patch(
+            `/minutes-of-meeting/${companyId}`,
+            formData
+          );
+          console.log(response.data);
+          if (response.data.success) {
+            let updatedRecords = records.map((record, index) => {
+              if (index === selectedIndex) {
+                return {
+                  proposed_meeting_date: formData.proposed_meeting_date,
+                  type_of_meeting: formData.type_of_meeting,
+                  place_of_meeting: formData.place_of_meeting,
+                  quorum: formData.quorum,
+                };
+              }
+              return record;
+            });
+            setRecords(updatedRecords);
+            status = "success";
+            message = "Record was added successfully.";
+          }
         } catch (error) {
           console.log(error);
         } finally {
@@ -150,19 +145,18 @@ const MinutesOfMeetings = () => {
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
-    console.log(name);
     setFormData({ ...formData, [name]: value });
 
     let error = "";
-    if (name == "board_meeting_date") {
+    if (name == "proposed_meeting_date") {
       if (value == "") {
         error = "Board Meeting Date is required";
         setErrors({
           ...errors,
-          board_meeting_date: error,
+          proposed_meeting_date: error,
         });
       } else {
-        setErrors({ ...errors, board_meeting_date: "" });
+        setErrors({ ...errors, proposed_meeting_date: "" });
       }
     }
 
@@ -206,8 +200,8 @@ const MinutesOfMeetings = () => {
   const isFormValid = async (isEdit) => {
     let newErrors = {};
 
-    if (formData.board_meeting_date == "") {
-      newErrors.board_meeting_date = "Board Meeting Date is required";
+    if (formData.proposed_meeting_date == "") {
+      newErrors.proposed_meeting_date = "Board Meeting Date is required";
     }
 
     if (formData.type_of_meeting == "") {
@@ -227,8 +221,17 @@ const MinutesOfMeetings = () => {
     return Object.keys(newErrors).length == 0;
   };
 
+  const fetchRecords = async () => {
+    try {
+      let response = await axios.get(`/minutes-of-meeting/${companyId}`);
+      setRecords(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    dispatch(fetchRecords(companyId));
+    fetchRecords();
   }, []);
 
   return (
@@ -267,17 +270,17 @@ const MinutesOfMeetings = () => {
               <input
                 type="date"
                 className={`input input-bordered w-full ${
-                  errors.board_meeting_date && `input-error`
+                  errors.proposed_meeting_date && `input-error`
                 }`}
-                name="board_meeting_date"
-                value={formData.board_meeting_date}
+                name="proposed_meeting_date"
+                value={formData.proposed_meeting_date}
                 onChange={(e) => {
                   handleOnChange(e);
                 }}
               />
-              {errors.board_meeting_date && (
+              {errors.proposed_meeting_date && (
                 <span className="text-[12px] text-red-500">
-                  {errors.board_meeting_date}
+                  {errors.proposed_meeting_date}
                 </span>
               )}
             </label>
@@ -291,6 +294,7 @@ const MinutesOfMeetings = () => {
               <select
                 className="select select-bordered"
                 name="type_of_meeting"
+                value={formData.type_of_meeting}
                 onChange={(e) => {
                   handleOnChange(e);
                 }}
@@ -343,6 +347,7 @@ const MinutesOfMeetings = () => {
                     name="quorum"
                     className="radio radio-primary"
                     value={"Yes"}
+                    checked={formData.quorum == "Yes"}
                     onChange={(e) => {
                       handleOnChange(e);
                     }}
@@ -355,6 +360,7 @@ const MinutesOfMeetings = () => {
                     name="quorum"
                     className="radio radio-primary"
                     value={"No"}
+                    checked={formData.quorum == "No"}
                     onChange={(e) => {
                       handleOnChange(e);
                     }}

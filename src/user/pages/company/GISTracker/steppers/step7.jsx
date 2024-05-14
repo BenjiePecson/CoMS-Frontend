@@ -66,6 +66,7 @@ const step7 = () => {
                   name_of_external_auditor={formData.name_of_external_auditor}
                   sec_accreditation_number={formData.sec_accreditation_number}
                   industry_classification={formData.industry_classification}
+                  primary_purpose={formData.primary_purpose}
                 />
                 <PageTwo natureOfService={formData.nature_of_business} />
                 <PageThree
@@ -105,6 +106,38 @@ const step7 = () => {
                   }
                   sub_total_ownership_foreign={
                     formData.subscribe_capital.sub_total_ownership_foreign
+                  }
+                  subscribe_capital_total_amount={
+                    formData.subscribe_capital.total_amount
+                  }
+                  subscribe_capital_total_percent_of_ownership={
+                    formData.subscribe_capital.total_percent_of_ownership
+                  }
+                  filipino_paid_up_capital={formData.paid_up_capital.filipino}
+                  foreign_paid_up_capital={formData.paid_up_capital.foreign}
+                  paid_up_sub_total_amount_filipino={
+                    formData.paid_up_capital.sub_total_amount_filipino
+                  }
+                  paid_sub_total_ownership_filipino={
+                    formData.paid_up_capital.sub_total_ownership_filipino
+                  }
+                  paid_sub_total_number_of_shares_filipino={
+                    formData.paid_up_capital.sub_total_number_of_shares_filipino
+                  }
+                  paid_up_sub_total_amount_foreign={
+                    formData.paid_up_capital.sub_total_amount_foreign
+                  }
+                  paid_sub_total_ownership_foreign={
+                    formData.paid_up_capital.sub_total_ownership_foreign
+                  }
+                  paid_sub_total_number_of_shares_foreign={
+                    formData.paid_up_capital.sub_total_number_of_shares_foreign
+                  }
+                  paid_up_capital_total_amount={
+                    formData.paid_up_capital.total_amount
+                  }
+                  paid_up_capital_total_percent_of_ownership={
+                    formData.paid_up_capital.total_percent_of_ownership
                   }
                 />
                 <PageFour

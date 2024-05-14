@@ -224,8 +224,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     marginLeft: 236,
   },
-  fcs9: { width: "58%" },
-  fcs10: { width: "28%" },
+  fcs9: { width: "200px" },
+  fcs10: { width: "95px" },
 
   //FOREIGN SUBSCRIBED CAPITAL
   foreignsubscribeCapitalStyle: {
@@ -276,16 +276,16 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   foreignEquityText1: {
-    width: "25%",
+    width: "117px",
   },
   foreignEquityText2: {
-    width: "42%",
+    width: "198px",
   },
   foreignEquityText3: {
-    width: "20%",
+    width: "104px",
   },
   foreignEquityText4: {
-    width: "15%",
+    width: "",
   },
 
   foreignEquity2: {
@@ -312,31 +312,49 @@ const styles = StyleSheet.create({
     fontSize: "10px",
     position: "absolute",
   },
-  filipinoPaidUpCapital: {
-    marginTop: 563,
-    marginLeft: 445,
-    fontFamily: "Times-Bold",
-    fontSize: "10px",
-    position: "absolute",
-    display: "flex",
-    flexDirection: "row",
-  },
+
   filipinoPaidUpCapitalText2: {
     width: "65%",
   },
 
-  //Foreign Paid-up Capital
-  foreignPaidUpCapital: {
-    marginTop: 638,
-    marginLeft: 445,
+  foreignPaidUpCapitalText1: {
+    width: "71%",
+  },
+  //Updated
+  filipinoPaidUpCapital: {
+    marginTop: 510,
+    position: "absolute",
+  },
+  filipinoPaidUpCapitalTotal: {
+    marginTop: 563,
+    display: "flex",
+    flexDirection: "row",
     fontFamily: "Times-Bold",
     fontSize: "10px",
     position: "absolute",
+    marginLeft: 236,
+  },
+  foreignPaidUpCapitalTotal: {
+    marginTop: 638,
     display: "flex",
     flexDirection: "row",
+    fontFamily: "Times-Bold",
+    fontSize: "10px",
+    position: "absolute",
+    marginLeft: 236,
   },
-  foreignPaidUpCapitalText1: {
-    width: "71%",
+  foreignPaidUpCapital: {
+    marginTop: 585,
+    position: "absolute",
+  },
+  totalPaidUp: {
+    marginTop: 650,
+    marginLeft: 435,
+    display: "flex",
+    flexDirection: "row",
+    fontFamily: "Times-Bold",
+    fontSize: "10px",
+    position: "absolute",
   },
 });
 
@@ -354,6 +372,17 @@ function PageThree({
   sub_total_number_of_shares_foreign,
   sub_total_amount_foreign,
   sub_total_ownership_foreign,
+  subscribe_capital_total_amount,
+  subscribe_capital_total_percent_of_ownership,
+  filipino_paid_up_capital,
+  foreign_paid_up_capital,
+  paid_up_sub_total_amount_filipino,
+  paid_sub_total_ownership_filipino,
+  paid_sub_total_number_of_shares_filipino,
+  paid_up_sub_total_amount_foreign,
+  paid_sub_total_ownership_foreign,
+  paid_sub_total_number_of_shares_foreign,
+  paid_up_capital_total_amount,
 }) {
   return (
     <Page size="A4" style={{ position: "relative" }}>
@@ -436,20 +465,65 @@ function PageThree({
       </View>
 
       <View style={styles.foreignEquity2}>
-        <Text style={styles.foreignEquityText5}>2,225,099.00</Text>
-        <Text style={styles.foreignEquityText6}>100%</Text>
+        <Text style={styles.foreignEquityText5}>
+          {subscribe_capital_total_amount}
+        </Text>
+        <Text style={styles.foreignEquityText6}>
+          {subscribe_capital_total_percent_of_ownership}%
+        </Text>
       </View>
 
-      <Text style={styles.filipinoPaidUpCapitalText1}>66.290%</Text>
-
       <View style={styles.filipinoPaidUpCapital}>
-        <Text style={styles.filipinoPaidUpCapitalText2}>0.00</Text>
-        <Text>66.290%</Text>
+        {filipino_paid_up_capital.map((txt) => (
+          <View key={txt.id} style={styles.displayFlex2}>
+            <Text style={styles.fcs1}></Text>
+            <Text style={styles.fcs2}>{txt.number_of_stock_holders}</Text>
+            <Text style={styles.fcs3}>{txt.types_of_shares}</Text>
+            <Text style={styles.fcs4}>{txt.number_of_shares}</Text>
+            <Text style={styles.fcs5}>{txt.par_or_stated_value}</Text>
+            <Text style={styles.fcs6}>{txt.number_of_shares_in_hands}</Text>
+            <Text style={styles.fcs7}>{txt.amount}</Text>
+            <Text style={styles.fcs8}>{txt.percent_of_ownership}</Text>
+          </View>
+        ))}
       </View>
 
       <View style={styles.foreignPaidUpCapital}>
-        <Text style={styles.foreignPaidUpCapitalText1}>2,225,099.00</Text>
-        <Text>100%</Text>
+        {foreign_paid_up_capital.map((txt) => (
+          <View key={txt.id} style={styles.displayFlex3}>
+            <Text style={styles.fSubCap1}>{txt.nationality}</Text>
+            <Text style={styles.fSubCap2}>{txt.number_of_stock_holders}</Text>
+            <Text style={styles.fSubCap3}>{txt.types_of_shares}</Text>
+            <Text style={styles.fSubCap4}>{txt.number_of_shares}</Text>
+            <Text style={styles.fSubCap5}>{txt.par_or_stated_value}</Text>
+            <Text style={styles.fSubCap6}>{txt.number_of_shares_in_hands}</Text>
+            <Text style={styles.fSubCap7}>{txt.amount}</Text>
+            <Text style={styles.fSubCap8}>{txt.percent_of_ownership}</Text>
+          </View>
+        ))}
+      </View>
+
+      <View style={styles.filipinoPaidUpCapitalTotal}>
+        <Text style={styles.fcs9}>
+          {paid_sub_total_number_of_shares_filipino}
+        </Text>
+        <Text style={styles.fcs10}>{paid_up_sub_total_amount_filipino}</Text>
+        <Text>{paid_sub_total_ownership_filipino}%</Text>
+      </View>
+
+      <View style={styles.foreignPaidUpCapitalTotal}>
+        <Text style={styles.fcs9}>
+          {paid_sub_total_number_of_shares_foreign}
+        </Text>
+        <Text style={styles.fcs10}>{paid_up_sub_total_amount_foreign}</Text>
+        <Text>{paid_sub_total_ownership_foreign}%</Text>
+      </View>
+
+      <View style={styles.totalPaidUp}>
+        <Text style={styles.foreignEquityText5}>
+          {paid_up_capital_total_amount}
+        </Text>
+        <Text style={styles.foreignEquityText6}>100%</Text>
       </View>
 
       <Image

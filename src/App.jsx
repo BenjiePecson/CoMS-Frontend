@@ -86,7 +86,7 @@ function App() {
             />
           </Route>
           <Route path="/manager/" element={<Login />} />
-          <Route path="*" element={<Unathorized />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </>

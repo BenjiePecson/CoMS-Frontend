@@ -127,7 +127,7 @@ const NoticeOfMeetings = () => {
                           if (record.status != "Notice Completed") {
                             setSelectedIndex(index);
                             setFormData(record);
-                            setErrors([]);
+                            // setErrors([]);
                             document.getElementById("editModal").showModal();
                           }
                         }}
@@ -640,6 +640,7 @@ const NoticeOfMeetings = () => {
                   } else {
                     setErrors({ ...errors, files: "" });
                   }
+
                 }}
               />
               {errors.files && (

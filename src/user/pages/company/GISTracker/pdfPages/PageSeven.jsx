@@ -47,8 +47,10 @@ const styles = StyleSheet.create({
   name: {
     fontFamily: "Times-Bold",
   },
+  nationality: { fontFamily: "Times-Roman" },
   address: {
     width: "130px",
+    fontFamily: "Times-Roman",
   },
   shareSubscribeView: {
     display: "flex",
@@ -154,7 +156,7 @@ const PageSeven = ({
           <View key={index} style={styles.stockHolderInformationView}>
             <View style={styles.nameNationalityAddress}>
               <Text style={styles.name}>{txt.name}</Text>
-              <Text>{txt.nationality}</Text>
+              <Text style={styles.nationality}>{txt.nationality}</Text>
               <Text style={styles.address}>{txt.current_residual_address}</Text>
             </View>
             <View style={styles.shareSubscribeView}>

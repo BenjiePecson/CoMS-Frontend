@@ -67,9 +67,10 @@ const styles = StyleSheet.create({
     fontSize: "9px",
     marginTop: 33,
     marginLeft: 50,
+    textAlign: "right",
   },
   type: {
-    width: "47px",
+    width: "45px",
     fontFamily: "Times-Bold",
     fontSize: "7px",
   },
@@ -77,19 +78,21 @@ const styles = StyleSheet.create({
     fontFamily: "Times-Bold",
     fontSize: "9px",
     width: "55px",
+    textAlign: "right",
   },
   ammount: {
     fontFamily: "Times-Bold",
     fontSize: "9px",
-    width: "55px",
+    width: "74px",
+    textAlign: "right",
   },
   totalNumber: {
     fontFamily: "Times-Bold",
-    width: "60px",
+    width: "50px",
   },
   totalAmmount: {
     fontFamily: "Times-Bold",
-    width: "60px",
+    width: "75px",
   },
   shareSView: {
     display: "flex",
@@ -115,7 +118,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   totalAmountSubscribeCapital1: {
-    width: "82px",
+    width: "78px",
     position: "absolute",
   },
   totalAmountSubscribeCapital2: {
@@ -140,7 +143,15 @@ const PageFive = ({
   total_number_of_stockholders,
   number_of_stockholders_with_more_shares_each,
   total_assets_based_on_latest_audited,
+  subscribe_capital_total_amount,
+  subscribe_capital_total_percent_of_ownership,
 }) => {
+  // Function to format number with comma for thousands and above
+  const formatNumberWithComma = (number) => {
+    // Convert number to fixed 2 decimal places
+
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
   return (
     <Page size="A4" style={{ position: "relative" }}>
       <Text style={styles.corporateName}>{corporate_name}</Text>
@@ -151,7 +162,7 @@ const PageFive = ({
         <Text>{number_of_stockholders_with_more_shares_each}</Text>
       </View>
       <Text style={styles.totalAsset}>
-        {total_assets_based_on_latest_audited}
+        {formatNumberWithComma(total_assets_based_on_latest_audited)}
       </Text>
 
       <View style={styles.stockHolderInformation}>
@@ -165,8 +176,12 @@ const PageFive = ({
             <View style={styles.shareSubscribeView}>
               <View style={styles.shareSubscribe}>
                 <Text style={styles.type}>{txt.type}</Text>
-                <Text style={styles.number}>{txt.number}</Text>
-                <Text style={styles.ammount}>{txt.amount}</Text>
+                <Text style={styles.number}>
+                  {formatNumberWithComma(txt.number)}
+                </Text>
+                <Text style={styles.ammount}>
+                  {formatNumberWithComma(Number(txt.amount).toFixed(2))}
+                </Text>
               </View>
               <View style={styles.shareSubscribeTotal}>
                 <Text style={styles.totalNumber}>{txt.total_number}</Text>
@@ -186,9 +201,15 @@ const PageFive = ({
       </View>
 
       <View style={styles.totalAmountSubscribeCapital}>
-        <Text style={styles.totalAmountSubscribeCapital1}>0000000</Text>
-        <Text style={styles.totalAmountSubscribeCapital2}>100%</Text>
-        <Text style={styles.totalAmountSubscribeCapital3}>0.00</Text>
+        <Text style={styles.totalAmountSubscribeCapital1}>
+          {formatNumberWithComma(
+            Number(subscribe_capital_total_amount).toFixed(2)
+          )}
+        </Text>
+        <Text style={styles.totalAmountSubscribeCapital2}>
+          {subscribe_capital_total_percent_of_ownership}%
+        </Text>
+        <Text style={styles.totalAmountSubscribeCapital3}></Text>
       </View>
       <Image
         style={{

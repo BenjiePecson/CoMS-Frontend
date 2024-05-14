@@ -17,6 +17,8 @@ import SecretaryCertificate from "./user/pages/company/BoardMeetings/SecretaryCe
 import TreasurerCertificate from "./user/pages/company/BoardMeetings/TreasurerCertificate";
 import GISPage from "./user/pages/user/GISPage";
 import GISPageView from "./user/pages/user/GISRecord/view";
+import NotFound from "./user/pages/NotFound";
+import Unathorized from "./user/pages/Unathorized";
 import { Component } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
@@ -84,6 +86,7 @@ function App() {
             />
           </Route>
           <Route path="/manager/" element={<Login />} />
+          <Route path="*" element={<Unathorized />} />
         </Routes>
       </BrowserRouter>
     </>

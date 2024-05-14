@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import NavBar from "../../components/NavBar";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "../../store/user/UserSlice";
 
 const Layout = () => {
   const [active, setActive] = useState("dashboard");
@@ -10,6 +11,7 @@ const Layout = () => {
   const navigate = useNavigate();
 
   const user = useSelector((state) => state.user.user);
+  const dispatch = useDispatch();
 
   const lightMode = (
     <>
@@ -70,6 +72,10 @@ const Layout = () => {
   );
 
   const logout = async () => {
+    // const token = localStorage.getItem("access_token").split(" ")[1];
+
+    // let response = await axios.post("/validateToken", { token });
+    // console.log(response.data);
     localStorage.removeItem("access_token");
     navigate("/login");
     return;
@@ -85,7 +91,12 @@ const Layout = () => {
   }, [window.location.pathname]);
 
   useEffect(() => {
-    console.log("test");
+    const token = localStorage.getItem("access_token");
+    if (token == null || token == undefined) {
+      alert("Session expired. Please login again.");
+
+      navigate("/login");
+    }
   }, []);
 
   return (

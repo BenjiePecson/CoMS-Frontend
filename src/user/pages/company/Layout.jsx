@@ -14,7 +14,6 @@ const Layout = () => {
   const status = useSelector((state) => state.company.status);
   const user = useSelector((state) => state.user.user);
 
-
   const dispatch = useDispatch();
 
   const loading = (
@@ -561,6 +560,15 @@ const Layout = () => {
       </div>
     </>
   );
+
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (token == null || token == undefined) {
+      alert("Session expired. Please login again.");
+
+      navigate("/login");
+    }
+  }, []);
 
   useEffect(() => {
     dispatch(fetchCompany(companyId));

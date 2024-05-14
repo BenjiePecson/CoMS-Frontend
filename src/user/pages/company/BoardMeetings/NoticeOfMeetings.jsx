@@ -45,7 +45,7 @@ const NoticeOfMeetings = () => {
             <th>Type of Meeting</th>
             <th>Proposed Meeting Date</th>
             <th>Status</th>
-            <th>Attached File</th>
+            <th>Attached Files</th>
             <th className="w-[10%] text-center">Actions</th>
           </tr>
         </thead>
@@ -101,27 +101,6 @@ const NoticeOfMeetings = () => {
                   <td>
                     {/* {record.status != "Notice Completed" && ( */}
                     <div className="flex flex-row justify-between gap-2">
-                      {/* <button>
-                        <svg
-                          width="44"
-                          height="37"
-                          viewBox="0 0 44 37"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <rect width="44" height="37" rx="10" fill="#273069" />
-                          <path
-                            d="M22.0003 20C23.1048 20 24.0003 19.1046 24.0003 18C24.0003 16.8954 23.1048 16 22.0003 16C20.8957 16 20.0003 16.8954 20.0003 18C20.0003 19.1046 20.8957 20 22.0003 20Z"
-                            fill="white"
-                          />
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M12.458 18C13.7323 13.9429 17.5226 11 22.0002 11C26.4778 11 30.2681 13.9429 31.5424 18C30.2682 22.0571 26.4778 25 22.0002 25C17.5226 25 13.7323 22.0571 12.458 18ZM26.0003 18C26.0003 20.2091 24.2094 22 22.0003 22C19.7911 22 18.0003 20.2091 18.0003 18C18.0003 15.7909 19.7911 14 22.0003 14C24.2094 14 26.0003 15.7909 26.0003 18Z"
-                            fill="white"
-                          />
-                        </svg>
-                      </button> */}
                       <button
                         onClick={() => {
                           if (record.status != "Notice Completed") {
@@ -207,11 +186,13 @@ const NoticeOfMeetings = () => {
         // }
 
         try {
-          console.log(formData);
           let response = await axios.patch(
             `/notice-of-meeting/${companyId}`,
             formData
           );
+
+          console.log(response.data);
+
           let updated = response.data.data[0];
 
           if (response.data.success) {
@@ -232,7 +213,6 @@ const NoticeOfMeetings = () => {
               }
               return record;
             });
-            console.log(updatedData);
             setRecords(updatedData);
           }
         } catch (error) {
@@ -256,7 +236,14 @@ const NoticeOfMeetings = () => {
 
           console.log(response.data);
           if (response.data.success) {
+            let data = response.data;
+            console.log(data);
+            formData.nomId = data.data[0].nomId;
+            formData.files = data.files;
+
+            console.log(formData);
             setRecords([...records, formData]);
+            setFormData(noticeOfMeeting);
             status = "success";
             message = "Record was added successfully.";
           }
@@ -640,7 +627,6 @@ const NoticeOfMeetings = () => {
                   } else {
                     setErrors({ ...errors, files: "" });
                   }
-
                 }}
               />
               {errors.files && (
@@ -688,6 +674,7 @@ const NoticeOfMeetings = () => {
                 handleSubmit(e);
               }}
               className="btn bg-primary text-white mt-2"
+              disabled={loading}
             >
               {loading && <span className="loading loading-spinner"></span>}
               Submit

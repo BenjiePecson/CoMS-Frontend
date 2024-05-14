@@ -18,6 +18,7 @@ import TreasurerCertificate from "./user/pages/company/BoardMeetings/TreasurerCe
 import GISPage from "./user/pages/user/GISPage";
 import GISPageView from "./user/pages/user/GISRecord/view";
 import NotFound from "./user/pages/NotFound";
+import Unathorized from "./user/pages/Unathorized";
 import { Component } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 

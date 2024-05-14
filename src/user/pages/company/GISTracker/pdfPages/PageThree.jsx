@@ -2,153 +2,6 @@ import React from "react";
 import { Page, Text, Image, StyleSheet, View } from "@react-pdf/renderer";
 import pageThree from "../photos/page3.jpg";
 
-const authorizedCapitalStock = [
-  {
-    id: 1,
-    tos: "COMMON",
-    nos: "6,000,000",
-    psv: "1.0",
-    amt: "6,000,000",
-  },
-  {
-    id: 2,
-    tos: "COMMON",
-    nos: "6,000,000",
-    psv: "1.0",
-    amt: "6,000,000",
-  },
-  {
-    id: 3,
-    tos: "COMMON",
-    nos: "6,000,000",
-    psv: "1.0",
-    amt: "6,000,000",
-  },
-  {
-    id: 4,
-    tos: "COMMON",
-    nos: "6,000,000",
-    psv: "1.0",
-    amt: "6,000,000",
-  },
-  {
-    id: 5,
-    tos: "COMMON",
-    nos: "6,000,000",
-    psv: "1.0",
-    amt: "6,000,000",
-  },
-];
-const filipinosubscribeCapital = [
-  {
-    id: 1,
-    number_of_stock_holders: "8",
-    types_of_shares: "COMMON",
-    number_of_shares: "1,475,099",
-    number_of_shares_in_hands: "",
-    par_or_stated_value: "1",
-    amount: "1,475,099",
-    percent_of_ownership: "66.290%",
-  },
-  {
-    id: 2,
-    number_of_stock_holders: "8",
-    types_of_shares: "COMMON",
-    number_of_shares: "1,475,099",
-    number_of_shares_in_hands: "",
-    par_or_stated_value: "1",
-    amount: "1,475,099",
-    percent_of_ownership: "66.290%",
-  },
-  {
-    id: 3,
-    number_of_stock_holders: "8",
-    types_of_shares: "COMMON",
-    number_of_shares: "1,475,099",
-    number_of_shares_in_hands: "",
-    par_or_stated_value: "1",
-    amount: "1,475,099",
-    percent_of_ownership: "66.290%",
-  },
-  {
-    id: 4,
-    number_of_stock_holders: "8",
-    types_of_shares: "COMMON",
-    number_of_shares: "1,475,099",
-    number_of_shares_in_hands: "",
-    par_or_stated_value: "1",
-    amount: "1,475,099",
-    percent_of_ownership: "66.290%",
-  },
-  {
-    id: 5,
-    number_of_stock_holders: "8",
-    types_of_shares: "COMMON",
-    number_of_shares: "1,475,099",
-    number_of_shares_in_hands: "",
-    par_or_stated_value: "1",
-    amount: "1,475,099",
-    percent_of_ownership: "66.290%",
-  },
-];
-const foreignSubscribeCapital = [
-  {
-    id: 1,
-    nationality: "SINGAPOREAN",
-    number_of_stock_holders: "1",
-    types_of_shares: "COMMON",
-    number_of_shares: "749,999",
-    number_of_shares_in_hands: "",
-    par_or_stated_value: "1.00",
-    amount: "749,999.00",
-    percent_of_ownership: "33.71%",
-  },
-  {
-    id: 2,
-    nationality: "AUSTRALIAN",
-    number_of_stock_holders: "1",
-    types_of_shares: "COMMON",
-    number_of_shares: "1",
-    number_of_shares_in_hands: "",
-    par_or_stated_value: "1.00",
-    amount: "1.00",
-    percent_of_ownership: "0.00%",
-  },
-  {
-    id: 3,
-    nationality: "AUSTRALIAN",
-    number_of_stock_holders: "1",
-    types_of_shares: "COMMON",
-    number_of_shares: "1",
-    number_of_shares_in_hands: "",
-    par_or_stated_value: "1.00",
-    amount: "1.00",
-    percent_of_ownership: "0.00%",
-  },
-  {
-    id: 4,
-    nationality: "AUSTRALIAN",
-    number_of_stock_holders: "1",
-    types_of_shares: "COMMON",
-    number_of_shares: "1",
-    number_of_shares_in_hands: "",
-    par_or_stated_value: "1.00",
-    amount: "1.00",
-    percent_of_ownership: "0.00%",
-  },
-  {
-    id: 5,
-    nationality: "AUSTRALIAN",
-    number_of_stock_holders: "1",
-    types_of_shares: "COMMON",
-    number_of_shares: "1",
-    number_of_shares_in_hands: "",
-    par_or_stated_value: "1.00",
-    amount: "1.00",
-    percent_of_ownership: "0.00%",
-  },
-];
-
 const styles = StyleSheet.create({
   corporateName: {
     fontFamily: "Times-Bold",
@@ -358,6 +211,11 @@ const styles = StyleSheet.create({
   },
 });
 
+const formatNumberWithComma = (number) => {
+  // Convert number to fixed 2 decimal places
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 function PageThree({
   corporate_name,
   auth_capital_stock,
@@ -383,6 +241,7 @@ function PageThree({
   paid_sub_total_ownership_foreign,
   paid_sub_total_number_of_shares_foreign,
   paid_up_capital_total_amount,
+  paid_total_percent_ownership,
 }) {
   return (
     <Page size="A4" style={{ position: "relative" }}>
@@ -393,12 +252,14 @@ function PageThree({
               {txt.type_of_shares}
             </Text>
             <Text style={styles.authorizedCapitalStock2}>
-              {txt.number_of_shares}
+              {formatNumberWithComma(txt.number_of_shares)}
             </Text>
             <Text style={styles.authorizedCapitalStock3}>
-              {txt.par_or_stated_value}
+              {Number(txt.par_or_stated_value).toFixed(2)}
             </Text>
-            <Text style={styles.authorizedCapitalStock4}>{txt.amount}</Text>
+            <Text style={styles.authorizedCapitalStock4}>
+              {formatNumberWithComma(Number(txt.amount).toFixed(2))}
+            </Text>
           </View>
         ))}
       </View>
@@ -409,11 +270,17 @@ function PageThree({
             <Text style={styles.fcs1}></Text>
             <Text style={styles.fcs2}>{txt.number_of_stock_holders}</Text>
             <Text style={styles.fcs3}>{txt.types_of_shares}</Text>
-            <Text style={styles.fcs4}>{txt.number_of_shares}</Text>
+            <Text style={styles.fcs4}>
+              {formatNumberWithComma(txt.number_of_shares)}
+            </Text>
             <Text style={styles.fcs5}>{txt.number_of_shares_in_hands}</Text>
-            <Text style={styles.fcs6}>{txt.par_or_stated_value}</Text>
-            <Text style={styles.fcs7}>{txt.amount}</Text>
-            <Text style={styles.fcs8}>{txt.percent_of_ownership}</Text>
+            <Text style={styles.fcs6}>
+              {Number(txt.par_or_stated_value).toFixed(2)}
+            </Text>
+            <Text style={styles.fcs7}>
+              {formatNumberWithComma(Number(txt.amount).toFixed(2))}
+            </Text>
+            <Text style={styles.fcs8}>{txt.percent_of_ownership}%</Text>
           </View>
         ))}
       </View>
@@ -423,10 +290,16 @@ function PageThree({
             <Text style={styles.fSubCap1}>{txt.nationality}</Text>
             <Text style={styles.fSubCap2}>{txt.number_of_stock_holders}</Text>
             <Text style={styles.fSubCap3}>{txt.types_of_shares}</Text>
-            <Text style={styles.fSubCap4}>{txt.number_of_shares}</Text>
+            <Text style={styles.fSubCap4}>
+              {formatNumberWithComma(txt.number_of_shares)}
+            </Text>
             <Text style={styles.fSubCap5}>{txt.number_of_shares_in_hands}</Text>
-            <Text style={styles.fSubCap6}>{txt.par_or_stated_value}</Text>
-            <Text style={styles.fSubCap7}>{txt.amount}</Text>
+            <Text style={styles.fSubCap6}>
+              {Number(txt.par_or_stated_value).toFixed(2)}
+            </Text>
+            <Text style={styles.fSubCap7}>
+              {formatNumberWithComma(Number(txt.amount).toFixed(2))}
+            </Text>
             <Text style={styles.fSubCap8}>{txt.percent_of_ownership}</Text>
           </View>
         ))}
@@ -436,16 +309,22 @@ function PageThree({
 
       <View style={styles.displayFlexTotal}>
         <Text style={styles.authorizedCapitalStockTotal1}>
-          {auth_capital_stock_total_number_of_shares}
+          {formatNumberWithComma(auth_capital_stock_total_number_of_shares)}
         </Text>
         <Text style={styles.authorizedCapitalStockTotal2}>
-          {auth_capital_stock_total_amount}
+          {formatNumberWithComma(
+            Number(auth_capital_stock_total_amount).toFixed(2)
+          )}
         </Text>
       </View>
 
       <View style={styles.displayTotalFlex2}>
-        <Text style={styles.fcs9}>{sub_total_number_of_shares_filipino}</Text>
-        <Text style={styles.fcs10}>{sub_total_amount_filipino}</Text>
+        <Text style={styles.fcs9}>
+          {formatNumberWithComma(sub_total_number_of_shares_filipino)}
+        </Text>
+        <Text style={styles.fcs10}>
+          {formatNumberWithComma(Number(sub_total_amount_filipino).toFixed(2))}
+        </Text>
         <Text>{sub_total_ownership_filipino}%</Text>
       </View>
 
@@ -454,10 +333,10 @@ function PageThree({
           {percentage_of_foreign_equity}%
         </Text>
         <Text style={styles.foreignEquityText2}>
-          {sub_total_number_of_shares_foreign}
+          {formatNumberWithComma(sub_total_number_of_shares_foreign)}
         </Text>
         <Text style={styles.foreignEquityText3}>
-          {sub_total_amount_foreign}
+          {formatNumberWithComma(Number(sub_total_amount_foreign).toFixed(2))}
         </Text>
         <Text style={styles.foreignEquityText4}>
           {sub_total_ownership_foreign}%
@@ -466,7 +345,9 @@ function PageThree({
 
       <View style={styles.foreignEquity2}>
         <Text style={styles.foreignEquityText5}>
-          {subscribe_capital_total_amount}
+          {formatNumberWithComma(
+            Number(subscribe_capital_total_amount).toFixed(2)
+          )}
         </Text>
         <Text style={styles.foreignEquityText6}>
           {subscribe_capital_total_percent_of_ownership}%
@@ -479,10 +360,16 @@ function PageThree({
             <Text style={styles.fcs1}></Text>
             <Text style={styles.fcs2}>{txt.number_of_stock_holders}</Text>
             <Text style={styles.fcs3}>{txt.types_of_shares}</Text>
-            <Text style={styles.fcs4}>{txt.number_of_shares}</Text>
-            <Text style={styles.fcs5}>{txt.par_or_stated_value}</Text>
+            <Text style={styles.fcs4}>
+              {formatNumberWithComma(txt.number_of_shares)}
+            </Text>
+            <Text style={styles.fcs5}>
+              {Number(txt.par_or_stated_value).toFixed(2)}
+            </Text>
             <Text style={styles.fcs6}>{txt.number_of_shares_in_hands}</Text>
-            <Text style={styles.fcs7}>{txt.amount}</Text>
+            <Text style={styles.fcs7}>
+              {formatNumberWithComma(Number(txt.amount).toFixed(2))}
+            </Text>
             <Text style={styles.fcs8}>{txt.percent_of_ownership}</Text>
           </View>
         ))}
@@ -494,10 +381,16 @@ function PageThree({
             <Text style={styles.fSubCap1}>{txt.nationality}</Text>
             <Text style={styles.fSubCap2}>{txt.number_of_stock_holders}</Text>
             <Text style={styles.fSubCap3}>{txt.types_of_shares}</Text>
-            <Text style={styles.fSubCap4}>{txt.number_of_shares}</Text>
+            <Text style={styles.fSubCap4}>
+              {formatNumberWithComma(txt.number_of_shares)}
+            </Text>
             <Text style={styles.fSubCap5}>{txt.par_or_stated_value}</Text>
-            <Text style={styles.fSubCap6}>{txt.number_of_shares_in_hands}</Text>
-            <Text style={styles.fSubCap7}>{txt.amount}</Text>
+            <Text style={styles.fSubCap6}>
+              {Number(txt.number_of_shares_in_hands).toFixed(2)}
+            </Text>
+            <Text style={styles.fSubCap7}>
+              {formatNumberWithComma(Number(txt.amount).toFixed(2))}
+            </Text>
             <Text style={styles.fSubCap8}>{txt.percent_of_ownership}</Text>
           </View>
         ))}
@@ -505,25 +398,37 @@ function PageThree({
 
       <View style={styles.filipinoPaidUpCapitalTotal}>
         <Text style={styles.fcs9}>
-          {paid_sub_total_number_of_shares_filipino}
+          {formatNumberWithComma(paid_sub_total_number_of_shares_filipino)}
         </Text>
-        <Text style={styles.fcs10}>{paid_up_sub_total_amount_filipino}</Text>
+        <Text style={styles.fcs10}>
+          {formatNumberWithComma(
+            Number(paid_up_sub_total_amount_filipino).toFixed(2)
+          )}
+        </Text>
         <Text>{paid_sub_total_ownership_filipino}%</Text>
       </View>
 
       <View style={styles.foreignPaidUpCapitalTotal}>
         <Text style={styles.fcs9}>
-          {paid_sub_total_number_of_shares_foreign}
+          {formatNumberWithComma(paid_sub_total_number_of_shares_foreign)}
         </Text>
-        <Text style={styles.fcs10}>{paid_up_sub_total_amount_foreign}</Text>
+        <Text style={styles.fcs10}>
+          {formatNumberWithComma(
+            Number(paid_up_sub_total_amount_foreign).toFixed(2)
+          )}
+        </Text>
         <Text>{paid_sub_total_ownership_foreign}%</Text>
       </View>
 
       <View style={styles.totalPaidUp}>
         <Text style={styles.foreignEquityText5}>
-          {paid_up_capital_total_amount}
+          {formatNumberWithComma(
+            Number(paid_up_capital_total_amount).toFixed(2)
+          )}
         </Text>
-        <Text style={styles.foreignEquityText6}>100%</Text>
+        <Text style={styles.foreignEquityText6}>
+          {paid_total_percent_ownership}%
+        </Text>
       </View>
 
       <Image

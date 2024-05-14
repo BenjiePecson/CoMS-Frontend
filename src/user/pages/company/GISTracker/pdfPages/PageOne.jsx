@@ -56,6 +56,15 @@ const styles = StyleSheet.create({
   text2_1: {
     width: "51%",
   },
+  //for view 5
+  text3_1: {
+    width: "280px",
+  },
+  text3_2: {
+    width: "130px",
+    marginBottom: 10,
+  },
+  //
   text2_2_1: {
     width: "140px",
   },
@@ -71,7 +80,7 @@ const styles = StyleSheet.create({
   view5: {
     fontFamily: "Times-Bold",
     fontSize: "10px",
-    marginTop: 600,
+    marginTop: 595,
     marginLeft: 50,
     position: "absolute",
     display: "flex",
@@ -136,8 +145,8 @@ function PageOne({
         <Text style={styles.text2_1}>{sec_accreditation_number}</Text>
       </View>
       <View style={styles.view5}>
-        <Text style={styles.text2_1}>{primary_purpose}</Text>
-        <Text style={styles.text2_1}>{industry_classification}</Text>
+        <Text style={styles.text3_1}>{primary_purpose}</Text>
+        <Text style={styles.text3_2}>{industry_classification}</Text>
       </View>
       <Image
         style={{

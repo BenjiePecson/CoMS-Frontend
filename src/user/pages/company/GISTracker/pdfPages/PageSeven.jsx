@@ -124,7 +124,14 @@ const PageSeven = ({
   total_number_of_stockholders,
   number_of_stockholders_with_more_shares_each,
   total_assets_based_on_latest_audited,
+  subscribe_capital_total_amount,
+  subscribe_capital_total_percent_of_ownership,
 }) => {
+  const formatNumberWithComma = (number) => {
+    // Convert number to fixed 2 decimal places
+
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
   return (
     <Page size="A4" style={{ position: "relative" }}>
       <Text style={styles.corporateName}>{corporate_name}</Text>
@@ -135,7 +142,7 @@ const PageSeven = ({
         <Text>{number_of_stockholders_with_more_shares_each}</Text>
       </View>
       <Text style={styles.totalAsset}>
-        {total_assets_based_on_latest_audited}
+        {formatNumberWithComma(total_assets_based_on_latest_audited)}
       </Text>
 
       <View style={styles.stockHolderInformation}>
@@ -170,9 +177,15 @@ const PageSeven = ({
       </View>
 
       <View style={styles.totalAmountSubscribeCapital}>
-        <Text style={styles.totalAmountSubscribeCapital1}>0000000</Text>
-        <Text style={styles.totalAmountSubscribeCapital2}>16%</Text>
-        <Text style={styles.totalAmountSubscribeCapital3}>0.00</Text>
+        <Text style={styles.totalAmountSubscribeCapital1}>
+          {formatNumberWithComma(
+            Number(subscribe_capital_total_amount).toFixed(2)
+          )}
+        </Text>
+        <Text style={styles.totalAmountSubscribeCapital2}>
+          {subscribe_capital_total_percent_of_ownership}%
+        </Text>
+        <Text style={styles.totalAmountSubscribeCapital3}></Text>
       </View>
       <Image
         style={{

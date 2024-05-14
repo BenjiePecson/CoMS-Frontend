@@ -139,6 +139,9 @@ const step7 = () => {
                   paid_up_capital_total_percent_of_ownership={
                     formData.paid_up_capital.total_percent_of_ownership
                   }
+                  paid_total_percent_ownership={
+                    formData.paid_up_capital.total_percent_of_ownership
+                  }
                 />
                 <PageFour
                   directors_or_officers={formData.directors_or_officers}
@@ -158,6 +161,12 @@ const step7 = () => {
                   stock_holders_information={
                     formData.stock_holders_information.information
                   }
+                  subscribe_capital_total_amount={
+                    formData.subscribe_capital.total_amount
+                  }
+                  subscribe_capital_total_percent_of_ownership={
+                    formData.subscribe_capital.total_percent_of_ownership
+                  }
                 />
                 <PageSix
                   corporate_name={formData.corporate_name}
@@ -173,6 +182,12 @@ const step7 = () => {
                   stock_holders_information={
                     formData.stock_holders_information.information
                   }
+                  subscribe_capital_total_amount={
+                    formData.subscribe_capital.total_amount
+                  }
+                  subscribe_capital_total_percent_of_ownership={
+                    formData.subscribe_capital.total_percent_of_ownership
+                  }
                 />
                 <PageSeven
                   corporate_name={formData.corporate_name}
@@ -187,6 +202,12 @@ const step7 = () => {
                   }
                   stock_holders_information={
                     formData.stock_holders_information.information
+                  }
+                  subscribe_capital_total_amount={
+                    formData.subscribe_capital.total_amount
+                  }
+                  subscribe_capital_total_percent_of_ownership={
+                    formData.subscribe_capital.total_percent_of_ownership
                   }
                 />
                 <PageEight />

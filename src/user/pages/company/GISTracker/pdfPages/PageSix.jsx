@@ -77,20 +77,24 @@ const styles = StyleSheet.create({
   number: {
     fontFamily: "Times-Bold",
     fontSize: "9px",
-    width: "55px",
+    width: "50px",
+    textAlign: "right",
   },
   ammount: {
     fontFamily: "Times-Bold",
     fontSize: "9px",
-    width: "58px",
+    width: "82px",
+    textAlign: "right",
   },
   totalNumber: {
     fontFamily: "Times-Bold",
-    width: "60px",
+    width: "45px",
+    textAlign: "right",
   },
   totalAmmount: {
     fontFamily: "Times-Bold",
-    width: "60px",
+    width: "80px",
+    textAlign: "right",
   },
   shareSView: {
     display: "flex",
@@ -103,7 +107,7 @@ const styles = StyleSheet.create({
     width: "50px",
   },
   ammountPaid: {
-    width: "69",
+    width: "75px",
   },
 
   totalAmountSubscribeCapital: {
@@ -164,15 +168,22 @@ const PageSix = ({
             <View style={styles.shareSubscribeView}>
               <View style={styles.shareSubscribe}>
                 <Text style={styles.type}>{txt.type}</Text>
-                <Text style={styles.number}>{txt.number}</Text>
-                <Text style={styles.ammount}>{txt.amount}</Text>
+                <Text style={styles.number}>
+                  {formatNumberWithComma(txt.number)}
+                </Text>
+                <Text style={styles.ammount}>
+                  {formatNumberWithComma(Number(txt.amount).toFixed(2))}
+                </Text>
               </View>
               <View style={styles.shareSubscribeTotal}>
-                <Text style={styles.totalNumber}>{txt.total_number}</Text>
-                <Text style={styles.totalAmmount}>{txt.total_amount}</Text>
+                <Text style={styles.totalNumber}>
+                  {Number(txt.total_number).toFixed(2)}
+                </Text>
+                <Text style={styles.totalAmmount}>
+                  {formatNumberWithComma(Number(txt.total_amount).toFixed(2))}
+                </Text>
               </View>
             </View>
-
             <View style={styles.shareSView}>
               <Text style={styles.percentOfOwnership}>
                 {txt.percent_of_ownership}%

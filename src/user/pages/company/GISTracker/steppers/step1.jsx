@@ -45,7 +45,35 @@ const step1 = () => {
           {editSVG} Update Details
         </button>
       </div>
-      <div className="grid grid-cols-3 gap-4 w-full">
+      <div className="flex flex-row w-full">
+        <div className="form-control">
+          <label className="label cursor-pointer flex-row justify-start gap-5">
+            <input
+              type="checkbox"
+              className="checkbox checkbox-primary"
+              checked={
+                formData.isAmmended == undefined ? false : formData.isAmmended
+              }
+              onChange={(e) => {}}
+              disabled={true}
+            />
+            <span className="label-text">Is Ammended?</span>
+          </label>
+          <label className="label cursor-pointer flex-row justify-start gap-5">
+            <input
+              type="checkbox"
+              className="checkbox checkbox-primary"
+              checked={
+                formData.isAmmended == undefined ? false : formData.isAmmended
+              }
+              onChange={(e) => {}}
+              disabled={true}
+            />
+            <span className="label-text">Is Special Meeting?</span>
+          </label>
+        </div>
+      </div>
+      <div className="grid grip-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
         <label className="form-control w-full">
           <div className="label">
             <span className="label-text">
@@ -448,8 +476,50 @@ const step1 = () => {
             </form>
           </div>
           <div className="divider"></div>
+          <div className="flex flex-row w-full">
+            <div className="form-control">
+              <label className="label cursor-pointer flex-row justify-start gap-5">
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-primary"
+                  value={
+                    formStep1.isAmmended == undefined
+                      ? false
+                      : formStep1.isAmmended
+                  }
+                  onChange={(e) => {
+                    let val =
+                      formStep1.isAmmended == undefined
+                        ? false
+                        : formStep1.isAmmended;
+                    setformStep1({ ...formStep1, isAmmended: !val });
+                  }}
+                />
+                <span className="label-text">Is Ammended?</span>
+              </label>
+              <label className="label cursor-pointer flex-row justify-start gap-5">
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-primary"
+                  value={
+                    formStep1.isSpecialMeeting == undefined
+                      ? false
+                      : formStep1.isSpecialMeeting
+                  }
+                  onChange={(e) => {
+                    let val =
+                      formStep1.isSpecialMeeting == undefined
+                        ? false
+                        : formStep1.isSpecialMeeting;
+                    setformStep1({ ...formStep1, isSpecialMeeting: !val });
+                  }}
+                />
+                <span className="label-text">Is Special Meeting?</span>
+              </label>
+            </div>
+          </div>
           <div className="flex flex-col gap-2">
-            <div className="grid grid-cols-3 gap-4 w-full">
+            <div className="grid grip-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-4 w-full">
               <label className="form-control w-full">
                 <div className="label">
                   <span className="label-text">
@@ -844,6 +914,7 @@ const step1 = () => {
             <button
               onClick={(e) => {
                 dispatch(setFormData(formStep1));
+                console.log(formStep1);
                 document.getElementById("step1FormModal").close();
               }}
               className="btn btn-primary"

@@ -116,6 +116,8 @@ export const stockholdersInformationState = {
 };
 
 const formDataState = {
+  isAmmended: false,
+  isSpecialMeeting: false,
   year: "",
   date_registered: "",
   official_email_address: "",

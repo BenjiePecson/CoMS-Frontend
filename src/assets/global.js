@@ -1,5 +1,7 @@
 import axios from "axios";
 import Swal from "sweetalert2";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const showAlert = (status, title) => {
   Swal.fire({
@@ -9,6 +11,14 @@ const showAlert = (status, title) => {
     timer: 1500,
   });
 };
+
+const showToast = (type, message) =>
+  toast(message, {
+    position: "top-right",
+    autoClose: 5000,
+    type: type,
+  });
+
 
 const checkCompanyName = (value) => {
   let error = "";
@@ -28,7 +38,7 @@ const checkSECCert = (value) => {
 
 const checkCompanyLogo = (value, isEdit = false) => {
   let error = "";
-  
+
   if (isEdit) {
     return error;
   }
@@ -46,7 +56,6 @@ const checkDateRegistered = (value) => {
   }
   return error;
 };
-
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -73,10 +82,11 @@ const convertBase64 = (file) => {
 
 export {
   showAlert,
+  showToast,
   formatDate,
   checkCompanyName,
   checkSECCert,
   checkCompanyLogo,
   checkDateRegistered,
-  convertBase64
+  convertBase64,
 };

@@ -17,11 +17,10 @@ const Login = () => {
         code: codeResponse.code,
       });
 
-      localStorage.setItem(
-        "access_token",
-        `${response.data.token_type} ${response.data.access_token}`
-      );
-      navigate("/company");
+      if (response.data.success) {
+        localStorage.setItem("access_token", response.data.tokens.access_token);
+        navigate("/company");
+      }
       document.getElementById("overlay").close();
     },
     onError: (errorResponse) => {

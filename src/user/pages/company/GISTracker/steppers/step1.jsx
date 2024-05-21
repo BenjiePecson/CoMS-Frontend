@@ -52,19 +52,21 @@ const step1 = () => {
               type="checkbox"
               className="checkbox checkbox-primary"
               checked={
-                formData.isAmmended == undefined ? false : formData.isAmmended
+                formData.isAmended == undefined ? false : formData.isAmended
               }
               onChange={(e) => {}}
               disabled={true}
             />
-            <span className="label-text">Is Ammended?</span>
+            <span className="label-text">Is Amended?</span>
           </label>
           <label className="label cursor-pointer flex-row justify-start gap-5">
             <input
               type="checkbox"
               className="checkbox checkbox-primary"
               checked={
-                formData.isAmmended == undefined ? false : formData.isAmmended
+                formData.isSpecialMeeting == undefined
+                  ? false
+                  : formData.isSpecialMeeting
               }
               onChange={(e) => {}}
               disabled={true}
@@ -293,8 +295,8 @@ const step1 = () => {
         <label className="form-control w-full">
           <div className="label">
             <span className="label-text">
-              Date of Annual Meeting Per By-Laws{" "}
-              <span className="text-red-500">*</span>
+              Date of {formData.isSpecialMeeting ? "Special" : "Annual"} Meeting
+              Per By-Laws <span className="text-red-500">*</span>
             </span>
           </div>
           <input
@@ -312,8 +314,8 @@ const step1 = () => {
         <label className="form-control w-full">
           <div className="label">
             <span className="label-text">
-              Actual Date of Annual Meeting{" "}
-              <span className="text-red-500">*</span>
+              Actual Date of {formData.isSpecialMeeting ? "Special" : "Annual"}{" "}
+              Meeting <span className="text-red-500">*</span>
             </span>
           </div>
           <input
@@ -483,19 +485,19 @@ const step1 = () => {
                   type="checkbox"
                   className="checkbox checkbox-primary"
                   value={
-                    formStep1.isAmmended == undefined
+                    formStep1.isAmended == undefined
                       ? false
-                      : formStep1.isAmmended
+                      : formStep1.isAmended
                   }
                   onChange={(e) => {
                     let val =
-                      formStep1.isAmmended == undefined
+                      formStep1.isAmended == undefined
                         ? false
-                        : formStep1.isAmmended;
-                    setformStep1({ ...formStep1, isAmmended: !val });
+                        : formStep1.isAmended;
+                    setformStep1({ ...formStep1, isAmended: !val });
                   }}
                 />
-                <span className="label-text">Is Ammended?</span>
+                <span className="label-text">Is Amended?</span>
               </label>
               <label className="label cursor-pointer flex-row justify-start gap-5">
                 <input

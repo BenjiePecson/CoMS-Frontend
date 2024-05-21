@@ -4,6 +4,7 @@ import NavBar from "../../components/NavBar";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUser } from "../../store/user/UserSlice";
+import { googleLogout } from "@react-oauth/google";
 
 const Layout = () => {
   const [active, setActive] = useState("dashboard");
@@ -76,6 +77,7 @@ const Layout = () => {
 
     // let response = await axios.post("/validateToken", { token });
     // console.log(response.data);
+    googleLogout();
     localStorage.removeItem("access_token");
     navigate("/login");
     return;

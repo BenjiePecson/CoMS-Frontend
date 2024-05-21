@@ -3,9 +3,12 @@ import { Link, useParams } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../../../components/Header";
-import { convertBase64, showAlert } from "../../../../assets/global";
+import { convertBase64, showAlert, showToast } from "../../../../assets/global";
 import axios from "axios";
 import Swal from "sweetalert2";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const NoticeOfMeetings = () => {
   const { companyId } = useParams();
@@ -21,6 +24,7 @@ const NoticeOfMeetings = () => {
     type_of_meeting: "",
     proposed_meeting_date: "",
     status: "",
+    folder_id: "",
     files: [],
   };
 
@@ -35,6 +39,9 @@ const NoticeOfMeetings = () => {
 
   const [loading, setLoading] = useState(false);
 
+  const [isGrid, setIsGrid] = useState(false);
+  const [isLoadingGdrive, setIsLoadingGdrive] = useState(true);
+
   const table = (
     <>
       <table className="table">
@@ -46,6 +53,7 @@ const NoticeOfMeetings = () => {
             <th>Proposed Meeting Date</th>
             <th>Status</th>
             <th>Attached Files</th>
+            <th>Link to Minutes of Meeting</th>
             <th className="w-[10%] text-center">Actions</th>
           </tr>
         </thead>
@@ -99,8 +107,56 @@ const NoticeOfMeetings = () => {
                     </div>
                   </td>
                   <td>
+                    {record.status === "Notice Completed" && (
+                      <div className="flex flex-row items-center justify-center">
+                        <Link to={`/company/${companyId}/minutes-of-meeting`}>
+                          <div>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25"
+                              />
+                            </svg>
+                          </div>
+                        </Link>
+                      </div>
+                    )}
+                  </td>
+                  <td>
                     {/* {record.status != "Notice Completed" && ( */}
                     <div className="flex flex-row justify-between gap-2">
+                      <button
+                        onClick={() => {
+                          setSelectedIndex(index);
+                          setFormData(record);
+                          // setErrors([]);
+                          document.getElementById("gdrive").showModal();
+                        }}
+                        // disabled={record.status != "Notice Completed"}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="w-6 h-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
+                          />
+                        </svg>
+                      </button>
                       <button
                         onClick={() => {
                           if (record.status != "Notice Completed") {
@@ -163,7 +219,7 @@ const NoticeOfMeetings = () => {
             })
           ) : (
             <tr className="text-center">
-              <td colSpan={5}>No records found.</td>
+              <td colSpan={7}>No records found.</td>
             </tr>
           )}
         </tbody>
@@ -436,6 +492,7 @@ const NoticeOfMeetings = () => {
                     files: [],
                     type_of_meeting: "Regular",
                     status: "In Process",
+                    folder_id: "",
                   });
                   setErrors([]);
                   document.getElementById("addModal").showModal();
@@ -577,6 +634,30 @@ const NoticeOfMeetings = () => {
             <label className="form-control w-full">
               <div className="label">
                 <span className="poppins-regular text-[12px]">
+                  Google Drive Folder ID
+                </span>
+              </div>
+              <input
+                type="text"
+                className={`input input-bordered w-full ${
+                  errors.folder_id && `input-error`
+                }`}
+                name="folder_id"
+                value={formData.folder_id}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.notice_date && (
+                <span className="text-[12px] text-red-500">
+                  {errors.folder_id}
+                </span>
+              )}
+            </label>
+
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">
                   Attach Files
                 </span>
               </div>
@@ -604,11 +685,19 @@ const NoticeOfMeetings = () => {
                   const { name, value, files } = e.target;
 
                   for (let i = 0; i < files.length; i++) {
-                    let file = {
-                      file: await convertBase64(files[i]),
-                      fileName: files[i].name,
-                    };
-                    formData.files.push(file);
+                    if (files[i].size > 5 * 1024 * 1024) {
+                      setErrors({
+                        ...errors,
+                        files: `${files[i].name} file size exceeds 5MB. Please choose a smaller file.`,
+                      });
+                      return;
+                    } else {
+                      let file = {
+                        file: await convertBase64(files[i]),
+                        fileName: files[i].name,
+                      };
+                      formData.files.push(file);
+                    }
                   }
 
                   setFormData({
@@ -930,6 +1019,112 @@ const NoticeOfMeetings = () => {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </dialog>
+
+      <dialog id="gdrive" className="modal">
+        <div className="modal-box w-11/12 max-w-5xl">
+          <div className="flex flex-row justify-between py-4">
+            <form method="dialog">
+              <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                ✕
+              </button>
+            </form>
+          </div>
+          <div className="">
+            <div className="flex flex-row gap-2 justify-between items-center p-2">
+              <h3 className="font-bold text-lg">Attached Files</h3>
+              <div>
+                <button
+                  className={`btn ${
+                    isGrid ? "bg-white" : ""
+                  } shadow-none border-none`}
+                  onClick={() => {
+                    setIsGrid(false);
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                    />
+                  </svg>
+                </button>
+
+                <button
+                  className={`btn ${
+                    isGrid ? "" : "bg-white"
+                  } shadow-none border-none`}
+                  onClick={() => {
+                    setIsGrid(true);
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0 1 12 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m17.25-3.75h-7.5c-.621 0-1.125.504-1.125 1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125M12 10.875v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125M13.125 12h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125M20.625 12c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5M12 14.625v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 14.625c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125m0 1.5v-1.5m0 0c0-.621.504-1.125 1.125-1.125m0 0h7.5"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <hr />
+            <div className={`w-full max-w-5xl max-h-96 h-96`}>
+              <iframe
+                className={`w-full max-w-5xl max-h-96 h-96 ${
+                  isLoadingGdrive ? "hidden" : ""
+                }`}
+                onLoad={() => {
+                  setIsLoadingGdrive(false);
+                }}
+                src={`https://drive.google.com/embeddedfolderview?id=${
+                  formData.folder_id == ""
+                    ? "1wkoVU5i-w-Ll3MoSD65bvn4RMu0lG36Y"
+                    : formData.folder_id
+                }#${isGrid ? "grid" : "list"}`}
+                // style="width:100%; height:600px; border:0;"
+              ></iframe>
+            </div>
+            <a
+              className="btn btn-primary btn-outline"
+              target="_blank"
+              href={`https://drive.google.com/drive/folders/${formData.folder_id}`}
+            >
+              <div className="flex flex-row gap-2 items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
+                  />
+                </svg>
+                Go to Google Drive
+              </div>
+            </a>
           </div>
         </div>
       </dialog>

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Header from "../../../components/Header";
 import { showAlert } from "../../../../assets/global";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const BoardResolutions = () => {
   const { companyId } = useParams();
@@ -51,7 +52,8 @@ const BoardResolutions = () => {
                     <div className="flex flex-row gap-2">
                       <button
                         onClick={() => {
-                          console.log("Edit");
+                          setFormData(record);
+                          document.getElementById("editModal").showModal();
                         }}
                       >
                         <svg
@@ -73,7 +75,7 @@ const BoardResolutions = () => {
                       </button>
                       <button
                         onClick={() => {
-                          console.log("delete");
+                          toggleDelete(record.brId);
                         }}
                       >
                         <svg
@@ -113,39 +115,33 @@ const BoardResolutions = () => {
     if (await isFormValid(isEdit)) {
       if (isEdit) {
         //for edit function
-        return;
+
         let status = "error";
         let message = "Failed to update the record.";
 
-        // if (formData.status === "Notice Completed") {
-        //   toggleCompleted();
-        //   return;
-        // }
-
         try {
           let response = await axios.patch(
-            `/notice-of-meeting/${companyId}`,
+            `/board-resolutions/${companyId}`,
             formData
           );
 
-          console.log(response.data);
-
           let updated = response.data.data[0];
+
+          console.log(updated);
 
           if (response.data.success) {
             status = "success";
             message = "Record was added successfully.";
-            setFormData(noticeOfMeeting);
+            setFormData(boardResolution);
 
             let updatedData = records.map((record, index) => {
-              if (record.nomId == updated.nomId) {
+              if (record.brId == updated.brId) {
                 record = {
                   ...record,
-                  notice_date: updated.noticeDate,
-                  proposed_meeting_date: updated.proposedMeetingDate,
-                  type_of_meeting: updated.typeOfMeeting,
-                  files: updated.files,
-                  status: updated.status,
+                  type_of_meeting: updated.type,
+                  resolution_id: updated.boardResolutionId,
+                  board_meeting_date: updated.boardMeetingDate,
+                  description: updated.description,
                 };
               }
               return record;
@@ -156,7 +152,7 @@ const BoardResolutions = () => {
           console.log(error);
         } finally {
           showAlert(status, message);
-          setFormData(noticeOfMeeting);
+          setFormData(boardResolution);
           document.getElementById("editModal").close();
         }
       } else {
@@ -166,27 +162,25 @@ const BoardResolutions = () => {
         let message = "Failed to add the record.";
 
         try {
-          // let response = await axios.post(
-          //   `/board-resolution/${companyId}`,
-          //   formData
-          // );
+          let response = await axios.post(
+            `/board-resolutions/${companyId}`,
+            formData
+          );
 
-          // console.log(response.data);
-          // if (response.data.success) {
-          //   let data = response.data;
-          //   console.log(data);
-          //   formData.nomId = data.data[0].nomId;
-          //   formData.files = data.files;
-
-          //   console.log(formData);
-          //   setRecords([...records, formData]);
-          //   setFormData(noticeOfMeeting);
-          //   status = "success";
-          //   message = "Record was added successfully.";
-          // }
-          status = "success";
-          message = "Record was added successfully.";
-          setRecords([...records, formData]);
+          if (response.data.success) {
+            let data = response.data.data[0];
+            let insertedData = {
+              brId: data.brId,
+              type_of_meeting: formData.type_of_meeting,
+              board_meeting_date: formData.board_meeting_date,
+              resolution_id: formData.resolution_id,
+              description: formData.description,
+            };
+            setRecords([...records, insertedData]);
+            setFormData(boardResolution);
+            status = "success";
+            message = "Record was added successfully.";
+          }
         } catch (error) {
           console.log(error);
         } finally {
@@ -277,17 +271,55 @@ const BoardResolutions = () => {
     return Object.keys(newErrors).length == 0;
   };
 
+  const toggleDelete = (brId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#CF0404",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonColor: "#B4B4B8",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let status = "error";
+        let message = "Failed to delete record";
+        try {
+          let response = await axios.delete(
+            `/board-resolutions/${companyId}/${brId}`
+          );
+          if (response.data.success) {
+            status = "success";
+            message = "Record deleted successfully!";
+            setRecords((data) => data.filter((u) => u.brId !== brId));
+          }
+        } catch (error) {
+          console.error("Error deleting a record: ", error);
+        } finally {
+          showAlert(status, message);
+        }
+      }
+    });
+  };
+
   const fetchBoardMeetingDates = async () => {
     try {
-      let response = await axios.get(`/board-resolutions/${companyId}`);
-      console.log(response.data);
+      let response = await axios.get(`/board-resolutions/${companyId}/bmdates`);
       let dates = [];
 
       response.data.map((date, index) => {
-        dates.push(date.proposed_meeting_date);
+        dates.push(date.notice_date);
       });
-      console.log(dates);
       setBoardMeetingDates(dates);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchBoardResolutions = async () => {
+    try {
+      let response = await axios.get(`/board-resolutions/${companyId}`);
+      setRecords(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -296,7 +328,7 @@ const BoardResolutions = () => {
   useEffect(() => {
     dispatch(fetchRecords(companyId));
     fetchBoardMeetingDates();
-    console.log();
+    fetchBoardResolutions();
   }, []);
 
   return (
@@ -336,7 +368,7 @@ const BoardResolutions = () => {
               Add Board Resolution
             </button>
 
-            <button
+            {/* <button
               className="btn btn-primary btn-outline text-white"
               onClick={(e) => {
                 document.getElementById("previewDialog").showModal();
@@ -357,7 +389,7 @@ const BoardResolutions = () => {
                 />
               </svg>
               Generate
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -495,7 +527,138 @@ const BoardResolutions = () => {
         </div>
       </dialog>
 
-      <dialog id="previewDialog" className="modal">
+      <dialog id="editModal" className="modal">
+        <div className="modal-box">
+          <div className="flex flex-row justify-between">
+            <h3 className="font-bold text-lg">Edit Board Resolution</h3>
+            <form method="dialog">
+              <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                ✕
+              </button>
+            </form>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">
+                  Type of Meeting <span className="text-red-500">*</span>
+                </span>
+              </div>
+              <select
+                className={`select select-bordered w-full ${
+                  errors.type_of_meeting && `select-error`
+                }`}
+                name="type_of_meeting"
+                value={formData.type_of_meeting}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              >
+                <option>Regular</option>
+                <option>Special</option>=
+              </select>
+              {errors.type_of_meeting && (
+                <span className="text-[12px] text-red-500">
+                  {errors.type_of_meeting}
+                </span>
+              )}
+            </label>
+
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">
+                  Resolution ID <span className="text-red-500">*</span>
+                </span>
+              </div>
+              <input
+                className={`input input-bordered w-full ${
+                  errors.resolution_id && `input-error`
+                }`}
+                value={formData.resolution_id}
+                name="resolution_id"
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              ></input>
+              {errors.resolution_id && (
+                <span className="text-[12px] text-red-500">
+                  {errors.resolution_id}
+                </span>
+              )}
+            </label>
+
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">
+                  Board Meeting Date <span className="text-red-500">*</span>
+                </span>
+              </div>
+              <select
+                className={`select select-bordered w-full ${
+                  errors.board_meeting_date && `select-error`
+                }`}
+                name="board_meeting_date"
+                value={formData.board_meeting_date}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              >
+                <option value={""} disabled>
+                  Please select a date
+                </option>
+                {boardMeetingDates.map((date, index) => {
+                  return (
+                    <option key={index} value={date}>
+                      {date}
+                    </option>
+                  );
+                })}
+              </select>
+              {errors.board_meeting_date && (
+                <span className="text-[12px] text-red-500">
+                  {errors.board_meeting_date}
+                </span>
+              )}
+            </label>
+
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">
+                  Description <span className="text-red-500">*</span>
+                </span>
+              </div>
+              <textarea
+                className={`textarea textarea-bordered h-24 w-full ${
+                  errors.description && `textarea-error`
+                }`}
+                value={formData.description}
+                name="description"
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              ></textarea>
+              {errors.description && (
+                <span className="text-[12px] text-red-500">
+                  {errors.description}
+                </span>
+              )}
+            </label>
+
+            <button
+              onClick={(e) => {
+                handleSubmit(e, true);
+              }}
+              className="btn bg-primary text-white mt-2"
+              disabled={loading}
+            >
+              {loading && <span className="loading loading-spinner"></span>}
+              Submit
+            </button>
+          </div>
+        </div>
+      </dialog>
+
+      {/* <dialog id="previewDialog" className="modal">
         <div className="modal-box  w-11/12 max-w-5xl">
           <div className="flex flex-row justify-between">
             <h3 className="font-bold text-lg">Secretary Certificate Preview</h3>
@@ -518,7 +681,7 @@ const BoardResolutions = () => {
             </button>
           </div>
         </div>
-      </dialog>
+      </dialog> */}
     </div>
   );
 };

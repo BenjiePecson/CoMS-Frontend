@@ -23,6 +23,7 @@ const NoticeOfMeetings = () => {
     notice_date: "",
     type_of_meeting: "",
     proposed_meeting_date: "",
+    actual_meeting_date: "",
     status: "",
     folder_id: "",
     files: [],
@@ -133,7 +134,7 @@ const NoticeOfMeetings = () => {
                   <td>
                     {/* {record.status != "Notice Completed" && ( */}
                     <div className="flex flex-row justify-between gap-2">
-                      <button
+                      {/* <button
                         onClick={() => {
                           setSelectedIndex(index);
                           setFormData(record);
@@ -156,7 +157,7 @@ const NoticeOfMeetings = () => {
                             d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
                           />
                         </svg>
-                      </button>
+                      </button> */}
                       <button
                         onClick={() => {
                           if (record.status != "Notice Completed") {
@@ -293,7 +294,6 @@ const NoticeOfMeetings = () => {
           console.log(response.data);
           if (response.data.success) {
             let data = response.data;
-            console.log(data);
             formData.nomId = data.data[0].nomId;
             formData.files = data.files;
 
@@ -460,7 +460,6 @@ const NoticeOfMeetings = () => {
   const fetchRecords = async () => {
     try {
       let response = await axios.get(`/notice-of-meeting/${companyId}`);
-      console.log(response.data);
       setRecords(response.data);
     } catch (error) {
       console.log(error);
@@ -631,133 +630,140 @@ const NoticeOfMeetings = () => {
               )}
             </label>
 
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="poppins-regular text-[12px]">
-                  Google Drive Folder ID
-                </span>
-              </div>
-              <input
-                type="text"
-                className={`input input-bordered w-full ${
-                  errors.folder_id && `input-error`
-                }`}
-                name="folder_id"
-                value={formData.folder_id}
-                onChange={(e) => {
-                  handleOnChange(e);
-                }}
-              />
-              {errors.notice_date && (
-                <span className="text-[12px] text-red-500">
-                  {errors.folder_id}
-                </span>
-              )}
-            </label>
-
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="poppins-regular text-[12px]">
-                  Attach Files
-                </span>
-              </div>
-              <div className="flex flex-col w-full h-20 border border-dashed rounded-lg  justify-center items-center hover:border-primary text-gray-400 hover:text-primary">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-8 h-8"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M11.47 2.47a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1-1.06 1.06l-3.22-3.22V16.5a.75.75 0 0 1-1.5 0V4.81L8.03 8.03a.75.75 0 0 1-1.06-1.06l4.5-4.5ZM3 15.75a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <h1 className="">Add files here</h1>
-              </div>
-              <input
-                type="file"
-                hidden
-                name="file"
-                multiple
-                onChange={async (e) => {
-                  const { name, value, files } = e.target;
-
-                  for (let i = 0; i < files.length; i++) {
-                    if (files[i].size > 5 * 1024 * 1024) {
-                      setErrors({
-                        ...errors,
-                        files: `${files[i].name} file size exceeds 5MB. Please choose a smaller file.`,
-                      });
-                      return;
-                    } else {
-                      let file = {
-                        file: await convertBase64(files[i]),
-                        fileName: files[i].name,
-                      };
-                      formData.files.push(file);
-                    }
-                  }
-
-                  setFormData({
-                    ...formData,
-                    files: formData.files,
-                  });
-
-                  let error = "";
-
-                  if (formData.files.length == 0) {
-                    error = "Please attach a file";
-                    setErrors({
-                      ...errors,
-                      files: error,
-                    });
-                  } else {
-                    setErrors({ ...errors, files: "" });
-                  }
-                }}
-              />
-              {errors.files && (
-                <span className="text-[12px] text-red-500">{errors.files}</span>
-              )}
-            </label>
-            <div className="flex flex-col gap-2">
-              {formData.files.map((file, index) => {
-                return (
-                  <div key={`file ${index}`}>
-                    <div className="flex flex-row items-center gap-2">
-                      <div className="px-5 py-2 rounded-full bg-neutral text-white text-xs">
-                        {file.fileName}
-                      </div>
-                      <button
-                        onClick={() => {
-                          setFormData({
-                            ...formData,
-                            files: formData.files.filter(
-                              (u, idx) => idx !== index
-                            ),
-                          });
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          className="w-6 h-6 text-red-400"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </button>
-                    </div>
+            {formData.status == "Notice Completed" && (
+              <div>
+                {/* <label className="form-control w-full">
+                  <div className="label">
+                    <span className="poppins-regular text-[12px]">
+                      Google Drive Folder ID
+                    </span>
                   </div>
-                );
-              })}
-            </div>
+                  <input
+                    type="text"
+                    className={`input input-bordered w-full ${
+                      errors.folder_id && `input-error`
+                    }`}
+                    name="folder_id"
+                    value={formData.folder_id}
+                    onChange={(e) => {
+                      handleOnChange(e);
+                    }}
+                  />
+                  {errors.notice_date && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.folder_id}
+                    </span>
+                  )}
+                </label> */}
+
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="poppins-regular text-[12px]">
+                      Attach Files
+                    </span>
+                  </div>
+                  <div className="flex flex-col w-full h-20 border border-dashed rounded-lg  justify-center items-center hover:border-primary text-gray-400 hover:text-primary">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-8 h-8"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M11.47 2.47a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1-1.06 1.06l-3.22-3.22V16.5a.75.75 0 0 1-1.5 0V4.81L8.03 8.03a.75.75 0 0 1-1.06-1.06l4.5-4.5ZM3 15.75a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <h1 className="">Add files here</h1>
+                  </div>
+                  <input
+                    type="file"
+                    hidden
+                    name="file"
+                    multiple
+                    onChange={async (e) => {
+                      const { name, value, files } = e.target;
+
+                      for (let i = 0; i < files.length; i++) {
+                        if (files[i].size > 5 * 1024 * 1024) {
+                          setErrors({
+                            ...errors,
+                            files: `${files[i].name} file size exceeds 5MB. Please choose a smaller file.`,
+                          });
+                          return;
+                        } else {
+                          let file = {
+                            file: await convertBase64(files[i]),
+                            fileName: files[i].name,
+                          };
+                          formData.files.push(file);
+                        }
+                      }
+
+                      setFormData({
+                        ...formData,
+                        files: formData.files,
+                      });
+
+                      let error = "";
+
+                      if (formData.files.length == 0) {
+                        error = "Please attach a file";
+                        setErrors({
+                          ...errors,
+                          files: error,
+                        });
+                      } else {
+                        setErrors({ ...errors, files: "" });
+                      }
+                    }}
+                  />
+                  {errors.files && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.files}
+                    </span>
+                  )}
+                </label>
+                <div className="flex flex-col gap-2">
+                  {formData.files.map((file, index) => {
+                    return (
+                      <div key={`file ${index}`}>
+                        <div className="flex flex-row items-center gap-2">
+                          <div className="px-5 py-2 rounded-full bg-neutral text-white text-xs">
+                            {file.fileName}
+                          </div>
+                          <button
+                            onClick={() => {
+                              setFormData({
+                                ...formData,
+                                files: formData.files.filter(
+                                  (u, idx) => idx !== index
+                                ),
+                              });
+                            }}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              className="w-6 h-6 text-red-400"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             <button
               onClick={(e) => {
                 handleSubmit(e);
@@ -858,6 +864,30 @@ const NoticeOfMeetings = () => {
             <label className="form-control w-full">
               <div className="label">
                 <span className="poppins-regular text-[12px]">
+                  Actual Meeting Date <span className="text-red-500">*</span>
+                </span>
+              </div>
+              <input
+                type="date"
+                className={`input input-bordered w-full ${
+                  errors.actual_meeting_date && `input-error`
+                }`}
+                name="actual_meeting_date"
+                value={formData.actual_meeting_date}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.actual_meeting_date && (
+                <span className="text-[12px] text-red-500">
+                  {errors.actual_meeting_date}
+                </span>
+              )}
+            </label>
+
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">
                   Status <span className="text-red-500">*</span>
                 </span>
               </div>
@@ -881,101 +911,107 @@ const NoticeOfMeetings = () => {
               )}
             </label>
 
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="poppins-regular text-[12px]">
-                  Attach Files
-                </span>
-              </div>
-              <div className="flex flex-col w-full h-20 border border-dashed rounded-lg  justify-center items-center hover:border-primary text-gray-400 hover:text-primary">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-8 h-8"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M11.47 2.47a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1-1.06 1.06l-3.22-3.22V16.5a.75.75 0 0 1-1.5 0V4.81L8.03 8.03a.75.75 0 0 1-1.06-1.06l4.5-4.5ZM3 15.75a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <h1>Add files here</h1>
-              </div>
-              <input
-                type="file"
-                hidden
-                name="file"
-                multiple
-                onChange={async (e) => {
-                  const { name, value, files } = e.target;
-
-                  for (let i = 0; i < files.length; i++) {
-                    let file = {
-                      file: await convertBase64(files[i]),
-                      fileName: files[i].name,
-                    };
-                    formData.files.push(file);
-                  }
-
-                  setFormData({
-                    ...formData,
-                    files: formData.files,
-                  });
-
-                  let error = "";
-
-                  if (formData.files.length == 0) {
-                    error = "Please attach a file";
-                    setErrors({
-                      ...errors,
-                      files: error,
-                    });
-                  } else {
-                    setErrors({ ...errors, files: "" });
-                  }
-                }}
-              />
-              {errors.files && (
-                <span className="text-[12px] text-red-500">{errors.files}</span>
-              )}
-            </label>
-            <div className="flex flex-col gap-2">
-              {formData.files.map((file, index) => {
-                return (
-                  <div key={`file ${index}`}>
-                    <div className="flex flex-row items-center gap-2">
-                      <div className="px-5 py-2 rounded-full bg-neutral text-white text-xs">
-                        {file.fileName}
-                      </div>
-                      <button
-                        onClick={() => {
-                          setFormData({
-                            ...formData,
-                            files: formData.files.filter(
-                              (u, idx) => idx !== index
-                            ),
-                          });
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          className="w-6 h-6 text-red-400"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </button>
-                    </div>
+            {formData.status == "Notice Completed" && (
+              <div>
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="poppins-regular text-[12px]">
+                      Attach Files
+                    </span>
                   </div>
-                );
-              })}
-            </div>
+                  <div className="flex flex-col w-full h-20 border border-dashed rounded-lg  justify-center items-center hover:border-primary text-gray-400 hover:text-primary">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-8 h-8"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M11.47 2.47a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1-1.06 1.06l-3.22-3.22V16.5a.75.75 0 0 1-1.5 0V4.81L8.03 8.03a.75.75 0 0 1-1.06-1.06l4.5-4.5ZM3 15.75a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <h1>Add files here</h1>
+                  </div>
+                  <input
+                    type="file"
+                    hidden
+                    name="file"
+                    multiple
+                    onChange={async (e) => {
+                      const { name, value, files } = e.target;
+
+                      for (let i = 0; i < files.length; i++) {
+                        let file = {
+                          file: await convertBase64(files[i]),
+                          fileName: files[i].name,
+                        };
+                        formData.files.push(file);
+                      }
+
+                      setFormData({
+                        ...formData,
+                        files: formData.files,
+                      });
+
+                      let error = "";
+
+                      if (formData.files.length == 0) {
+                        error = "Please attach a file";
+                        setErrors({
+                          ...errors,
+                          files: error,
+                        });
+                      } else {
+                        setErrors({ ...errors, files: "" });
+                      }
+                    }}
+                  />
+                  {errors.files && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.files}
+                    </span>
+                  )}
+                </label>
+                <div className="flex flex-col gap-2">
+                  {formData.files.map((file, index) => {
+                    return (
+                      <div key={`file ${index}`}>
+                        <div className="flex flex-row items-center gap-2">
+                          <div className="px-5 py-2 rounded-full bg-neutral text-white text-xs">
+                            {file.fileName}
+                          </div>
+                          <button
+                            onClick={() => {
+                              setFormData({
+                                ...formData,
+                                files: formData.files.filter(
+                                  (u, idx) => idx !== index
+                                ),
+                              });
+                            }}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              className="w-6 h-6 text-red-400"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
             <button
               onClick={(e) => {
                 handleSubmit(e, true);

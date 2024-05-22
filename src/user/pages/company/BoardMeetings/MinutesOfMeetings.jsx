@@ -10,7 +10,7 @@ const MinutesOfMeetings = () => {
   const { companyId } = useParams();
   const companyRecords = useSelector((state) => state.records.records);
   const minutesOfMeeting = {
-    proposed_meeting_date: "",
+    notice_date: "",
     type_of_meeting: "",
     place_of_meeting: "",
     quorum: "",
@@ -43,7 +43,7 @@ const MinutesOfMeetings = () => {
             records.map((record, index) => {
               return (
                 <tr key={index}>
-                  <td>{record.proposed_meeting_date}</td>
+                  <td>{record.notice_date}</td>
                   <td>{record.type_of_meeting}</td>
                   <td>{record.place_of_meeting}</td>
                   <td>{record.quorum}</td>
@@ -82,7 +82,7 @@ const MinutesOfMeetings = () => {
                   </td>
                   <td>
                     <div className="flex flex-row justify-between gap-2">
-                      <button
+                      {/* <button
                         onClick={() => {
                           setSelectedIndex(index);
                           setFormData(record);
@@ -105,7 +105,7 @@ const MinutesOfMeetings = () => {
                             d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
                           />
                         </svg>
-                      </button>
+                      </button> */}
                       <button
                         onClick={() => {
                           setSelectedIndex(index);
@@ -286,7 +286,6 @@ const MinutesOfMeetings = () => {
   const fetchRecords = async () => {
     try {
       let response = await axios.get(`/minutes-of-meeting/${companyId}`);
-      console.log(response.data);
       setRecords(response.data);
     } catch (error) {
       console.log(error);
@@ -333,17 +332,17 @@ const MinutesOfMeetings = () => {
               <input
                 type="date"
                 className={`input input-bordered w-full ${
-                  errors.proposed_meeting_date && `input-error`
+                  errors.notice_date && `input-error`
                 }`}
-                name="proposed_meeting_date"
-                value={formData.proposed_meeting_date}
+                name="notice_date"
+                value={formData.notice_date}
                 onChange={(e) => {
                   handleOnChange(e);
                 }}
               />
-              {errors.proposed_meeting_date && (
+              {errors.notice_date && (
                 <span className="text-[12px] text-red-500">
-                  {errors.proposed_meeting_date}
+                  {errors.notice_date}
                 </span>
               )}
             </label>
@@ -483,7 +482,7 @@ const MinutesOfMeetings = () => {
         </div>
       </dialog>
 
-      <dialog id="gdrive" className="modal">
+      {/* <dialog id="gdrive" className="modal">
         <div className="modal-box w-11/12 max-w-5xl">
           <div className="flex flex-row justify-between py-4">
             <form method="dialog">
@@ -587,7 +586,7 @@ const MinutesOfMeetings = () => {
             </a>
           </div>
         </div>
-      </dialog>
+      </dialog> */}
     </div>
   );
 };

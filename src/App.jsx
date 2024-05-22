@@ -36,6 +36,8 @@ axios.defaults.headers.common["Authorization"] =
   localStorage.getItem("access_token");
 
 function App() {
+  const [count, setCount] = useState(0)
+
   return (
     <>
       <BrowserRouter>
@@ -90,7 +92,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </>
-  );
+  )
 }
 
-export default App;
+export default App

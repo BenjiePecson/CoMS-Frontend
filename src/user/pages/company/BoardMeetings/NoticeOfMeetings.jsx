@@ -248,8 +248,6 @@ const NoticeOfMeetings = () => {
             formData
           );
 
-          console.log(response.data);
-
           let updated = response.data.data[0];
 
           if (response.data.success) {
@@ -857,30 +855,6 @@ const NoticeOfMeetings = () => {
               {errors.proposed_meeting_date && (
                 <span className="text-[12px] text-red-500">
                   {errors.proposed_meeting_date}
-                </span>
-              )}
-            </label>
-
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="poppins-regular text-[12px]">
-                  Actual Meeting Date <span className="text-red-500">*</span>
-                </span>
-              </div>
-              <input
-                type="date"
-                className={`input input-bordered w-full ${
-                  errors.actual_meeting_date && `input-error`
-                }`}
-                name="actual_meeting_date"
-                value={formData.actual_meeting_date}
-                onChange={(e) => {
-                  handleOnChange(e);
-                }}
-              />
-              {errors.actual_meeting_date && (
-                <span className="text-[12px] text-red-500">
-                  {errors.actual_meeting_date}
                 </span>
               )}
             </label>

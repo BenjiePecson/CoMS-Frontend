@@ -159,11 +159,13 @@ const MinutesOfMeetings = () => {
             `/minutes-of-meeting/${companyId}`,
             formData
           );
-          console.log(response.data);
+          let data = response.data.data[0];
+
           if (response.data.success) {
             let updatedRecords = records.map((record, index) => {
-              if (index === selectedIndex) {
-                return {
+              if (record.nomId === data.nomId) {
+                record = {
+                  ...record,
                   proposed_meeting_date: formData.proposed_meeting_date,
                   type_of_meeting: formData.type_of_meeting,
                   place_of_meeting: formData.place_of_meeting,

@@ -2,10 +2,15 @@ import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import { Link, useParams } from "react-router-dom";
 
-import { fetchRecords, renameRecordName } from "../../store/GIS/GISRecordSlice";
+import {
+  deleteRecord,
+  fetchRecords,
+  renameRecordName,
+} from "../../store/GIS/GISRecordSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { showAlert } from "../../../assets/global";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const GISTracker = () => {
   const { companyId } = useParams();
@@ -62,31 +67,69 @@ const GISTracker = () => {
                   <td>{record.status}</td>
                   <td></td>
                   <td>
-                    <Link
-                      to={`/company/${companyId}/gis-tracker/${goto}/${record.recordId}`}
-                    >
-                      <button>
-                        <svg
-                          width="54"
-                          height="38"
-                          viewBox="0 0 54 38"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
+                    <div className="flex flex-row  gap-2 items-center justify-center">
+                      <div>
+                        <Link
+                          to={`/company/${companyId}/gis-tracker/${goto}/${record.recordId}`}
                         >
-                          <rect width="54" height="38" rx="4" fill="#273069" />
-                          <path
-                            d="M27.0003 20C28.1048 20 29.0003 19.1046 29.0003 18C29.0003 16.8954 28.1048 16 27.0003 16C25.8957 16 25.0003 16.8954 25.0003 18C25.0003 19.1046 25.8957 20 27.0003 20Z"
-                            fill="white"
-                          />
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M17.458 18C18.7323 13.9429 22.5226 11 27.0002 11C31.4778 11 35.2681 13.9429 36.5424 18C35.2682 22.0571 31.4778 25 27.0002 25C22.5226 25 18.7323 22.0571 17.458 18ZM31.0003 18C31.0003 20.2091 29.2094 22 27.0003 22C24.7911 22 23.0003 20.2091 23.0003 18C23.0003 15.7909 24.7911 14 27.0003 14C29.2094 14 31.0003 15.7909 31.0003 18Z"
-                            fill="white"
-                          />
-                        </svg>
-                      </button>
-                    </Link>
+                          <button>
+                            <svg
+                              width="44"
+                              height="37"
+                              viewBox="0 0 44 37"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <rect
+                                width="44"
+                                height="37"
+                                rx="10"
+                                fill="#273069"
+                              />
+                              <path
+                                d="M22.0003 20C23.1048 20 24.0003 19.1046 24.0003 18C24.0003 16.8954 23.1048 16 22.0003 16C20.8957 16 20.0003 16.8954 20.0003 18C20.0003 19.1046 20.8957 20 22.0003 20Z"
+                                fill="white"
+                              />
+                              <path
+                                fillRule="evenodd"
+                                clipRule="evenodd"
+                                d="M12.458 18C13.7323 13.9429 17.5226 11 22.0002 11C26.4778 11 30.2681 13.9429 31.5424 18C30.2682 22.0571 26.4778 25 22.0002 25C17.5226 25 13.7323 22.0571 12.458 18ZM26.0003 18C26.0003 20.2091 24.2094 22 22.0003 22C19.7911 22 18.0003 20.2091 18.0003 18C18.0003 15.7909 19.7911 14 22.0003 14C24.2094 14 26.0003 15.7909 26.0003 18Z"
+                                fill="white"
+                              />
+                            </svg>
+                          </button>
+                        </Link>
+                      </div>
+                      <div>
+                        <button
+                          onClick={() => {
+                            toggleDelete(record.recordId);
+                          }}
+                        >
+                          <svg
+                            width="44"
+                            height="37"
+                            viewBox="0 0 44 37"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <rect
+                              width="44"
+                              height="37"
+                              rx="10"
+                              fill="#CF0404"
+                            />
+                            <path
+                              d="M28.3333 17.667V25.5003C28.3333 25.7765 28.1095 26.0003 27.8333 26.0003H17.1667C16.8905 26.0003 16.6667 25.7765 16.6667 25.5003V17.667M20.8333 22.667V17.667M24.1667 22.667V17.667M30 14.3333H25.8333M25.8333 14.3333V11.5C25.8333 11.2239 25.6095 11 25.3333 11H19.6667C19.3905 11 19.1667 11.2239 19.1667 11.5V14.3333M25.8333 14.3333H19.1667M15 14.3333H19.1667"
+                              stroke="white"
+                              strokeWidth="1.95694"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               );
@@ -198,6 +241,36 @@ const GISTracker = () => {
         setErrors({ ...errors, dateRegistered: "" });
       }
     }
+  };
+
+  const toggleDelete = (recordId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#CF0404",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonColor: "#B4B4B8",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let status = "error";
+        let message = "Failed to delete record";
+        try {
+          let response = await axios.delete(`/record/${recordId}`);
+
+          if (response.status === 200) {
+            dispatch(deleteRecord(recordId));
+            status = "success";
+            message = "Record deleted successfully!";
+          }
+        } catch (error) {
+          console.error("Error deleting a record: ", error);
+        } finally {
+          showAlert(status, message);
+        }
+      }
+    });
   };
 
   useEffect(() => {

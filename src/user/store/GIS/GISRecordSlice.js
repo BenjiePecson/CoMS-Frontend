@@ -66,8 +66,8 @@ const GISRecordSlice = createSlice({
     },
 
     deleteRecord: (state, action) => {
-      state.companies = state.companies.filter(
-        (item) => item.id !== action.payload.id
+      state.records = state.records.filter(
+        (item) => item.recordId !== action.payload
       );
     },
 

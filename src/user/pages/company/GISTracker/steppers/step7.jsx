@@ -21,7 +21,6 @@ import PageTen from "../pdfPages/PageTen";
 
 const step7 = () => {
   const formData = useSelector((state) => state.formGIS.formData);
-  console.log(formData);
   const dispatch = useDispatch();
 
   return (
@@ -36,10 +35,20 @@ const step7 = () => {
                 width: "100%",
               }}
             >
-              <Document title={`${formData.company_name} GIS ${formData.year}`}>
+              <Document
+                title={`${formData.corporate_name} GIS ${formData.year}`}
+              >
                 <PageOne
                   //view1
                   year={formData.year}
+                  amended={
+                    formData.isAmended == undefined ? false : formData.isAmended
+                  }
+                  is_special_meeting={
+                    formData.isSpecialMeeting == undefined
+                      ? false
+                      : formData.isSpecialMeeting
+                  }
                   corporate_name={formData.corporate_name}
                   business_or_trade_name={formData.business_or_trade_name}
                   sec_registration_number={formData.sec_registration_number}

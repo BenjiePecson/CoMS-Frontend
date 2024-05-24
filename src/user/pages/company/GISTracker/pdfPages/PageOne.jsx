@@ -5,8 +5,15 @@ const styles = StyleSheet.create({
   year: {
     fontFamily: "Times-Bold",
     fontSize: "10px",
-    marginTop: 70,
+    marginTop: 68,
     marginLeft: 295,
+    position: "absolute",
+  },
+  amended: {
+    fontFamily: "Times-Bold",
+    fontSize: "10px",
+    marginTop: 68,
+    marginLeft: 330,
     position: "absolute",
   },
   view1: {
@@ -90,6 +97,8 @@ const styles = StyleSheet.create({
 
 function PageOne({
   year,
+  amended,
+  is_special_meeting,
   corporate_name,
   business_or_trade_name,
   sec_registration_number,
@@ -115,6 +124,7 @@ function PageOne({
   return (
     <Page size="A4" style={{ position: "relative" }}>
       <Text style={styles.year}>{year}</Text>
+      <Text style={styles.amended}>{amended ? "AMENDED" : ""}</Text>
       <View style={styles.view1}>
         <Text style={styles.text2_1_1}>{date_registered}</Text>
         <Text style={styles.text2_2}>{fiscal_year_end}</Text>

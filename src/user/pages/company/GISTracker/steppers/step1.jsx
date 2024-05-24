@@ -40,7 +40,6 @@ const step1 = () => {
     setformStep1(formData);
     setIsAmended(formData.isAmended);
     setIsSpecialMeeting(formData.isSpecialMeeting);
-    console.log(formData);
   }, [formData]);
 
   useEffect(() => {

@@ -19,6 +19,7 @@ const Login = () => {
 
       if (response.data.success) {
         localStorage.setItem("access_token", response.data.tokens.access_token);
+        dispatch(fetchUser(response.data.tokens.access_token));
         navigate("/company");
       }
       document.getElementById("overlay").close();

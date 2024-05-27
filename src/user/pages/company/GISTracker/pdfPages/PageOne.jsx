@@ -98,7 +98,6 @@ const styles = StyleSheet.create({
 function PageOne({
   year,
   amended,
-  is_special_meeting,
   corporate_name,
   business_or_trade_name,
   sec_registration_number,

@@ -166,6 +166,25 @@ const Layout = () => {
                     <p className="poppins-medium text-[15px]">
                       {selectedCompany.secNumber}
                     </p>
+
+                    <div className="flex flex-col w-full">
+                      <div className="flex flex-row justify-between">
+                        <h1 className="font-bold">Tin ID</h1>
+                        <h1>123456789</h1>
+                      </div>
+                      <div className="flex flex-row justify-between">
+                        <h1 className="font-bold">HDMF</h1>
+                        <h1>ABC123456789</h1>
+                      </div>
+                      <div className="flex flex-row justify-between">
+                        <h1 className="font-bold">SSS</h1>
+                        <h1>1234567890</h1>
+                      </div>
+                      <div className="flex flex-row justify-between">
+                        <h1 className="font-bold">PhilHealth</h1>
+                        <h1>ABCD123456789</h1>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

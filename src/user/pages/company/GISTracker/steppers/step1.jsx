@@ -391,8 +391,8 @@ const step1 = () => {
         <label className="form-control w-full">
           <div className="label">
             <span className="label-text">
-              Date of {formData.isSpecialMeeting ? "Special" : "Annual"} Meeting
-              Per By-Laws <span className="text-red-500">*</span>
+              Date of Annual Meeting Per By-Laws{" "}
+              <span className="text-red-500">*</span>
             </span>
           </div>
           <input
@@ -907,8 +907,8 @@ const step1 = () => {
               <label className="form-control w-full">
                 <div className="label">
                   <span className="label-text">
-                    Date of {formStep1.isSpecialMeeting ? "Special" : "Annual"}{" "}
-                    Meeting Per By-Laws <span className="text-red-500">*</span>
+                    Date of Annual Meeting Per By-Laws{" "}
+                    <span className="text-red-500">*</span>
                   </span>
                 </div>
                 <input

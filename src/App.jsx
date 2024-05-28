@@ -21,6 +21,7 @@ import NotFound from "./user/pages/NotFound";
 import Unathorized from "./user/pages/Unathorized";
 import { Component } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 // axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
@@ -38,6 +39,7 @@ axios.defaults.headers.common["Authorization"] =
 function App() {
   return (
     <>
+      <ToastContainer />
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />

@@ -115,7 +115,7 @@ const Layout = () => {
           <div className="drawer lg:drawer-open">
             <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
             <div className="drawer-content flex flex-col">
-              <div className="flex justify-end bg-[#FFFFFF] shadow-md">
+              <div className="flex justify-start bg-[#FFFFFF] shadow-md">
                 <label
                   htmlFor="my-drawer-2"
                   className="btn btn-ghost bg-[#f7f7f7] shadow-sm lg:hidden w-16 m-2"

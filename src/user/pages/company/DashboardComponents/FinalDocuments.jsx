@@ -19,6 +19,16 @@ const FinalDocuments = ({}) => {
   const [LGUBusinessPermit, setLGUBusinessPermit] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
 
+  const [selectedOption, setSelectedOption] = useState("");
+
+  const handleSelectChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
+
+  const handleResetClick = () => {
+    setSelectedOption("");
+  };
+
   const secCertsRow = secCerts.map((row, index) => {
     return (
       <tr key={`secCert-${index}`}>
@@ -508,7 +518,10 @@ const FinalDocuments = ({}) => {
           <div className="flex flex-row justify-between">
             <h3 className="font-bold text-lg">Upload Final Document</h3>
             <form method="dialog">
-              <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+              <button
+                onClick={handleResetClick}
+                className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2"
+              >
                 ✕
               </button>
             </form>
@@ -525,10 +538,10 @@ const FinalDocuments = ({}) => {
                   errors.fileType && `select-error`
                 }`}
                 name="fileType"
-                onChange={(e) => {
-                  setFormData({ ...formData, fileType: e.target.value });
-                }}
+                onChange={handleSelectChange}
+                value={selectedOption}
               >
+                <option value="">Select an option</option>
                 <option value={"SEC Certificates"}>SEC Certificates</option>
                 <option value={"Articles of Incorporation"}>
                   Articles of Incorporation
@@ -605,6 +618,7 @@ const FinalDocuments = ({}) => {
               <button
                 onClick={(e) => {
                   document.getElementById("uploadModal").close();
+                  handleResetClick();
                 }}
                 className="btn mt-2"
               >
@@ -612,6 +626,7 @@ const FinalDocuments = ({}) => {
               </button>
               <button
                 onClick={async () => {
+                  handleResetClick();
                   setIsUploading(true);
 
                   if (await isFormValid()) {
@@ -676,7 +691,7 @@ const FinalDocuments = ({}) => {
                   setIsUploading(false);
                 }}
                 className="btn bg-primary text-white mt-2"
-                disabled={isUploading}
+                disabled={!selectedOption}
               >
                 {isUploading ? (
                   <span className="loading loading-spinner"></span>

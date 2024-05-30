@@ -293,10 +293,8 @@ const FinalDocuments = ({}) => {
         <label
           className="btn bg-primary text-white  flex flex-row"
           onClick={(e) => {
-            setFormData({
-              ...formData,
-              fileType: "SEC Certificates",
-            });
+            setFormData({ ...formData, fileType: "", files: [] });
+            setErrors([]);
             document.getElementById("fileUpload").value = "";
             document.getElementById("uploadModal").showModal();
           }}
@@ -538,8 +536,22 @@ const FinalDocuments = ({}) => {
                   errors.fileType && `select-error`
                 }`}
                 name="fileType"
-                onChange={handleSelectChange}
-                value={selectedOption}
+                // onChange={(handleSelectChange)}
+                value={formData.fileType}
+                onChange={(e) => {
+                  setFormData({ ...formData, fileType: e.target.value });
+                  if (e.target.value == "") {
+                    setErrors({
+                      ...errors,
+                      fileType: "File Type is Required.",
+                    });
+                  } else {
+                    setErrors({
+                      ...errors,
+                      fileType: "",
+                    });
+                  }
+                }}
               >
                 <option value="">Select an option</option>
                 <option value={"SEC Certificates"}>SEC Certificates</option>
@@ -629,6 +641,8 @@ const FinalDocuments = ({}) => {
                   handleResetClick();
                   setIsUploading(true);
 
+                  console.log(formData);
+
                   if (await isFormValid()) {
                     let type = "erorr";
                     let message =
@@ -691,7 +705,7 @@ const FinalDocuments = ({}) => {
                   setIsUploading(false);
                 }}
                 className="btn bg-primary text-white mt-2"
-                disabled={!selectedOption}
+                disabled={isUploading}
               >
                 {isUploading ? (
                   <span className="loading loading-spinner"></span>

@@ -18,10 +18,10 @@ import PageSeven from "../pdfPages/PageSeven";
 import PageEight from "../pdfPages/PageEight";
 import PageNine from "../pdfPages/PageNine";
 import PageTen from "../pdfPages/PageTen";
+import PageOneSpecial from "../pdfPages/PageOneSpecial";
 
 const step7 = () => {
   const formData = useSelector((state) => state.formGIS.formData);
-  console.log(formData);
   const dispatch = useDispatch();
 
   return (
@@ -36,38 +36,74 @@ const step7 = () => {
                 width: "100%",
               }}
             >
-              <Document title={`${formData.company_name} GIS ${formData.year}`}>
-                <PageOne
-                  //view1
-                  year={formData.year}
-                  corporate_name={formData.corporate_name}
-                  business_or_trade_name={formData.business_or_trade_name}
-                  sec_registration_number={formData.sec_registration_number}
-                  date_of_annual_meeting={formData.date_of_annual_meeting}
-                  actual_date_of_annual_meeting={
-                    formData.actual_date_of_annual_meeting
-                  }
-                  complete_principal_office_address={
-                    formData.complete_principal_office_address
-                  }
-                  //view2
-                  date_registered={formData.date_registered}
-                  fiscal_year_end={formData.fiscal_year_end}
-                  corporate_tin={formData.corporate_tin}
-                  website_url_address={formData.website_url_address}
-                  official_email_address={formData.official_email_address}
-                  fax_number={formData.fax_number}
-                  alternate_phone_number={formData.alternate_phone_number}
-                  telephone_number={formData.telephone_number}
-                  geographical_code={formData.geographical_code}
-                  //view3
-                  alternate_email_address={formData.alternate_email_address}
-                  official_mobile_number={formData.official_mobile_number}
-                  name_of_external_auditor={formData.name_of_external_auditor}
-                  sec_accreditation_number={formData.sec_accreditation_number}
-                  industry_classification={formData.industry_classification}
-                  primary_purpose={formData.primary_purpose}
-                />
+              <Document
+                title={`${formData.corporate_name} GIS ${formData.year}`}
+              >
+                {formData.isSpecialMeeting == undefined ? (
+                  <PageOne
+                    //view1
+                    year={formData.year}
+                    corporate_name={formData.corporate_name}
+                    business_or_trade_name={formData.business_or_trade_name}
+                    sec_registration_number={formData.sec_registration_number}
+                    date_of_annual_meeting={formData.date_of_annual_meeting}
+                    actual_date_of_annual_meeting={
+                      formData.actual_date_of_annual_meeting
+                    }
+                    complete_principal_office_address={
+                      formData.complete_principal_office_address
+                    }
+                    //view2
+                    date_registered={formData.date_registered}
+                    fiscal_year_end={formData.fiscal_year_end}
+                    corporate_tin={formData.corporate_tin}
+                    website_url_address={formData.website_url_address}
+                    official_email_address={formData.official_email_address}
+                    fax_number={formData.fax_number}
+                    alternate_phone_number={formData.alternate_phone_number}
+                    telephone_number={formData.telephone_number}
+                    geographical_code={formData.geographical_code}
+                    //view3
+                    alternate_email_address={formData.alternate_email_address}
+                    official_mobile_number={formData.official_mobile_number}
+                    name_of_external_auditor={formData.name_of_external_auditor}
+                    sec_accreditation_number={formData.sec_accreditation_number}
+                    industry_classification={formData.industry_classification}
+                    primary_purpose={formData.primary_purpose}
+                  />
+                ) : (
+                  <PageOneSpecial //view1
+                    year={formData.year}
+                    corporate_name={formData.corporate_name}
+                    business_or_trade_name={formData.business_or_trade_name}
+                    sec_registration_number={formData.sec_registration_number}
+                    date_of_annual_meeting={formData.date_of_annual_meeting}
+                    actual_date_of_annual_meeting={
+                      formData.actual_date_of_annual_meeting
+                    }
+                    complete_principal_office_address={
+                      formData.complete_principal_office_address
+                    }
+                    //view2
+                    date_registered={formData.date_registered}
+                    fiscal_year_end={formData.fiscal_year_end}
+                    corporate_tin={formData.corporate_tin}
+                    website_url_address={formData.website_url_address}
+                    official_email_address={formData.official_email_address}
+                    fax_number={formData.fax_number}
+                    alternate_phone_number={formData.alternate_phone_number}
+                    telephone_number={formData.telephone_number}
+                    geographical_code={formData.geographical_code}
+                    //view3
+                    alternate_email_address={formData.alternate_email_address}
+                    official_mobile_number={formData.official_mobile_number}
+                    name_of_external_auditor={formData.name_of_external_auditor}
+                    sec_accreditation_number={formData.sec_accreditation_number}
+                    industry_classification={formData.industry_classification}
+                    primary_purpose={formData.primary_purpose}
+                  />
+                )}
+
                 <PageTwo natureOfService={formData.nature_of_business} />
                 <PageThree
                   corporate_name={formData.corporate_name}

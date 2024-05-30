@@ -19,6 +19,7 @@ const Login = () => {
 
       if (response.data.success) {
         localStorage.setItem("access_token", response.data.tokens.access_token);
+        dispatch(fetchUser(response.data.tokens.access_token));
         navigate("/company");
       }
       document.getElementById("overlay").close();
@@ -42,8 +43,8 @@ const Login = () => {
   return (
     <>
       <div className="flex flex-row w-full min-h-screen justify-center min-w-screen">
-        <div className="w-full md:w-2/5 px-[50px] mt-64">
-          <div className="text-center text-color-1">
+        <div className="w-full md:w-2/5 flex flex-col items-center justify-center">
+          <div className="text-center text-color-1 ">
             <h1 className="poppins-medium text-[24px]">
               Login to your Account
             </h1>
@@ -55,7 +56,7 @@ const Login = () => {
             </span>
           </div>
           <button
-            className="poppins-regular text-color-1 w-full bg-white h-[61px] mx-auto text-center border border-[#70746F] rounded-xl flex flex-row justify-center gap-2 items-center mt-10"
+            className="poppins-regular max-w-sm text-color-1 w-52 bg-white h-[61px] mx-auto text-center border border-[#70746F] rounded-xl flex flex-row justify-center gap-2 items-center mt-10"
             onClick={(e) => {
               document.getElementById("overlay").showModal();
 

@@ -6,12 +6,12 @@ const step1 = () => {
   const formData = useSelector((state) => state.formGIS.formData);
 
   const [formStep1, setformStep1] = useState(formData);
+  const [isSpecialMeeting, setIsSpecialMeeting] = useState(
+    formData.isSpecialMeeting
+  );
+  const [isAmended, setIsAmended] = useState(formData.isAmended);
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    setformStep1(formData);
-  }, []);
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
@@ -32,6 +32,27 @@ const step1 = () => {
     </svg>
   );
 
+  useEffect(() => {
+    setformStep1(formData);
+  }, []);
+
+  useEffect(() => {
+    setformStep1(formData);
+    setIsAmended(formData.isAmended);
+    setIsSpecialMeeting(formData.isSpecialMeeting);
+  }, [formData]);
+
+  useEffect(() => {
+    setformStep1({ ...formStep1, isSpecialMeeting: isSpecialMeeting });
+  }, [isSpecialMeeting]);
+
+  useEffect(() => {
+    setformStep1({
+      ...formStep1,
+      isAmended: isAmended,
+    });
+  }, [isAmended]);
+
   return (
     <>
       <div className="text-end">
@@ -39,6 +60,9 @@ const step1 = () => {
           className="btn btn-outline btn-primary btn-sm"
           onClick={(e) => {
             setformStep1(formData);
+            setIsAmended(formData.isAmended);
+            setIsSpecialMeeting(formData.isSpecialMeeting);
+
             document.getElementById("step1FormModal").showModal();
           }}
         >
@@ -46,7 +70,79 @@ const step1 = () => {
         </button>
       </div>
       <div className="flex flex-row w-full">
-        <div className="form-control">
+        <div>
+          <div className="flex flex-col">
+            <h1 className="w-[60%] text-start">
+              Type of Meeting <span className="text-red-500">*</span>
+            </h1>
+            <div className="flex flex-row gap-5">
+              <div className="form-control">
+                <label className="label cursor-pointer flex gap-5">
+                  <span className="label-text">Special</span>
+                  <input
+                    type="radio"
+                    name="radio-special"
+                    className="radio checked:bg-blue-500"
+                    value={true}
+                    checked={formData.isSpecialMeeting === true}
+                    onChange={(e) => {}}
+                    disabled
+                  />
+                </label>
+              </div>
+              <div className="form-control">
+                <label className="label cursor-pointer flex gap-5">
+                  <span className="label-text">Annual</span>
+                  <input
+                    type="radio"
+                    name="radio-special"
+                    className="radio checked:bg-blue-500"
+                    value={false}
+                    checked={formData.isSpecialMeeting === false}
+                    onChange={(e) => {}}
+                    disabled
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col">
+            <h1 className="w-[60%] text-start">
+              Is Amended <span className="text-red-500">*</span>
+            </h1>
+            <div className="flex flex-row gap-12">
+              <div className="form-control">
+                <label className="label cursor-pointer flex gap-5">
+                  <span className="label-text">Yes</span>
+                  <input
+                    type="radio"
+                    name="radio-annual"
+                    className="radio checked:bg-blue-500"
+                    value={true}
+                    checked={formData.isAmended === true}
+                    onChange={(e) => {}}
+                    disabled
+                  />
+                </label>
+              </div>
+              <div className="form-control">
+                <label className="label cursor-pointer flex gap-5">
+                  <span className="label-text">No</span>
+                  <input
+                    type="radio"
+                    name="radio-annual"
+                    className="radio checked:bg-blue-500"
+                    value={false}
+                    checked={formData.isAmended === false}
+                    onChange={(e) => {}}
+                    disabled
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* <div className="form-control">
           <label className="label cursor-pointer flex-row justify-start gap-5">
             <input
               type="checkbox"
@@ -73,7 +169,7 @@ const step1 = () => {
             />
             <span className="label-text">Is Special Meeting?</span>
           </label>
-        </div>
+        </div> */}
       </div>
       <div className="grid grip-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
         <label className="form-control w-full">
@@ -295,8 +391,8 @@ const step1 = () => {
         <label className="form-control w-full">
           <div className="label">
             <span className="label-text">
-              Date of {formData.isSpecialMeeting ? "Special" : "Annual"} Meeting
-              Per By-Laws <span className="text-red-500">*</span>
+              Date of Annual Meeting Per By-Laws{" "}
+              <span className="text-red-500">*</span>
             </span>
           </div>
           <input
@@ -479,7 +575,83 @@ const step1 = () => {
           </div>
           <div className="divider"></div>
           <div className="flex flex-row w-full">
-            <div className="form-control">
+            <div>
+              <div className="flex flex-col">
+                <h1 className="w-[60%] text-start">
+                  Type of Meeting <span className="text-red-500">*</span>
+                </h1>
+                <div className="flex flex-row gap-5">
+                  <div className="form-control">
+                    <label className="label cursor-pointer flex gap-5">
+                      <span className="label-text">Special</span>
+                      <input
+                        type="radio"
+                        name="radio-11"
+                        className="radio checked:bg-blue-500"
+                        value={true}
+                        checked={isSpecialMeeting === true}
+                        onChange={(e) => {
+                          setIsSpecialMeeting(true);
+                        }}
+                      />
+                    </label>
+                  </div>
+                  <div className="form-control">
+                    <label className="label cursor-pointer flex gap-5">
+                      <span className="label-text">Annual</span>
+                      <input
+                        type="radio"
+                        name="radio-11"
+                        className="radio checked:bg-blue-500"
+                        value={false}
+                        checked={isSpecialMeeting === false}
+                        onChange={(e) => {
+                          setIsSpecialMeeting(false);
+                        }}
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col">
+                <h1 className="w-[60%] text-start">
+                  Is Amended <span className="text-red-500">*</span>
+                </h1>
+                <div className="flex flex-row gap-12">
+                  <div className="form-control">
+                    <label className="label cursor-pointer flex gap-5">
+                      <span className="label-text">Yes</span>
+                      <input
+                        type="radio"
+                        name="radio-10"
+                        className="radio checked:bg-blue-500"
+                        value={true}
+                        checked={isAmended === true}
+                        onChange={(e) => {
+                          setIsAmended(true);
+                        }}
+                      />
+                    </label>
+                  </div>
+                  <div className="form-control">
+                    <label className="label cursor-pointer flex gap-5">
+                      <span className="label-text">No</span>
+                      <input
+                        type="radio"
+                        name="radio-10"
+                        className="radio checked:bg-blue-500"
+                        value={false}
+                        checked={isAmended === false}
+                        onChange={(e) => {
+                          setIsAmended(false);
+                        }}
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* <div className="form-control">
               <label className="label cursor-pointer flex-row justify-start gap-5">
                 <input
                   type="checkbox"
@@ -518,7 +690,7 @@ const step1 = () => {
                 />
                 <span className="label-text">Is Special Meeting?</span>
               </label>
-            </div>
+            </div> */}
           </div>
           <div className="flex flex-col gap-2">
             <div className="grid grip-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-4 w-full">
@@ -753,7 +925,8 @@ const step1 = () => {
               <label className="form-control w-full">
                 <div className="label">
                   <span className="label-text">
-                    Actual Date of Annual Meeting{" "}
+                    Actual Date of{" "}
+                    {formStep1.isSpecialMeeting ? "Special" : "Annual"} Meeting{" "}
                     <span className="text-red-500">*</span>
                   </span>
                 </div>

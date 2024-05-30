@@ -22,6 +22,7 @@ import Unathorized from "./user/pages/Unathorized";
 import { Component } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import Tasks from "./user/pages/company/Tasks";
 
 // axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
@@ -85,6 +86,11 @@ function App() {
             <Route
               path="company/:companyId/treasurer-certificate"
               element={<TreasurerCertificate />}
+            />
+
+            <Route
+              path="company/:companyId/tasks"
+              element={<Tasks />}
             />
           </Route>
           <Route path="/manager/" element={<Login />} />

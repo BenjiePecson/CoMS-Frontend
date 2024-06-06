@@ -18,7 +18,7 @@ const FinalDocuments = ({}) => {
   const [BIROrCOR, setBIROrCOR] = useState([]);
   const [LGUBusinessPermit, setLGUBusinessPermit] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
-
+  /////
   const [selectedOption, setSelectedOption] = useState("");
 
   const handleSelectChange = (event) => {
@@ -28,6 +28,7 @@ const FinalDocuments = ({}) => {
   const handleResetClick = () => {
     setSelectedOption("");
   };
+  ///
 
   const secCertsRow = secCerts.map((row, index) => {
     return (
@@ -283,7 +284,7 @@ const FinalDocuments = ({}) => {
 
   useEffect(() => {
     fetchFinalDocs();
-  });
+  }, []);
 
   return (
     <div>
@@ -293,8 +294,10 @@ const FinalDocuments = ({}) => {
         <label
           className="btn bg-primary text-white  flex flex-row"
           onClick={(e) => {
-            setFormData({ ...formData, fileType: "", files: [] });
-            setErrors([]);
+            setFormData({
+              ...formData,
+              fileType: "SEC Certificates",
+            });
             document.getElementById("fileUpload").value = "";
             document.getElementById("uploadModal").showModal();
           }}
@@ -536,22 +539,8 @@ const FinalDocuments = ({}) => {
                   errors.fileType && `select-error`
                 }`}
                 name="fileType"
-                // onChange={(handleSelectChange)}
-                value={formData.fileType}
-                onChange={(e) => {
-                  setFormData({ ...formData, fileType: e.target.value });
-                  if (e.target.value == "") {
-                    setErrors({
-                      ...errors,
-                      fileType: "File Type is Required.",
-                    });
-                  } else {
-                    setErrors({
-                      ...errors,
-                      fileType: "",
-                    });
-                  }
-                }}
+                onChange={handleSelectChange}
+                value={selectedOption}
               >
                 <option value="">Select an option</option>
                 <option value={"SEC Certificates"}>SEC Certificates</option>
@@ -641,8 +630,6 @@ const FinalDocuments = ({}) => {
                   handleResetClick();
                   setIsUploading(true);
 
-                  console.log(formData);
-
                   if (await isFormValid()) {
                     let type = "erorr";
                     let message =
@@ -705,7 +692,7 @@ const FinalDocuments = ({}) => {
                   setIsUploading(false);
                 }}
                 className="btn bg-primary text-white mt-2"
-                disabled={isUploading}
+                disabled={!selectedOption}
               >
                 {isUploading ? (
                   <span className="loading loading-spinner"></span>

@@ -23,6 +23,9 @@ import { Component } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Tasks from "./user/pages/company/Tasks";
+import UsersPage from "./user/pages/user/UsersPage";
+import RolesPage from "./user/pages/user/RolesPage";
+import PermissionsPage from "./user/pages/user/PermissionsPage";
 
 // axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
@@ -49,6 +52,9 @@ function App() {
 
           <Route element={<CompanyLayout />}>
             <Route path="/company" element={<SelectCompany />} />
+            <Route path="/users" element={<UsersPage />} />
+            <Route path="/roles" element={<RolesPage />} />
+            <Route path="/permissions" element={<PermissionsPage />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/gis" element={<GISPage />} />
             <Route path="/gis/:recordId" element={<GISPageView />} />

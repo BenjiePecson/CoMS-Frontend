@@ -63,10 +63,12 @@ const UsersPage = () => {
             <button
               onClick={() => {
                 setFormData(row);
-                setDefaultOptions({
-                  value: row.role[0].role_id,
-                  label: row.role[0].role_name,
-                });
+                if(row.role.length > 0){
+                  setDefaultOptions({
+                    value: row.role[0].role_id,
+                    label: row.role[0].role_name,
+                  });
+                }
                 document.getElementById("editModal").showModal();
               }}
             >
@@ -166,7 +168,7 @@ const UsersPage = () => {
     let newErrors = {};
 
     if (formData.role.length == 0) {
-      newErrors.permissions = "Role is required";
+      newErrors.role = "Role is required";
     }
 
     setErrors({ ...errors, ...newErrors });
@@ -389,9 +391,9 @@ const UsersPage = () => {
                   </div>
                 </div>
 
-                {errors.role && (
+                {errors.status && (
                   <span className="text-[12px] text-red-500">
-                    {errors.role}
+                    {errors.status}
                   </span>
                 )}
               </div>

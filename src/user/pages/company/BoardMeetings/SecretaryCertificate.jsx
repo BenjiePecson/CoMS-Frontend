@@ -4,10 +4,13 @@ import { Link, useParams } from "react-router-dom";
 import { fetchRecords } from "../../../store/GIS/GISRecordSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../../../components/Header";
+import Breadcrumbs from "../../../components/Breadcrumbs";
 
 const SecretaryCertificate = () => {
   const { companyId } = useParams();
   const companyRecords = useSelector((state) => state.records.records);
+  const selectedCompany = useSelector((state) => state.company.selectedCompany);
+
   const records = [];
   const dispatch = useDispatch([{}]);
 
@@ -54,8 +57,24 @@ const SecretaryCertificate = () => {
   return (
     <div>
       <div>
-        <Header />
+        <Breadcrumbs
+          lists={[
+            { goto: "/", text: "Home" },
+            {
+              goto: `/company/${selectedCompany.companyId}`,
+              text: `${selectedCompany.companyName}`,
+            },
+            {
+              goto: `/company/${selectedCompany.companyId}/secretary-certificate`,
+              text: "Board Meetings",
+            },
+            { goto: "/", text: "Secretary Certificate" },
+          ]}
+        />
       </div>
+      {/* <div>
+        <Header />
+      </div> */}
       <div className="flex flex-row w-full justify-between items-center mt-5">
         <div className="flex flex-row justify-between w-full">
           <div className="poppins-bold text-color-2 text-[24px] flex items-center">

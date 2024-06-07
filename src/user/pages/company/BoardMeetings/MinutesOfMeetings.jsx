@@ -5,10 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import Header from "../../../components/Header";
 import { showAlert } from "../../../../assets/global";
 import axios from "axios";
+import Breadcrumbs from "../../../components/Breadcrumbs";
 
 const MinutesOfMeetings = () => {
   const { companyId } = useParams();
   const companyRecords = useSelector((state) => state.records.records);
+  const selectedCompany = useSelector((state) => state.company.selectedCompany);
+
   const minutesOfMeeting = {
     notice_date: "",
     type_of_meeting: "",
@@ -299,192 +302,206 @@ const MinutesOfMeetings = () => {
   }, []);
 
   return (
-    <div>
+    <>
       <div>
-        <Header />
+        <Breadcrumbs
+          lists={[
+            { goto: "/", text: "Home" },
+            {
+              goto: `/company/${selectedCompany.companyId}`,
+              text: `${selectedCompany.companyName}`,
+            },
+            {
+              goto: `/company/${selectedCompany.companyId}/minutes-of-meeting`,
+              text: "Board Meetings",
+            },
+            { goto: "/", text: "Minutes of Meetings" },
+          ]}
+        />
       </div>
-      <div className="flex flex-row w-full justify-between items-center mt-5">
-        <div className="flex flex-row justify-between w-full">
-          <div className="poppins-bold text-color-2 text-[24px] flex items-center">
-            Minutes of Meeting
-          </div>
-          <div></div>
-        </div>
-      </div>
-
-      <div className="overflow-x-auto">{table}</div>
-
-      <dialog id="editModal" className="modal">
-        <div className="modal-box">
-          <div className="flex flex-row justify-between">
-            <h3 className="font-bold text-lg">Edit Minutes of Meeting</h3>
-            <form method="dialog">
-              <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
-                ✕
-              </button>
-            </form>
-          </div>
-          <div className="flex flex-col gap-2">
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="poppins-regular text-[12px]">
-                  Board Meeting Date <span className="text-red-500">*</span>
-                </span>
-              </div>
-              <input
-                type="date"
-                className={`input input-bordered w-full ${
-                  errors.notice_date && `input-error`
-                }`}
-                name="notice_date"
-                value={formData.notice_date}
-                onChange={(e) => {
-                  handleOnChange(e);
-                }}
-              />
-              {errors.notice_date && (
-                <span className="text-[12px] text-red-500">
-                  {errors.notice_date}
-                </span>
-              )}
-            </label>
-
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="poppins-regular text-[12px]">
-                  Type of Meeting <span className="text-red-500">*</span>
-                </span>
-              </div>
-              <select
-                className="select select-bordered"
-                name="type_of_meeting"
-                value={formData.type_of_meeting}
-                onChange={(e) => {
-                  handleOnChange(e);
-                }}
-              >
-                <option>Regular</option>
-                <option>Special</option>=
-              </select>
-              {errors.type_of_meeting && (
-                <span className="text-[12px] text-red-500">
-                  {errors.type_of_meeting}
-                </span>
-              )}
-            </label>
-
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="poppins-regular text-[12px]">
-                  Place of Meeting <span className="text-red-500">*</span>
-                </span>
-              </div>
-              <textarea
-                className={`textarea textarea-bordered h-24 w-full ${
-                  errors.place_of_meeting && `textarea-error`
-                }`}
-                name="place_of_meeting"
-                value={formData.place_of_meeting}
-                onChange={(e) => {
-                  handleOnChange(e);
-                }}
-              ></textarea>
-              {errors.place_of_meeting && (
-                <span className="text-[12px] text-red-500">
-                  {errors.place_of_meeting}
-                </span>
-              )}
-            </label>
-
-            <div className="form-control w-full">
-              <div className="label">
-                <span className="poppins-regular text-[12px]">
-                  Quorum <span className="text-red-500">*</span>
-                </span>
-              </div>
-
-              <div className="flex flex-row gap-5">
-                <div className="flex flex-row gap-2">
-                  <span>Yes</span>
-                  <input
-                    type="radio"
-                    name="quorum"
-                    className="radio radio-primary"
-                    value={"Yes"}
-                    checked={formData.quorum == "Yes"}
-                    onChange={(e) => {
-                      handleOnChange(e);
-                    }}
-                  />
-                </div>
-                <div className="flex flex-row gap-2">
-                  <span>No</span>
-                  <input
-                    type="radio"
-                    name="quorum"
-                    className="radio radio-primary"
-                    value={"No"}
-                    checked={formData.quorum == "No"}
-                    onChange={(e) => {
-                      handleOnChange(e);
-                    }}
-                  />
-                </div>
-              </div>
-
-              {errors.quorum && (
-                <span className="text-[12px] text-red-500">
-                  {errors.quorum}
-                </span>
-              )}
+      <div>
+        <div className="flex flex-row w-full justify-between items-center mt-5">
+          <div className="flex flex-row justify-between w-full">
+            <div className="poppins-bold text-color-2 text-[24px] flex items-center">
+              Minutes of Meeting
             </div>
-
-            <button
-              onClick={(e) => {
-                handleSubmit(e, true);
-              }}
-              className="btn bg-primary text-white mt-2"
-            >
-              Save
-            </button>
+            <div></div>
           </div>
         </div>
-      </dialog>
 
-      <dialog id="attachedFileModal" className="modal">
-        <div className="modal-box">
-          <div className="flex flex-row justify-between">
-            <h3 className="font-bold text-lg">Attached Files</h3>
-            <form method="dialog">
-              <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
-                ✕
-              </button>
-            </form>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 w-full pt-5">
-            {files.map((file, index) => {
-              return (
-                <div key={index}>
-                  <div className="p-2">
-                    <a href={file.fileLink} target="_blank">
-                      <div
-                        className="px-4 py-2 bg-neutral rounded-full text-white tooltip"
-                        data-tip={file.fileName}
-                      >
-                        <p className="line-clamp-1 text-sm tooltip">
-                          {file.fileName}
-                        </p>
-                      </div>
-                    </a>
+        <div className="overflow-x-auto">{table}</div>
+
+        <dialog id="editModal" className="modal">
+          <div className="modal-box">
+            <div className="flex flex-row justify-between">
+              <h3 className="font-bold text-lg">Edit Minutes of Meeting</h3>
+              <form method="dialog">
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                  ✕
+                </button>
+              </form>
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="poppins-regular text-[12px]">
+                    Board Meeting Date <span className="text-red-500">*</span>
+                  </span>
+                </div>
+                <input
+                  type="date"
+                  className={`input input-bordered w-full ${
+                    errors.notice_date && `input-error`
+                  }`}
+                  name="notice_date"
+                  value={formData.notice_date}
+                  onChange={(e) => {
+                    handleOnChange(e);
+                  }}
+                />
+                {errors.notice_date && (
+                  <span className="text-[12px] text-red-500">
+                    {errors.notice_date}
+                  </span>
+                )}
+              </label>
+
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="poppins-regular text-[12px]">
+                    Type of Meeting <span className="text-red-500">*</span>
+                  </span>
+                </div>
+                <select
+                  className="select select-bordered"
+                  name="type_of_meeting"
+                  value={formData.type_of_meeting}
+                  onChange={(e) => {
+                    handleOnChange(e);
+                  }}
+                >
+                  <option>Regular</option>
+                  <option>Special</option>=
+                </select>
+                {errors.type_of_meeting && (
+                  <span className="text-[12px] text-red-500">
+                    {errors.type_of_meeting}
+                  </span>
+                )}
+              </label>
+
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="poppins-regular text-[12px]">
+                    Place of Meeting <span className="text-red-500">*</span>
+                  </span>
+                </div>
+                <textarea
+                  className={`textarea textarea-bordered h-24 w-full ${
+                    errors.place_of_meeting && `textarea-error`
+                  }`}
+                  name="place_of_meeting"
+                  value={formData.place_of_meeting}
+                  onChange={(e) => {
+                    handleOnChange(e);
+                  }}
+                ></textarea>
+                {errors.place_of_meeting && (
+                  <span className="text-[12px] text-red-500">
+                    {errors.place_of_meeting}
+                  </span>
+                )}
+              </label>
+
+              <div className="form-control w-full">
+                <div className="label">
+                  <span className="poppins-regular text-[12px]">
+                    Quorum <span className="text-red-500">*</span>
+                  </span>
+                </div>
+
+                <div className="flex flex-row gap-5">
+                  <div className="flex flex-row gap-2">
+                    <span>Yes</span>
+                    <input
+                      type="radio"
+                      name="quorum"
+                      className="radio radio-primary"
+                      value={"Yes"}
+                      checked={formData.quorum == "Yes"}
+                      onChange={(e) => {
+                        handleOnChange(e);
+                      }}
+                    />
+                  </div>
+                  <div className="flex flex-row gap-2">
+                    <span>No</span>
+                    <input
+                      type="radio"
+                      name="quorum"
+                      className="radio radio-primary"
+                      value={"No"}
+                      checked={formData.quorum == "No"}
+                      onChange={(e) => {
+                        handleOnChange(e);
+                      }}
+                    />
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      </dialog>
 
-      {/* <dialog id="gdrive" className="modal">
+                {errors.quorum && (
+                  <span className="text-[12px] text-red-500">
+                    {errors.quorum}
+                  </span>
+                )}
+              </div>
+
+              <button
+                onClick={(e) => {
+                  handleSubmit(e, true);
+                }}
+                className="btn bg-primary text-white mt-2"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </dialog>
+
+        <dialog id="attachedFileModal" className="modal">
+          <div className="modal-box">
+            <div className="flex flex-row justify-between">
+              <h3 className="font-bold text-lg">Attached Files</h3>
+              <form method="dialog">
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                  ✕
+                </button>
+              </form>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 w-full pt-5">
+              {files.map((file, index) => {
+                return (
+                  <div key={index}>
+                    <div className="p-2">
+                      <a href={file.fileLink} target="_blank">
+                        <div
+                          className="px-4 py-2 bg-neutral rounded-full text-white tooltip"
+                          data-tip={file.fileName}
+                        >
+                          <p className="line-clamp-1 text-sm tooltip">
+                            {file.fileName}
+                          </p>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </dialog>
+
+        {/* <dialog id="gdrive" className="modal">
         <div className="modal-box w-11/12 max-w-5xl">
           <div className="flex flex-row justify-between py-4">
             <form method="dialog">
@@ -589,7 +606,8 @@ const MinutesOfMeetings = () => {
           </div>
         </div>
       </dialog> */}
-    </div>
+      </div>
+    </>
   );
 };
 export default MinutesOfMeetings;

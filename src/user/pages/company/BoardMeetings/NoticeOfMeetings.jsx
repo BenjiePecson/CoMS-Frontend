@@ -9,10 +9,13 @@ import Swal from "sweetalert2";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Breadcrumbs from "../../../components/Breadcrumbs";
 
 const NoticeOfMeetings = () => {
   const { companyId } = useParams();
   const companyRecords = useSelector((state) => state.records.records);
+  const selectedCompany = useSelector((state) => state.company.selectedCompany);
+  
   const file = {
     fileId: "",
     file: "",
@@ -469,10 +472,26 @@ const NoticeOfMeetings = () => {
 
   return (
     <>
+     <div>
+        <Breadcrumbs
+          lists={[
+            { goto: "/", text: "Home" },
+            {
+              goto: `/company/${selectedCompany.companyId}`,
+              text: `${selectedCompany.companyName}`,
+            },
+            {
+              goto: `/company/${selectedCompany.companyId}/notice-of-meeting`,
+              text: "Board Meetings",
+            },
+            { goto: "/", text: "Notice of Meetings" },
+          ]}
+        />
+      </div>
       <div>
-        <div>
+        {/* <div>
           <Header />
-        </div>
+        </div> */}
         <div className="flex flex-row w-full justify-between items-center mt-5">
           <div className="flex flex-col sm:flex-row justify-between w-full gap-2">
             <div className="poppins-bold text-color-2 text-[24px] flex items-center">

@@ -4,6 +4,7 @@ import axios from "axios";
 import DataTable from "react-data-table-component";
 import Select from "react-select";
 import { showToast } from "../../../assets/global";
+import Breadcrumbs from "../../components/Breadcrumbs";
 
 const UsersPage = () => {
   const columns = [
@@ -24,17 +25,29 @@ const UsersPage = () => {
     },
     {
       name: "Status",
-      selector: (row) => row.status,
+      selector: (row) => {
+        let status = row.status;
+        let element = (
+          <div
+            className={`${
+              row.status == "Active" ? "text-success" : "text-error"
+            } font-bold`}
+          >
+            {status}
+          </div>
+        );
+        return element;
+      },
       sortable: true,
     },
     {
-      name: "Roles",
+      name: "Role",
       selector: (row) => {
         if (row.role.length == 0) return;
         return (
           <>
             <div className="flex flex-row gap-2">
-              <div className="rounded-full px-4 bg-primary text-white p-2">
+              <div className="rounded-full px-4 bg-neutral text-white p-2">
                 {row.role.length > 0 && row.role[0].role_name}
               </div>
             </div>
@@ -50,7 +63,10 @@ const UsersPage = () => {
             <button
               onClick={() => {
                 setFormData(row);
-                setDefaultOptions({value:row.role[0].role_id, label:row.role[0].role_name,});
+                setDefaultOptions({
+                  value: row.role[0].role_id,
+                  label: row.role[0].role_name,
+                });
                 document.getElementById("editModal").showModal();
               }}
             >
@@ -98,7 +114,6 @@ const UsersPage = () => {
 
     setIsSubmitting(true);
 
-
     //checks if the form is valid
     if (await isFormValid(isEdit)) {
       if (isEdit) {
@@ -115,25 +130,24 @@ const UsersPage = () => {
             formData
           );
 
-          console.log(response.data);
-
-          // if (response.data.success) {
-          //   let result = {
-          //     role_id: formData.role_id,
-          //     role_name: formData.role_name,
-          //     permissions: formData.permissions,
-          //   };
-          //   let rolesTemp = roles.map((role, idx) => {
-          //     if (role.role_id == result.role_id) {
-          //       return result;
-          //     }
-          //     return role;
-          //   });
-          //   setRoles(rolesTemp);
-          //   setFilteredRoles(rolesTemp);
-          //   status = "success";
-          //   message = "Record updated successfully!";
-          // }
+          if (response.data.success) {
+            let result = {
+              user_id: formData.user_id,
+              status: formData.status,
+              role: formData.role,
+            };
+            let usersTemp = users.map((user) => {
+              if (user.user_id == result.user_id) {
+                user.status = formData.status;
+                user.role = formData.role;
+              }
+              return user;
+            });
+            setUsers(usersTemp);
+            setFilteredUsers(usersTemp);
+            status = "success";
+            message = "Record updated successfully!";
+          }
         } catch (error) {
           status = "error";
           message = "Error updating the record";
@@ -163,6 +177,7 @@ const UsersPage = () => {
   const fetchUsers = async () => {
     try {
       let response = await axios.get(`users`);
+      console.log(response.data);
       setUsers(response.data);
       setFilteredUsers(response.data);
     } catch (error) {
@@ -208,10 +223,16 @@ const UsersPage = () => {
 
   return (
     <>
+      <div>
+        <Breadcrumbs
+          lists={[
+            { goto: "/", text: "Home" },
+            { goto: "/users", text: "User Management" },
+            { goto: "", text: "Users" },
+          ]}
+        />
+      </div>
       <div className="flex flex-col gap-5">
-        <div>
-          <Header />
-        </div>
         <div className="flex flex-col sm:flex-row w-full justify-between gap-2">
           <div className="poppins-bold text-color-2 text-[24px]">Users</div>
           <div>
@@ -241,7 +262,7 @@ const UsersPage = () => {
           </div>
         </div>
 
-        <div>
+        <div className="p-2 bg-white rounded-lg">
           <DataTable
             columns={columns}
             data={filteredUsers}
@@ -327,10 +348,12 @@ const UsersPage = () => {
                   onChange={(selected) => {
                     setFormData({
                       ...formData,
-                      role: [{
-                        role_id: selected.value,
-                        role_name: selected.label,
-                      },]
+                      role: [
+                        {
+                          role_id: selected.value,
+                          role_name: selected.label,
+                        },
+                      ],
                     });
 
                     setDefaultOptions(selected);
@@ -342,6 +365,36 @@ const UsersPage = () => {
                   </span>
                 )}
               </label>
+
+              <div className="form-control w-full">
+                <div className="label flex flex-col items-start gap-2">
+                  <span className="poppins-regular text-[12px]">
+                    Status <span className="text-red-500">*</span>
+                  </span>
+                  <div className="flex flex-row gap-5">
+                    {formData.status}
+                    <input
+                      type="checkbox"
+                      className="toggle toggle-success"
+                      value={formData.status}
+                      checked={formData.status == "Active"}
+                      onChange={(e) => {
+                        if (e.target.value == "Active") {
+                          setFormData({ ...formData, status: "Inactive" });
+                        } else {
+                          setFormData({ ...formData, status: "Active" });
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {errors.role && (
+                  <span className="text-[12px] text-red-500">
+                    {errors.role}
+                  </span>
+                )}
+              </div>
 
               <button
                 type="submit"

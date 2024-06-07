@@ -11,10 +11,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { showAlert } from "../../../assets/global";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Breadcrumbs from "../../components/Breadcrumbs";
 
 const GISTracker = () => {
   const { companyId } = useParams();
   const companyRecords = useSelector((state) => state.records.records);
+  const selectedCompany = useSelector((state) => state.company.selectedCompany);
   const record = useSelector((state) => state.records.record);
   const dispatch = useDispatch();
 
@@ -278,130 +280,144 @@ const GISTracker = () => {
   }, []);
 
   return (
-    <div>
+    <>
       <div>
-        <Header />
+        <Breadcrumbs
+          lists={[
+            { goto: "/", text: "Home" },
+            {
+              goto: `/company/${selectedCompany.companyId}`,
+              text: `${selectedCompany.companyName}`,
+            },
+            { goto: "/", text: "GIS Tracker" },
+          ]}
+        />
       </div>
-      <div className="flex flex-row w-full justify-between items-center mt-5">
-        <div className="flex flex-row gap-5">
-          <div className="poppins-bold text-color-2 text-[24px] flex items-center">
-            GIS Tracker
+      <div className="pb-5">
+        {/* <div>
+          <Header />
+        </div> */}
+        <div className="flex flex-row w-full justify-between items-center">
+          <div className="flex flex-row gap-5">
+            <div className="poppins-bold text-color-2 text-[24px] flex items-center">
+              GIS Tracker
+            </div>
+            <Link to={`/company/${companyId}/gis-tracker/create`}>
+              <button className="btn btn-md bg-[#273069] border-none text-white flex flex-row justify-center items-center rounded-[15px]">
+                <svg
+                  width="20"
+                  height="18"
+                  viewBox="0 0 20 18"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M10 2.7C10.5523 2.7 11 3.10294 11 3.6V8.1H16C16.5523 8.1 17 8.50294 17 9C17 9.49705 16.5523 9.9 16 9.9H11V14.4C11 14.8971 10.5523 15.3 10 15.3C9.44772 15.3 9 14.8971 9 14.4V9.9H4C3.44772 9.9 3 9.49705 3 9C3 8.50294 3.44772 8.1 4 8.1L9 8.1V3.6C9 3.10294 9.44772 2.7 10 2.7Z"
+                    fill="#FCFCFC"
+                  />
+                </svg>
+                FILE NEW GIS
+              </button>
+            </Link>
           </div>
-          <Link to={`/company/${companyId}/gis-tracker/create`}>
-            <button className="btn btn-md bg-[#273069] border-none text-white flex flex-row justify-center items-center rounded-[15px]">
+        </div>
+        <div className="flex flex-col w-full mt-5">
+          <div className="flex flex-row w-full gap-5 items-center">
+            <div className="flex flex-row bg-white rounded-[14px] justify-center items-center gap-2 h-[32px]">
               <svg
-                width="20"
-                height="18"
-                viewBox="0 0 20 18"
+                width="17"
+                height="17"
+                viewBox="0 0 17 17"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                className="ml-5"
               >
+                <circle
+                  cx="7.79183"
+                  cy="7.79165"
+                  r="4.95834"
+                  stroke="#33363F"
+                  strokeWidth="2"
+                />
                 <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M10 2.7C10.5523 2.7 11 3.10294 11 3.6V8.1H16C16.5523 8.1 17 8.50294 17 9C17 9.49705 16.5523 9.9 16 9.9H11V14.4C11 14.8971 10.5523 15.3 10 15.3C9.44772 15.3 9 14.8971 9 14.4V9.9H4C3.44772 9.9 3 9.49705 3 9C3 8.50294 3.44772 8.1 4 8.1L9 8.1V3.6C9 3.10294 9.44772 2.7 10 2.7Z"
-                  fill="#FCFCFC"
+                  d="M14.1665 14.1667L12.0415 12.0417"
+                  stroke="#33363F"
+                  strokeWidth="2"
+                  strokeLinecap="round"
                 />
               </svg>
-              FILE NEW GIS
-            </button>
-          </Link>
-        </div>
-      </div>
-      <div className="flex flex-col w-full mt-5">
-        <div className="flex flex-row w-full gap-5 items-center">
-          <div className="flex flex-row bg-white rounded-[14px] justify-center items-center gap-2 h-[32px]">
-            <svg
-              width="17"
-              height="17"
-              viewBox="0 0 17 17"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="ml-5"
-            >
-              <circle
-                cx="7.79183"
-                cy="7.79165"
-                r="4.95834"
-                stroke="#33363F"
-                strokeWidth="2"
-              />
-              <path
-                d="M14.1665 14.1667L12.0415 12.0417"
-                stroke="#33363F"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
 
-            <input className="mr-5" type="text" placeholder="Search File" />
+              <input className="mr-5" type="text" placeholder="Search File" />
+            </div>
+            <div className="flex flex-row justify-center items-center gap-2">
+              <div>Filtering</div>
+              <div>
+                <select
+                  className="select select-bordered select-xs"
+                  name=""
+                  id=""
+                >
+                  <option value="">All</option>
+                </select>
+              </div>
+            </div>
+            <div className="badge">Done</div>
+            <div className="badge">Pending</div>
           </div>
-          <div className="flex flex-row justify-center items-center gap-2">
-            <div>Filtering</div>
-            <div>
-              <select
-                className="select select-bordered select-xs"
-                name=""
-                id=""
+        </div>
+
+        <div className="overflow-x-auto">{table}</div>
+
+        <dialog id="renameModal" className="modal">
+          <div className="modal-box">
+            <div className="flex flex-row justify-between">
+              <h3 className="font-bold text-lg">Rename GIS Record</h3>
+              <form method="dialog">
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                  ✕
+                </button>
+              </form>
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="poppins-regular text-[12px]">
+                    Record Name <span className="text-red-500">*</span>
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  className={`input input-bordered w-full ${
+                    errors.recordName && `input-error`
+                  }`}
+                  name="recordName"
+                  value={formData.recordName}
+                  onChange={(e) => {
+                    handleOnChange(e);
+                  }}
+                />
+                {errors.companyName && (
+                  <span className="text-[12px] text-red-500">
+                    {errors.companyName}
+                  </span>
+                )}
+              </label>
+
+              <button
+                onClick={(e) => {
+                  handleSubmit(e, true);
+                }}
+                className="btn bg-primary text-white mt-2"
               >
-                <option value="">All</option>
-              </select>
+                Save
+              </button>
             </div>
           </div>
-          <div className="badge">Done</div>
-          <div className="badge">Pending</div>
-        </div>
+        </dialog>
       </div>
-
-      <div className="overflow-x-auto">{table}</div>
-
-      <dialog id="renameModal" className="modal">
-        <div className="modal-box">
-          <div className="flex flex-row justify-between">
-            <h3 className="font-bold text-lg">Rename GIS Record</h3>
-            <form method="dialog">
-              <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
-                ✕
-              </button>
-            </form>
-          </div>
-          <div className="flex flex-col gap-2">
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="poppins-regular text-[12px]">
-                  Record Name <span className="text-red-500">*</span>
-                </span>
-              </div>
-              <input
-                type="text"
-                className={`input input-bordered w-full ${
-                  errors.recordName && `input-error`
-                }`}
-                name="recordName"
-                value={formData.recordName}
-                onChange={(e) => {
-                  handleOnChange(e);
-                }}
-              />
-              {errors.companyName && (
-                <span className="text-[12px] text-red-500">
-                  {errors.companyName}
-                </span>
-              )}
-            </label>
-
-            <button
-              onClick={(e) => {
-                handleSubmit(e, true);
-              }}
-              className="btn bg-primary text-white mt-2"
-            >
-              Save
-            </button>
-          </div>
-        </div>
-      </dialog>
-    </div>
+    </>
   );
 };
 

@@ -5,6 +5,7 @@ import DataTable from "react-data-table-component";
 import { showToast } from "../../../assets/global";
 import Swal from "sweetalert2";
 import Select from "react-select";
+import Breadcrumbs from "../../components/Breadcrumbs";
 
 const RolesPage = () => {
   const columns = [
@@ -341,222 +342,229 @@ const RolesPage = () => {
   }, [search]);
 
   return (
-    <div className="flex flex-col gap-5">
+    <>
       <div>
-        <Header />
-      </div>
-
-      <div className="flex flex-col md:flex-row w-full gap-2">
-        <div className="flex flex-row w-full justify-between items-center">
-          <div>{labelComponent()}</div>
-          <div className="hidden md:flex">{searchComponent()}</div>
-          <div>{btnAddComponent()}</div>
-        </div>
-        <div className="md:hidden">{searchComponent()}</div>
-      </div>
-
-      <div className="p-2 bg-white rounded-lg">
-        <DataTable
-          columns={columns}
-          data={filteredRoles}
-          defaultSortFieldId={1}
-          pagination
-          persistTableHead={true}
+        <Breadcrumbs
+          lists={[
+            { goto: "/", text: "Home" },
+            { goto: "/users", text: "User Management" },
+            { goto: "", text: "Roles" },
+          ]}
         />
       </div>
-
-      <dialog id="addModal" className="modal">
-        <div className="modal-box">
-          <div className="flex flex-row justify-between">
-            <h3 className="font-bold text-lg">Add New Role</h3>
-            <form method="dialog">
-              <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
-                ✕
-              </button>
-            </form>
+      <div className="flex flex-col gap-5">
+        <div className="flex flex-col md:flex-row w-full gap-2">
+          <div className="flex flex-row w-full justify-between items-center">
+            <div>{labelComponent()}</div>
+            <div className="hidden md:flex">{searchComponent()}</div>
+            <div>{btnAddComponent()}</div>
           </div>
-          <div className="flex flex-col gap-2">
-            <form
-              onSubmit={(e) => {
-                handleSubmit(e);
-              }}
-              className="flex flex-col gap-2"
-            >
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="poppins-regular text-[12px]">
-                    Role Name<span className="text-red-500">*</span>
-                  </span>
-                </div>
-                <input
-                  type="text"
-                  className={`input input-bordered w-full ${
-                    errors.role_name && `input-error`
-                  }`}
-                  name="role_name"
-                  value={formData.role_name}
-                  onChange={(e) => {
-                    handleOnChange(e);
-                  }}
-                />
-                {errors.role_name && (
-                  <span className="text-[12px] text-red-500">
-                    {errors.role_name}
-                  </span>
-                )}
-              </label>
-
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="poppins-regular text-[12px]">
-                    Permissions<span className="text-red-500">*</span>
-                  </span>
-                </div>
-                <Select
-                  closeMenuOnSelect={false}
-                  options={options}
-                  isMulti
-                  menuPortalTarget={document.getElementById("addModal")}
-                  isClearable={false}
-                  onChange={(selected) => {
-                    let values = selected.map((selected) => {
-                      return {
-                        permission_id: selected.value,
-                        permission_name: selected.label,
-                      };
-                    });
-                    setFormData({ ...formData, permissions: values });
-
-                    if (selected.length == 0) {
-                      setErrors({
-                        ...errors,
-                        permissions: "Permission is required.",
-                      });
-                    } else {
-                      setErrors({ ...errors, permissions: "" });
-                    }
-                  }}
-                />
-
-                {errors.permissions && (
-                  <span className="text-[12px] text-red-500">
-                    {errors.permissions}
-                  </span>
-                )}
-              </label>
-
-              <button
-                type="submit"
-                className="btn bg-primary text-white mt-2 flex flex-row gap-2 w-full"
-                disabled={isSubmitting}
-              >
-                {isSubmitting && (
-                  <span className="loading loading-spinner"></span>
-                )}
-                Submit
-              </button>
-            </form>
-          </div>
+          <div className="md:hidden">{searchComponent()}</div>
         </div>
-      </dialog>
 
-      <dialog id="editModal" className="modal">
-        <div className="modal-box">
-          <div className="flex flex-row justify-between">
-            <h3 className="font-bold text-lg">Edit Permission</h3>
-            <form method="dialog">
-              <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
-                ✕
-              </button>
-            </form>
-          </div>
-          <div className="flex flex-col gap-2">
-            <form
-              onSubmit={(e) => {
-                handleSubmit(e, true);
-              }}
-            >
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="poppins-regular text-[12px]">
-                    Role Name<span className="text-red-500">*</span>
-                  </span>
-                </div>
-                <input
-                  type="text"
-                  className={`input input-bordered w-full ${
-                    errors.role_name && `input-error`
-                  }`}
-                  name="role_name"
-                  value={formData.role_name}
-                  onChange={(e) => {
-                    handleOnChange(e);
-                  }}
-                />
-                {errors.role_name && (
-                  <span className="text-[12px] text-red-500">
-                    {errors.role_name}
-                  </span>
-                )}
-              </label>
-
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="poppins-regular text-[12px]">
-                    Permissions<span className="text-red-500">*</span>
-                  </span>
-                </div>
-                <Select
-                  closeMenuOnSelect={false}
-                  options={options}
-                  isMulti
-                  value={defaultOptions}
-                  menuPortalTarget={document.getElementById("editModal")}
-                  isClearable={false}
-                  onChange={(selected) => {
-                    let values = selected.map((selected) => {
-                      return {
-                        permission_id: selected.value,
-                        permission_name: selected.label,
-                      };
-                    });
-
-                    setDefaultOptions(selected);
-                    setFormData({ ...formData, permissions: values });
-
-                    if (selected.length == 0) {
-                      setErrors({
-                        ...errors,
-                        permissions: "Permission is required.",
-                      });
-                    } else {
-                      setErrors({ ...errors, permissions: "" });
-                    }
-                  }}
-                />
-
-                {errors.permissions && (
-                  <span className="text-[12px] text-red-500">
-                    {errors.permissions}
-                  </span>
-                )}
-              </label>
-
-              <button
-                type="submit"
-                className="btn bg-primary text-white mt-2 flex flex-row gap-2 w-full"
-                disabled={isSubmitting}
-              >
-                {isSubmitting && (
-                  <span className="loading loading-spinner"></span>
-                )}
-                Submit
-              </button>
-            </form>
-          </div>
+        <div className="p-2 bg-white rounded-lg">
+          <DataTable
+            columns={columns}
+            data={filteredRoles}
+            defaultSortFieldId={1}
+            pagination
+            persistTableHead={true}
+          />
         </div>
-      </dialog>
-    </div>
+
+        <dialog id="addModal" className="modal">
+          <div className="modal-box">
+            <div className="flex flex-row justify-between">
+              <h3 className="font-bold text-lg">Add New Role</h3>
+              <form method="dialog">
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                  ✕
+                </button>
+              </form>
+            </div>
+            <div className="flex flex-col gap-2">
+              <form
+                onSubmit={(e) => {
+                  handleSubmit(e);
+                }}
+                className="flex flex-col gap-2"
+              >
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="poppins-regular text-[12px]">
+                      Role Name<span className="text-red-500">*</span>
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    className={`input input-bordered w-full ${
+                      errors.role_name && `input-error`
+                    }`}
+                    name="role_name"
+                    value={formData.role_name}
+                    onChange={(e) => {
+                      handleOnChange(e);
+                    }}
+                  />
+                  {errors.role_name && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.role_name}
+                    </span>
+                  )}
+                </label>
+
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="poppins-regular text-[12px]">
+                      Permissions<span className="text-red-500">*</span>
+                    </span>
+                  </div>
+                  <Select
+                    closeMenuOnSelect={false}
+                    options={options}
+                    isMulti
+                    menuPortalTarget={document.getElementById("addModal")}
+                    isClearable={false}
+                    onChange={(selected) => {
+                      let values = selected.map((selected) => {
+                        return {
+                          permission_id: selected.value,
+                          permission_name: selected.label,
+                        };
+                      });
+                      setFormData({ ...formData, permissions: values });
+
+                      if (selected.length == 0) {
+                        setErrors({
+                          ...errors,
+                          permissions: "Permission is required.",
+                        });
+                      } else {
+                        setErrors({ ...errors, permissions: "" });
+                      }
+                    }}
+                  />
+
+                  {errors.permissions && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.permissions}
+                    </span>
+                  )}
+                </label>
+
+                <button
+                  type="submit"
+                  className="btn bg-primary text-white mt-2 flex flex-row gap-2 w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting && (
+                    <span className="loading loading-spinner"></span>
+                  )}
+                  Submit
+                </button>
+              </form>
+            </div>
+          </div>
+        </dialog>
+
+        <dialog id="editModal" className="modal">
+          <div className="modal-box">
+            <div className="flex flex-row justify-between">
+              <h3 className="font-bold text-lg">Edit Permission</h3>
+              <form method="dialog">
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                  ✕
+                </button>
+              </form>
+            </div>
+            <div className="flex flex-col gap-2">
+              <form
+                onSubmit={(e) => {
+                  handleSubmit(e, true);
+                }}
+              >
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="poppins-regular text-[12px]">
+                      Role Name<span className="text-red-500">*</span>
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    className={`input input-bordered w-full ${
+                      errors.role_name && `input-error`
+                    }`}
+                    name="role_name"
+                    value={formData.role_name}
+                    onChange={(e) => {
+                      handleOnChange(e);
+                    }}
+                  />
+                  {errors.role_name && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.role_name}
+                    </span>
+                  )}
+                </label>
+
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="poppins-regular text-[12px]">
+                      Permissions<span className="text-red-500">*</span>
+                    </span>
+                  </div>
+                  <Select
+                    closeMenuOnSelect={false}
+                    options={options}
+                    isMulti
+                    value={defaultOptions}
+                    menuPortalTarget={document.getElementById("editModal")}
+                    isClearable={false}
+                    onChange={(selected) => {
+                      let values = selected.map((selected) => {
+                        return {
+                          permission_id: selected.value,
+                          permission_name: selected.label,
+                        };
+                      });
+
+                      setDefaultOptions(selected);
+                      setFormData({ ...formData, permissions: values });
+
+                      if (selected.length == 0) {
+                        setErrors({
+                          ...errors,
+                          permissions: "Permission is required.",
+                        });
+                      } else {
+                        setErrors({ ...errors, permissions: "" });
+                      }
+                    }}
+                  />
+
+                  {errors.permissions && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.permissions}
+                    </span>
+                  )}
+                </label>
+
+                <button
+                  type="submit"
+                  className="btn bg-primary text-white mt-2 flex flex-row gap-2 w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting && (
+                    <span className="loading loading-spinner"></span>
+                  )}
+                  Submit
+                </button>
+              </form>
+            </div>
+          </div>
+        </dialog>
+      </div>
+    </>
   );
 };
 

@@ -4,6 +4,7 @@ import axios from "axios";
 import DataTable from "react-data-table-component";
 import { showToast } from "../../../assets/global";
 import Swal from "sweetalert2";
+import Breadcrumbs from "../../components/Breadcrumbs";
 
 const PermissionsPage = () => {
   const columns = [
@@ -302,139 +303,147 @@ const PermissionsPage = () => {
   }, [search]);
 
   return (
-    <div className="flex flex-col gap-5">
+    <>
       <div>
-        <Header />
-      </div>
-      <div className="flex flex-col md:flex-row w-full gap-2">
-        <div className="flex flex-row w-full justify-between items-center">
-          <div>{labelComponent()}</div>
-          <div className="hidden md:flex">{searchComponent()}</div>
-          <div>{btnAddComponent()}</div>
-        </div>
-        <div className="md:hidden">{searchComponent()}</div>
-      </div>
-
-      <div className="p-2 bg-white rounded-lg">
-        <DataTable
-          columns={columns}
-          data={filteredPermissions}
-          defaultSortFieldId={1}
-          pagination
-          persistTableHead={true}
+        <Breadcrumbs
+          lists={[
+            { goto: "/", text: "Home" },
+            { goto: "/users", text: "User Management" },
+            { goto: "", text: "Permissions" },
+          ]}
         />
       </div>
-
-      <dialog id="addModal" className="modal">
-        <div className="modal-box">
-          <div className="flex flex-row justify-between">
-            <h3 className="font-bold text-lg">Add New Permission</h3>
-            <form method="dialog">
-              <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
-                ✕
-              </button>
-            </form>
+      <div className="flex flex-col gap-5">
+        <div className="flex flex-col md:flex-row w-full gap-2">
+          <div className="flex flex-row w-full justify-between items-center">
+            <div>{labelComponent()}</div>
+            <div className="hidden md:flex">{searchComponent()}</div>
+            <div>{btnAddComponent()}</div>
           </div>
-          <div className="flex flex-col gap-2">
-            <form
-              onSubmit={(e) => {
-                handleSubmit(e);
-              }}
-            >
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="poppins-regular text-[12px]">
-                    Permission Name<span className="text-red-500">*</span>
-                  </span>
-                </div>
-                <input
-                  type="text"
-                  className={`input input-bordered w-full ${
-                    errors.permission_name && `input-error`
-                  }`}
-                  name="permission_name"
-                  value={formData.permission_name}
-                  onChange={(e) => {
-                    handleOnChange(e);
-                  }}
-                />
-                {errors.permission_name && (
-                  <span className="text-[12px] text-red-500">
-                    {errors.permission_name}
-                  </span>
-                )}
-              </label>
-
-              <button
-                type="submit"
-                className="btn bg-primary text-white mt-2 flex flex-row gap-2 w-full"
-                disabled={isSubmitting}
-              >
-                {isSubmitting && (
-                  <span className="loading loading-spinner"></span>
-                )}
-                Submit
-              </button>
-            </form>
-          </div>
+          <div className="md:hidden">{searchComponent()}</div>
         </div>
-      </dialog>
 
-      <dialog id="editModal" className="modal">
-        <div className="modal-box">
-          <div className="flex flex-row justify-between">
-            <h3 className="font-bold text-lg">Edit Permission</h3>
-            <form method="dialog">
-              <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
-                ✕
-              </button>
-            </form>
-          </div>
-          <div className="flex flex-col gap-2">
-            <form
-              onSubmit={(e) => {
-                handleSubmit(e, true);
-              }}
-            >
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="poppins-regular text-[12px]">
-                    Permission Name<span className="text-red-500">*</span>
-                  </span>
-                </div>
-                <input
-                  type="text"
-                  className={`input input-bordered w-full ${
-                    errors.permission_name && `input-error`
-                  }`}
-                  name="permission_name"
-                  value={formData.permission_name}
-                  onChange={(e) => {
-                    handleOnChange(e);
-                  }}
-                />
-                {errors.permission_name && (
-                  <span className="text-[12px] text-red-500">
-                    {errors.permission_name}
-                  </span>
-                )}
-              </label>
-
-              <button
-                type="submit"
-                className="btn bg-primary text-white mt-2 flex flex-row gap-2 w-full"
-                disabled={isSubmitting}
-              >
-                {isSubmitting && (
-                  <span className="loading loading-spinner"></span>
-                )}
-                Submit
-              </button>
-            </form>
-          </div>
+        <div className="p-2 bg-white rounded-lg">
+          <DataTable
+            columns={columns}
+            data={filteredPermissions}
+            defaultSortFieldId={1}
+            pagination
+            persistTableHead={true}
+          />
         </div>
-      </dialog>
-    </div>
+
+        <dialog id="addModal" className="modal">
+          <div className="modal-box">
+            <div className="flex flex-row justify-between">
+              <h3 className="font-bold text-lg">Add New Permission</h3>
+              <form method="dialog">
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                  ✕
+                </button>
+              </form>
+            </div>
+            <div className="flex flex-col gap-2">
+              <form
+                onSubmit={(e) => {
+                  handleSubmit(e);
+                }}
+              >
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="poppins-regular text-[12px]">
+                      Permission Name<span className="text-red-500">*</span>
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    className={`input input-bordered w-full ${
+                      errors.permission_name && `input-error`
+                    }`}
+                    name="permission_name"
+                    value={formData.permission_name}
+                    onChange={(e) => {
+                      handleOnChange(e);
+                    }}
+                  />
+                  {errors.permission_name && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.permission_name}
+                    </span>
+                  )}
+                </label>
+
+                <button
+                  type="submit"
+                  className="btn bg-primary text-white mt-2 flex flex-row gap-2 w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting && (
+                    <span className="loading loading-spinner"></span>
+                  )}
+                  Submit
+                </button>
+              </form>
+            </div>
+          </div>
+        </dialog>
+
+        <dialog id="editModal" className="modal">
+          <div className="modal-box">
+            <div className="flex flex-row justify-between">
+              <h3 className="font-bold text-lg">Edit Permission</h3>
+              <form method="dialog">
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                  ✕
+                </button>
+              </form>
+            </div>
+            <div className="flex flex-col gap-2">
+              <form
+                onSubmit={(e) => {
+                  handleSubmit(e, true);
+                }}
+              >
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="poppins-regular text-[12px]">
+                      Permission Name<span className="text-red-500">*</span>
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    className={`input input-bordered w-full ${
+                      errors.permission_name && `input-error`
+                    }`}
+                    name="permission_name"
+                    value={formData.permission_name}
+                    onChange={(e) => {
+                      handleOnChange(e);
+                    }}
+                  />
+                  {errors.permission_name && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.permission_name}
+                    </span>
+                  )}
+                </label>
+
+                <button
+                  type="submit"
+                  className="btn bg-primary text-white mt-2 flex flex-row gap-2 w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting && (
+                    <span className="loading loading-spinner"></span>
+                  )}
+                  Submit
+                </button>
+              </form>
+            </div>
+          </div>
+        </dialog>
+      </div>
+    </>
   );
 };
 

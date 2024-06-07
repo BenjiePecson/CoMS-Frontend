@@ -283,7 +283,7 @@ const FinalDocuments = ({}) => {
 
   useEffect(() => {
     fetchFinalDocs();
-  });
+  }, []);
 
   return (
     <div>

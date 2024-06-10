@@ -7,10 +7,13 @@ import Header from "../../../components/Header";
 import { showAlert } from "../../../../assets/global";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Breadcrumbs from "../../../components/Breadcrumbs";
 
 const BoardResolutions = () => {
   const { companyId } = useParams();
   const companyRecords = useSelector((state) => state.records.records);
+  const selectedCompany = useSelector((state) => state.company.selectedCompany);
+
   const dispatch = useDispatch();
 
   const boardResolution = {
@@ -334,8 +337,24 @@ const BoardResolutions = () => {
   return (
     <div>
       <div>
-        <Header />
+        <Breadcrumbs
+          lists={[
+            { goto: "/", text: "Home" },
+            {
+              goto: `/company/${selectedCompany.companyId}`,
+              text: `${selectedCompany.companyName}`,
+            },
+            {
+              goto: `/company/${selectedCompany.companyId}/board-resolution`,
+              text: "Board Meetings",
+            },
+            { goto: "/", text: "Board Resolutions" },
+          ]}
+        />
       </div>
+      {/* <div>
+        <Header />
+      </div> */}
       <div className="flex flex-row w-full justify-between items-center mt-5">
         <div className="flex flex-row justify-between w-full">
           <div className="poppins-bold text-color-2 text-[24px] flex items-center">

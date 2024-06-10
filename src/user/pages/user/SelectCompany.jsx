@@ -22,6 +22,7 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { fetchUser } from "../../store/user/UserSlice.js";
+import Breadcrumbs from "../../components/Breadcrumbs.jsx";
 
 const SelectCompany = () => {
   // const [companies, setCompanies] = useState(data);
@@ -531,6 +532,14 @@ const SelectCompany = () => {
 
   return (
     <>
+      <div>
+        <Breadcrumbs
+          lists={[
+            { goto: "/", text: "Home" },
+            { goto: "/", text: "Companies" },
+          ]}
+        />
+      </div>
       <div>
         {/* <div className="flex flex-col mb-5">
           <Header />

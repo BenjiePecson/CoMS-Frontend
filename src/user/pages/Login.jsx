@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { fetchUser } from "../store/user/UserSlice";
 import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
+import { showToast } from "../../assets/global";
 
 const Login = () => {
   const user = useSelector((state) => state.user.user);
@@ -13,16 +14,24 @@ const Login = () => {
   const googleLogin = useGoogleLogin({
     flow: "auth-code",
     onSuccess: async (codeResponse) => {
-      const response = await axios.post("/auth/google", {
-        code: codeResponse.code,
-      });
+      try {
+        const response = await axios.post("/auth/google", {
+          code: codeResponse.code,
+        });
 
-      if (response.data.success) {
-        localStorage.setItem("access_token", response.data.tokens.access_token);
-        dispatch(fetchUser(response.data.tokens.access_token));
-        navigate("/company");
+        if (response.data.success) {
+          localStorage.setItem("access_token", response.data.tokens.access_token);
+          dispatch(fetchUser(response.data.tokens.access_token));
+          navigate("/company");
+        } else {
+          showToast("error", "Your account is currently inactive. Please contact the administrator for assistance.");
+        }
+      } catch (error) {
+        console.log(error);
+        showToast("error", "Error: Login Failed.")
+      } finally {
+        document.getElementById("overlay").close();
       }
-      document.getElementById("overlay").close();
     },
     onError: (errorResponse) => {
       console.log(errorResponse);

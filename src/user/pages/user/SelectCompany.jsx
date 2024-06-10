@@ -536,7 +536,7 @@ const SelectCompany = () => {
         <Breadcrumbs
           lists={[
             { goto: "/", text: "Home" },
-            { goto: "/", text: "Company" },
+            { goto: "/", text: "Companies" },
           ]}
         />
       </div>

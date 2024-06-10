@@ -124,8 +124,6 @@ const UsersPage = () => {
         let status = "error";
         let message = "Error updating the record.";
 
-        console.log(formData);
-
         try {
           let response = await axios.patch(
             `/users/${formData.user_id}`,
@@ -179,7 +177,6 @@ const UsersPage = () => {
   const fetchUsers = async () => {
     try {
       let response = await axios.get(`users`);
-      console.log(response.data);
       setUsers(response.data);
       setFilteredUsers(response.data);
     } catch (error) {

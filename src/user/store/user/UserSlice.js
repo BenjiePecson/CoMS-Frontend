@@ -6,6 +6,8 @@ const UserState = {
   email: "",
   first_name: "",
   last_name: "",
+  roles: [],
+  permissions: [],
 };
 
 export const fetchUser = createAsyncThunk("user/fetchUser", async (token) => {
@@ -20,6 +22,8 @@ export const fetchUser = createAsyncThunk("user/fetchUser", async (token) => {
         email: response.data.user.email,
         first_name: response.data.user.first_name,
         last_name: response.data.user.last_name,
+        roles: response.data.user.roles,
+        permissions: response.data.user.permissions,
       };
     }
 
@@ -44,7 +48,8 @@ const initialState = {
 const UserSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+  },
   extraReducers: (builder) => {
     //fetch user
     builder.addCase(fetchUser.pending, (state) => {
@@ -61,5 +66,5 @@ const UserSlice = createSlice({
   },
 });
 
-export const {} = UserSlice.actions;
+export const { } = UserSlice.actions;
 export default UserSlice.reducer;

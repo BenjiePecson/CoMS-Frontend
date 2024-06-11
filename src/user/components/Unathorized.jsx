@@ -235,7 +235,7 @@ const Unathorized = () => {
           Oops! Unauthorized Access Detected.
         </h4>
         <p className="w-full sm:w-3/4 md:w-1/2">
-          Please refrain from attempting to access this system without proper
+          Please refrain from attempting to access this page without proper
           authorization. If you believe this message is in error, please contact
           the system administrator immediately.
         </p>

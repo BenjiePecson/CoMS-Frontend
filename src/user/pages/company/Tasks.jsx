@@ -110,7 +110,9 @@ const Tasks = () => {
                     </table>
                   </div>
                 </div>
+
                 <div className="modal-action">
+                  <button className="btn btn-primary">Submit</button>
                   <label htmlFor="my_modal_6" className="btn">
                     Close!
                   </label>
@@ -135,7 +137,7 @@ const Tasks = () => {
             </thead>
             <tbody>
               <tr>
-                <td className="flex flex-row">
+                <td className="flex flex-row" colSpan={3}>
                   Service Agreement 2024.pdf
                   <a href="#" download={true}>
                     <svg
@@ -182,8 +184,73 @@ const Tasks = () => {
                   </select>
                 </td>
                 <td className="flex flex-row">
-                  <button className="btn btn-xs m-1">Karen</button>
-                  <button className="btn btn-xs m-1">Hazel</button>
+                  <button
+                    className="btn btn-xs m-1"
+                    onClick={() =>
+                      document.getElementById("my_modal_4").showModal()
+                    }
+                  >
+                    Karen
+                  </button>
+                  <dialog id="my_modal_4" className="modal">
+                    <div className="modal-box w-11/12 max-w-5xl">
+                      <div className="overflow-x-auto border">
+                        <h1 className="font-bold text-xl mb-3">
+                          Karen Task List
+                        </h1>
+                        <table className="table border">
+                          {/* head */}
+                          <thead>
+                            <tr>
+                              <th>Company</th>
+                              <th>Task</th>
+                              <th>Target Date</th>
+                              <th>Assignee</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {/* row 1 */}
+                            <tr>
+                              <th>Fullsuite</th>
+                              <td>
+                                Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua.
+                              </td>
+                              <td>09/24/24</td>
+                              <td>Hazel</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div className="modal-action">
+                        <form method="dialog">
+                          {/* if there is a button, it will close the modal */}
+                          <button className="btn">Close</button>
+                        </form>
+                      </div>
+                    </div>
+                  </dialog>
+                  <button
+                    className="btn btn-xs m-1"
+                    onClick={() =>
+                      document.getElementById("my_modal_4").showModal()
+                    }
+                  >
+                    Hazel
+                  </button>
+                  <dialog id="my_modal_4" className="modal">
+                    <div className="modal-box w-11/12 max-w-5xl">
+                      <h3 className="font-bold text-lg">Hazel Task List</h3>
+
+                      <div className="modal-action">
+                        <form method="dialog">
+                          {/* if there is a button, it will close the modal */}
+                          <button className="btn">Close</button>
+                        </form>
+                      </div>
+                    </div>
+                  </dialog>
                 </td>
               </tr>
               <tr>

@@ -203,18 +203,22 @@ const Layout = () => {
                       />
                     </Link>
 
-                    <Link
-                      to="/gis"
-                      onClick={() => {
-                        setActive("/gis");
-                      }}
-                    >
-                      <NavBar
-                        isActive={active === "/gis"}
-                        text="GIS"
-                        icon={trackerIcon}
-                      />
-                    </Link>
+
+                    {
+                      user.permissions.includes("View GIS Approval") &&
+                      <Link
+                        to="/gis"
+                        onClick={() => {
+                          setActive("/gis");
+                        }}
+                      >
+                        <NavBar
+                          isActive={active === "/gis"}
+                          text="GIS"
+                          icon={trackerIcon}
+                        />
+                      </Link>
+                    }
 
                     <Link
                       to="/settings"
@@ -229,50 +233,77 @@ const Layout = () => {
                       />
                     </Link>
 
-                    <li>
-                      <details open>
-                        <summary className="h-[45px] my-1 flex flex-row justify-between items-center text-white">
-                          <div className="flex flex-row items-center gap-4">
-                            {usersIcon} User Management
-                          </div>
-                        </summary>
-                        <ul>
-                          <Link
-                            to="/users"
-                            onClick={() => {
-                              setActive("/users");
-                            }}
-                          >
-                            <NavBar
-                              isActive={active === "/users"}
-                              text="Users"
-                            />
-                          </Link>
-                          <Link
-                            to="/roles"
-                            onClick={() => {
-                              setActive("/roles");
-                            }}
-                          >
-                            <NavBar
-                              isActive={active === "/roles"}
-                              text="Roles"
-                            />
-                          </Link>
-                          <Link
-                            to="/permissions"
-                            onClick={() => {
-                              setActive("/permissions");
-                            }}
-                          >
-                            <NavBar
-                              isActive={active === "/permissions"}
-                              text="Permissions"
-                            />
-                          </Link>
-                        </ul>
-                      </details>
-                    </li>
+                    {
+                      (
+                        user.permissions.includes("View Users") ||
+                        user.permissions.includes("View Roles") ||
+                        user.permissions.includes("View Permissions")
+                      )
+
+                      &&
+                      <li>
+                        <details open>
+                          <summary className="h-[45px] my-1 flex flex-row justify-between items-center text-white">
+                            <div className="flex flex-row items-center gap-4">
+                              {usersIcon} User Management
+                            </div>
+                          </summary>
+                          <ul>
+                            {
+                              user.permissions.includes("View Users") &&
+                              <Link
+                                to="/users"
+                                onClick={() => {
+                                  setActive("/users");
+                                }}
+                              >
+                                <NavBar
+                                  isActive={active === "/users"}
+                                  text="Users"
+                                />
+                              </Link>
+                            }
+                            {
+                              user.permissions.includes("View Roles") &&
+
+                              <Link
+                                to="/roles"
+                                onClick={() => {
+                                  setActive("/roles");
+                                }}
+                              >
+                                <NavBar
+                                  isActive={active === "/roles"}
+                                  text="Roles"
+                                />
+                              </Link>
+                            }
+
+                            {
+                              user.permissions.includes("View Permissions") &&
+
+                              <Link
+                                to="/permissions"
+                                onClick={() => {
+                                  setActive("/permissions");
+                                }}
+                              >
+                                <NavBar
+                                  isActive={active === "/permissions"}
+                                  text="Permissions"
+                                />
+                              </Link>
+                            }
+
+
+
+
+
+                          </ul>
+                        </details>
+                      </li>
+                    }
+
                   </div>
                 </div>
                 <div className="px-4">

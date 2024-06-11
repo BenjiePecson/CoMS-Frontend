@@ -5,8 +5,13 @@ import DataTable from "react-data-table-component";
 import Select from "react-select";
 import { showToast } from "../../../assets/global";
 import Breadcrumbs from "../../components/Breadcrumbs";
+import { useSelector } from "react-redux";
+import Unathorized from "../../components/Unathorized";
 
 const UsersPage = () => {
+
+  const userSlice = useSelector((state) => state.user.user);
+
   const columns = [
     {
       name: "Name",
@@ -29,9 +34,8 @@ const UsersPage = () => {
         let status = row.status;
         let element = (
           <div
-            className={`${
-              row.status == "Active" ? "text-success" : "text-error"
-            } font-bold`}
+            className={`${row.status == "Active" ? "text-success" : "text-error"
+              } font-bold`}
           >
             {status}
           </div>
@@ -58,12 +62,15 @@ const UsersPage = () => {
     {
       name: "Actions",
       selector: (row, rowIndex) => {
+
+        if (!userSlice.permissions.includes("Edit Users")) return;
+
         return (
           <div className="flex flex-row justify-center item-center gap-2">
             <button
               onClick={() => {
                 setFormData(row);
-                if(row.role.length > 0){
+                if (row.role.length > 0) {
                   setDefaultOptions({
                     value: row.role[0].role_id,
                     label: row.role[0].role_name,
@@ -100,6 +107,7 @@ const UsersPage = () => {
     email: "",
     role: [],
   };
+
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
 
@@ -109,6 +117,8 @@ const UsersPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [options, setOptions] = useState([]);
   const [defaultOptions, setDefaultOptions] = useState([]);
+
+  const [pageIsLoading, setPageIsLoading] = useState(true);
 
   //toggle button for submit
   const handleSubmit = async (e, isEdit) => {
@@ -199,6 +209,12 @@ const UsersPage = () => {
     }
   };
 
+  const loadingComponent = (
+    <div className="flex flex-col items-center justify-center w-full h-full">
+      <div className="loading loading-spin loading-lg"></div>
+    </div>
+  );
+
   useEffect(() => {
     fetchUsers();
     fetchRoles();
@@ -220,197 +236,211 @@ const UsersPage = () => {
     setFilteredUsers(filteredUsers);
   }, [search]);
 
-  return (
-    <>
-      <div>
-        <Breadcrumbs
-          lists={[
-            { goto: "/", text: "Home" },
-            { goto: "/users", text: "User Management" },
-            { goto: "", text: "Users" },
-          ]}
-        />
-      </div>
-      <div className="flex flex-col gap-5">
-        <div className="flex flex-col sm:flex-row w-full justify-between gap-2">
-          <div className="poppins-bold text-color-2 text-[24px]">Users</div>
+  useEffect(() => {
+    if (userSlice.user_id != "") {
+      setPageIsLoading(false);
+    }
+  }, [userSlice]);
+
+
+  if (pageIsLoading) {
+    return loadingComponent;
+  } else {
+    if (userSlice.permissions.includes("View Users")) {
+      return (
+        <>
           <div>
-            <label className="input input-bordered flex items-center gap-2">
-              <input
-                type="text"
-                className="input-sm w-full"
-                placeholder="Search"
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                }}
+            <Breadcrumbs
+              lists={[
+                { goto: "/", text: "Home" },
+                { goto: "/users", text: "User Management" },
+                { goto: "", text: "Users" },
+              ]}
+            />
+          </div>
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-col sm:flex-row w-full justify-between gap-2">
+              <div className="poppins-bold text-color-2 text-[24px]">Users</div>
+              <div>
+                <label className="input input-bordered flex items-center gap-2">
+                  <input
+                    type="text"
+                    className="input-sm w-full"
+                    placeholder="Search"
+                    value={search}
+                    onChange={(e) => {
+                      setSearch(e.target.value);
+                    }}
+                  />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    className="w-4 h-4 opacity-70"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </label>
+              </div>
+            </div>
+
+            <div className="p-2 bg-white rounded-lg">
+              <DataTable
+                columns={columns}
+                data={filteredUsers}
+                defaultSortFieldId={1}
+                pagination
+                persistTableHead={true}
               />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                className="w-4 h-4 opacity-70"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </label>
+            </div>
           </div>
-        </div>
 
-        <div className="p-2 bg-white rounded-lg">
-          <DataTable
-            columns={columns}
-            data={filteredUsers}
-            defaultSortFieldId={1}
-            pagination
-            persistTableHead={true}
-          />
-        </div>
-      </div>
-
-      <dialog id="editModal" className="modal">
-        <div className="modal-box">
-          <div className="flex flex-row justify-between">
-            <h3 className="font-bold text-lg">Edit User</h3>
-            <form method="dialog">
-              <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
-                ✕
-              </button>
-            </form>
-          </div>
-          <div className="flex flex-col gap-2">
-            <form
-              onSubmit={(e) => {
-                handleSubmit(e, true);
-              }}
-              className="flex flex-col gap-4"
-            >
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="poppins-regular text-[12px]">
-                    Name <span className="text-red-500">*</span>
-                  </span>
-                </div>
-                <input
-                  type="text"
-                  className={`input input-bordered w-full ${
-                    errors.role_name && `input-error`
-                  }`}
-                  value={`${formData.first_name} ${formData.last_name}`}
-                  onChange={(e) => {}}
-                  disabled
-                />
-                {errors.role_name && (
-                  <span className="text-[12px] text-red-500">
-                    {errors.role_name}
-                  </span>
-                )}
-              </label>
-
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="poppins-regular text-[12px]">
-                    Email <span className="text-red-500">*</span>
-                  </span>
-                </div>
-                <input
-                  type="text"
-                  className={`input input-bordered w-full ${
-                    errors.role_name && `input-error`
-                  }`}
-                  value={formData.email}
-                  onChange={(e) => {}}
-                  disabled
-                />
-                {errors.role_name && (
-                  <span className="text-[12px] text-red-500">
-                    {errors.role_name}
-                  </span>
-                )}
-              </label>
-
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="poppins-regular text-[12px]">
-                    Role <span className="text-red-500">*</span>
-                  </span>
-                </div>
-                <Select
-                  options={options}
-                  menuPortalTarget={document.getElementById("editModal")}
-                  isClearable={false}
-                  value={defaultOptions}
-                  onChange={(selected) => {
-                    setFormData({
-                      ...formData,
-                      role: [
-                        {
-                          role_id: selected.value,
-                          role_name: selected.label,
-                        },
-                      ],
-                    });
-
-                    setDefaultOptions(selected);
+          <dialog id="editModal" className="modal">
+            <div className="modal-box">
+              <div className="flex flex-row justify-between">
+                <h3 className="font-bold text-lg">Edit User</h3>
+                <form method="dialog">
+                  <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                    ✕
+                  </button>
+                </form>
+              </div>
+              <div className="flex flex-col gap-2">
+                <form
+                  onSubmit={(e) => {
+                    handleSubmit(e, true);
                   }}
-                />
-                {errors.role && (
-                  <span className="text-[12px] text-red-500">
-                    {errors.role}
-                  </span>
-                )}
-              </label>
-
-              <div className="form-control w-full">
-                <div className="label flex flex-col items-start gap-2">
-                  <span className="poppins-regular text-[12px]">
-                    Status <span className="text-red-500">*</span>
-                  </span>
-                  <div className="flex flex-row gap-5">
-                    {formData.status}
+                  className="flex flex-col gap-4"
+                >
+                  <label className="form-control w-full">
+                    <div className="label">
+                      <span className="poppins-regular text-[12px]">
+                        Name <span className="text-red-500">*</span>
+                      </span>
+                    </div>
                     <input
-                      type="checkbox"
-                      className="toggle toggle-success"
-                      value={formData.status}
-                      checked={formData.status == "Active"}
-                      onChange={(e) => {
-                        if (e.target.value == "Active") {
-                          setFormData({ ...formData, status: "Inactive" });
-                        } else {
-                          setFormData({ ...formData, status: "Active" });
-                        }
+                      type="text"
+                      className={`input input-bordered w-full ${errors.role_name && `input-error`
+                        }`}
+                      value={`${formData.first_name} ${formData.last_name}`}
+                      onChange={(e) => { }}
+                      disabled
+                    />
+                    {errors.role_name && (
+                      <span className="text-[12px] text-red-500">
+                        {errors.role_name}
+                      </span>
+                    )}
+                  </label>
+
+                  <label className="form-control w-full">
+                    <div className="label">
+                      <span className="poppins-regular text-[12px]">
+                        Email <span className="text-red-500">*</span>
+                      </span>
+                    </div>
+                    <input
+                      type="text"
+                      className={`input input-bordered w-full ${errors.role_name && `input-error`
+                        }`}
+                      value={formData.email}
+                      onChange={(e) => { }}
+                      disabled
+                    />
+                    {errors.role_name && (
+                      <span className="text-[12px] text-red-500">
+                        {errors.role_name}
+                      </span>
+                    )}
+                  </label>
+
+                  <label className="form-control w-full">
+                    <div className="label">
+                      <span className="poppins-regular text-[12px]">
+                        Role <span className="text-red-500">*</span>
+                      </span>
+                    </div>
+                    <Select
+                      options={options}
+                      menuPortalTarget={document.getElementById("editModal")}
+                      isClearable={false}
+                      value={defaultOptions}
+                      onChange={(selected) => {
+                        setFormData({
+                          ...formData,
+                          role: [
+                            {
+                              role_id: selected.value,
+                              role_name: selected.label,
+                            },
+                          ],
+                        });
+
+                        setDefaultOptions(selected);
                       }}
                     />
+                    {errors.role && (
+                      <span className="text-[12px] text-red-500">
+                        {errors.role}
+                      </span>
+                    )}
+                  </label>
+
+                  <div className="form-control w-full">
+                    <div className="label flex flex-col items-start gap-2">
+                      <span className="poppins-regular text-[12px]">
+                        Status <span className="text-red-500">*</span>
+                      </span>
+                      <div className="flex flex-row gap-5">
+                        {formData.status}
+                        <input
+                          type="checkbox"
+                          className="toggle toggle-success"
+                          value={formData.status}
+                          checked={formData.status == "Active"}
+                          onChange={(e) => {
+                            if (e.target.value == "Active") {
+                              setFormData({ ...formData, status: "Inactive" });
+                            } else {
+                              setFormData({ ...formData, status: "Active" });
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    {errors.status && (
+                      <span className="text-[12px] text-red-500">
+                        {errors.status}
+                      </span>
+                    )}
                   </div>
-                </div>
 
-                {errors.status && (
-                  <span className="text-[12px] text-red-500">
-                    {errors.status}
-                  </span>
-                )}
+                  <button
+                    type="submit"
+                    className="btn bg-primary text-white mt-2 flex flex-row gap-2 w-full"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting && (
+                      <span className="loading loading-spinner"></span>
+                    )}
+                    Submit
+                  </button>
+                </form>
               </div>
+            </div>
+          </dialog>
+        </>
+      );
+    }
+    return <Unathorized />;
+  }
 
-              <button
-                type="submit"
-                className="btn bg-primary text-white mt-2 flex flex-row gap-2 w-full"
-                disabled={isSubmitting}
-              >
-                {isSubmitting && (
-                  <span className="loading loading-spinner"></span>
-                )}
-                Submit
-              </button>
-            </form>
-          </div>
-        </div>
-      </dialog>
-    </>
-  );
+
 };
 
 export default UsersPage;

@@ -135,7 +135,7 @@ const Layout = () => {
       <div className="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col w-full min-h-screen">
-          <div className="flex w-full justify-between items-center bg-[#FFFFFF] shadow-md">
+          <div className="flex flex-row w-full items-center bg-white shadow-md fixed z-10">
             <label
               htmlFor="my-drawer-2"
               className="btn btn-ghost bg-[#f7f7f7] lg:hidden shadow-sm w-16 m-2"
@@ -153,7 +153,7 @@ const Layout = () => {
                 />
               </svg>
             </label>
-            <div className="w-full flex-col justify-center items-center text-center">
+            <div className="w-[75%] text-center">
               <div className="dropdown dropdown-bottom dropdown-end">
                 <div tabIndex={0} role="" className="btn btn-ghost m-2">
                   <div className="flex flex-row gap-2 justify-center items-center">
@@ -207,11 +207,11 @@ const Layout = () => {
               </div>
             </div>
           </div>
-          <div className="w-full pt-5 px-2 md:px-5 min-h-screen">
+          <div className="w-full pt-24 px-2 md:px-5 min-h-screen">
             <Outlet />
           </div>
         </div>
-        <div className="drawer-side">
+        <div className="drawer-side z-20">
           <label
             htmlFor="my-drawer-2"
             aria-label="close sidebar"

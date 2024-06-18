@@ -15,14 +15,15 @@ const PermissionsPage = () => {
     {
       name: "Permission Name",
       selector: (row) => row.permission_name,
+      width: "80%"
     },
     {
       name: "Actions",
-      selector: (row, rowIndex) => {
+      cell: (row, rowIndex) => {
         if (!user.permissions.includes("Edit Permissions") && !user.permissions.includes("Delete Permissions")) return;
 
         return (
-          <div className="flex flex-row justify-center item-center gap-2">
+          <div className="flex flex-row justify-start item-center gap-2 w-full">
             {
               user.permissions.includes("Edit Permissions") &&
               <button
@@ -77,6 +78,7 @@ const PermissionsPage = () => {
           </div>
         );
       },
+      width: "20%"
     },
   ];
 

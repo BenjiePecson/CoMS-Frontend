@@ -12,6 +12,7 @@ const Dashboard = () => {
   const [directors, setDirectors] = useState([]);
   const selectedCompany = useSelector((state) => state.company.selectedCompany);
   const dispatch = useDispatch();
+  const [isGridView, setIsGridView] = useState(false);
 
   const fetchDirectors = async () => {
     try {
@@ -29,7 +30,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <div>
+      {/* <div>
         <Breadcrumbs
           lists={[
             { goto: "/", text: "Home" },
@@ -40,14 +41,14 @@ const Dashboard = () => {
             { goto: "/", text: "Dashboard" },
           ]}
         />
-      </div>
-      <div className="flex flex-col pb-5">
-        <div className="flex flex-col w-full justify-between items-left">
-          <div className="poppins-bold text-color-2 text-[24px]">Dashboard</div>
-        </div>
-
-        <FinalDocuments />
-        <DirectorsTable directors={directors} />
+      </div> */}
+      <div className="flex flex-col gap-10 pb-5">
+        <FinalDocuments isGridView={isGridView} setIsGridView={setIsGridView} />
+        <DirectorsTable
+          directors={directors}
+          isGridView={isGridView}
+          setIsGridView={setIsGridView}
+        />
       </div>
     </>
   );

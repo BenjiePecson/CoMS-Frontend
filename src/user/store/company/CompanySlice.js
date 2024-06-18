@@ -8,18 +8,52 @@ const CompanyState = {
   secNumber: "",
   corporateTin: "",
   dateRegistered: "",
+  sss: "",
+  hdmf: "",
+  philHealth: "",
   status: true,
+  gdrivefolders: {
+    root: "",
+    finaldocs: "",
+    sec_cert: "",
+    art_of_inc: "",
+    by_laws: "",
+    bir_or_cor: "",
+    lgu_business_permit: "",
+  },
 };
 
-export const fetchCompanies = createAsyncThunk("company/fetchCompanies", async () => {
-  let response = await axios.get("/company/");
-  return response.data;
-});
+export const fetchCompanies = createAsyncThunk(
+  "company/fetchCompanies",
+  async () => {
+    let response = await axios.get("/company/");
+    const companies = response.data.map((company) => {
+      if (company.gdrivefolders == null) {
+        company.gdrivefolders = CompanyState.gdrivefolders;
+      } else {
+        company.gdrivefolders = JSON.parse(company.gdrivefolders);
+      }
+      return company;
+    });
+    return companies;
+  }
+);
 
-export const fetchCompany = createAsyncThunk("company/fetchCompany", async (companyId) => {
-  let response = await axios.get(`/company/${companyId}`);
-  return response.data;
-});
+export const fetchCompany = createAsyncThunk(
+  "company/fetchCompany",
+  async (companyId) => {
+    let response = await axios.get(`/company/${companyId}`);
+    const companies = response.data.map((company) => {
+      if (company.gdrivefolders == null) {
+        company.gdrivefolders = CompanyState.gdrivefolders;
+      } else {
+        company.gdrivefolders = JSON.parse(company.gdrivefolders);
+      }
+      return company;
+    });
+    return companies;
+  }
+);
 
 const initialState = {
   companies: [],
@@ -33,7 +67,6 @@ const companySlice = createSlice({
   name: "company",
   initialState,
   reducers: {
-
     addCompany: (state, action) => {
       state.companies.push(action.payload);
     },
@@ -46,7 +79,9 @@ const companySlice = createSlice({
           obj.secNumber = action.payload.secNumber;
           obj.corporateTin = action.payload.corporateTin;
           obj.dateRegistered = action.payload.dateRegistered;
-
+          obj.sss = action.payload.sss;
+          obj.hdmf = action.payload.hdmf;
+          obj.philHealth = action.payload.philHealth;
         }
       });
     },
@@ -66,7 +101,6 @@ const companySlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-
     //Companies
     builder.addCase(fetchCompanies.pending, (state) => {
       state.status = "pending";

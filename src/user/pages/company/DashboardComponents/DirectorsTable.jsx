@@ -1,4 +1,7 @@
-const DirectorsTable = ({ directors }) => {
+import { useState } from "react";
+import CardDirector from "../../../components/CardDirector.jsx";
+
+const DirectorsTable = ({ directors, isGridView, setIsGridView }) => {
   const directorsRow = directors.map((director, index) => {
     return (
       <tr key={`director-${index}`}>
@@ -18,11 +21,23 @@ const DirectorsTable = ({ directors }) => {
     );
   });
 
-  return (
-    <div>
-      <div className="flex flex-row m-2">
-        <h1 className="mt-3 font-bold text-xl">Directors/Officers</h1>{" "}
+  const gridView = () => {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+        {directors.length != 0 &&
+          directors.map((director, index) => {
+            return (
+              <div key={`director-${index}`}>
+                <CardDirector director={director} index={index} />
+              </div>
+            );
+          })}
       </div>
+    );
+  };
+
+  const listView = () => {
+    return (
       <div className="overflow-x-auto">
         <table className="table table-xs z-0 table-pin-rows table-pin-cols">
           <thead>
@@ -51,6 +66,19 @@ const DirectorsTable = ({ directors }) => {
           </tbody>
         </table>
       </div>
+    );
+  };
+
+  return (
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-row">
+        {/* <h1 className="mt-3 font-bold text-xl">Directors/Officers</h1>{" "} */}
+        <div className="poppins-bold text-color-2 text-[24px] flex items-center">
+          Directors / Officers
+        </div>
+      </div>
+
+      {isGridView ? gridView() : listView()}
     </div>
   );
 };

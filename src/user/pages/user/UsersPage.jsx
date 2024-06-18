@@ -17,16 +17,19 @@ const UsersPage = () => {
       name: "Name",
       selector: (row) => `${row.first_name} ${row.last_name}`,
       sortable: true,
+      width: "20%"
     },
     {
       name: "Email",
       selector: (row) => row.email,
       sortable: true,
+      width: "15%"
     },
     {
       name: "Last Login",
       selector: (row) => row.last_login,
       sortable: true,
+      width: "25%"
     },
     {
       name: "Status",
@@ -43,6 +46,7 @@ const UsersPage = () => {
         return element;
       },
       sortable: true,
+      width: "15%"
     },
     {
       name: "Role",
@@ -58,6 +62,7 @@ const UsersPage = () => {
           </>
         );
       },
+      width: "15%"
     },
     {
       name: "Actions",
@@ -99,6 +104,7 @@ const UsersPage = () => {
           </div>
         );
       },
+      width: "10%"
     },
   ];
 

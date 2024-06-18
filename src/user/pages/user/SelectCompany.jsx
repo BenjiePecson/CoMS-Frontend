@@ -117,6 +117,9 @@ const SelectCompany = () => {
           form.append("secNumber", formData.secNumber);
           form.append("corporateTin", formData.corporateTin);
           form.append("dateRegistered", formData.dateRegistered);
+          form.append("sss", formData.sss);
+          form.append("hdmf", formData.hdmf);
+          form.append("philHealth", formData.philHealth);
           form.append("logo", logo);
 
           let response = await axios.patch(
@@ -139,6 +142,9 @@ const SelectCompany = () => {
               corporateTin: data.corporateTin,
               dateRegistered: data.dateRegistered,
               secNumber: data.secNumber,
+              sss: data.sss,
+              hdmf: data.hdmf,
+              philHealth: data.philHealth,
             };
 
             dispatch(updateCompany(newCompany));
@@ -164,6 +170,9 @@ const SelectCompany = () => {
         form.append("secNumber", formData.secNumber);
         form.append("corporateTin", formData.corporateTin);
         form.append("dateRegistered", formData.dateRegistered);
+        form.append("sss", formData.sss);
+        form.append("hdmf", formData.hdmf);
+        form.append("philHealth", formData.philHealth);
         form.append("logo", logo);
 
         try {
@@ -182,6 +191,9 @@ const SelectCompany = () => {
               secNumber: data.secNumber,
               corporateTin: data.corporateTin,
               dateRegistered: data.dateRegistered,
+              sss: data.sss,
+              hdmf: data.hdmf,
+              philHealth: data.philHealth,
               status: data.status,
             };
 
@@ -210,9 +222,6 @@ const SelectCompany = () => {
   //on change event for inputs
   const handleOnChange = async (e) => {
     const { name, value } = e.target;
-
-    console.log(name);
-    console.log(value);
 
     if (name === "logo") {
       setLogo(e.target.files[0]);
@@ -283,7 +292,7 @@ const SelectCompany = () => {
     }
 
     // if (checkCompanyLogo(logo) != "" && !isEdit) {
-    if (checkCompanyLogo(logo) != "") {
+    if (checkCompanyLogo(logo) != "" && !isEdit) {
       newErrors.logo = checkCompanyLogo(logo);
     }
 
@@ -669,6 +678,65 @@ const SelectCompany = () => {
             </label>
             <label className="form-control w-full">
               <div className="label">
+                <span className="poppins-regular text-[12px]">SSS</span>
+              </div>
+              <input
+                type="text"
+                className={`input input-bordered w-full ${
+                  errors.sss && `input-error`
+                }`}
+                name="sss"
+                value={formData.sss}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.sss && (
+                <span className="text-[12px] text-red-500">{errors.sss}</span>
+              )}
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">HDMF</span>
+              </div>
+              <input
+                type="text"
+                className={`input input-bordered w-full ${
+                  errors.hdmf && `input-error`
+                }`}
+                name="hdmf"
+                value={formData.hdmf}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.hdmf && (
+                <span className="text-[12px] text-red-500">{errors.hdmf}</span>
+              )}
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">PhilHealth</span>
+              </div>
+              <input
+                type="text"
+                className={`input input-bordered w-full ${
+                  errors.philHealth && `input-error`
+                }`}
+                name="philHealth"
+                value={formData.philHealth}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.philHealth && (
+                <span className="text-[12px] text-red-500">
+                  {errors.philHealth}
+                </span>
+              )}
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
                 <span className="poppins-regular text-[12px]">
                   Company Logo <span className="text-red-500">*</span>
                 </span>
@@ -804,6 +872,65 @@ const SelectCompany = () => {
               {errors.corporateTin && (
                 <span className="text-[12px] text-red-500">
                   {errors.corporateTin}
+                </span>
+              )}
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">SSS</span>
+              </div>
+              <input
+                type="text"
+                className={`input input-bordered w-full ${
+                  errors.sss && `input-error`
+                }`}
+                name="sss"
+                value={formData.sss}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.sss && (
+                <span className="text-[12px] text-red-500">{errors.sss}</span>
+              )}
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">HDMF</span>
+              </div>
+              <input
+                type="text"
+                className={`input input-bordered w-full ${
+                  errors.hdmf && `input-error`
+                }`}
+                name="hdmf"
+                value={formData.hdmf}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.hdmf && (
+                <span className="text-[12px] text-red-500">{errors.hdmf}</span>
+              )}
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">PhilHealth</span>
+              </div>
+              <input
+                type="text"
+                className={`input input-bordered w-full ${
+                  errors.philHealth && `input-error`
+                }`}
+                name="philHealth"
+                value={formData.philHealth}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.philHealth && (
+                <span className="text-[12px] text-red-500">
+                  {errors.philHealth}
                 </span>
               )}
             </label>

@@ -94,10 +94,7 @@ function App() {
               element={<TreasurerCertificate />}
             />
 
-            <Route
-              path="company/:companyId/tasks"
-              element={<Tasks />}
-            />
+            <Route path="company/:companyId/tasks" element={<Tasks />} />
           </Route>
           <Route path="/manager/" element={<Login />} />
           <Route path="*" element={<NotFound />} />

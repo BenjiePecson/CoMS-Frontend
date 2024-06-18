@@ -17,6 +17,7 @@ const RolesPage = () => {
     {
       name: "Role Name",
       selector: (row) => row.role_name,
+      width: "30%"
     },
     {
       name: "Permissions",
@@ -44,14 +45,16 @@ const RolesPage = () => {
           </>
         );
       },
+       width: "50%"
     },
     {
       name: "Actions",
-      selector: (row, rowIndex) => {
+      selector: (row)=>row.permissions,
+      cell: (row, rowIndex) => {
 
         if (!user.permissions.includes("Edit Roles") && !user.permissions.includes("Delete Roles")) return;
         return (
-          <div className="flex flex-row justify-center item-center gap-2">
+          <div className="flex flex-row justify-center item-center gap-2 w-full">
             {
               user.permissions.includes("Edit Roles") &&
               <button
@@ -114,6 +117,7 @@ const RolesPage = () => {
           </div>
         );
       },
+       width: "20%"
     },
   ];
 

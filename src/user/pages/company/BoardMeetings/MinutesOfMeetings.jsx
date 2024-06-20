@@ -6,6 +6,7 @@ import Header from "../../../components/Header";
 import { showAlert } from "../../../../assets/global";
 import axios from "axios";
 import Breadcrumbs from "../../../components/Breadcrumbs";
+import gdriveIcon from "/gdrive.svg";
 
 const MinutesOfMeetings = () => {
   const { companyId } = useParams();
@@ -17,6 +18,7 @@ const MinutesOfMeetings = () => {
     type_of_meeting: "",
     place_of_meeting: "",
     quorum: "",
+    folder_id: "",
   };
   const [errors, setErrors] = useState([]);
   const [formData, setFormData] = useState(minutesOfMeeting);
@@ -26,6 +28,8 @@ const MinutesOfMeetings = () => {
 
   const [isGrid, setIsGrid] = useState(false);
   const [isLoadingGdrive, setIsLoadingGdrive] = useState(true);
+
+  const [editFolderID, setEditFolderID] = useState("");
 
   const table = (
     <>
@@ -38,7 +42,7 @@ const MinutesOfMeetings = () => {
             <th>Place of Meeting</th>
             <th>Quorum</th>
             <th>Attached Files</th>
-            <th className="w-[10%]">Actions</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -84,15 +88,20 @@ const MinutesOfMeetings = () => {
                     </div>
                   </td>
                   <td>
-                    <div className="flex flex-row justify-between gap-2">
-                      {/* <button
+                    <div className="flex flex-row justify-start items-center gap-2">
+                      <img
+                        src={gdriveIcon}
                         onClick={() => {
                           setSelectedIndex(index);
                           setFormData(record);
-                          console.log(record);
                           // setErrors([]);
                           document.getElementById("gdrive").showModal();
                         }}
+                        alt=""
+                        className="cursor-pointer"
+                      />
+                      {/* <button
+                       
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -501,111 +510,271 @@ const MinutesOfMeetings = () => {
           </div>
         </dialog>
 
-        {/* <dialog id="gdrive" className="modal">
-        <div className="modal-box w-11/12 max-w-5xl">
-          <div className="flex flex-row justify-between py-4">
-            <form method="dialog">
-              <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
-                ✕
-              </button>
-            </form>
-          </div>
-          <div className="">
-            <div className="flex flex-row gap-2 justify-between items-center p-2">
-              <h3 className="font-bold text-lg">Attached Files</h3>
-              <div>
-                <button
-                  className={`btn ${
-                    isGrid ? "bg-white" : ""
-                  } shadow-none border-none`}
-                  onClick={() => {
-                    setIsGrid(false);
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
-                    />
-                  </svg>
+        <dialog id="gdrive" className="modal">
+          <div className="modal-box w-11/12 max-w-5xl">
+            <div className="flex flex-row justify-between py-4">
+              <form method="dialog">
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                  ✕
                 </button>
+              </form>
+            </div>
+            <div className="">
+              <div className="flex flex-row gap-2 justify-between items-center p-2">
+                <div className="flex flex-row gap-2 items-center">
+                  <h3 className="font-bold text-lg">Attached Files</h3>
+                  <div
+                    className="tooltip cursor-pointer"
+                    data-tip="Change Google Drive Folder ID"
+                    onClick={() => {
+                      setEditFolderID(formData.folder_id);
+                      document.getElementById("changedriveID").showModal();
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="size-4"
+                    >
+                      <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
+                    </svg>
+                  </div>
+                </div>
+                <div>
+                  <button
+                    className={`btn ${
+                      isGrid ? "bg-white" : ""
+                    } shadow-none border-none`}
+                    onClick={() => {
+                      setIsGrid(false);
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                      />
+                    </svg>
+                  </button>
 
-                <button
-                  className={`btn ${
-                    isGrid ? "" : "bg-white"
-                  } shadow-none border-none`}
-                  onClick={() => {
-                    setIsGrid(true);
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-6 h-6"
+                  <button
+                    className={`btn ${
+                      isGrid ? "" : "bg-white"
+                    } shadow-none border-none`}
+                    onClick={() => {
+                      setIsGrid(true);
+                    }}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0 1 12 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m17.25-3.75h-7.5c-.621 0-1.125.504-1.125 1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125M12 10.875v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125M13.125 12h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125M20.625 12c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5M12 14.625v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 14.625c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125m0 1.5v-1.5m0 0c0-.621.504-1.125 1.125-1.125m0 0h7.5"
-                    />
-                  </svg>
-                </button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0 1 12 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m17.25-3.75h-7.5c-.621 0-1.125.504-1.125 1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125M12 10.875v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125M13.125 12h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125M20.625 12c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5M12 14.625v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 14.625c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125m0 1.5v-1.5m0 0c0-.621.504-1.125 1.125-1.125m0 0h7.5"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
-            </div>
-            <hr />
-            <div className={`w-full max-w-5xl max-h-96 h-96`}>
-              <iframe
-                className={`w-full max-w-5xl max-h-96 h-96 ${
-                  isLoadingGdrive ? "hidden" : ""
-                }`}
-                onLoad={() => {
-                  setIsLoadingGdrive(false);
-                }}
-                src={`https://drive.google.com/embeddedfolderview?id=${
-                  formData.folder_id == ""
-                    ? "1wkoVU5i-w-Ll3MoSD65bvn4RMu0lG36Y"
-                    : formData.folder_id
-                }#${isGrid ? "grid" : "list"}`}
-                // style="width:100%; height:600px; border:0;"
-              ></iframe>
-            </div>
-            <a
-              className="btn btn-primary btn-outline"
-              target="_blank"
-              href={`https://drive.google.com/drive/folders/${formData.folder_id}`}
-            >
-              <div className="flex flex-row gap-2 items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
+              <hr />
+              <div className={`w-full max-w-5xl max-h-96 h-96`}>
+                {formData.folder_id != undefined && formData.folder_id != "" ? (
+                  <iframe
+                    className={`w-full max-w-5xl max-h-96 h-96 ${
+                      isLoadingGdrive ? "hidden" : ""
+                    }`}
+                    onLoad={() => {
+                      setIsLoadingGdrive(false);
+                    }}
+                    src={`https://drive.google.com/embeddedfolderview?id=${
+                      formData.folder_id
+                    }#${isGrid ? "grid" : "list"}`}
+                    // style="width:100%; height:600px; border:0;"
+                  ></iframe>
+                ) : (
+                  <>
+                    <div className="flex flex-col items-center gap-2 pt-10">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="size-6"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+
+                      <h1 className="font-bold text-lg">
+                        No folder ID specified.
+                      </h1>
+                      <p className="text-sm">
+                        Please provide the Google Drive folder ID.
+                      </p>
+                      <div
+                        className="py-2"
+                        onClick={() => {
+                          document.getElementById("changedriveID").showModal();
+                        }}
+                      >
+                        <button className="btn btn-outline btn-sm">
+                          Set Folder ID
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+              {formData.folder_id != undefined && formData.folder_id != "" && (
+                <a
+                  className="btn btn-primary btn-outline"
+                  target="_blank"
+                  href={`https://drive.google.com/drive/folders/${formData.folder_id}`}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
-                  />
-                </svg>
-                Go to Google Drive
-              </div>
-            </a>
+                  <div className="flex flex-row gap-2 items-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
+                      />
+                    </svg>
+                    Go to Google Drive
+                  </div>
+                </a>
+              )}
+            </div>
           </div>
-        </div>
-      </dialog> */}
+        </dialog>
+
+        <dialog id="changedriveID" className="modal">
+          <div className="modal-box">
+            <div className="flex flex-row justify-between py-4">
+              <form method="dialog">
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                  ✕
+                </button>
+              </form>
+            </div>
+            <div className="flex flex-col gap-5">
+              <h1 className="poppins-semibold text-md">
+                Update Google Drive Folder ID
+              </h1>
+
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="poppins-regular text-[12px]">
+                    Google Drive Folder ID{" "}
+                    <span className="text-red-500">*</span>
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  className={`input input-bordered w-full ${
+                    errors.set_folder_id && `input-error`
+                  }`}
+                  name="set_folder_id"
+                  value={editFolderID}
+                  onChange={(e) => {
+                    setEditFolderID(e.target.value);
+
+                    // if (e.target.value == "") {
+                    //   setErrors({
+                    //     ...errors,
+                    //     set_folder_id: "Folder ID is required",
+                    //   });
+                    // } else {
+                    //   setErrors({ ...errors, set_folder_id: "" });
+                    // }
+                  }}
+                />
+                {errors.set_folder_id && (
+                  <span className="text-[12px] text-red-500">
+                    {errors.set_folder_id}
+                  </span>
+                )}
+              </label>
+
+              <button
+                className="btn bg-primary text-white"
+                onClick={async (e) => {
+                  // if (editFolderID == "") {
+                  //   setErrors({
+                  //     ...errors,
+                  //     set_folder_id: "Folder ID is required",
+                  //   });
+                  //   return;
+                  // }
+                  try {
+                    formData.folder_id = editFolderID;
+
+                    let response = await axios.patch(
+                      `/minutes-of-meeting/${companyId}`,
+                      formData
+                    );
+
+                    let updated = response.data.data[0];
+
+                    if (response.data.success) {
+                      // setFormData(noticeOfMeeting);
+
+                      let formrecord = {};
+
+                      let updatedData = records.map((record, index) => {
+                        if (record.nomId == updated.nomId) {
+                          record = {
+                            ...record,
+                            notice_date: updated.noticeDate,
+                            proposed_meeting_date: updated.proposedMeetingDate,
+                            type_of_meeting: updated.typeOfMeeting,
+                            files: updated.files,
+                            status: updated.status,
+                            folder_id: updated.folder_id,
+                          };
+                          formrecord = record;
+                        }
+
+                        return record;
+                      });
+                      setRecords(updatedData);
+                      setFormData(formrecord);
+                    }
+                  } catch (error) {
+                    console.log(error);
+                  } finally {
+                    document.getElementById("changedriveID").close();
+                  }
+                }}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </dialog>
       </div>
     </>
   );

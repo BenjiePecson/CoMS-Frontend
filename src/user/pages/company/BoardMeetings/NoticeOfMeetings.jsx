@@ -11,11 +11,13 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 
+import gdriveIcon from "/gdrive.svg";
+
 const NoticeOfMeetings = () => {
   const { companyId } = useParams();
   const companyRecords = useSelector((state) => state.records.records);
   const selectedCompany = useSelector((state) => state.company.selectedCompany);
-  
+
   const file = {
     fileId: "",
     file: "",
@@ -39,12 +41,12 @@ const NoticeOfMeetings = () => {
   const [records, setRecords] = useState([]);
 
   const [files, setFiles] = useState([]);
-  const [selectedIndex, setSelectedIndex] = useState();
-
   const [loading, setLoading] = useState(false);
 
   const [isGrid, setIsGrid] = useState(false);
   const [isLoadingGdrive, setIsLoadingGdrive] = useState(true);
+
+  const [editFolderID, setEditFolderID] = useState("");
 
   const table = (
     <>
@@ -57,8 +59,8 @@ const NoticeOfMeetings = () => {
             <th>Proposed Meeting Date</th>
             <th>Status</th>
             <th>Attached Files</th>
-            <th>Link to Minutes of Meeting</th>
-            <th className="w-[10%] text-center">Actions</th>
+            {/* <th>Link to Minutes of Meeting</th> */}
+            <th className="text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -110,7 +112,7 @@ const NoticeOfMeetings = () => {
                       )}
                     </div>
                   </td>
-                  <td>
+                  {/* <td>
                     {record.status === "Notice Completed" && (
                       <div className="flex flex-row items-center justify-center">
                         <Link to={`/company/${companyId}/minutes-of-meeting`}>
@@ -133,13 +135,12 @@ const NoticeOfMeetings = () => {
                         </Link>
                       </div>
                     )}
-                  </td>
-                  <td>
+                  </td> */}
+                  <td className="">
                     {/* {record.status != "Notice Completed" && ( */}
-                    <div className="flex flex-row justify-between gap-2">
+                    <div className="flex flex-row w-full items-center justify-center gap-2">
                       {/* <button
                         onClick={() => {
-                          setSelectedIndex(index);
                           setFormData(record);
                           // setErrors([]);
                           document.getElementById("gdrive").showModal();
@@ -161,10 +162,45 @@ const NoticeOfMeetings = () => {
                           />
                         </svg>
                       </button> */}
+                      {record.status === "Notice Completed" && (
+                        <Link to={`/company/${companyId}/minutes-of-meeting`}>
+                          <div
+                            className="tooltip"
+                            data-tip="Go to Minutes of Meeting"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25"
+                              />
+                            </svg>
+                          </div>
+                        </Link>
+                      )}
+                      {record.status === "Notice Completed" && (
+                        <img
+                          src={gdriveIcon}
+                          alt=""
+                          className="cursor-pointer"
+                          onClick={() => {
+                            setFormData(record);
+                            // setErrors([]);
+                            document.getElementById("gdrive").showModal();
+                          }}
+                        />
+                      )}
+
                       <button
                         onClick={() => {
                           if (record.status != "Notice Completed") {
-                            setSelectedIndex(index);
                             setFormData(record);
                             // setErrors([]);
                             document.getElementById("editModal").showModal();
@@ -267,6 +303,7 @@ const NoticeOfMeetings = () => {
                   type_of_meeting: updated.typeOfMeeting,
                   files: updated.files,
                   status: updated.status,
+                  folder_id: updated.folder_id,
                 };
               }
               return record;
@@ -279,6 +316,7 @@ const NoticeOfMeetings = () => {
           showAlert(status, message);
           setFormData(noticeOfMeeting);
           document.getElementById("editModal").close();
+          setLoading(false);
         }
       } else {
         //for add function
@@ -292,14 +330,13 @@ const NoticeOfMeetings = () => {
             formData
           );
 
-          console.log(response.data);
           if (response.data.success) {
             let data = response.data;
             formData.nomId = data.data[0].nomId;
             formData.files = data.files;
 
             console.log(formData);
-            setRecords([...records, formData]);
+            setRecords([formData, ...records]);
             setFormData(noticeOfMeeting);
             status = "success";
             message = "Record was added successfully.";
@@ -310,6 +347,7 @@ const NoticeOfMeetings = () => {
           showAlert(status, message);
           setFormData(noticeOfMeeting);
           document.getElementById("addModal").close();
+          setLoading(false);
         }
       }
     }
@@ -368,6 +406,18 @@ const NoticeOfMeetings = () => {
         setErrors({ ...errors, status: "" });
       }
     }
+
+    if (name == "folder_id") {
+      if (value == "") {
+        error = "Folder ID is required";
+        setErrors({
+          ...errors,
+          folder_id: error,
+        });
+      } else {
+        setErrors({ ...errors, folder_id: "" });
+      }
+    }
   };
 
   const isFormValid = async (isEdit) => {
@@ -389,9 +439,13 @@ const NoticeOfMeetings = () => {
       newErrors.status = "Status is required";
     }
 
-    if (formData.files.length === 0 && formData.status == "Notice Completed") {
-      newErrors.files = "Please attach a file";
+    if (formData.folder_id == "" && formData.status == "Notice Completed") {
+      newErrors.folder_id = "Folder ID is required";
     }
+
+    // if (formData.files.length === 0 && formData.status == "Notice Completed") {
+    //   newErrors.files = "Please attach a file";
+    // }
 
     setErrors(newErrors);
 
@@ -472,7 +526,7 @@ const NoticeOfMeetings = () => {
 
   return (
     <>
-     <div>
+      <div>
         <Breadcrumbs
           lists={[
             { goto: "/", text: "Home" },
@@ -649,10 +703,11 @@ const NoticeOfMeetings = () => {
 
             {formData.status == "Notice Completed" && (
               <div>
-                {/* <label className="form-control w-full">
+                <label className="form-control w-full">
                   <div className="label">
                     <span className="poppins-regular text-[12px]">
-                      Google Drive Folder ID
+                      Google Drive Folder ID{" "}
+                      <span className="text-red-500">*</span>
                     </span>
                   </div>
                   <input
@@ -666,12 +721,12 @@ const NoticeOfMeetings = () => {
                       handleOnChange(e);
                     }}
                   />
-                  {errors.notice_date && (
+                  {errors.folder_id && (
                     <span className="text-[12px] text-red-500">
                       {errors.folder_id}
                     </span>
                   )}
-                </label> */}
+                </label>
 
                 <label className="form-control w-full">
                   <div className="label">
@@ -722,18 +777,6 @@ const NoticeOfMeetings = () => {
                         ...formData,
                         files: formData.files,
                       });
-
-                      let error = "";
-
-                      if (formData.files.length == 0) {
-                        error = "Please attach a file";
-                        setErrors({
-                          ...errors,
-                          files: error,
-                        });
-                      } else {
-                        setErrors({ ...errors, files: "" });
-                      }
                     }}
                   />
                   {errors.files && (
@@ -909,6 +952,30 @@ const NoticeOfMeetings = () => {
                 <label className="form-control w-full">
                   <div className="label">
                     <span className="poppins-regular text-[12px]">
+                      Google Drive Folder ID{" "}
+                      <span className="text-red-500">*</span>
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    className={`input input-bordered w-full ${
+                      errors.folder_id && `input-error`
+                    }`}
+                    name="folder_id"
+                    value={formData.folder_id}
+                    onChange={(e) => {
+                      handleOnChange(e);
+                    }}
+                  />
+                  {errors.folder_id && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.folder_id}
+                    </span>
+                  )}
+                </label>
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="poppins-regular text-[12px]">
                       Attach Files
                     </span>
                   </div>
@@ -1063,7 +1130,27 @@ const NoticeOfMeetings = () => {
           </div>
           <div className="">
             <div className="flex flex-row gap-2 justify-between items-center p-2">
-              <h3 className="font-bold text-lg">Attached Files</h3>
+              <div className="flex flex-row gap-2 items-center">
+                <h3 className="font-bold text-lg">Attached Files</h3>
+                <div
+                  className="tooltip cursor-pointer"
+                  data-tip="Change Google Drive Folder ID"
+                  onClick={() => {
+                    setEditFolderID(formData.folder_id);
+                    document.getElementById("changedriveID").showModal();
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="size-4"
+                  >
+                    <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
+                  </svg>
+                </div>
+              </div>
+
               <div>
                 <button
                   className={`btn ${
@@ -1116,44 +1203,187 @@ const NoticeOfMeetings = () => {
             </div>
             <hr />
             <div className={`w-full max-w-5xl max-h-96 h-96`}>
-              <iframe
-                className={`w-full max-w-5xl max-h-96 h-96 ${
-                  isLoadingGdrive ? "hidden" : ""
-                }`}
-                onLoad={() => {
-                  setIsLoadingGdrive(false);
-                }}
-                src={`https://drive.google.com/embeddedfolderview?id=${
-                  formData.folder_id == ""
-                    ? "1wkoVU5i-w-Ll3MoSD65bvn4RMu0lG36Y"
-                    : formData.folder_id
-                }#${isGrid ? "grid" : "list"}`}
-                // style="width:100%; height:600px; border:0;"
-              ></iframe>
+              {formData.folder_id != undefined && formData.folder_id != "" ? (
+                <iframe
+                  className={`w-full max-w-5xl max-h-96 h-96 ${
+                    isLoadingGdrive ? "hidden" : ""
+                  }`}
+                  onLoad={() => {
+                    setIsLoadingGdrive(false);
+                  }}
+                  src={`https://drive.google.com/embeddedfolderview?id=${
+                    formData.folder_id
+                  }#${isGrid ? "grid" : "list"}`}
+                  // style="width:100%; height:600px; border:0;"
+                ></iframe>
+              ) : (
+                <>
+                  <div className="flex flex-col items-center gap-2 pt-10">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="size-6"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+
+                    <h1 className="font-bold text-lg">
+                      No folder ID specified.
+                    </h1>
+                    <p className="text-sm">
+                      Please provide the Google Drive folder ID.
+                    </p>
+
+                    <div
+                      className="py-2"
+                      onClick={() => {
+                        document
+                          .getElementById("changedriveID")
+                          .showModal();
+                      }}
+                    >
+                      <button className="btn btn-outline btn-sm">
+                        Set Folder ID
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
-            <a
-              className="btn btn-primary btn-outline"
-              target="_blank"
-              href={`https://drive.google.com/drive/folders/${formData.folder_id}`}
-            >
-              <div className="flex flex-row gap-2 items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
-                  />
-                </svg>
-                Go to Google Drive
+            {formData.folder_id != undefined && formData.folder_id != "" && (
+              <a
+                className="btn btn-primary btn-outline"
+                target="_blank"
+                href={`https://drive.google.com/drive/folders/${formData.folder_id}`}
+              >
+                <div className="flex flex-row gap-2 items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
+                    />
+                  </svg>
+                  Go to Google Drive
+                </div>
+              </a>
+            )}
+          </div>
+        </div>
+      </dialog>
+
+      <dialog id="changedriveID" className="modal">
+        <div className="modal-box">
+          <div className="flex flex-row justify-between py-4">
+            <form method="dialog">
+              <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                ✕
+              </button>
+            </form>
+          </div>
+          <div className="flex flex-col gap-5">
+            <h1 className="poppins-semibold text-md">
+              Update Google Drive Folder ID
+            </h1>
+
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">
+                  Google Drive Folder ID <span className="text-red-500">*</span>
+                </span>
               </div>
-            </a>
+              <input
+                type="text"
+                className={`input input-bordered w-full ${
+                  errors.set_folder_id && `input-error`
+                }`}
+                name="set_folder_id"
+                value={editFolderID}
+                onChange={(e) => {
+                  setEditFolderID(e.target.value);
+
+                  // if (e.target.value == "") {
+                  //   setErrors({
+                  //     ...errors,
+                  //     set_folder_id: "Folder ID is required",
+                  //   });
+                  // } else {
+                  //   setErrors({ ...errors, set_folder_id: "" });
+                  // }
+                }}
+              />
+              {errors.set_folder_id && (
+                <span className="text-[12px] text-red-500">
+                  {errors.set_folder_id}
+                </span>
+              )}
+            </label>
+
+            <button
+              className="btn bg-primary text-white"
+              onClick={async (e) => {
+                // if (editFolderID == "") {
+                //   setErrors({
+                //     ...errors,
+                //     set_folder_id: "Folder ID is required",
+                //   });
+                //   return;
+                // }
+                try {
+                  formData.folder_id = editFolderID;
+
+                  let response = await axios.patch(
+                    `/notice-of-meeting/${companyId}`,
+                    formData
+                  );
+
+                  let updated = response.data.data[0];
+
+                  if (response.data.success) {
+                    // setFormData(noticeOfMeeting);
+
+                    let formrecord = {};
+
+                    let updatedData = records.map((record, index) => {
+                      if (record.nomId == updated.nomId) {
+                        record = {
+                          ...record,
+                          notice_date: updated.noticeDate,
+                          proposed_meeting_date: updated.proposedMeetingDate,
+                          type_of_meeting: updated.typeOfMeeting,
+                          files: updated.files,
+                          status: updated.status,
+                          folder_id: updated.folder_id,
+                        };
+                        formrecord = record;
+                      }
+
+                      return record;
+                    });
+                    setRecords(updatedData);
+                    setFormData(formrecord);
+                  }
+                } catch (error) {
+                  console.log(error);
+                } finally {
+                  document.getElementById("changedriveID").close();
+                }
+              }}
+            >
+              Save
+            </button>
           </div>
         </div>
       </dialog>

@@ -737,9 +737,6 @@ const Tasks = () => {
                             <button className="btn btn-outline btn-sm m-1">
                               {JSON.parse(assignee.assigneeName).assigneeName}
                             </button>
-                            <button className="btn btn-outline btn-sm m-1">
-                              Benjie Pecson
-                            </button>
                           </div>
                         ))}
                       </td>

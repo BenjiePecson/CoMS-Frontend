@@ -5,7 +5,8 @@ const FrameWrapper = ({ gdrivefolder }) => {
     <div
       style={{
         position: "relative",
-        paddingBottom: "56.25%",
+        // paddingBottom: "56.25%",
+        paddingBottom: "26.25%",
         height: 0,
         overflow: "hidden",
         maxWidth: "100%",

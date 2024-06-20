@@ -1027,6 +1027,18 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
                           Please provide the Google Drive folder ID for{" "}
                           {selectedFolder}.
                         </p>
+                        <div
+                          className="py-2"
+                          onClick={() => {
+                            document
+                              .getElementById("updateGdriveModal")
+                              .showModal();
+                          }}
+                        >
+                          <button className="btn btn-outline btn-sm">
+                            Set Folder ID
+                          </button>
+                        </div>
                       </div>
                     </>
                   )}
@@ -1064,7 +1076,7 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
           <div className="flex flex-col gap-2">
             <div className="flex flex-col py-5">
               <div className="flex flex-col gap-2">
-                <label className="form-control w-full">
+                {/* <label className="form-control w-full">
                   <div className="label">
                     <span className="label-text">
                       Company Folder <span className="text-red-500">*</span>
@@ -1111,7 +1123,7 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
                       {errors.finaldocs}
                     </span>
                   )}
-                </label>
+                </label> */}
                 <label className="form-control w-full">
                   <div className="label">
                     <span className="label-text">

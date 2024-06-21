@@ -41,7 +41,7 @@ const MinutesOfMeetings = () => {
             <th>Type of Meeting</th>
             <th>Place of Meeting</th>
             <th>Quorum</th>
-            <th>Attached Files</th>
+            {/* <th>Attached Files</th> */}
             <th>Actions</th>
           </tr>
         </thead>
@@ -54,7 +54,7 @@ const MinutesOfMeetings = () => {
                   <td>{record.type_of_meeting}</td>
                   <td>{record.place_of_meeting}</td>
                   <td>{record.quorum}</td>
-                  <td>
+                  {/* <td>
                     <div className="flex flex-row items-center gap-2">
                       {record.files.length > 0 && (
                         <div
@@ -86,7 +86,7 @@ const MinutesOfMeetings = () => {
                         </div>
                       )}
                     </div>
-                  </td>
+                  </td> */}
                   <td>
                     <div className="flex flex-row justify-start items-center gap-2">
                       <img

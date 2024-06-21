@@ -58,7 +58,7 @@ const NoticeOfMeetings = () => {
             <th>Type of Meeting</th>
             <th>Proposed Meeting Date</th>
             <th>Status</th>
-            <th>Attached Files</th>
+            {/* <th>Attached Files</th> */}
             {/* <th>Link to Minutes of Meeting</th> */}
             <th className="text-center">Actions</th>
           </tr>
@@ -79,7 +79,7 @@ const NoticeOfMeetings = () => {
                   <td>{record.type_of_meeting}</td>
                   <td>{record.proposed_meeting_date}</td>
                   <td>{record.status}</td>
-                  <td>
+                  {/* <td>
                     <div className="flex flex-row items-center gap-2">
                       {record.files.length > 0 && (
                         <div
@@ -111,7 +111,7 @@ const NoticeOfMeetings = () => {
                         </div>
                       )}
                     </div>
-                  </td>
+                  </td> */}
                   {/* <td>
                     {record.status === "Notice Completed" && (
                       <div className="flex flex-row items-center justify-center">

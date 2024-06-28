@@ -703,6 +703,7 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
                 <option value={"LGU Business Permit"}>
                   LGU Business Permit
                 </option>
+                <option value={"Service Agreement"}>Service Agreement</option>
               </select>
               {errors.fileType && (
                 <span className="text-[12px] text-red-500">

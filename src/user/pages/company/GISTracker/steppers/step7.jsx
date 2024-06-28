@@ -246,12 +246,14 @@ const step7 = () => {
                     formData.subscribe_capital.total_percent_of_ownership
                   }
                 />
-                <PageEight />
+                <PageEight corporate_name={formData.corporate_name} />
                 <PageNine
                   corporate_secretary={formData.corporate_secretary}
                   coporate_name={formData.corporate_name}
                 />
                 <PageTen
+                  corporate_name={formData.corporate_name}
+                  sec_registration_number={formData.sec_registration_number}
                   beneficial_ownership_declaration={
                     formData.beneficial_ownership_declaration
                   }

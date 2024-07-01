@@ -5,19 +5,28 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     fontFamily: {
-      sans: ['"PT Sans"', 'sans-serif'],
+      sans: ['"PT Sans"', "sans-serif"],
     },
     extend: {},
   },
   plugins: [daisyui],
   daisyui: {
-    themes: {
-      extend: {
-        colors: {
-          "primary": "#273069",
+    themes: [
+      {
+        light: {
+          ...require("daisyui/src/theming/themes")["light"],
+          primary: "blue",
+          secondary: "teal",
         },
       },
-    },
+      {
+        extend: {
+          colors: {
+            primary: "#273069",
+          },
+        },
+      },
+    ],
   },
   theme: {
     extend: {
@@ -25,9 +34,8 @@ export default {
         "login-bg": "url('/TPLogin.jpeg')",
       },
       colors: {
-        "primary": "#273069",
+        primary: "#273069",
       },
-
     },
   },
 };

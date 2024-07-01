@@ -56,9 +56,9 @@ const step5 = () => {
       name: "Amount Paid in (PhP)",
       selector: (row) => {
         let amount_paid = row.amount_paid;
-        if(amount_paid != ""){
+        if (amount_paid != "") {
           amount_paid = Number(row.amount_paid);
-        }else{
+        } else {
           amount_paid = 0;
         }
         return formatNumberWithComma(amount_paid.toFixed(2));
@@ -300,7 +300,7 @@ const step5 = () => {
         </button>
       </div>
       <div className="p-5 max-w-sm">
-        <label className="form-control w-full">
+        {/* <label className="form-control w-full">
           <div className="label">
             <span className="label-text">
               Total Number of Stockholders{" "}
@@ -318,7 +318,7 @@ const step5 = () => {
               handleOnChange(e);
             }}
           />
-        </label>
+        </label> */}
         <label className="form-control w-full">
           <div className="label">
             <span className="label-text">
@@ -388,7 +388,7 @@ const step5 = () => {
             <div className="divider"></div>
             <div className="flex flex-col gap-2">
               <div className="max-w-sm">
-                <label className="form-control w-full">
+                {/* <label className="form-control w-full">
                   <div className="label">
                     <span className="label-text">
                       Total Number of Stockholders{" "}
@@ -405,7 +405,7 @@ const step5 = () => {
                       handleOnChange(e);
                     }}
                   />
-                </label>
+                </label> */}
                 <label className="form-control w-full">
                   <div className="label">
                     <span className="label-text">
@@ -490,8 +490,7 @@ const step5 = () => {
                         total_amount: 0,
                         total_percent_of_ownership: 0,
                       },
-                      total_number_of_stockholders:
-                        formStep5.total_number_of_stockholders,
+                      total_number_of_stockholders: stockHoldersData.length,
                       number_of_stockholders_with_more_shares_each:
                         formStep5.number_of_stockholders_with_more_shares_each,
                       total_assets_based_on_latest_audited:

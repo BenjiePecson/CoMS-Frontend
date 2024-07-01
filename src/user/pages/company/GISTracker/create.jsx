@@ -391,7 +391,7 @@ const create = () => {
   };
 
   const btnNextText = () => {
-    if (step == 7) return "Submit";
+    if (step == 7) return "Publish";
     return "Next";
   };
 
@@ -446,7 +446,7 @@ const create = () => {
     setFormRecord({ ...formRecord, draftingInput: formData });
 
     if (step === 7) {
-      console.log("Submit");
+      console.log("Publish");
     }
   };
   //#endregion

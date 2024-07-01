@@ -9,6 +9,7 @@ const RecordState = {
   draftingInput: {},
   pdfFileLink: "",
   secFileLink: "",
+  folder_id: "",
   createdBy: "",
   created_at: "",
   updated_at: "",

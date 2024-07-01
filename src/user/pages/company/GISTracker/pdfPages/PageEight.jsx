@@ -2,6 +2,13 @@ import { Page, Text, Image, StyleSheet, View } from "@react-pdf/renderer";
 import pageEight from "../photos/page8.jpg";
 
 const styles = StyleSheet.create({
+  corporateName: {
+    marginTop: 105,
+    marginLeft: 120,
+    fontSize: "10px",
+    fontFamily: "Times-Bold",
+    position: "absolute",
+  },
   view1: {
     marginTop: 162,
     marginLeft: 300,
@@ -100,9 +107,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const PageEight = () => {
+const PageEight = ({ corporate_name }) => {
   return (
     <Page size="A4" style={{ position: "relative" }}>
+      <Text style={styles.corporateName}>{corporate_name}</Text>
       <View style={styles.view1}>
         <View style={styles.view1_1}>
           <Text style={styles.text1}>N/A</Text>

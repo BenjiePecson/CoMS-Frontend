@@ -185,7 +185,9 @@ const PageFive = ({
               <Text style={styles.percentOfOwnership}>
                 {txt.percent_of_ownership}%
               </Text>
-              <Text style={styles.ammountPaid}>{txt.amount_paid}</Text>
+              <Text style={styles.ammountPaid}>
+                {formatNumberWithComma(Number(txt.amount_paid).toFixed(2))}
+              </Text>
               <Text>{txt.tax_id_number}</Text>
             </View>
           </View>

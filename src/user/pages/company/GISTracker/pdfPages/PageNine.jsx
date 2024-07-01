@@ -33,6 +33,13 @@ const styles = StyleSheet.create({
     fontFamily: "Times-Roman",
     fontSize: "10px",
   },
+  inputPreview: {
+    marginTop: 500,
+    marginLeft: 50,
+    position: "absolute",
+    fontFamily: "Times-Bold",
+    fontSize: "11px",
+  },
 });
 
 const PageNine = ({ corporate_secretary, coporate_name }) => {
@@ -45,6 +52,13 @@ const PageNine = ({ corporate_secretary, coporate_name }) => {
           {corporate_secretary.toUpperCase()}
         </Text>
         <Text style={styles.corporateSecretaryTitle}>Coporate Secretary</Text>
+      </View>
+
+      <View style={styles.inputPreview}>
+        <Text>Doc No.: _________________</Text>
+        <Text>Page No.: _________________</Text>
+        <Text>Book No.: _________________</Text>
+        <Text>Series No.: __________________</Text>
       </View>
       <Image
         style={{

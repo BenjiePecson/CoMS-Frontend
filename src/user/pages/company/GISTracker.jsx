@@ -374,7 +374,7 @@ const GISTracker = () => {
             />
             <div>
               <Link
-                to={`/company/${companyId}/gis-tracker/${goto}/${record.recordId}`}
+                to={`/company/${companyId}/gis-tracker/${goto}/${row.recordId}`}
               >
                 <button>
                   <svg

@@ -308,7 +308,7 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
         </div>
         <div className="collapse-content">
           <div className="flex flex-col gap-5 pt-3">
-            <div className="flex flex-col gap-2">
+            {/* <div className="flex flex-col gap-2">
               <div className="flex flex-row">
                 <h1 className="poppins-bold">Uploaded Documents</h1>
               </div>
@@ -336,7 +336,7 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
                   </table>
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="flex flex-col gap-2">
               <div className="flex flex-row justify-between">
                 <span className="flex flex-row gap-2 items-center">
@@ -635,7 +635,7 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
               <div className="swap-on">{listIcon}</div>
               <div className="swap-off">{gridIcon}</div>
             </label>
-            <label
+            {/* <label
               className="btn bg-primary text-white  lg:flex flex-row hidden"
               onClick={(e) => {
                 setFormData({
@@ -659,7 +659,7 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
                 />
               </svg>
               Upload Final Docs
-            </label>
+            </label> */}
           </div>
         </div>
         {isGridView ? gridView() : listView()}
@@ -882,7 +882,7 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
           </div>
           <div className="flex flex-col gap-2 py-5">
             <div className="flex flex-col gap-5 pt-3">
-              <div className="flex flex-col gap-2">
+              {/* <div className="flex flex-col gap-2">
                 <div className="flex flex-row">
                   <h1 className="poppins-bold">Uploaded Documents</h1>
                 </div>
@@ -966,7 +966,7 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
                     </table>
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="flex flex-col gap-2">
                 <div className="flex flex-row justify-between">
                   <h1 className="poppins-bold">Google Drive</h1>

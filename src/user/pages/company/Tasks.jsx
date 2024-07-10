@@ -4,6 +4,12 @@ import Header from "../../components/Header";
 import Select from "react-select";
 import axios from "axios";
 import Swal from "sweetalert2";
+import gdriveIcon from "/gdrive.svg";
+import { showAlert } from "../../../assets/global";
+
+const customStyles = {
+  zIndex: 99,
+};
 
 const statusOptions = [
   { value: "To Do", label: "To Do" },
@@ -15,189 +21,100 @@ const statusOptions = [
   { value: "Done", label: "Done" },
 ];
 
-const showAlert = (status, title) => {
-  Swal.fire({
-    icon: status,
-    title: title,
-    showConfirmButton: false,
-    timer: 1500,
-  });
-};
+const serviceAgreementOptions = [
+  { value: "qwert", label: "qwert" },
+  { value: "asdfg", label: "asdfg" },
+  { value: "zxcvb", label: "zxcvb" },
+];
+
+// const assigneeOptions = [
+//   { value: "Michael Angelo", label: "Michael Angelo" },
+//   { value: "Leonardo da Vinci", label: "Leonardo da Vinci" },
+//   { value: "Pablo Picasso", label: "Pablo Picasso" },
+// ];
 
 const Tasks = () => {
+  const [loading, setLoading] = useState(false);
+
   const { companyId } = useParams();
 
-  //getl all
-
-  const [serviceAgreements, setServiceAgreements] = useState([]);
-  const [serviceAgreementDetails, setServiceAgreementDetails] = useState(null);
-  const [selectedAgreement, setSelectedAgreement] = useState(null);
-  const [selectedAssignees, setSelectedAssignees] = useState({}); // To manage the selected assignees for each task
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(`/task/${companyId}`);
-      setServiceAgreements(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  //
-
-  const records = [];
   const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    // Fetch users from the API
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get("/users");
-        // Transform user data into options format expected by react-select
-        const usersOptions = response.data.map((user) => ({
-          value: user.first_name + " " + user.last_name,
-          label: user.first_name + " " + user.last_name,
-        }));
-
-        setUsers(usersOptions);
-      } catch (err) {
-        setError(err);
-      }
-    };
-
-    fetchUsers();
-  }, []);
-
-  const openDetails = async (agreementId) => {
+  // Fetch users from the API
+  const fetchUsers = async () => {
     try {
-      const response = await axios.get(`/task/${companyId}/${agreementId}`);
-      setServiceAgreementDetails(response.data);
-      setSelectedAgreement(agreementId);
-      // Initialize selectedAssignees based on fetched data
-      const initialSelectedAssignees = {};
-      response.data.tasks.forEach((task, index) => {
-        initialSelectedAssignees[index] = task.assignees.map((assignee) => {
-          const parsedAssignee = JSON.parse(assignee.assigneeName);
-          return {
-            value: parsedAssignee.assigneeName,
-            label: parsedAssignee.assigneeName,
-          };
-        });
-      });
-      setSelectedAssignees(initialSelectedAssignees);
-    } catch (error) {
-      console.error("Error fetching service agreement details:", error);
-      // Handle error (e.g., show error message to the user)
-    }
-  };
+      const response = await axios.get("/users");
+      // Transform user data into options format expected by react-select
+      const usersOptions = response.data.map((user) => ({
+        value: user.first_name + " " + user.last_name,
+        label: user.first_name + " " + user.last_name,
+      }));
 
-  const handleAssigneeChange = (taskIndex, selectedOption) => {
-    setSelectedAssignees((prev) => ({
-      ...prev,
-      [taskIndex]: selectedOption,
-    }));
+      setUsers(usersOptions);
+    } catch (err) {
+      setError(err);
+    }
   };
 
   const assigneeOptions = users;
 
-  const [formData, setFormData] = useState({
-    agreementName: "",
+  const addTask = (task) => {
+    return axios.post(`/task/${companyId}`, task);
+  };
+  const [tasksList, setTasksList] = useState([]);
 
-    fileLink: "",
-    tasks: [
-      {
-        task: "",
-        targetDate: "",
-        status: "",
-        assignees: [],
-      },
-    ],
+  const [task, setTask] = useState({
+    taskDescription: "",
+    targetDate: "",
+    serviceAgreement: "",
+    serviceAgreementFileLink: "",
+    status: "",
+    remarks: "",
+    assignee: [],
   });
 
-  const handleChange = (e) => {
+  const handleTaskAddChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setTask({ ...task, [name]: value });
   };
 
-  const handleTaskChange = (index, e) => {
-    const { name, value } = e.target;
-    const tasks = [...formData.tasks];
-    tasks[index][name] = value;
-    setFormData({ ...formData, tasks });
+  const handleSelectChange = (selectedOption, { name }) => {
+    setTask({ ...task, [name]: selectedOption ? selectedOption.value : "" });
   };
 
-  const handleStatusChange = (index, selectedOption) => {
-    const tasks = [...formData.tasks];
-    tasks[index].status = selectedOption.value;
-    setFormData({ ...formData, tasks });
-  };
-
-  const handleAssigneesChange = (index, selectedOptions) => {
-    const tasks = [...formData.tasks];
-    tasks[index].assignees = selectedOptions;
-    setFormData({ ...formData, tasks });
-  };
-
-  const addTask = () => {
-    setFormData({
-      ...formData,
-      tasks: [
-        ...formData.tasks,
-        { task: "", targetDate: "", status: "", assignees: [] },
-      ],
-    });
-  };
-
-  const removeTask = (index) => {
-    const tasks = [...formData.tasks];
-    tasks.splice(index, 1);
-    setFormData({ ...formData, tasks });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const formattedData = {
-      ...formData,
-      tasks: formData.tasks.map((task) => ({
+  const handleMultiSelectChange = (selectedOptions) => {
+    if (selectedOptions.length <= 2) {
+      setTask({
         ...task,
-        assignees: task.assignees.map((assignee) => ({
-          assigneeName: assignee.value,
-        })),
-      })),
-    };
-
-    try {
-      console.log(formattedData);
-      await axios.post(`/task/${companyId}`, formattedData);
-
-      Swal.fire({
-        title: "Success!",
-        text: "Service Agreement submitted successfully!",
-        icon: "success",
-        confirmButtonText: "OK",
-      });
-      fetchData();
-    } catch (error) {
-      console.error("Error submitting data", error);
-
-      Swal.fire({
-        title: "Error!",
-        text: "Failed to submit Service Agreement",
-        icon: "error",
-        confirmButtonText: "OK",
+        assignee: selectedOptions
+          ? selectedOptions.map((option) => option.value)
+          : [],
       });
     }
   };
 
-  const handleDelete = (id) => {
+  const handleAddSubmit = async (e) => {
+    let status = "success";
+    let message = "Record was added successfully.";
+    e.preventDefault();
+    try {
+      await addTask(task);
+
+      // setTasksList((prevTasks) => [...prevTasks, task]);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      showAlert(status, message);
+      document.getElementById("addModal").close();
+      fetchTasks();
+    }
+  };
+
+  //delete task
+  const deleteTask = (id) => {
+    return axios.delete(`/task/${companyId}/${id}`);
+  };
+
+  const handleDelete = async (id) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -209,14 +126,15 @@ const Tasks = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`/task/${companyId}/${id}`);
+          await deleteTask(id);
           Swal.fire(
             "Deleted!",
             "Your service agreement has been deleted.",
             "success"
           );
-          fetchData(); // Refresh the list after deletion
+          fetchTasks(); // Refresh the list after deletion
         } catch (error) {
+          console.log(error);
           Swal.fire(
             "Error!",
             "There was an error deleting the service agreement.",
@@ -227,33 +145,100 @@ const Tasks = () => {
       }
     });
   };
+  //get task
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const getTask = (id) => {
+    return axios.get(`/task/${companyId}/${id}`);
+  };
+
+  const handleEdit = async (taskId) => {
+    try {
+      const response = await getTask(taskId);
+      const taskData = response.data;
+      console.log(taskData);
+      setTask(taskData);
+      setEditingTaskId(taskId);
+    } catch (err) {
+      console.error("Error fetching task:", err);
+      alert("Error fetching task");
+    }
+  };
+
+  //edit patch task
+
+  const updateTask = (taskId, updatedTask) => {
+    return axios.patch(`/task/${companyId}/${taskId}`, updatedTask);
+  };
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
+    let status = "success";
+    let message = "Record was updated successfully.";
     try {
-      console.log(formData);
-      // await axios.put(
-      //   `/serviceAgreement/${selectedServiceAgreementId}`,
-      //   formData
-      // )
-      Swal.fire({
-        title: "Success!",
-        text: "Service Agreement updated successfully!",
-        icon: "success",
-        confirmButtonText: "OK",
-      }).then(() => {
-        document.getElementById("editModal").close();
-      });
+      await updateTask(editingTaskId, task);
     } catch (error) {
-      console.error("Error submitting data", error);
-      Swal.fire({
-        title: "Error!",
-        text: "Failed to update Service Agreement",
-        icon: "error",
-        confirmButtonText: "OK",
-      });
+      console.log(error);
+    } finally {
+      showAlert(status, message);
+      document.getElementById("editModal").close();
+      fetchTasks();
+      resetForm();
     }
   };
+
+  const resetForm = () => {
+    setTask({
+      taskDescription: "",
+      targetDate: "",
+      serviceAgreement: "",
+      serviceAgreementFileLink: "",
+      status: "",
+      remarks: "",
+      assignee: [],
+    });
+  };
+
+  //get all task
+
+  const getAllTasks = () => {
+    return axios.get(`/task/${companyId}`);
+  };
+  const fetchTasks = async () => {
+    try {
+      const response = await getAllTasks();
+      setTasksList(response.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+    fetchTasks();
+  }, []);
+
+  function mapTasksByAgreement(tasksList) {
+    const mappedTasks = {};
+
+    tasksList.forEach((task) => {
+      const key = `${task.serviceAgreement}_${task.serviceAgreementFileLink}`;
+
+      if (!mappedTasks[key]) {
+        mappedTasks[key] = {
+          serviceAgreement: task.serviceAgreement,
+          serviceAgreementFileLink: task.serviceAgreementFileLink,
+          tasksList: [],
+        };
+      }
+
+      mappedTasks[key].tasksList.push(task);
+    });
+
+    return Object.values(mappedTasks);
+  }
+
+  const mappedTasks = mapTasksByAgreement(tasksList);
+  console.log(mappedTasks);
 
   return (
     <div>
@@ -264,7 +249,313 @@ const Tasks = () => {
           </div>
           <div>
             {/* The button to open modal */}
-            <label htmlFor="my_modal_7" className="btn bg-primary text-white">
+
+            <button
+              className="btn bg-primary text-white"
+              onClick={() => {
+                document.getElementById("addServiceAgreement").showModal();
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Add Service Agreement
+            </button>
+
+            {/* add service agreement*/}
+
+            <dialog id="addServiceAgreement" className="modal">
+              <div className="modal-box w-1/2 max-w-5xl">
+                <h3 className="text-lg font-bold">Add Service Agreement</h3>
+                <form onSubmit={handleAddSubmit}>
+                  <div className="flex flex-row">
+                    <label className="form-control w-full max-w-xs">
+                      <div className="label">
+                        <span className="label-text">Service Agreement</span>
+                      </div>
+                      <input
+                        type="text"
+                        name="serviceAgreement"
+                        value={task.serviceAgreement}
+                        onChange={handleTaskAddChange}
+                        className="input input-bordered w-full max-w-xs"
+                        required
+                      />
+                    </label>
+                    <label className="form-control w-full mx-2 max-w-xs">
+                      <div className="label">
+                        <span className="label-text">File Link</span>
+                      </div>
+                      <input
+                        type="text"
+                        name="serviceAgreementFileLink"
+                        value={task.serviceAgreementFileLink}
+                        onChange={handleTaskAddChange}
+                        className="input input-bordered w-full max-w-xs"
+                        required
+                      />
+                    </label>
+                  </div>
+
+                  <div className="flex flex-row">
+                    <label className="form-control w-full max-w-xs mr-2">
+                      <div className="label">
+                        <span className="label-text">Target Date</span>
+                      </div>
+                      <input
+                        type="date"
+                        name="targetDate"
+                        value={task.targetDate}
+                        onChange={handleTaskAddChange}
+                        className="input input-bordered w-full max-w-xs"
+                        required
+                      />
+                    </label>
+
+                    <label className="form-control w-full max-w-xs mt-1">
+                      <div className="label">
+                        <span className="label-text">Status</span>
+                      </div>
+                      <Select
+                        name="status"
+                        value={statusOptions.find(
+                          (option) => option.value === task.status
+                        )}
+                        onChange={handleSelectChange}
+                        options={statusOptions}
+                      />
+                    </label>
+                  </div>
+                  <label className="form-control w-full">
+                    <div className="label">
+                      <span className="label-text">Assignee</span>
+                    </div>
+                    <Select
+                      styles={customStyles}
+                      isMulti
+                      name="assignee"
+                      value={assigneeOptions.filter((option) =>
+                        task.assignee.includes(option.value)
+                      )}
+                      onChange={handleMultiSelectChange}
+                      options={assigneeOptions}
+                    />
+                  </label>
+                  <div className="flex flex-row ">
+                    <label className="form-control w-full max-w-xs mr-2">
+                      <div className="label">
+                        <span className="label-text">Task</span>
+                      </div>
+                      <input
+                        type="text"
+                        name="taskDescription"
+                        value={task.taskDescription}
+                        onChange={handleTaskAddChange}
+                        className="input input-bordered w-full max-w-xs"
+                        required
+                      />
+                    </label>
+                    <label className="form-control w-full max-w-xs mr-2">
+                      <div className="label">
+                        <span className="label-text">Remarks</span>
+                      </div>
+                      <input
+                        type="text"
+                        name="remarks"
+                        value={task.remarks}
+                        onChange={handleTaskAddChange}
+                        className="input input-bordered w-full max-w-xs"
+                        required
+                      />
+                    </label>
+                  </div>
+
+                  <div className="flex flex-row justify-end">
+                    <button
+                      className="btn btn-active btn-primary mx-2 mt-6"
+                      type="submit"
+                    >
+                      Submit
+                    </button>
+
+                    <div className="modal-action">
+                      <button
+                        className="btn"
+                        type="button"
+                        onClick={() => {
+                          document
+                            .getElementById("addServiceAgreement")
+                            .close();
+                        }}
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </dialog>
+
+            {/*edit modal*/}
+            <dialog id="editModal" className="modal">
+              <div className="modal-box w-1/2 max-w-5xl">
+                <h3 className="text-lg font-bold">Add Task</h3>
+                <form onSubmit={handleEditSubmit}>
+                  <div className="flex flex-row">
+                    <label className="form-control w-full max-w-xs">
+                      <div className="label">
+                        <span className="label-text">Service Agreement</span>
+                      </div>
+                      <input
+                        type="text"
+                        name="serviceAgreement"
+                        value={task.serviceAgreement}
+                        onChange={handleTaskAddChange}
+                        className="input input-bordered w-full max-w-xs"
+                        required
+                      />
+                    </label>
+                    <label className="form-control w-full mx-2 max-w-xs">
+                      <div className="label">
+                        <span className="label-text">File Link</span>
+                      </div>
+                      <input
+                        type="text"
+                        name="serviceAgreementFileLink"
+                        value={task.serviceAgreementFileLink}
+                        onChange={handleTaskAddChange}
+                        className="input input-bordered w-full max-w-xs"
+                        required
+                      />
+                    </label>
+                  </div>
+
+                  <div className="flex flex-row">
+                    <label className="form-control w-full max-w-xs mr-2">
+                      <div className="label">
+                        <span className="label-text">Target Date</span>
+                      </div>
+                      <input
+                        type="date"
+                        name="targetDate"
+                        value={task.targetDate}
+                        onChange={handleTaskAddChange}
+                        className="input input-bordered w-full max-w-xs"
+                        required
+                      />
+                    </label>
+
+                    <label className="form-control w-full max-w-xs mt-1">
+                      <div className="label">
+                        <span className="label-text">Status</span>
+                      </div>
+                      <Select
+                        name="status"
+                        value={statusOptions.find(
+                          (option) => option.value === task.status
+                        )}
+                        onChange={handleSelectChange}
+                        options={statusOptions}
+                      />
+                    </label>
+                  </div>
+                  <label className="form-control w-full">
+                    <div className="label">
+                      <span className="label-text">Assignee</span>
+                    </div>
+                    <Select
+                      styles={customStyles}
+                      isMulti
+                      name="assignee"
+                      value={assigneeOptions.filter((option) =>
+                        task.assignee.includes(option.value)
+                      )}
+                      onChange={handleMultiSelectChange}
+                      options={assigneeOptions}
+                    />
+                  </label>
+                  <div className="flex flex-row ">
+                    <label className="form-control w-full max-w-xs mr-2">
+                      <div className="label">
+                        <span className="label-text">Task</span>
+                      </div>
+                      <input
+                        type="text"
+                        name="taskDescription"
+                        value={task.taskDescription}
+                        onChange={handleTaskAddChange}
+                        className="input input-bordered w-full max-w-xs"
+                        required
+                      />
+                    </label>
+                    <label className="form-control w-full max-w-xs mr-2">
+                      <div className="label">
+                        <span className="label-text">Remarks</span>
+                      </div>
+                      <input
+                        type="text"
+                        name="remarks"
+                        value={task.remarks}
+                        onChange={handleTaskAddChange}
+                        className="input input-bordered w-full max-w-xs"
+                        required
+                      />
+                    </label>
+                  </div>
+
+                  <div className="flex flex-row justify-end">
+                    <button
+                      className="btn btn-active btn-primary mx-2 mt-6"
+                      type="submit"
+                    >
+                      Submit
+                    </button>
+
+                    <div className="modal-action">
+                      <button
+                        className="btn"
+                        type="button"
+                        onClick={() => {
+                          document.getElementById("editModal").close();
+                        }}
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </dialog>
+          </div>
+        </div>
+      </div>
+      {mappedTasks.map((item, index) => (
+        <div key={index} className="bg-base-200 mt-2 z-0">
+          <div className="text-xl font-semibold bg-[#FFFFFF] p-2 flex flex-row justify-between">
+            <div className="flex flex-row">
+              <a
+                href={item.serviceAgreementFileLink}
+                className="flex flex-row mt-2"
+              >
+                {item.serviceAgreement}
+              </a>
+              <img className="" src={gdriveIcon} />
+            </div>
+            <button
+              className="btn btn-outline btn-primary"
+              onClick={() => {
+                document.getElementById("addTask").showModal();
+              }}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -278,467 +569,232 @@ const Tasks = () => {
                 />
               </svg>
               Add Task
-            </label>
-
-            {/* The button to open modal */}
-
-            {/* Put this part before </body> tag */}
-            <input type="checkbox" id="my_modal_7" className="modal-toggle" />
-            <div className="modal" role="dialog">
-              <div className="modal-box w-11/12 h-[85%] max-w-5xl">
-                <h3 className="font-bold text-lg">Service Agreement Form</h3>
-
-                <form onSubmit={handleSubmit}>
+            </button>
+            <dialog id="addTask" className="modal">
+              <div className="modal-box w-1/2 max-w-5xl">
+                <h3 className="text-lg font-bold">Add Task</h3>
+                <form onSubmit={handleAddSubmit}>
                   <div className="flex flex-row">
                     <label className="form-control w-full max-w-xs">
                       <div className="label">
-                        <span className="label-text">Agreement Name</span>
+                        <span className="label-text">Service Agreement</span>
                       </div>
                       <input
                         type="text"
-                        name="agreementName"
-                        value={formData.agreementName}
-                        onChange={handleChange}
-                        required
+                        name="serviceAgreement"
+                        value={item.serviceAgreement}
+                        onChange={handleTaskAddChange}
                         className="input input-bordered w-full max-w-xs"
+                        required
+                        disabled
                       />
                     </label>
-                    <label className="form-control w-full max-w-xs">
+                    <label className="form-control w-full mx-2 max-w-xs">
                       <div className="label">
                         <span className="label-text">File Link</span>
                       </div>
                       <input
                         type="text"
-                        name="fileLink"
-                        value={formData.fileLink}
-                        onChange={handleChange}
+                        name="serviceAgreementFileLink"
+                        value={item.serviceAgreementFileLink}
+                        onChange={handleTaskAddChange}
+                        className="input input-bordered w-full max-w-xs"
                         required
-                        className="input input-bordered mx-2 w-full max-w-xs"
+                        disabled
                       />
                     </label>
                   </div>
 
-                  <div className="flex flex-row justify-between">
-                    {" "}
-                    <h3 className="font-bold text-lg my-5">
-                      List of Tasks
-                    </h3>{" "}
-                    <button
-                      className="btn btn-outline btn-primary my-3"
-                      type="button"
-                      onClick={addTask}
-                    >
-                      Add Task
-                    </button>
+                  <div className="flex flex-row">
+                    <label className="form-control w-full max-w-xs mr-2">
+                      <div className="label">
+                        <span className="label-text">Target Date</span>
+                      </div>
+                      <input
+                        type="date"
+                        name="targetDate"
+                        value={task.targetDate}
+                        onChange={handleTaskAddChange}
+                        className="input input-bordered w-full max-w-xs"
+                        required
+                      />
+                    </label>
+
+                    <label className="form-control w-full max-w-xs mt-1">
+                      <div className="label">
+                        <span className="label-text">Status</span>
+                      </div>
+                      <Select
+                        name="status"
+                        value={statusOptions.find(
+                          (option) => option.value === task.status
+                        )}
+                        onChange={handleSelectChange}
+                        options={statusOptions}
+                      />
+                    </label>
+                  </div>
+                  <label className="form-control w-full">
+                    <div className="label">
+                      <span className="label-text">Assignee</span>
+                    </div>
+                    <Select
+                      styles={customStyles}
+                      isMulti
+                      name="assignee"
+                      value={assigneeOptions.filter((option) =>
+                        task.assignee.includes(option.value)
+                      )}
+                      onChange={handleMultiSelectChange}
+                      options={assigneeOptions}
+                    />
+                  </label>
+                  <div className="flex flex-row ">
+                    <label className="form-control w-full max-w-xs mr-2">
+                      <div className="label">
+                        <span className="label-text">Task</span>
+                      </div>
+                      <input
+                        type="text"
+                        name="taskDescription"
+                        value={task.taskDescription}
+                        onChange={handleTaskAddChange}
+                        className="input input-bordered w-full max-w-xs"
+                        required
+                      />
+                    </label>
+                    <label className="form-control w-full max-w-xs mr-2">
+                      <div className="label">
+                        <span className="label-text">Remarks</span>
+                      </div>
+                      <input
+                        type="text"
+                        name="remarks"
+                        value={task.remarks}
+                        onChange={handleTaskAddChange}
+                        className="input input-bordered w-full max-w-xs"
+                        required
+                      />
+                    </label>
                   </div>
 
-                  {formData.tasks.map((task, index) => (
-                    <div key={index} className="">
-                      <div className="flex flex-row">
-                        <label className="form-control w-full max-w-xs">
-                          <div className="label">
-                            <span className="label-text">Task Description</span>
-                          </div>
-                          <input
-                            type="text"
-                            name="task"
-                            value={task.task}
-                            onChange={(e) => handleTaskChange(index, e)}
-                            required
-                            className="input input-bordered mx-2 w-full max-w-xs"
-                          />
-                        </label>
-                        <label className="form-control mx-2 w-full max-w-xs">
-                          <div className="label">
-                            <span className="label-text">Target Date</span>
-                          </div>
-                          <input
-                            type="date"
-                            name="targetDate"
-                            value={task.targetDate}
-                            onChange={(e) => handleTaskChange(index, e)}
-                            required
-                            className="input input-bordered mx-2 w-full max-w-xs"
-                          />
-                        </label>
-                        <label className="form-control mt-1 mx-2 w-full max-w-xs">
-                          <div className="label">
-                            <span className="label-text">Status</span>
-                          </div>
-
-                          <Select
-                            options={statusOptions}
-                            value={statusOptions.find(
-                              (option) => option.value === task.status
-                            )}
-                            onChange={(selectedOption) =>
-                              handleStatusChange(index, selectedOption)
-                            }
-                            required
-                          />
-                        </label>
-                        <label className="form-control mt-1 mx-2 w-full max-w-xs">
-                          <div className="label">
-                            <span className="label-text">Assignee</span>
-                          </div>
-                          <Select
-                            styles={{
-                              zIndex: 2,
-                            }}
-                            isMulti
-                            options={assigneeOptions}
-                            value={task.assignees}
-                            onChange={(selectedOptions) =>
-                              handleAssigneesChange(index, selectedOptions)
-                            }
-                          />
-                        </label>
-                        <button
-                          className="btn btn-outline btn-error btn-sm mt-[42px]"
-                          type="button"
-                          onClick={() => removeTask(index)}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="size-6"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M6 18 18 6M6 6l12 12"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-
-                      <div className="flex flex-row">
-                        {/* <label>Status</label>
-                        <input
-                          type="text"
-                          name="status"
-                          value={task.status}
-                          onChange={(e) => handleTaskChange(index, e)}
-                          required
-                        /> */}
-                      </div>
-                    </div>
-                  ))}
-                  <div className="flex items-center justify-center my-5">
-                    {" "}
-                    <button className="btn btn-primary" type="submit">
+                  <div className="flex flex-row justify-end">
+                    <button
+                      className="btn btn-active btn-primary mx-2 mt-6"
+                      type="submit"
+                    >
                       Submit
                     </button>
+
+                    <div className="modal-action">
+                      <button
+                        className="btn"
+                        type="button"
+                        onClick={() => {
+                          document.getElementById("addTask").close();
+                        }}
+                      >
+                        Close
+                      </button>
+                    </div>
                   </div>
                 </form>
               </div>
-              <label className="modal-backdrop" htmlFor="my_modal_7">
-                Close
-              </label>
-            </div>
-
-            {/* edit */}
-
-            <dialog className="modal" role="dialog" id="editModal">
-              <div className="modal-box w-11/12 h-[85%] max-w-5xl">
-                <h3 className="font-bold text-lg">
-                  Edit Service Agreement Form
-                </h3>
-                {serviceAgreementDetails && (
-                  <form onSubmit={handleEditSubmit}>
-                    <div className="flex flex-row">
-                      <label className="form-control w-full max-w-xs">
-                        <div className="label">
-                          <span className="label-text">Agreement Name</span>
-                        </div>
-                        <input
-                          type="text"
-                          name="agreementName"
-                          value={serviceAgreementDetails.agreementName || ""}
-                          onChange={handleChange}
-                          required
-                          className="input input-bordered w-full max-w-xs"
-                        />
-                      </label>
-                      <label className="form-control w-full max-w-xs">
-                        <div className="label">
-                          <span className="label-text">File Link</span>
-                        </div>
-                        <input
-                          type="text"
-                          name="fileLink"
-                          value={serviceAgreementDetails.fileLink || ""}
-                          onChange={handleChange}
-                          required
-                          className="input input-bordered mx-2 w-full max-w-xs"
-                        />
-                      </label>
-                    </div>
-
-                    <div className="flex flex-row justify-between">
-                      {" "}
-                      <h3 className="font-bold text-lg my-5">
-                        List of Tasks
-                      </h3>{" "}
-                      <button
-                        className="btn btn-outline btn-primary my-3"
-                        type="button"
-                        onClick={addTask}
-                      >
-                        Add Task
-                      </button>
-                    </div>
-
-                    {serviceAgreementDetails.tasks.map((task, index) => (
-                      <div key={index} className="">
-                        <div className="flex flex-row">
-                          <label className="form-control w-full max-w-xs">
-                            <div className="label">
-                              <span className="label-text">
-                                Task Description
-                              </span>
-                            </div>
-                            <input
-                              type="text"
-                              name="task"
-                              value={task.task}
-                              onChange={(e) => handleTaskChange(index, e)}
-                              required
-                              className="input input-bordered mx-2 w-full max-w-xs"
-                            />
-                          </label>
-                          <label className="form-control mx-2 w-full max-w-xs">
-                            <div className="label">
-                              <span className="label-text">Target Date</span>
-                            </div>
-                            <input
-                              type="date"
-                              name="targetDate"
-                              value={task.targetDate}
-                              onChange={(e) => handleTaskChange(index, e)}
-                              required
-                              className="input input-bordered mx-2 w-full max-w-xs"
-                            />
-                          </label>
-                          <label className="form-control mt-1 mx-2 w-full max-w-xs">
-                            <div className="label">
-                              <span className="label-text">Status</span>
-                            </div>
-
-                            <Select
-                              options={statusOptions}
-                              value={statusOptions.find(
-                                (option) => option.value === task.status
-                              )}
-                              onChange={(selectedOption) =>
-                                handleStatusChange(index, selectedOption)
-                              }
-                              required
-                            />
-                          </label>
-                          <label className="form-control mt-1 mx-2 w-full max-w-xs">
-                            <div className="label">
-                              <span className="label-text">Assignee</span>
-                            </div>
-                            <Select
-                              styles={{
-                                zIndex: 2,
-                              }}
-                              options={task.assignees.map((assignee) => {
-                                const parsedAssignee = JSON.parse(
-                                  assignee.assigneeName
-                                );
-                                return {
-                                  value: parsedAssignee.assigneeName,
-                                  label: parsedAssignee.assigneeName,
-                                };
-                              })}
-                              value={selectedAssignees[index]}
-                              onChange={(selectedOption) =>
-                                handleAssigneeChange(index, selectedOption)
-                              }
-                              isMulti
-                            />
-                          </label>
-                          <button
-                            className="btn btn-outline btn-error btn-sm mt-[42px]"
-                            type="button"
-                            onClick={() => removeTask(index)}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="size-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M6 18 18 6M6 6l12 12"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-
-                        <div className="flex flex-row">
-                          {/* <label>Status</label>
-                        <input
-                          type="text"
-                          name="status"
-                          value={task.status}
-                          onChange={(e) => handleTaskChange(index, e)}
-                          required
-                        /> */}
-                        </div>
-                      </div>
-                    ))}
-                    <div className="flex items-center justify-center my-5">
-                      {" "}
-                      <button className="btn btn-primary" type="submit">
-                        Submit
-                      </button>
-                      <div className="modal-action mx-3 mb-6">
-                        <form method="dialog">
-                          {/* if there is a button in form, it will close the modal */}
-                          <button className="btn">Close</button>
-                        </form>
-                      </div>
-                    </div>
-                  </form>
-                )}
-              </div>
             </dialog>
-          </div>
-        </div>
-      </div>
-
-      {serviceAgreements.map((agreement, index) => (
-        <div key={index} className="bg-base-200 mt-2 z-0">
-          <div className="text-xl font-semibold bg-[#FFFFFF] p-2 flex flex-row justify-between">
-            <div className="flex flex-row">
-              <a href={agreement.fileLink} className="flex flex-row">
-                {agreement.agreementName}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="size-6 ml-1 mt-1"
-                >
-                  <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                  <path
-                    fillRule="evenodd"
-                    d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </a>
-
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="size-6 ml-1"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-            <div className="flex flex-row">
-              <button
-                className="mx-1"
-                onClick={() => {
-                  openDetails(agreement.serviceAgreementId);
-                  document.getElementById("editModal").showModal();
-                }}
-              >
-                <svg
-                  width="44"
-                  height="37"
-                  viewBox="0 0 44 37"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <rect width="44" height="37" rx="10" fill="#273069" />
-                  <path
-                    d="M15 26H30M22.6849 13.357L25.042 11L29.1667 15.1248L26.8097 17.4818M22.6849 13.357L18.0127 18.0292C17.8564 18.1855 17.7686 18.3975 17.7686 18.6185V22.398H21.5483C21.7693 22.398 21.9812 22.3103 22.1375 22.154L26.8097 17.4818M22.6849 13.357L26.8097 17.4818"
-                    stroke="white"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-              {/* delete button */}
-              <button
-                className="mx-1"
-                onClick={() => {
-                  handleDelete(agreement.serviceAgreementId);
-                }}
-              >
-                <svg
-                  width="44"
-                  height="37"
-                  viewBox="0 0 44 37"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <rect width="44" height="37" rx="10" fill="#CF0404" />
-                  <path
-                    d="M28.3333 17.667V25.5003C28.3333 25.7765 28.1095 26.0003 27.8333 26.0003H17.1667C16.8905 26.0003 16.6667 25.7765 16.6667 25.5003V17.667M20.8333 22.667V17.667M24.1667 22.667V17.667M30 14.3333H25.8333M25.8333 14.3333V11.5C25.8333 11.2239 25.6095 11 25.3333 11H19.6667C19.3905 11 19.1667 11.2239 19.1667 11.5V14.3333M25.8333 14.3333H19.1667M15 14.3333H19.1667"
-                    stroke="white"
-                    strokeWidth="1.95694"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-            </div>
           </div>
           <div className="m-1">
             <div className="">
-              <table className="table table-xs table-pin-rows table-pin-cols z-0">
+              <table className="table table-xs table-pin-rows table-pin-cols z-1">
                 <thead>
                   <tr>
                     <td className="w-[25%]">TASK</td>
-                    <td className="w-[25%]">TARGET DATE</td>
-                    <td className="w-[25%]">STATUS</td>
-                    <td className="w-[25%]">ASSIGNEE</td>
+                    <td className="w-[11%]">DATE CREATED</td>
+                    <td className="w-[11%]">TARGET DATE</td>
+                    <td className="w-[20%]">STATUS</td>
+                    <td className="w-[11%]">ASSIGNEE</td>
+                    <td className="w-[11%]">REMARKS</td>
+                    <td className="w-[11%]"></td>
                   </tr>
                 </thead>
                 <tbody>
-                  {agreement.tasks.map((task, taskIndex) => (
-                    <tr key={taskIndex}>
-                      <td>{task.task}</td>
+                  {item.tasksList.map((task) => (
+                    <tr key={task.taskId}>
+                      <td>{task.taskDescription}</td>
+                      <td>{task.created_at}</td>
                       <td>{task.targetDate}</td>
                       <td>
-                        {" "}
                         <Select
+                          styles={{
+                            zIndex: 1,
+                          }}
                           options={statusOptions}
                           value={statusOptions.find(
                             (option) => option.value === task.status
                           )}
-                          onChange={(selectedOption) =>
-                            handleStatusChange(index, selectedOption)
-                          }
-                          required
+                          isDisabled
                         />
                       </td>
+                      <td>{task.assignee.join(", ")}</td>
+                      <td>{task.remarks}</td>
                       <td>
-                        {task.assignees.map((assignee, assigneeIndex) => (
-                          <div key={assigneeIndex} className="flex flex-col">
-                            <button className="btn btn-outline btn-sm m-1">
-                              {JSON.parse(assignee.assigneeName).assigneeName}
-                            </button>
-                          </div>
-                        ))}
+                        <div className="flex flex-row">
+                          <button
+                            className="mx-1"
+                            onClick={() => {
+                              handleEdit(task.taskId);
+                              document.getElementById("editModal").showModal();
+                            }}
+                          >
+                            <svg
+                              width="44"
+                              height="37"
+                              viewBox="0 0 44 37"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <rect
+                                width="44"
+                                height="37"
+                                rx="10"
+                                fill="#273069"
+                              />
+                              <path
+                                d="M15 26H30M22.6849 13.357L25.042 11L29.1667 15.1248L26.8097 17.4818M22.6849 13.357L18.0127 18.0292C17.8564 18.1855 17.7686 18.3975 17.7686 18.6185V22.398H21.5483C21.7693 22.398 21.9812 22.3103 22.1375 22.154L26.8097 17.4818M22.6849 13.357L26.8097 17.4818"
+                                stroke="white"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </button>
+                          {/* delete button */}
+                          <button
+                            className="mx-1"
+                            onClick={() => handleDelete(task.taskId)}
+                          >
+                            <svg
+                              width="44"
+                              height="37"
+                              viewBox="0 0 44 37"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <rect
+                                width="44"
+                                height="37"
+                                rx="10"
+                                fill="#CF0404"
+                              />
+                              <path
+                                d="M28.3333 17.667V25.5003C28.3333 25.7765 28.1095 26.0003 27.8333 26.0003H17.1667C16.8905 26.0003 16.6667 25.7765 16.6667 25.5003V17.667M20.8333 22.667V17.667M24.1667 22.667V17.667M30 14.3333H25.8333M25.8333 14.3333V11.5C25.8333 11.2239 25.6095 11 25.3333 11H19.6667C19.3905 11 19.1667 11.2239 19.1667 11.5V14.3333M25.8333 14.3333H19.1667M15 14.3333H19.1667"
+                                stroke="white"
+                                strokeWidth="1.95694"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}

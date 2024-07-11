@@ -338,6 +338,12 @@ const GISTracker = () => {
       width: "40%",
     },
     {
+      name: "Date Filed",
+      selector: (row) => null,
+      sortable: true,
+      width: "20%",
+    },
+    {
       name: "Status",
       selector: (row) => row.status,
       sortable: true,

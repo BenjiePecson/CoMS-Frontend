@@ -36,6 +36,8 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [selectedDrive, setSelectedDrive] = useState(null);
 
+  const [selectedListFolder, setSelectedListFolder] = useState("");
+
   const handleSelectChange = (event) => {
     setSelectedOption(event.target.value);
   };
@@ -290,8 +292,23 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
 
   const listFolder = (folderName, folderState, folderRow, gdrivefolder) => {
     return (
-      <div className="collapse collapse-arrow bg-base-200 z-0">
-        <input type="radio" name="my-accordion-2" defaultChecked />
+      <div
+        className={`collapse collapse-arrow bg-base-200 z-0 ${
+          folderName == selectedListFolder ? "collapse-open" : "collapse-close"
+        }`}
+      >
+        <input
+          type="radio"
+          name="my-accordion-2"
+          className="cursor-pointer"
+          onClick={(ev) => {
+            if (selectedListFolder == folderName) {
+              setSelectedListFolder("");
+            } else {
+              setSelectedListFolder(folderName);
+            }
+          }}
+        />
         <div className="collapse-title text-md font-semibold bg-[#FFFFFF] m-2 flex flex-row items-center">
           {
             <svg

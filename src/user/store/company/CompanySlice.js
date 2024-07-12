@@ -21,6 +21,7 @@ const CompanyState = {
     bir_or_cor: "",
     lgu_business_permit: "",
   },
+  latestGIS: {},
 };
 
 export const fetchCompanies = createAsyncThunk(
@@ -51,6 +52,11 @@ export const fetchCompany = createAsyncThunk(
       }
       return company;
     });
+
+    let responseCurrentGIS = await axios.get(`/record/currentGIS/${companyId}`);
+
+    companies[0].latestGIS = responseCurrentGIS.data;
+
     return companies;
   }
 );

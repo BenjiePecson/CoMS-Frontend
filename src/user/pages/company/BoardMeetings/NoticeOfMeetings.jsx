@@ -80,7 +80,21 @@ const NoticeOfMeetings = () => {
   const list_of_agendas = [
     "Call to order",
     "Certifcation of Notice and quorum of the Meeting",
-    "Approval of the Authorized Representatives to transact with the Bureau of Internal Revenue (BIR) and the Local Government Unit (LGU).",
+    "Approval of Authorized Representative to Transact with the Government Agencies",
+    "Approval of Authorized Representative to Transact with the Banks",
+    "Approval of Authorized Representative to Transact with the Telecommunications Company",
+    "Approval of Authorized Signatories for Government Agencies",
+    "Approval of Authorized Signatories for Banks",
+    "Approval of Authorized Signatories for Telecommunications Company",
+    "Resignation and Replacement of Officers",
+    "Resignation and Replacement of Board of Director",
+    "Election of New Officers",
+    "Election of New Board of Directors",
+    "Transfer of Shares of Stock",
+    "Annual submission of AFS",
+    "Annual submission of GIS",
+    "Appointment of a Tax Representative",
+    "Declaration of Dividends out of the (YEAR) Unrestricted Retained Earnings",
     "Adjournment",
   ];
 

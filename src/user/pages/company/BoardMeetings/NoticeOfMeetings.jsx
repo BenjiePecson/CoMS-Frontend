@@ -431,6 +431,9 @@ const NoticeOfMeetings = () => {
   useEffect(() => {
     if (Object.keys(selectedCompany.latestGIS).length) {
       setListOfDirectors(selectedCompany.latestGIS.directors_or_officers);
+      setSelectedDirector(
+        `${selectedCompany.latestGIS.directors_or_officers[0].name} - ${selectedCompany.latestGIS.directors_or_officers[0].officer}`
+      );
     }
   }, [selectedCompany]);
 

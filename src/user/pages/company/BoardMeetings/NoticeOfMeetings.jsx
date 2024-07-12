@@ -97,6 +97,19 @@ const NoticeOfMeetings = () => {
     return `${director.name} - ${director.position}`;
   });
 
+  const formatText = (inputString) => {
+    // Split the string into words
+    let words = inputString.toLowerCase().split(" ");
+
+    // Capitalize the first letter of each word
+    for (let i = 0; i < words.length; i++) {
+      words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
+    }
+
+    // Join the words back into a single string and return
+    return words.join(" ");
+  };
+
   const extractDate = (datetime) => {
     const dateTime = new Date(datetime);
 
@@ -111,17 +124,20 @@ const NoticeOfMeetings = () => {
   const extractDirectorName = (director) => {
     if (director != "" && director != undefined) {
       let extract = director.split("-")[0];
-      return extract.substring(0, extract.length - 1, 0);
+      return formatText(extract.substring(0, extract.length - 1, 0));
     }
-    return director;
+
+    return formatText(director);
   };
 
   const extractDirectorPosition = (director) => {
     if (director != "" && director != undefined) {
       let extract = director.split("-")[1];
-      return extract.substring(1, extract.length, 0);
+      if (extract.substring(1, extract.length, 0) == "N/A")
+        return extract.substring(1, extract.length, 0);
+      return formatText(extract.substring(1, extract.length, 0));
     }
-    return director;
+    return formatText(director);
   };
 
   const handleSubmit = async (e, isEdit = false) => {
@@ -395,22 +411,28 @@ const NoticeOfMeetings = () => {
     }
   };
 
-  const fetchDirectors = async () => {
-    try {
-      let response = await axios.get(`/record/current/${companyId}`);
-      setSelectedDirector(
-        `${response.data[0].name} - ${response.data[0].officer}`
-      );
-      setListOfDirectors(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const fetchDirectors = async () => {
+  //   try {
+  //     let response = await axios.get(`/record/current/${companyId}`);
+  //     setSelectedDirector(
+  //       `${response.data[0].name} - ${response.data[0].officer}`
+  //     );
+  //     setListOfDirectors(response.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   useEffect(() => {
     fetchRecords();
-    fetchDirectors();
+    // fetchDirectors();
   }, []);
+
+  useEffect(() => {
+    if (Object.keys(selectedCompany.latestGIS).length) {
+      setListOfDirectors(selectedCompany.latestGIS.directors_or_officers);
+    }
+  }, [selectedCompany]);
 
   // Register font
   Font.register({ family: "ProximaNova", src: ProximaNova });
@@ -1362,7 +1384,7 @@ const NoticeOfMeetings = () => {
                           ? "ANNUAL"
                           : "SPECIAL"}{" "}
                         STOCKHOLDERS' MEETING OF
-                        {" " + selectedCompany.companyName}
+                        {" " + selectedCompany.companyName.toUpperCase()}
                       </Text>
                       <Text
                         style={{
@@ -1393,7 +1415,9 @@ const NoticeOfMeetings = () => {
                             fontFamily: "ProximaNovaBlack",
                           }}
                         >
-                          {" " + selectedCompany.companyName + " "}
+                          {" " +
+                            selectedCompany.companyName.toUpperCase() +
+                            " "}
                         </Text>
                         <Text>(the "Corporation") will be held on </Text>
                         <Text>{`${extractDate(
@@ -1470,7 +1494,9 @@ const NoticeOfMeetings = () => {
                       <Text>
                         {extractDirectorPosition(formData.others.director)}
                       </Text>
-                      <Text>{formData.email}</Text>
+                      <Text>
+                        {selectedCompany.latestGIS.official_email_address}
+                      </Text>
                     </View>
                   </View>
                 </Page>
@@ -1516,7 +1542,9 @@ const NoticeOfMeetings = () => {
                             marginTop: "1.8px",
                           }}
                         >
-                          {" " + selectedCompany.companyName + " "}
+                          {" " +
+                            selectedCompany.companyName.toUpperCase() +
+                            " "}
                         </Text>
                         <Text>(the “Corporation”), </Text>
                         <Text>do hereby name and appoint:</Text>
@@ -1556,16 +1584,16 @@ const NoticeOfMeetings = () => {
                           </Text>
                           <Text>{`${extractDate(
                             formData.others.actual_meeting
-                          )} at `}</Text>
+                          )}, at `}</Text>
                           <Text>{`${extractTime(
                             formData.others.actual_meeting
-                          )} `}</Text>
+                          )}, `}</Text>
                           <Text>
                             {formData.others.place_of_meeting ==
                               "Video Conference" ||
                             formData.others.place_of_meeting == "Teleconference"
-                              ? `via ${formData.others.place_of_meeting}.`
-                              : `in ${formData.others.place_of_meeting} `}
+                              ? `via ${formData.others.place_of_meeting} `
+                              : `in ${formData.others.place_of_meeting}, `}
                           </Text>
                           <Text>and at any postponement or </Text>
                           <Text>adjournment thereof.</Text>

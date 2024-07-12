@@ -622,7 +622,9 @@ const NoticeOfMeetings = () => {
                         onClick={() => {
                           // if (record.status != "Notice Completed") {
                           setErrors([]);
+
                           if (record.others == null) {
+                            other_details.director = selectedDirector;
                             setFormData({ ...record, others: other_details });
                           } else {
                             setFormData(record);

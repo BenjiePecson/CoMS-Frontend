@@ -102,13 +102,12 @@ const Tasks = () => {
     e.preventDefault();
     try {
       await addTask(task);
-
       // setTasksList((prevTasks) => [...prevTasks, task]);
     } catch (error) {
       console.log(error);
     } finally {
       showAlert(status, message);
-      document.getElementById("addModal").close();
+      document.getElementById("addServiceAgreement").close();
       fetchTasks();
     }
   };

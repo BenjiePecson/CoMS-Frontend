@@ -203,9 +203,20 @@ const Layout = () => {
                       />
                     </Link>
 
+                    <Link
+                      to="/users-task"
+                      onClick={() => {
+                        setActive("/users-task");
+                      }}
+                    >
+                      <NavBar
+                        isActive={active === "/users-task"}
+                        text="Users Task"
+                        icon={companyIcon}
+                      />
+                    </Link>
 
-                    {
-                      user.permissions.includes("View GIS Approval") &&
+                    {user.permissions.includes("View GIS Approval") && (
                       <Link
                         to="/gis"
                         onClick={() => {
@@ -218,7 +229,7 @@ const Layout = () => {
                           icon={trackerIcon}
                         />
                       </Link>
-                    }
+                    )}
 
                     <Link
                       to="/settings"
@@ -233,14 +244,9 @@ const Layout = () => {
                       />
                     </Link>
 
-                    {
-                      (
-                        user.permissions.includes("View Users") ||
-                        user.permissions.includes("View Roles") ||
-                        user.permissions.includes("View Permissions")
-                      )
-
-                      &&
+                    {(user.permissions.includes("View Users") ||
+                      user.permissions.includes("View Roles") ||
+                      user.permissions.includes("View Permissions")) && (
                       <li>
                         <details open>
                           <summary className="h-[45px] my-1 flex flex-row justify-between items-center text-white">
@@ -249,8 +255,7 @@ const Layout = () => {
                             </div>
                           </summary>
                           <ul>
-                            {
-                              user.permissions.includes("View Users") &&
+                            {user.permissions.includes("View Users") && (
                               <Link
                                 to="/users"
                                 onClick={() => {
@@ -262,10 +267,8 @@ const Layout = () => {
                                   text="Users"
                                 />
                               </Link>
-                            }
-                            {
-                              user.permissions.includes("View Roles") &&
-
+                            )}
+                            {user.permissions.includes("View Roles") && (
                               <Link
                                 to="/roles"
                                 onClick={() => {
@@ -277,11 +280,9 @@ const Layout = () => {
                                   text="Roles"
                                 />
                               </Link>
-                            }
+                            )}
 
-                            {
-                              user.permissions.includes("View Permissions") &&
-
+                            {user.permissions.includes("View Permissions") && (
                               <Link
                                 to="/permissions"
                                 onClick={() => {
@@ -293,17 +294,11 @@ const Layout = () => {
                                   text="Permissions"
                                 />
                               </Link>
-                            }
-
-
-
-
-
+                            )}
                           </ul>
                         </details>
                       </li>
-                    }
-
+                    )}
                   </div>
                 </div>
                 <div className="px-4">

@@ -6,6 +6,8 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import gdriveIcon from "/gdrive.svg";
 import { showAlert } from "../../../assets/global";
+import Breadcrumbs from "../../components/Breadcrumbs";
+import { useSelector } from "react-redux";
 
 const customStyles = {
   zIndex: 99,
@@ -35,6 +37,8 @@ const serviceAgreementOptions = [
 
 const Tasks = () => {
   const [loading, setLoading] = useState(false);
+
+  const selectedCompany = useSelector((state) => state.company.selectedCompany);
 
   const { companyId } = useParams();
 
@@ -242,6 +246,18 @@ const Tasks = () => {
 
   return (
     <div>
+      <Breadcrumbs
+        lists={[
+          { goto: "/", text: "Home" },
+          {
+            goto: `/company/${selectedCompany.companyId}`,
+            text: `${selectedCompany.companyName}`,
+          },
+
+          { goto: "/", text: "Tasks" },
+        ]}
+      />
+
       <div className="flex flex-row w-full justify-between items-center mt-5">
         <div className="flex flex-row justify-between w-full">
           <div className="poppins-bold text-color-2 text-[24px] flex items-center">
@@ -330,6 +346,9 @@ const Tasks = () => {
                         value={statusOptions.find(
                           (option) => option.value === task.status
                         )}
+                        menuPortalTarget={document.getElementById(
+                          "addServiceAgreement"
+                        )}
                         onChange={handleSelectChange}
                         options={statusOptions}
                       />
@@ -345,6 +364,9 @@ const Tasks = () => {
                       name="assignee"
                       value={assigneeOptions.filter((option) =>
                         task.assignee.includes(option.value)
+                      )}
+                      menuPortalTarget={document.getElementById(
+                        "addServiceAgreement"
                       )}
                       onChange={handleMultiSelectChange}
                       options={assigneeOptions}
@@ -464,6 +486,7 @@ const Tasks = () => {
                           (option) => option.value === task.status
                         )}
                         onChange={handleSelectChange}
+                        menuPortalTarget={document.getElementById("editModal")}
                         options={statusOptions}
                       />
                     </label>
@@ -479,6 +502,7 @@ const Tasks = () => {
                       value={assigneeOptions.filter((option) =>
                         task.assignee.includes(option.value)
                       )}
+                      menuPortalTarget={document.getElementById("editModal")}
                       onChange={handleMultiSelectChange}
                       options={assigneeOptions}
                     />

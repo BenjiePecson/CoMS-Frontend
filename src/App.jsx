@@ -27,6 +27,7 @@ import UsersPage from "./user/pages/user/UsersPage";
 import RolesPage from "./user/pages/user/RolesPage";
 import PermissionsPage from "./user/pages/user/PermissionsPage";
 import UserDashboard from "./user/pages/user/UserDashboard";
+import CompanySetting from "./user/pages/company/CompanySetting";
 
 // axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
@@ -97,6 +98,10 @@ function App() {
             />
 
             <Route path="company/:companyId/tasks" element={<Tasks />} />
+            <Route
+              path="company/:companyId/settings"
+              element={<CompanySetting />}
+            />
           </Route>
           <Route path="/manager/" element={<Login />} />
           <Route path="*" element={<NotFound />} />

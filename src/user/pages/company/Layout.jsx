@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
 import NavBar from "../../components/NavBar";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCompany } from "../../store/company/CompanySlice.js";
+import {
+  fetchCompanies,
+  fetchCompany,
+} from "../../store/company/CompanySlice.js";
 import { fetchUser } from "../../store/user/UserSlice.js";
 
 const Layout = () => {
@@ -14,6 +17,10 @@ const Layout = () => {
   const selectedCompany = useSelector((state) => state.company.selectedCompany);
   const status = useSelector((state) => state.company.status);
   const user = useSelector((state) => state.user.user);
+
+  const [isChangeCompany, setIsChangeCompany] = useState(false);
+  const [filteredCompany, setFilteredCompany] = useState(companies);
+  const [search, setSearch] = useState("");
 
   const dispatch = useDispatch();
 
@@ -130,6 +137,140 @@ const Layout = () => {
     </svg>
   );
 
+  const companyList = filteredCompany
+    .filter((company) => {
+      if (!company.status) return false;
+      if (search == "") {
+        return company;
+      } else if (
+        company.companyName
+          .toLocaleLowerCase()
+          .includes(search.toLocaleLowerCase()) ||
+        company.secNumber
+          .toLocaleLowerCase()
+          .includes(search.toLocaleLowerCase())
+      ) {
+        return company;
+      }
+    })
+    .map((company, index) => {
+      if (!company.status) return;
+      return (
+        <div
+          className="flex flex-row items-center gap-3 w-full p-2 rounded-xl hover:bg-gray-100 border cursor-pointer"
+          onClick={() => {
+            window.location.href = `/company/${company.companyId}`;
+          }}
+          key={`company-${index}`}
+        >
+          <img
+            className="w-12 aspect-square object-contain rounded-full"
+            src={company.logo}
+            alt={company.companyName}
+          />
+          <h1 className="line-clamp-1 text-start">{company.companyName}</h1>
+        </div>
+      );
+    });
+
+  const companyDetailsComponent = () => {
+    return (
+      <>
+        <div className="flex justify-end">
+          <span
+            onClick={() => {
+              setIsChangeCompany(true);
+            }}
+            className="underline text-end cursor-pointer"
+          >
+            Change
+          </span>
+        </div>
+        <div className="flex flex-col gap-5 text-center justify-center items-center">
+          <img
+            className="w-24 aspect-square object-contain rounded-full border p-2"
+            src={selectedCompany.logo}
+            alt=""
+          />
+          <h1 className="poppins-bold text-[20px]">
+            {selectedCompany.companyName}
+          </h1>
+          <p className="poppins-medium text-[15px]">
+            {selectedCompany.secNumber}
+          </p>
+
+          <div className="flex flex-col w-full">
+            <div className="flex flex-row justify-between">
+              <h1 className="font-bold">Tin ID</h1>
+              <h1> {selectedCompany.corporateTin}</h1>
+            </div>
+            <div className="flex flex-row justify-between">
+              <h1 className="font-bold">HDMF</h1>
+              <h1>{selectedCompany.hdmf}</h1>
+            </div>
+            <div className="flex flex-row justify-between">
+              <h1 className="font-bold">SSS</h1>
+              <h1>{selectedCompany.sss}</h1>
+            </div>
+            <div className="flex flex-row justify-between">
+              <h1 className="font-bold">PhilHealth</h1>
+              <h1>{selectedCompany.philHealth}</h1>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  const changeCompanyDetails = () => {
+    return (
+      <>
+        <div className="flex justify-end">
+          <span
+            onClick={() => {
+              setIsChangeCompany(false);
+            }}
+            className="underline text-end cursor-pointer"
+          >
+            Cancel
+          </span>
+        </div>
+        <div className="flex flex-col gap-5 text-center justify-center items-center">
+          <label className="input input-bordered input-sm flex items-center gap-2 w-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              className="h-4 w-4 opacity-70"
+            >
+              <path
+                fillRule="evenodd"
+                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <input
+              type="text"
+              className="grow"
+              placeholder="Search"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
+            />
+          </label>
+          <div className="w-full max-h-80 overflow-x-auto flex flex-col gap-2">
+            {companyList.length > 0 ? (
+              companyList
+            ) : (
+              <span>No records found.</span>
+            )}
+          </div>
+        </div>
+      </>
+    );
+  };
+
   const content = (
     <>
       <div className="drawer lg:drawer-open">
@@ -168,40 +309,13 @@ const Layout = () => {
                   </div>
                 </div>
                 <div
-                  tabIndex={0}
-                  className="dropdown-content z-[1] card card-compact w-64 p-2 shadow bg-white border"
+                  tabIndex={1}
+                  className="dropdown-content z-[1] card card-compact w-72 py-2 shadow bg-white border"
                 >
-                  <div className="card-body flex flex-col gap-5 text-center justify-center items-center">
-                    <img
-                      className="w-24 aspect-square object-contain rounded-full border p-2"
-                      src={selectedCompany.logo}
-                      alt=""
-                    />
-                    <h1 className="poppins-bold text-[20px]">
-                      {selectedCompany.companyName}
-                    </h1>
-                    <p className="poppins-medium text-[15px]">
-                      {selectedCompany.secNumber}
-                    </p>
-
-                    <div className="flex flex-col w-full">
-                      <div className="flex flex-row justify-between">
-                        <h1 className="font-bold">Tin ID</h1>
-                        <h1> {selectedCompany.corporateTin}</h1>
-                      </div>
-                      <div className="flex flex-row justify-between">
-                        <h1 className="font-bold">HDMF</h1>
-                        <h1>{selectedCompany.hdmf}</h1>
-                      </div>
-                      <div className="flex flex-row justify-between">
-                        <h1 className="font-bold">SSS</h1>
-                        <h1>{selectedCompany.sss}</h1>
-                      </div>
-                      <div className="flex flex-row justify-between">
-                        <h1 className="font-bold">PhilHealth</h1>
-                        <h1>{selectedCompany.philHealth}</h1>
-                      </div>
-                    </div>
+                  <div className="card-body">
+                    {isChangeCompany
+                      ? changeCompanyDetails()
+                      : companyDetailsComponent()}
                   </div>
                 </div>
               </div>
@@ -681,11 +795,9 @@ const Layout = () => {
       navigate("/login");
     } else {
       dispatch(fetchUser(token));
+      dispatch(fetchCompany(companyId));
+      dispatch(fetchCompanies());
     }
-  }, []);
-
-  useEffect(() => {
-    dispatch(fetchCompany(companyId));
   }, []);
 
   useEffect(() => {
@@ -696,6 +808,15 @@ const Layout = () => {
         : window.location.pathname.split("/")[3]
     );
   }, [window.location.pathname]);
+
+  useEffect(() => {
+    if (companies.length != 0) {
+      const companiesList = companies.filter(
+        (company) => company.companyId != companyId
+      );
+      setFilteredCompany(companiesList);
+    }
+  }, [companies]);
 
   return (
     <>

@@ -22,6 +22,7 @@ const CompanyState = {
     lgu_business_permit: "",
   },
   latestGIS: {},
+  letterHeader: null,
 };
 
 export const fetchCompanies = createAsyncThunk(
@@ -105,6 +106,13 @@ const companySlice = createSlice({
         (item) => item.id !== action.payload.id
       );
     },
+
+    updateLetterHeader: (state, action) => {
+      state.selectedCompany = {
+        ...state.selectedCompany,
+        letterHeader: action.payload.letterHeader,
+      };
+    },
   },
   extraReducers: (builder) => {
     //Companies
@@ -140,5 +148,6 @@ export const {
   updateCompany,
   changeCompanyStatus,
   deleteCompanyTest,
+  updateLetterHeader,
 } = companySlice.actions;
 export default companySlice.reducer;

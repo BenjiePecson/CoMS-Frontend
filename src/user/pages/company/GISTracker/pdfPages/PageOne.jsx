@@ -6,7 +6,19 @@ import Cambria from "/fonts/Cambria.ttf";
 // Function to determine font size based on text length
 const getFontSize = (textLength, maxLength, baseSize) => {
   if (textLength > maxLength) {
-    return baseSize * (maxLength / textLength);
+    // Calculate the ratio of maxLength to textLength
+    let ratio = maxLength / textLength;
+
+    // Calculate the adjusted font size
+    let fontSize = baseSize * ratio;
+
+    // Ensure fontSize is not too small
+    if (fontSize < baseSize * 0.5) {
+      // You can adjust this threshold as needed
+      fontSize = baseSize * 0.5; // Set a minimum font size to maintain readability
+    }
+
+    return fontSize;
   }
   return baseSize;
 };
@@ -109,7 +121,7 @@ const styles = StyleSheet.create({
 
 function PageOne({
   year,
-  amended,
+  isAmended,
   corporate_name,
   business_or_trade_name,
   sec_registration_number,
@@ -135,18 +147,15 @@ function PageOne({
   const baseFontSize = 10; // Base font size
 
   const text =
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, ullam nam repellat ab consequatur eaque, voluptate dolorum tempore eius officiis rem sed quos! Reiciendis quo architecto inventore perferendis culpa ullam?";
+    "To provide user support services, including but not limited to providing remote technical support services, customer support, customer careaa customer careaa customer careaa customer careaa customer careaa careaa customer careaa careaa customer careaa ";
 
   const textCounter = (text) => {
     console.log(text.length);
   };
   return (
-    <Page
-      size="A4"
-      style={{ position: "relative", fontFamily: "Cambria" }}
-    >
+    <Page size="A4" style={{ position: "relative", fontFamily: "Cambria" }}>
       <Text style={styles.year}>{year}</Text>
-      <Text style={styles.amended}>{amended ? "AMENDED" : ""}</Text>
+      <Text style={styles.amended}>{isAmended ? "AMENDED" : ""}</Text>
       {/* <View style={styles.view1}>
         <Text style={styles.text2_1_1}>{date_registered}</Text>
         <Text style={styles.text2_2}>{fiscal_year_end}</Text>
@@ -203,7 +212,7 @@ function PageOne({
           <Text
             style={{
               fontSize: getFontSize(
-                business_or_trade_name.length,
+                corporate_name.length,
                 104,
                 baseFontSize
               ),
@@ -211,7 +220,7 @@ function PageOne({
               width: "100%",
             }}
           >
-            {business_or_trade_name}
+            {corporate_name}
           </Text>
         </View>
         <View

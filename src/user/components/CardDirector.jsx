@@ -39,7 +39,7 @@ const CardDirector = ({ director, index }) => {
   const [showMore, setShowMore] = useState(false);
 
   return (
-    <div className="w-full rounded-lg border flex flex-col p-5 basis-1/5  hover:shadow-md  cursor-pointer" onClick={() => {
+    <div className="w-full rounded-lg border flex flex-col p-5 basis-1/5 bg-white  hover:shadow-md  cursor-pointer" onClick={() => {
       setShowMore(!showMore);
     }}>
       <div className="flex flex-row justify-between items-center">
@@ -64,44 +64,44 @@ const CardDirector = ({ director, index }) => {
         <div className={`py-4 transition  delay-1000 ease-in-out`}>
           <div className="flex flex-row justify-between">
             <div className="text-xs">Nationality</div>
-            <div className="text-xs font-bold">
+            <div className="text-xs font-bold text-end">
               {director.nationality != "undefined" && director.nationality}
             </div>
           </div>
           <div className="flex flex-row justify-between">
             <div className="text-xs">Incorporator</div>
-            <div className="text-xs font-bold">
+            <div className="text-xs font-bold text-end">
               {director.incorporator != "undefined" && director.incorporator}
             </div>
           </div>
           <div className="flex flex-row justify-between">
             <div className="text-xs">Board</div>
             <div className="text-xs font-bold">
-              {director.board != "undefined" && director.board}
+              {director.board != "undefined text-end" && director.board}
             </div>
           </div>
           <div className="flex flex-row justify-between">
             <div className="text-xs">Gender</div>
-            <div className="text-xs font-bold">
+            <div className="text-xs font-bold text-end">
               {director.gender != "undefined" && director.gender}
             </div>
           </div>
           <div className="flex flex-row justify-between">
             <div className="text-xs">Stockholder</div>
-            <div className="text-xs font-bold">
+            <div className="text-xs font-bold text-end">
               {director.stock_holder != "undefined" && director.stock_holder}
             </div>
           </div>
           <div className="flex flex-row justify-between">
             <div className="text-xs">Executive Committee</div>
-            <div className="text-xs font-bold">
+            <div className="text-xs font-bold text-end">
               {director.executive_committe != "undefined" &&
                 director.executive_committe}
             </div>
           </div>
           <div className="flex flex-row justify-between">
             <div className="text-xs">Tax Identification Number</div>
-            <div className="text-xs font-bold">
+            <div className="text-xs font-bold text-end">
               {director.tax_id_number != "undefined" && director.tax_id_number}
             </div>
           </div>

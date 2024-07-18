@@ -44,6 +44,7 @@ const step7 = () => {
                     <PageOne
                       //view1
                       year={formData.year}
+                      isAmended={formData.isAmended}
                       corporate_name={formData.corporate_name}
                       business_or_trade_name={formData.business_or_trade_name}
                       sec_registration_number={formData.sec_registration_number}
@@ -79,6 +80,7 @@ const step7 = () => {
                   ) : (
                     <PageOneSpecial //view1
                       year={formData.year}
+                      isAmended={formData.isAmended}
                       corporate_name={formData.corporate_name}
                       business_or_trade_name={formData.business_or_trade_name}
                       sec_registration_number={formData.sec_registration_number}
@@ -116,6 +118,7 @@ const step7 = () => {
                   <PageOne
                     //view1
                     year={formData.year}
+                    amended={formData.amended}
                     corporate_name={formData.corporate_name}
                     business_or_trade_name={formData.business_or_trade_name}
                     sec_registration_number={formData.sec_registration_number}

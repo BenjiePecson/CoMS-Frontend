@@ -342,6 +342,10 @@ const NoticeOfMeetings = () => {
       newErrors.agendas = "Please select agenda";
     }
 
+    if (formData.others.director == "") {
+      newErrors.director = "Director is required";
+    }
+
     if (formData.others.confirmation_meeting == "") {
       newErrors.confirmation_meeting =
         "Confirmation Meeting Date and Time is required";
@@ -445,9 +449,11 @@ const NoticeOfMeetings = () => {
   useEffect(() => {
     if (Object.keys(selectedCompany.latestGIS).length) {
       setListOfDirectors(selectedCompany.latestGIS.directors_or_officers);
-      setSelectedDirector(
-        `${selectedCompany.latestGIS.directors_or_officers[0].name} - ${selectedCompany.latestGIS.directors_or_officers[0].officer}`
-      );
+      if (selectedCompany.latestGIS.directors_or_officers.length != 0) {
+        setSelectedDirector(
+          `${selectedCompany.latestGIS.directors_or_officers[0].name} - ${selectedCompany.latestGIS.directors_or_officers[0].officer}`
+        );
+      }
     }
   }, [selectedCompany]);
 

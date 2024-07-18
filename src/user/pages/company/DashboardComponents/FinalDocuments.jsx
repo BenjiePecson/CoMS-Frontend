@@ -277,7 +277,7 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
     return (
       //h-28 w-48
       <div
-        className="h-28 w-full border rounded-lg flex flex-col p-5 justify-between cursor-pointer hover:shadow-md"
+        className="h-28 w-full border rounded-lg flex flex-col p-5 justify-between cursor-pointer hover:shadow-md bg-white"
         onClick={() => {
           document.getElementById("openDocumentsModal").showModal();
           setSelectedFolder(folderName);

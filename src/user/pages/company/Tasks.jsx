@@ -47,11 +47,23 @@ const Tasks = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get("/users");
-      // Transform user data into options format expected by react-select
-      const usersOptions = response.data.map((user) => ({
-        value: user.first_name + " " + user.last_name,
-        label: user.first_name + " " + user.last_name,
-      }));
+      // Transform user data into options format expected by react-select, excluding users with empty slackId
+
+      // Filter users with empty slackId and log them
+      response.data.forEach((user) => {
+        if (!user.slackId) {
+          console.log(
+            `User with empty slackId: ${user.first_name} ${user.last_name}`
+          );
+        }
+      });
+
+      const usersOptions = response.data
+        .filter((user) => user.slackId) // Filter out users with empty slackId
+        .map((user) => ({
+          value: user.slackId,
+          label: user.first_name + " " + user.last_name,
+        }));
 
       setUsers(usersOptions);
     } catch (err) {
@@ -67,6 +79,7 @@ const Tasks = () => {
   const [tasksList, setTasksList] = useState([]);
 
   const [task, setTask] = useState({
+    companyHeader: "",
     taskDescription: "",
     targetDate: "",
     serviceAgreement: "",
@@ -75,6 +88,15 @@ const Tasks = () => {
     remarks: "",
     assignee: [],
   });
+
+  useEffect(() => {
+    if (selectedCompany.logo) {
+      setTask((prevTask) => ({
+        ...prevTask,
+        companyHeader: selectedCompany.logo,
+      }));
+    }
+  }, [selectedCompany]);
 
   const handleTaskAddChange = (e) => {
     const { name, value } = e.target;
@@ -109,6 +131,7 @@ const Tasks = () => {
       showAlert(status, message);
       document.getElementById("addServiceAgreement").close();
       fetchTasks();
+      resetForm();
     }
   };
 
@@ -202,16 +225,18 @@ const Tasks = () => {
   };
 
   //get all task
-
   const getAllTasks = () => {
     return axios.get(`/task/${companyId}`);
   };
+
   const fetchTasks = async () => {
     try {
       const response = await getAllTasks();
-      setTasksList(response.data);
-    } catch (err) {
-      console.error(err);
+      setTasksList(response.data.tasks);
+
+      console.log(tasksList);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
     }
   };
 
@@ -432,6 +457,13 @@ const Tasks = () => {
                 <h3 className="text-lg font-bold">Add Task</h3>
                 <form onSubmit={handleEditSubmit}>
                   <div className="flex flex-row">
+                    <input
+                      type="text"
+                      name="companyHeader"
+                      value={task.serviceAgreement}
+                      className="input input-bordered w-full max-w-xs"
+                      required
+                    />
                     <label className="form-control w-full max-w-xs">
                       <div className="label">
                         <span className="label-text">Service Agreement</span>
@@ -575,6 +607,7 @@ const Tasks = () => {
             </div>
             <button
               className="btn btn-outline btn-primary"
+              disabled="disabled"
               onClick={() => {
                 document.getElementById("addTask").showModal();
               }}
@@ -757,7 +790,7 @@ const Tasks = () => {
                           isDisabled
                         />
                       </td>
-                      <td>{task.assignee.join(", ")}</td>
+                      <td>{task.assigneeNames.join(", ")}</td>
                       <td>{task.remarks}</td>
                       <td>
                         <div className="flex flex-row">

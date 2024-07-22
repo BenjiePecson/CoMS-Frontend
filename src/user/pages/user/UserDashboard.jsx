@@ -62,7 +62,7 @@ const UserDashboard = () => {
           <button
             className="mx-1"
             onClick={() => {
-              handleEdit(task.companyId, task.taskId);
+              handleEdit(row.companyId, row.taskId);
               document.getElementById("editModal").showModal();
             }}
           >
@@ -210,7 +210,6 @@ const UserDashboard = () => {
 
   const handleEdit = async (companyId, taskId) => {
     try {
-      console.log(companyId);
       const taskData = await getTask(companyId, taskId); // Ensure companyId is defined somewhere
       setTask(taskData);
       setEditingTaskId(taskId);
@@ -223,7 +222,11 @@ const UserDashboard = () => {
 
   const updateTask = async (taskId, updatedTask) => {
     try {
-      await axios.patch(`/task/${editingCompanyId}/${taskId}`, updatedTask);
+      let response = await axios.patch(
+        `/task/${editingCompanyId}/${taskId}`,
+        updatedTask
+      );
+      return response.status;
     } catch (error) {
       console.log(error);
       throw error;
@@ -232,17 +235,23 @@ const UserDashboard = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    let status = "success";
-    let message = "Record was updated successfully.";
+    let status = "error";
+    let message = "Failed to update record.";
     try {
-      await updateTask(editingTaskId, task);
-      showAlert(status, message); // Assuming showAlert is defined somewhere
-      fetchTasks();
-      document.getElementById("editModal").close();
-      resetForm();
+      let statusCode = await updateTask(editingTaskId, task);
+      if (statusCode === 200) {
+        status = "success";
+        message = "Record was updated successfully.";
+        // fetchTasks();
+        filteredTasks(selectedTab);
+        resetForm();
+      }
     } catch (error) {
       console.error("Error updating task:", error);
-      showAlert("error", "Failed to update record.");
+    } finally {
+      document.getElementById("editModal").close();
+      // showAlert("error", "Failed to update record.");
+      showAlert(status, message); // Assuming showAlert is defined somewhere
     }
   };
 
@@ -275,7 +284,6 @@ const UserDashboard = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      console.log(allTasks);
       setLoadingTable(false);
     }
   };

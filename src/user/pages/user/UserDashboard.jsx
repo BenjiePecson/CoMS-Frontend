@@ -4,6 +4,8 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { showAlert } from "../../../assets/global";
 import Select from "react-select";
+import DataTable from "react-data-table-component";
+import moment from "moment/moment";
 
 const statusOptions = [
   { value: "To Do", label: "To Do" },
@@ -16,11 +18,82 @@ const statusOptions = [
 ];
 
 const UserDashboard = () => {
+  const columns = [
+    {
+      name: "Company",
+      selector: (row) => row.companyName,
+      cell: (row) => <div className="p-2">{row.companyName}</div>,
+    },
+    {
+      name: "Task",
+      cell: (row) => row.taskDescription,
+    },
+    {
+      name: "Date Created",
+      selector: (row) => row.created_at,
+      cell: (row) => moment(row.created_at).format("YYYY-MM-DD"),
+    },
+    {
+      name: "Target Date",
+      selector: (row) => row.targetDate,
+    },
+    {
+      name: "Status",
+      selector: (row) => row.status,
+    },
+    {
+      name: "Assignee",
+      cell: (row) => {
+        return row.assigneeDetails
+          .map((obj) => `${obj.first_name} ${obj.last_name}`)
+          .join(", ");
+      },
+    },
+    {
+      name: "Remarks",
+      selector: (row) => row.remarks,
+      cell: (row) => row.remarks,
+    },
+    {
+      name: "Update Status",
+      selector: (row) => row.year,
+      cell: (row) => {
+        return (
+          <button
+            className="mx-1"
+            onClick={() => {
+              handleEdit(task.companyId, task.taskId);
+              document.getElementById("editModal").showModal();
+            }}
+          >
+            <svg
+              width="44"
+              height="37"
+              viewBox="0 0 44 37"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect width="44" height="37" rx="10" fill="#273069" />
+              <path
+                d="M15 26H30M22.6849 13.357L25.042 11L29.1667 15.1248L26.8097 17.4818M22.6849 13.357L18.0127 18.0292C17.8564 18.1855 17.7686 18.3975 17.7686 18.6185V22.398H21.5483C21.7693 22.398 21.9812 22.3103 22.1375 22.154L26.8097 17.4818M22.6849 13.357L26.8097 17.4818"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        );
+      },
+    },
+  ];
+
   const [tasks, setTasks] = useState([]);
 
   const [companyData, setCompanyData] = useState({});
 
   const [users, setUsers] = useState([]);
+
   // Fetch users from the API
   const fetchUsers = async () => {
     try {
@@ -43,6 +116,10 @@ const UserDashboard = () => {
 
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [editingCompanyId, setCompanyId] = useState(null);
+
+  const [selectedTab, setSelectedTab] = useState("My Tasks");
+  const [loadingTable, setLoadingTable] = useState(false);
+  const [filteredTable, setFilteredTable] = useState([]);
 
   const userSlice = useSelector((state) => state.user.user);
   const assignee = `${userSlice.first_name} ${userSlice.last_name}`;
@@ -84,12 +161,22 @@ const UserDashboard = () => {
     }
   };
 
-  useEffect(() => {
-    fetchUsers();
-    fetchTasks();
-  }, [assignee]);
+  const fetchAllTasks = async () => {
+    let tasks = [];
+    try {
+      const tasksResponse = await axios.get(`/tasks`);
+      tasks = tasksResponse.data;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      return tasks;
+    }
+  };
 
-  console.log(tasks);
+  // useEffect(() => {
+  //   fetchUsers();
+  //   fetchTasks();
+  // }, [assignee]);
 
   const handleTaskAddChange = (e) => {
     const { name, value } = e.target;
@@ -165,6 +252,40 @@ const UserDashboard = () => {
     });
   };
 
+  const filteredTasks = async (selectedTab) => {
+    setLoadingTable(true);
+    let allTasks = await fetchAllTasks();
+    try {
+      switch (selectedTab) {
+        case "My Tasks":
+          let myTasks = allTasks.filter((task) =>
+            task.assignee.includes(userSlice.slackId)
+          );
+          setFilteredTable(myTasks);
+          break;
+        case "Users Tasks":
+          let userTasks = allTasks.filter(
+            (task) => !task.assignee.includes(userSlice.slackId)
+          );
+          setFilteredTable(userTasks);
+          break;
+        default:
+          setFilteredTable(allTasks);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      console.log(allTasks);
+      setLoadingTable(false);
+    }
+  };
+
+  useEffect(() => {
+    if (userSlice.user_id) {
+      filteredTasks(selectedTab);
+    }
+  }, [userSlice]);
+
   return (
     <>
       <div>
@@ -219,10 +340,12 @@ const UserDashboard = () => {
           </form>
         </div>
       </dialog>
+
       <div className="poppins-bold text-color-2 text-[24px] flex items-center">
         My Tasks
       </div>
-      <div className="m-1 bg-base-200 mt-2 z-0">
+
+      {/* <div className="m-1 bg-base-200 mt-2 z-0">
         <div className="text-xl  bg-[#FFFFFF] p-2 flex flex-row justify-between">
           <table className="table table-xs table-pin-rows table-pin-cols z-1">
             <thead>
@@ -281,6 +404,80 @@ const UserDashboard = () => {
               )}
             </tbody>
           </table>
+        </div>
+      </div> */}
+
+      <div className="flex flex-col gap-5 rounded-lg p-5 bg-white mt-5">
+        <div className="flex flex-row items-end gap-2">
+          <div className="w-full  max-w-lg">
+            <label className="input input-bordered input-sm flex items-center gap-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                className="h-4 w-4 opacity-70"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <input type="text" className="grow" placeholder="Search" />
+            </label>
+          </div>
+          <div
+            className={`w-full flex flex-row items-end gap-1 ${
+              userSlice.permissions.includes("View Users Tasks") ? "" : "hidden"
+            }`}
+          >
+            <div
+              className={`w-full text-center text-sm p-2 cursor-pointer hover:border-b-2 hover:border-black ${
+                selectedTab == "All" && "border-b-2 border-black"
+              }`}
+              onClick={() => {
+                if (selectedTab != "All") {
+                  filteredTasks("All");
+                }
+                setSelectedTab("All");
+              }}
+            >
+              All
+            </div>
+            <div
+              className={`w-full text-center text-sm p-2 cursor-pointer hover:border-b-2 hover:border-black ${
+                selectedTab == "My Tasks" && "border-b-2 border-black"
+              }`}
+              onClick={() => {
+                if (selectedTab != "My Tasks") {
+                  filteredTasks("My Tasks");
+                }
+                setSelectedTab("My Tasks");
+              }}
+            >
+              My Tasks
+            </div>
+            <div
+              className={`w-full text-center text-sm p-2 cursor-pointer hover:border-b-2 hover:border-black ${
+                selectedTab == "User Tasks" && "border-b-2 border-black"
+              }`}
+              onClick={() => {
+                if (selectedTab != "User Tasks") {
+                  filteredTasks("User Tasks");
+                }
+                setSelectedTab("User Tasks");
+              }}
+            >
+              User Tasks
+            </div>
+          </div>
+        </div>
+        <div className="">
+          <DataTable
+            columns={columns}
+            data={filteredTable}
+            progressPending={loadingTable}
+          ></DataTable>
         </div>
       </div>
     </>

@@ -8,6 +8,7 @@ const UserState = {
   last_name: "",
   roles: [],
   permissions: [],
+  slackId: "",
 };
 
 export const fetchUser = createAsyncThunk("user/fetchUser", async (token) => {
@@ -24,6 +25,7 @@ export const fetchUser = createAsyncThunk("user/fetchUser", async (token) => {
         last_name: response.data.user.last_name,
         roles: response.data.user.roles,
         permissions: response.data.user.permissions,
+        slackId: response.data.user.slackId,
       };
     }
 

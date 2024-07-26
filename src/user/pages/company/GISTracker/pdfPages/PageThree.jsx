@@ -888,7 +888,9 @@ function PageThree({
                       <Text
                         style={{
                           fontSize: getFontSize(
-                            subscribe_capital.par_or_stated_value.length,
+                            formatNumberWithComma(
+                              subscribe_capital.par_or_stated_value
+                            ).length,
                             17,
                             baseFontSize - 4
                           ),
@@ -896,7 +898,9 @@ function PageThree({
                           width: "100%",
                         }}
                       >
-                        {subscribe_capital.par_or_stated_value}
+                        {formatNumberWithComma(
+                          subscribe_capital.par_or_stated_value
+                        )}
                       </Text>
                     </View>
                     <View
@@ -1205,7 +1209,9 @@ function PageThree({
                       <Text
                         style={{
                           fontSize: getFontSize(
-                            subscribe_capital.par_or_stated_value.length,
+                            formatNumberWithComma(
+                              subscribe_capital.par_or_stated_value
+                            ).length,
                             17,
                             baseFontSize - 4
                           ),
@@ -1213,7 +1219,9 @@ function PageThree({
                           width: "100%",
                         }}
                       >
-                        {subscribe_capital.par_or_stated_value}
+                        {formatNumberWithComma(
+                          subscribe_capital.par_or_stated_value
+                        )}
                       </Text>
                     </View>
                     <View
@@ -1420,7 +1428,8 @@ function PageThree({
                     38,
                     baseFontSize - 4
                   ),
-                  textAlign: "center",
+                  textAlign: "right",
+                  paddingRight: "2px",
                   fontFamily: "CambriaBold",
                   width: "100%",
                 }}
@@ -1448,7 +1457,8 @@ function PageThree({
                     17,
                     baseFontSize - 4
                   ),
-                  textAlign: "center",
+                  textAlign: "right",
+                  paddingRight: "2px",
                   fontFamily: "CambriaBold",
                   width: "100%",
                 }}
@@ -1588,7 +1598,9 @@ function PageThree({
                       <Text
                         style={{
                           fontSize: getFontSize(
-                            subscribe_capital.par_or_stated_value.length,
+                            formatNumberWithComma(
+                              subscribe_capital.par_or_stated_value
+                            ).length,
                             17,
                             baseFontSize - 4
                           ),
@@ -1596,7 +1608,9 @@ function PageThree({
                           width: "100%",
                         }}
                       >
-                        {subscribe_capital.par_or_stated_value}
+                        {formatNumberWithComma(
+                          subscribe_capital.par_or_stated_value
+                        )}
                       </Text>
                     </View>
                     <View
@@ -1878,7 +1892,9 @@ function PageThree({
                     <Text
                       style={{
                         fontSize: getFontSize(
-                          paid_up_capital.par_or_stated_value.length,
+                          formatNumberWithComma(
+                            paid_up_capital.par_or_stated_value
+                          ).length,
                           17,
                           baseFontSize - 4
                         ),
@@ -1886,7 +1902,9 @@ function PageThree({
                         width: "100%",
                       }}
                     >
-                      {paid_up_capital.par_or_stated_value}
+                      {formatNumberWithComma(
+                        paid_up_capital.par_or_stated_value
+                      )}
                     </Text>
                   </View>
                   <View

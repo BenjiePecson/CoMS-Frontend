@@ -148,9 +148,9 @@ const step7 = () => {
                     primary_purpose={formData.primary_purpose}
                   />
                 )}
-
                 <PageTwo natureOfService={formData.nature_of_business} />
                 <PageThree
+                  formData={formData}
                   corporate_name={formData.corporate_name}
                   auth_capital_stock={
                     formData.auth_capital_stock.capital_stocks
@@ -225,6 +225,7 @@ const step7 = () => {
                   }
                 />
                 <PageFour
+                  formData={formData}
                   directors_or_officers={formData.directors_or_officers}
                   corporate_name={formData.corporate_name}
                 />

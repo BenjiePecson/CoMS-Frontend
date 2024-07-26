@@ -1,74 +1,12 @@
-import React from "react";
-import { Page, Text, Image, StyleSheet, View } from "@react-pdf/renderer";
-import pageFour from "../photos/page4.jpg";
+import React, { useEffect } from "react";
+import { Page, Text, Image, StyleSheet, View, Font } from "@react-pdf/renderer";
+import pageFour from "../photos/page4_new.jpg";
 
-const directorsOrOfficers = [
-  {
-    name_or_current: "ROVIMAE B. PO",
-    residual_address:
-      "230 Happy Homes CampoSioco, Brgy. Ferdinand, Baguio City",
-    nationality: "FILIPINO",
-    incorporator: "Y",
-    board: "C",
-    gender: "F",
-    stock_holder: "Y",
-    officer: "PRESIDENT",
-    executive_committe: "N/A",
-    tax_id_number: "429-981-055-000",
-  },
-  {
-    name_or_current: "MA RUBI B. PO",
-    residual_address:
-      "230 Happy Homes CampoSioco, Brgy. Ferdinand, Baguio City",
-    nationality: "FILIPINO",
-    incorporator: "N",
-    board: "M",
-    gender: "F",
-    stock_holder: "N",
-    officer: "CORPORATE SECRETARY",
-    executive_committe: "N/A",
-    tax_id_number: "306-557-791-000",
-  },
-  {
-    name_or_current: "ZSOLT MALOTA",
-    residual_address:
-      "UP HO5 North Flair Towers Reliance Street cor Pines Highway Hills, Mandaluyong ",
-    nationality: "AUSTRALIAN",
-    incorporator: "N",
-    board: "M",
-    gender: "M",
-    stock_holder: "Y",
-    officer: "TREASURER",
-    executive_committe: "N/A",
-    tax_id_number: "496-880-660-000",
-  },
-  {
-    name_or_current: "REYNALDO P. MACROHON",
-    residual_address:
-      "Blk 3 Lot 11, Phase 2B, Camella Bermuda, Banlic, Cabuyao City, Laguna",
-    nationality: "FILIPINO",
-    incorporator: "N",
-    board: "",
-    gender: "M",
-    stock_holder: "Y",
-    officer: "N/A",
-    executive_committe: "N/A",
-    tax_id_number: "100-625-806-000",
-  },
-  {
-    name_or_current: "RODOLFO B. PO III",
-    residual_address:
-      "230 Happy Homes CampoSioco, Brgy. Ferdinand, Baguio City",
-    nationality: "FILIPINO",
-    incorporator: "N",
-    board: "",
-    gender: "M",
-    stock_holder: "Y",
-    officer: "N/A",
-    executive_committe: "N/A",
-    tax_id_number: "732-602-644-000",
-  },
-];
+import Cambria from "/fonts/Cambria.ttf";
+import CambriaBold from "/fonts/CambriaBold.ttf";
+
+Font.register({ family: "Cambria", src: Cambria });
+Font.register({ family: "CambriaBold", src: CambriaBold });
 
 const styles = StyleSheet.create({
   corporateName: {
@@ -111,39 +49,385 @@ const styles = StyleSheet.create({
   execCom: { width: "35px", fontFamily: "Times-Bold", fontSize: "10px" },
   tin: { width: "", fontFamily: "Times-Bold", fontSize: "10px" },
 });
-function PageFour({ directors_or_officers, corporate_name }) {
-  return (
-    <Page size="A4" style={{ position: "relative" }}>
-      <Text style={styles.corporateName}>{corporate_name}</Text>
-      <View style={styles.directorsOfficer}>
-        {directors_or_officers.map((txt, index) => (
-          <View key={index} style={styles.directorsOfficerInfo}>
-            <View style={styles.nameAddress}>
-              <Text style={styles.name}>{txt.name}</Text>
-              <Text style={styles.address}>{txt.current_residual_address}</Text>
+
+// Function to determine font size based on text length
+const getFontSize = (textLength, maxLength, baseSize) => {
+  if (textLength > maxLength) {
+    // Calculate the ratio of maxLength to textLength
+    let ratio = maxLength / textLength;
+
+    // Calculate the adjusted font size
+    let fontSize = baseSize * ratio;
+
+    // Ensure fontSize is not too small
+    if (fontSize < baseSize * 0.5) {
+      // You can adjust this threshold as needed
+      fontSize = baseSize * 0.5; // Set a minimum font size to maintain readability
+    }
+
+    return fontSize;
+  }
+  return baseSize;
+};
+
+function PageFour({ formData, directors_or_officers, corporate_name }) {
+  const baseFontSize = 12; // Base font size
+
+  const page4_old = () => {
+    return (
+      <Page size="A4" style={{ position: "relative" }}>
+        <Text style={styles.corporateName}>{corporate_name}</Text>
+        <View style={styles.directorsOfficer}>
+          {directors_or_officers.map((txt, index) => (
+            <View key={index} style={styles.directorsOfficerInfo}>
+              <View style={styles.nameAddress}>
+                <Text style={styles.name}>{txt.name}</Text>
+                <Text style={styles.address}>
+                  {txt.current_residual_address}
+                </Text>
+              </View>
+              <Text style={styles.nationality}>{txt.nationality}</Text>
+              <Text style={styles.incr}>{txt.incorporator}</Text>
+              <Text style={styles.board}>{txt.board}</Text>
+              <Text style={styles.gender}>{txt.gender}</Text>
+              <Text style={styles.stockHolder}>{txt.stock_holder}</Text>
+              <Text style={styles.officer}>{txt.officer}</Text>
+              <Text style={styles.execCom}>{txt.executive_committe}</Text>
+              <Text style={styles.tin}>{txt.tax_id_number}</Text>
             </View>
-            <Text style={styles.nationality}>{txt.nationality}</Text>
-            <Text style={styles.incr}>{txt.incorporator}</Text>
-            <Text style={styles.board}>{txt.board}</Text>
-            <Text style={styles.gender}>{txt.gender}</Text>
-            <Text style={styles.stockHolder}>{txt.stock_holder}</Text>
-            <Text style={styles.officer}>{txt.officer}</Text>
-            <Text style={styles.execCom}>{txt.executive_committe}</Text>
-            <Text style={styles.tin}>{txt.tax_id_number}</Text>
-          </View>
-        ))}
-      </View>
-      <Image
+          ))}
+        </View>
+        <Image
+          style={{
+            position: "absolute",
+            zIndex: -1,
+            top: 0,
+            width: "100%",
+          }}
+          src={pageFour}
+        ></Image>
+      </Page>
+    );
+  };
+
+  const page4 = () => {
+    return (
+      <Page
+        size="A4"
         style={{
-          position: "absolute",
-          zIndex: -1,
-          top: 0,
-          width: "100%",
+          position: "relative",
+          fontFamily: "Cambria",
+          fontSize: baseFontSize,
         }}
-        src={pageFour}
-      ></Image>
-    </Page>
-  );
+      >
+        <View>
+          <View
+            style={{
+              marginTop: 62,
+              marginLeft: 91,
+              position: "absolute",
+              display: "flex",
+              flexDirection: "row",
+            }}
+          >
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                width: "416px",
+                height: "15px",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: getFontSize(
+                    formData.corporate_name.length,
+                    76,
+                    baseFontSize - 2
+                  ),
+                  textAlign: "center",
+                  fontFamily: "CambriaBold",
+                  width: "100%",
+                }}
+              >
+                {formData.corporate_name.toUpperCase()}
+              </Text>
+            </View>
+          </View>
+
+          <View
+            style={{
+              marginTop: 113,
+              marginLeft: 45,
+              position: "absolute",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            {formData.directors_or_officers.map((director, index) => {
+              return (
+                <View
+                  key={`director_${index}`}
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                  }}
+                >
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "col",
+                      width: "140px",
+                      height: "30px",
+                    }}
+                  >
+                    <View
+                      style={{
+                        fontSize: baseFontSize - 2,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: getFontSize(
+                            director.name.length,
+                            36,
+                            baseFontSize - 4
+                          ),
+                          fontFamily: "CambriaBold",
+                          padding: "0px 2px",
+                        }}
+                      >
+                        {director.name}
+                      </Text>
+                    </View>
+                    <View style={{}}>
+                      <Text
+                        style={{
+                          fontSize: getFontSize(
+                            director.current_residual_address.length,
+                            58,
+                            baseFontSize - 4
+                          ),
+                          textAlign: "justify",
+                          padding: "2px",
+                        }}
+                      >
+                        {director.current_residual_address}
+                      </Text>
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      width: "62px",
+                      height: "30px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: getFontSize(
+                          director.nationality.length,
+                          36,
+                          baseFontSize - 4
+                        ),
+                        textAlign: "center",
+                        width: "100%",
+                      }}
+                    >
+                      {director.nationality}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      width: "35px",
+                      height: "30px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: getFontSize(
+                          director.incorporator.length,
+                          8,
+                          baseFontSize - 4
+                        ),
+                        textAlign: "center",
+                        width: "100%",
+                      }}
+                    >
+                      {director.incorporator}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      width: "32px",
+                      height: "30px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: getFontSize(
+                          director.board.length,
+                          8,
+                          baseFontSize - 4
+                        ),
+                        textAlign: "center",
+                        width: "100%",
+                      }}
+                    >
+                      {director.board}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      width: "35px",
+                      height: "30px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: getFontSize(
+                          director.gender.length,
+                          8,
+                          baseFontSize - 4
+                        ),
+                        textAlign: "center",
+                        width: "100%",
+                      }}
+                    >
+                      {director.gender}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      width: "44px",
+                      height: "30px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: getFontSize(
+                          director.stock_holder.length,
+                          8,
+                          baseFontSize - 4
+                        ),
+                        textAlign: "center",
+                        width: "100%",
+                      }}
+                    >
+                      {director.stock_holder}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      width: "44px",
+                      height: "30px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: getFontSize(
+                          director.officer.length,
+                          15,
+                          baseFontSize - 4
+                        ),
+                        textAlign: "center",
+                        width: "100%",
+                      }}
+                    >
+                      {director.officer}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      width: "31px",
+                      height: "30px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: getFontSize(
+                          director.executive_committe.length,
+                          9,
+                          baseFontSize - 4
+                        ),
+                        textAlign: "center",
+                        width: "100%",
+                      }}
+                    >
+                      {director.executive_committe}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      width: "87px",
+                      height: "30px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: getFontSize(
+                          director.tax_id_number.length,
+                          66,
+                          baseFontSize - 4
+                        ),
+                        textAlign: "center",
+                        width: "100%",
+                      }}
+                    >
+                      {director.tax_id_number}
+                    </Text>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        </View>
+        <Image
+          style={{
+            position: "absolute",
+            zIndex: -1,
+            top: 0,
+            width: "100%",
+          }}
+          src={pageFour}
+        ></Image>
+      </Page>
+    );
+  };
+
+  return page4();
 }
 
 export default PageFour;

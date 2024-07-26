@@ -92,6 +92,7 @@ import pageOne from "../photos/page1special_new.jpg";
 // });
 
 import Cambria from "/fonts/Cambria.ttf";
+import CambriaBold from "/fonts/CambriaBold.ttf";
 
 // Function to determine font size based on text length
 const getFontSize = (textLength, maxLength, baseSize) => {
@@ -114,6 +115,7 @@ const getFontSize = (textLength, maxLength, baseSize) => {
 };
 
 Font.register({ family: "Cambria", src: Cambria });
+Font.register({ family: "CambriaBold", src: CambriaBold });
 
 const styles = StyleSheet.create({
   year: {
@@ -322,10 +324,11 @@ const PageOneSpecial = ({
             style={{
               fontSize: getFontSize(corporate_name.length, 104, baseFontSize),
               textAlign: "center",
+              fontFamily: "CambriaBold",
               width: "100%",
             }}
           >
-            {corporate_name}
+            {corporate_name.toUpperCase()}
           </Text>
         </View>
         <View
@@ -376,6 +379,7 @@ const PageOneSpecial = ({
                 104,
                 baseFontSize
               ),
+              fontFamily: "CambriaBold",
               textAlign: "center",
               width: "100%",
             }}
@@ -701,7 +705,7 @@ const PageOneSpecial = ({
             style={{
               fontSize: getFontSize(
                 official_email_address.length,
-                122,
+                32,
                 baseFontSize
               ),
               textAlign: "center",

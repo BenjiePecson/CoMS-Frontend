@@ -79,7 +79,7 @@ const NoticeOfMeetings = () => {
 
   const list_of_agendas = [
     "Call to order",
-    "Certifcation of Notice and quorum of the Meeting",
+    "Certification of Notice and quorum of the Meeting",
     "Approval of Authorized Representative to Transact with the Government Agencies",
     "Approval of Authorized Representative to Transact with the Banks",
     "Approval of Authorized Representative to Transact with the Telecommunications Company",

@@ -786,14 +786,20 @@ function PageOne({
             height: "28px",
           }}
         >
-          <Text
-            style={{
-              fontSize: getFontSize(primary_purpose.length, 122, baseFontSize),
-              textAlign: "center",
-            }}
-          >
-            {primary_purpose}
-          </Text>
+          {primary_purpose != undefined && (
+            <Text
+              style={{
+                fontSize: getFontSize(
+                  primary_purpose.length,
+                  122,
+                  baseFontSize
+                ),
+                textAlign: "center",
+              }}
+            >
+              {primary_purpose}
+            </Text>
+          )}
         </View>
         <View
           style={{

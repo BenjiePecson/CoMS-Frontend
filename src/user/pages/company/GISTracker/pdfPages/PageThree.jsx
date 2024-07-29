@@ -652,8 +652,13 @@ function PageThree({
                     <Text
                       style={{
                         fontSize: getFontSize(
-                          formatNumberWithComma(capital_stock.amount.toFixed(2))
-                            .length,
+                          // formatNumberWithComma(capital_stock.amount.toFixed(2))
+                          //   .length,
+                          !isNaN(Number(capital_stock.amount))
+                            ? formatNumberWithComma(
+                                Number(capital_stock.amount).toFixed(2)
+                              ).length
+                            : 0,
                           47,
                           baseFontSize - 4
                         ),
@@ -661,7 +666,11 @@ function PageThree({
                         width: "100%",
                       }}
                     >
-                      {formatNumberWithComma(capital_stock.amount.toFixed(2))}
+                      {/* {formatNumberWithComma(capital_stock.amount.toFixed(2))} */}
+                      {!isNaN(Number(capital_stock.amount)) &&
+                        formatNumberWithComma(
+                          Number(capital_stock.amount).toFixed(2)
+                        )}
                     </Text>
                   </View>
                 </View>
@@ -914,9 +923,11 @@ function PageThree({
                       <Text
                         style={{
                           fontSize: getFontSize(
-                            formatNumberWithComma(
-                              subscribe_capital.amount.toFixed(2)
-                            ).length,
+                            !isNaN(Number(subscribe_capital.amount))
+                              ? formatNumberWithComma(
+                                  Number(subscribe_capital.amount).toFixed(2)
+                                ).length
+                              : 0,
                             38,
                             baseFontSize - 4
                           ),
@@ -924,9 +935,10 @@ function PageThree({
                           width: "100%",
                         }}
                       >
-                        {formatNumberWithComma(
-                          subscribe_capital.amount.toFixed(2)
-                        )}
+                        {!isNaN(Number(subscribe_capital.amount)) &&
+                          formatNumberWithComma(
+                            Number(subscribe_capital.amount).toFixed(2)
+                          )}
                       </Text>
                     </View>
                     <View
@@ -1235,9 +1247,11 @@ function PageThree({
                       <Text
                         style={{
                           fontSize: getFontSize(
-                            formatNumberWithComma(
-                              subscribe_capital.amount.toFixed(2)
-                            ).length,
+                            !isNaN(Number(subscribe_capital.amount))
+                              ? formatNumberWithComma(
+                                  Number(subscribe_capital.amount).toFixed(2)
+                                ).length
+                              : 0,
                             38,
                             baseFontSize - 4
                           ),
@@ -1245,9 +1259,13 @@ function PageThree({
                           width: "100%",
                         }}
                       >
-                        {formatNumberWithComma(
+                        {/* {formatNumberWithComma(
                           subscribe_capital.amount.toFixed(2)
-                        )}
+                        )} */}
+                        {!isNaN(Number(subscribe_capital.amount)) &&
+                          formatNumberWithComma(
+                            Number(subscribe_capital.amount).toFixed(2)
+                          )}
                       </Text>
                     </View>
                     <View
@@ -1624,9 +1642,14 @@ function PageThree({
                       <Text
                         style={{
                           fontSize: getFontSize(
-                            formatNumberWithComma(
-                              subscribe_capital.amount.toFixed(2)
-                            ).length,
+                            // formatNumberWithComma(
+                            //   subscribe_capital.amount.toFixed(2)
+                            // ).length,
+                            !isNaN(Number(subscribe_capital.amount))
+                              ? formatNumberWithComma(
+                                  Number(subscribe_capital.amount).toFixed(2)
+                                ).length
+                              : 0,
                             38,
                             baseFontSize - 4
                           ),
@@ -1634,9 +1657,13 @@ function PageThree({
                           width: "100%",
                         }}
                       >
-                        {formatNumberWithComma(
+                        {/* {formatNumberWithComma(
                           subscribe_capital.amount.toFixed(2)
-                        )}
+                        )} */}
+                        {!isNaN(Number(subscribe_capital.amount)) &&
+                          formatNumberWithComma(
+                            Number(subscribe_capital.amount).toFixed(2)
+                          )}
                       </Text>
                     </View>
                     <View
@@ -1918,9 +1945,14 @@ function PageThree({
                     <Text
                       style={{
                         fontSize: getFontSize(
-                          formatNumberWithComma(
-                            paid_up_capital.amount.toFixed(2)
-                          ).length,
+                          // formatNumberWithComma(
+                          //   paid_up_capital.amount.toFixed(2)
+                          // ).length,
+                          !isNaN(Number(paid_up_capital.amount))
+                            ? formatNumberWithComma(
+                                Number(paid_up_capital.amount).toFixed(2)
+                              ).length
+                            : 0,
                           38,
                           baseFontSize - 4
                         ),
@@ -1928,7 +1960,11 @@ function PageThree({
                         width: "100%",
                       }}
                     >
-                      {formatNumberWithComma(paid_up_capital.amount.toFixed(2))}
+                      {/* {formatNumberWithComma(paid_up_capital.amount.toFixed(2))} */}
+                      {!isNaN(Number(paid_up_capital.amount)) &&
+                        formatNumberWithComma(
+                          Number(paid_up_capital.amount).toFixed(2)
+                        )}
                     </Text>
                   </View>
                   <View

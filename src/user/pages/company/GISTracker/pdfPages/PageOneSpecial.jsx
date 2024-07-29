@@ -384,7 +384,7 @@ const PageOneSpecial = ({
               width: "100%",
             }}
           >
-            {business_or_trade_name}
+            {business_or_trade_name.toUpperCase()}
           </Text>
         </View>
       </View>

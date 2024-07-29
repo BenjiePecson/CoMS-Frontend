@@ -230,6 +230,7 @@ const step7 = () => {
                   corporate_name={formData.corporate_name}
                 />
                 <PageFive
+                  formData={formData}
                   corporate_name={formData.corporate_name}
                   total_number_of_stockholders={
                     formData.total_number_of_stockholders
@@ -251,6 +252,7 @@ const step7 = () => {
                   }
                 />
                 <PageSix
+                  formData={formData}
                   corporate_name={formData.corporate_name}
                   total_number_of_stockholders={
                     formData.total_number_of_stockholders
@@ -272,6 +274,7 @@ const step7 = () => {
                   }
                 />
                 <PageSeven
+                  formData={formData}
                   corporate_name={formData.corporate_name}
                   total_number_of_stockholders={
                     formData.total_number_of_stockholders
@@ -294,10 +297,12 @@ const step7 = () => {
                 />
                 <PageEight corporate_name={formData.corporate_name} />
                 <PageNine
+                  formData={formData}
                   corporate_secretary={formData.corporate_secretary}
                   coporate_name={formData.corporate_name}
                 />
                 <PageTen
+                  formData={formData}
                   corporate_name={formData.corporate_name}
                   sec_registration_number={formData.sec_registration_number}
                   beneficial_ownership_declaration={

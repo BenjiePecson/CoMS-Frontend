@@ -1,12 +1,20 @@
-import { Page, Text, Image, StyleSheet, View } from "@react-pdf/renderer";
+import { Page, Text, Image, StyleSheet, View, Font } from "@react-pdf/renderer";
 import pageEight from "../photos/page8.jpg";
+
+import Cambria from "/fonts/Cambria.ttf";
+import CambriaBold from "/fonts/CambriaBold.ttf";
+
+Font.register({ family: "Cambria", src: Cambria });
+Font.register({ family: "CambriaBold", src: CambriaBold });
+
+const baseFontSize = 12; // Base font size
 
 const styles = StyleSheet.create({
   corporateName: {
     marginTop: 105,
     marginLeft: 120,
     fontSize: "10px",
-    fontFamily: "Times-Bold",
+    fontFamily: "CambriaBold",
     position: "absolute",
   },
   view1: {
@@ -18,7 +26,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     fontSize: "9px",
-    fontFamily: "Times-Roman",
+    // fontFamily: "Times-Roman",
     marginBottom: 14,
   },
   text1: {
@@ -34,15 +42,15 @@ const styles = StyleSheet.create({
     fontSize: "9px",
   },
   text2: {
-    fontFamily: "Times-Roman",
+    // fontFamily: "Times-Roman",
     width: "240px",
   },
   text2_1: {
-    fontFamily: "Times-Roman",
+    // fontFamily: "Times-Roman",
     width: "120px",
   },
   text2_2: {
-    fontFamily: "Times-Bold",
+    // fontFamily: "Times-Bold",
   },
   view3: {
     marginTop: 374,
@@ -51,7 +59,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     fontSize: "9px",
-    fontFamily: "Times-Roman",
+    // fontFamily: "Times-Roman",
   },
   text3: {
     width: "240",
@@ -66,7 +74,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     fontSize: "9px",
-    fontFamily: "Times-Roman",
+    // fontFamily: "Times-Roman",
     marginBottom: 4,
   },
   text4: {
@@ -81,7 +89,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     fontSize: "9px",
-    fontFamily: "Times-Bold",
+    // fontFamily: "Times-Bold",
     marginBottom: 14,
   },
   text5: {
@@ -94,7 +102,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     fontSize: "9px",
-    fontFamily: "Times-Bold",
+    // fontFamily: "Times-Bold",
   },
   text6: {
     width: "160px",
@@ -109,7 +117,7 @@ const styles = StyleSheet.create({
 
 const PageEight = ({ corporate_name }) => {
   return (
-    <Page size="A4" style={{ position: "relative" }}>
+    <Page size="A4" style={{ position: "relative", fontFamily: "Cambria" }}>
       <Text style={styles.corporateName}>{corporate_name}</Text>
       <View style={styles.view1}>
         <View style={styles.view1_1}>

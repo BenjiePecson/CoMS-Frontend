@@ -1,5 +1,14 @@
-import { Page, Text, Image, StyleSheet, View } from "@react-pdf/renderer";
-import pageTen from "../photos/page10_new.jpg";
+import { Page, Text, Image, StyleSheet, View, Font } from "@react-pdf/renderer";
+import pageTen from "../photos/page10_blank.jpg";
+import { useEffect, useState } from "react";
+
+import Cambria from "/fonts/Cambria.ttf";
+import CambriaBold from "/fonts/CambriaBold.ttf";
+import CambriaBoldItalic from "/fonts/CambriaBoldItalic.ttf";
+
+Font.register({ family: "Cambria", src: Cambria });
+Font.register({ family: "CambriaBold", src: CambriaBold });
+Font.register({ family: "CambriaBoldItalic", src: CambriaBoldItalic });
 
 const styles = StyleSheet.create({
   header: {
@@ -100,6 +109,23 @@ const PageTen = ({
   corporate_name,
   sec_registration_number,
 }) => {
+  const [pageWidth, setPageWidth] = useState(100);
+  const [bodTOP, setBODTop] = useState(535);
+
+  useEffect(() => {
+    if (formData.corporate_name != "") {
+      if (formData.beneficial_ownership_declaration.length == 1) {
+        setBODTop(555);
+      } else if (formData.beneficial_ownership_declaration.length == 2) {
+        setBODTop(550);
+      } else if (formData.beneficial_ownership_declaration.length == 3) {
+        setBODTop(545);
+      } else if (formData.beneficial_ownership_declaration.length == 4) {
+        setBODTop(540);
+      }
+    }
+  }, [formData]);
+
   const page10_old = () => {
     return (
       <Page size="A4" style={{ position: "relative" }}>
@@ -140,6 +166,11 @@ const PageTen = ({
   const page10 = () => {
     const baseFontSize = 12;
 
+    let addBorder = {
+      borderTop: "1px solid black",
+      borderLeft: "1px solid black",
+    };
+
     return (
       <Page
         size="A4"
@@ -149,7 +180,7 @@ const PageTen = ({
           fontSize: baseFontSize,
         }}
       >
-        <View style={{ position: "absolute" }}>
+        <View style={{ position: "absolute", width: "100%" }}>
           <View
             style={{
               marginTop: 40,
@@ -233,216 +264,602 @@ const PageTen = ({
 
           <View
             style={{
-              marginTop: 623,
-              marginLeft: 36,
+              marginTop: `${bodTOP}px`,
               position: "absolute",
+              width: "100%",
             }}
           >
-            {formData.beneficial_ownership_declaration.map((bod, index) => {
-              if (index > 2) {
-                return <></>;
-              }
-              return (
-                <View
-                  key={`bod_${index}`}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
+            <View
+              style={{
+                padding: "0px 20px",
+                width: "100%",
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  fontSize: baseFontSize - 4,
+                  display: "flex",
+                  gap: "5",
+                  // border: "1px solid red",
+                }}
+              >
+                <View style={{ display: "flex", flexDirection: "column" }}>
                   <View
                     style={{
                       display: "flex",
                       flexDirection: "row",
+                      fontFamily: "CambriaBold",
                     }}
                   >
                     <View
                       style={{
-                        width: "91px",
-                        height: "25px",
+                        ...addBorder,
+                        width: "15%",
                         display: "flex",
                         flexDirection: "col",
                         justifyContent: "center",
-                        padding: "2px",
                       }}
                     >
-                      <Text
-                        style={{
-                          fontSize: getFontSize(
-                            bod.complete_name.length,
-                            40,
-                            baseFontSize - 4
-                          ),
-                          textAlign: "center",
-                        }}
-                      >
-                        {bod.complete_name}
+                      <Text style={{ textAlign: "center", padding: "5px" }}>
+                        COMPLETE NAME (Surname, Given Name, Middle Name, Name
+                        Extension (i.e., Jr., Sr., III)
                       </Text>
                     </View>
                     <View
                       style={{
-                        width: "84px",
-                        height: "25px",
+                        ...addBorder,
+                        width: "15%",
                         display: "flex",
                         flexDirection: "col",
                         justifyContent: "center",
                       }}
                     >
-                      <Text
-                        style={{
-                          fontSize: getFontSize(
-                            bod.specific_residual_address.length,
-                            45,
-                            baseFontSize - 4
-                          ),
-                          textAlign: "center",
-                        }}
-                      >
-                        {bod.specific_residual_address}
+                      <Text style={{ textAlign: "center", padding: "5px" }}>
+                        SPECIFIC RESIDENTIAL ADDRESS
                       </Text>
                     </View>
                     <View
                       style={{
-                        width: "58px",
-                        height: "25px",
+                        ...addBorder,
+                        width: "12%",
                         display: "flex",
                         flexDirection: "col",
                         justifyContent: "center",
-                        padding: "2px",
                       }}
                     >
-                      <Text
-                        style={{
-                          fontSize: getFontSize(
-                            bod.nationality.length,
-                            17,
-                            baseFontSize - 4
-                          ),
-                          textAlign: "center",
-                        }}
-                      >
-                        {bod.nationality}
+                      <Text style={{ textAlign: "center", padding: "5px" }}>
+                        NATIONALITY
                       </Text>
                     </View>
                     <View
                       style={{
-                        width: "53px",
-                        height: "25px",
+                        ...addBorder,
+                        width: "12%",
                         display: "flex",
                         flexDirection: "col",
                         justifyContent: "center",
-                        padding: "2px",
                       }}
                     >
-                      <Text
-                        style={{
-                          fontSize: getFontSize(
-                            bod.date_of_birth.length,
-                            21,
-                            baseFontSize - 4
-                          ),
-                          textAlign: "center",
-                        }}
-                      >
-                        {bod.date_of_birth}
+                      <Text style={{ textAlign: "center", padding: "5px" }}>
+                        DATE OF BIRTH
                       </Text>
                     </View>
                     <View
                       style={{
-                        width: "61px",
-                        height: "25px",
+                        ...addBorder,
+                        width: "12%",
                         display: "flex",
                         flexDirection: "col",
                         justifyContent: "center",
-                        padding: "2px",
                       }}
                     >
-                      <Text
-                        style={{
-                          fontSize: getFontSize(
-                            bod.tax_id_number.length,
-                            13,
-                            baseFontSize - 4
-                          ),
-                          textAlign: "center",
-                        }}
-                      >
-                        {bod.tax_id_number}
+                      <Text style={{ textAlign: "center", padding: "5px" }}>
+                        TAX IDENTIFICATION NO.
                       </Text>
                     </View>
                     <View
                       style={{
-                        width: "62px",
-                        height: "25px",
+                        ...addBorder,
+                        width: "12%",
                         display: "flex",
                         flexDirection: "col",
                         justifyContent: "center",
-                        padding: "2px",
                       }}
                     >
-                      <Text
-                        style={{
-                          fontSize: getFontSize(
-                            bod.percent_of_ownership.length,
-                            27,
-                            baseFontSize - 4
-                          ),
-                          textAlign: "center",
-                        }}
-                      >
-                        {`${bod.percent_of_ownership}%`}
+                      <Text style={{ textAlign: "center", padding: "5px" }}>
+                        % OF OWNERSHIP / % OF VOTING RIGHTS
                       </Text>
                     </View>
                     <View
                       style={{
-                        width: "56px",
-                        height: "25px",
+                        ...addBorder,
+                        width: "12%",
                         display: "flex",
                         flexDirection: "col",
                         justifyContent: "center",
-                        padding: "2px",
                       }}
                     >
-                      <Text
-                        style={{
-                          fontSize: getFontSize(
-                            bod.type_of_beneficial_owner.length,
-                            27,
-                            baseFontSize - 4
-                          ),
-                          textAlign: "center",
-                        }}
-                      >
-                        {bod.type_of_beneficial_owner}
+                      <Text style={{ textAlign: "center", padding: "5px" }}>
+                        TYPE OF BENEFICIAL OWNER Direct (D) or Indirect (I)
                       </Text>
                     </View>
                     <View
                       style={{
-                        width: "71px",
-                        height: "25px",
+                        ...addBorder,
+                        borderRight: "1px solid black",
+                        width: "10%",
                         display: "flex",
                         flexDirection: "col",
                         justifyContent: "center",
-                        padding: "2px",
                       }}
                     >
-                      <Text
-                        style={{
-                          fontSize: getFontSize(
-                            bod.category_of_beneficial_ownership.length,
-                            27,
-                            baseFontSize - 4
-                          ),
-                          textAlign: "center",
-                        }}
-                      >
-                        {bod.category_of_beneficial_ownership}
+                      <Text style={{ textAlign: "center", padding: "5px" }}>
+                        CATEGORY OF BENEFICIAL OWNERSHIP
                       </Text>
                     </View>
                   </View>
+                  {formData.beneficial_ownership_declaration.length != 0
+                    ? formData.beneficial_ownership_declaration.map(
+                        (bod, index) => {
+                          addBorder = {
+                            ...addBorder,
+                            borderBottom: `${
+                              // formData.beneficial_ownership_declaration.length - 1 ==
+                              // index
+                              formData.beneficial_ownership_declaration.length -
+                                1 ===
+                              index
+                                ? "1px"
+                                : "0px"
+                            } solid black`,
+                          };
+
+                          return (
+                            <View
+                              key={`bod_${index}`}
+                              style={{
+                                display: "flex",
+                                flexDirection: "row",
+                              }}
+                            >
+                              <View
+                                style={{
+                                  ...addBorder,
+                                  width: "15%",
+                                  height: "30px",
+                                  display: "flex",
+                                  flexDirection: "col",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "5px",
+                                    fontSize: getFontSize(
+                                      bod.complete_name.length,
+                                      17,
+                                      baseFontSize - 4
+                                    ),
+                                  }}
+                                >
+                                  {bod.complete_name}
+                                </Text>
+                              </View>
+                              <View
+                                style={{
+                                  ...addBorder,
+                                  width: "15%",
+                                  height: "30px",
+                                  display: "flex",
+                                  flexDirection: "col",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "0px",
+                                    fontSize: getFontSize(
+                                      bod.specific_residual_address.length,
+                                      38,
+                                      baseFontSize - 4
+                                    ),
+                                  }}
+                                >
+                                  {bod.specific_residual_address}
+                                </Text>
+                              </View>
+                              <View
+                                style={{
+                                  ...addBorder,
+                                  width: "12%",
+                                  height: "30px",
+                                  display: "flex",
+                                  flexDirection: "col",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "2px",
+                                    fontSize: getFontSize(
+                                      bod.nationality.length,
+                                      15,
+                                      baseFontSize - 4
+                                    ),
+                                  }}
+                                >
+                                  {bod.nationality}
+                                </Text>
+                              </View>
+                              <View
+                                style={{
+                                  ...addBorder,
+                                  width: "12%",
+                                  height: "30px",
+                                  display: "flex",
+                                  flexDirection: "col",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "2px",
+                                    fontSize: getFontSize(
+                                      bod.date_of_birth.length,
+                                      30,
+                                      baseFontSize - 4
+                                    ),
+                                  }}
+                                >
+                                  {bod.date_of_birth}
+                                </Text>
+                              </View>
+                              <View
+                                style={{
+                                  ...addBorder,
+                                  width: "12%",
+                                  height: "30px",
+                                  display: "flex",
+                                  flexDirection: "col",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "2px",
+                                    fontSize: getFontSize(
+                                      bod.tax_id_number.length,
+                                      26,
+                                      baseFontSize - 4
+                                    ),
+                                  }}
+                                >
+                                  {bod.tax_id_number}
+                                </Text>
+                              </View>
+                              <View
+                                style={{
+                                  ...addBorder,
+                                  width: "12%",
+                                  height: "30px",
+                                  display: "flex",
+                                  flexDirection: "col",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "2px",
+                                    fontSize: getFontSize(
+                                      bod.percent_of_ownership.length,
+                                      26,
+                                      baseFontSize - 4
+                                    ),
+                                  }}
+                                >
+                                  {`${bod.percent_of_ownership}%`}
+                                </Text>
+                              </View>
+                              <View
+                                style={{
+                                  ...addBorder,
+                                  width: "12%",
+                                  height: "30px",
+                                  display: "flex",
+                                  flexDirection: "col",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "2px",
+                                    fontSize: getFontSize(
+                                      bod.type_of_beneficial_owner.length,
+                                      26,
+                                      baseFontSize - 4
+                                    ),
+                                  }}
+                                >
+                                  {bod.type_of_beneficial_owner}
+                                </Text>
+                              </View>
+                              <View
+                                style={{
+                                  ...addBorder,
+                                  borderRight: "1px solid black",
+                                  width: "10%",
+                                  height: "30px",
+                                  display: "flex",
+                                  flexDirection: "col",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "2px",
+                                    fontSize: getFontSize(
+                                      bod.category_of_beneficial_ownership
+                                        .length,
+                                      24,
+                                      baseFontSize - 4
+                                    ),
+                                  }}
+                                >
+                                  {bod.category_of_beneficial_ownership}
+                                </Text>
+                              </View>
+                            </View>
+                          );
+                        }
+                      )
+                    : [
+                        {
+                          complete_name: "",
+                          specific_residual_address: "",
+                          nationality: "",
+                          date_of_birth: "",
+                          tax_id_number: "",
+                          percent_of_ownership: "",
+                          type_of_beneficial_owner: "",
+                          category_of_beneficial_ownership: "",
+                        },
+                      ].map((bod, index) => {
+                        addBorder = {
+                          ...addBorder,
+                          borderBottom: `1px solid black`,
+                        };
+
+                        return (
+                          <View
+                            key={`bod_${index}`}
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                            }}
+                          >
+                            <View
+                              style={{
+                                ...addBorder,
+                                width: "15%",
+                                height: "30px",
+                                display: "flex",
+                                flexDirection: "col",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  textAlign: "center",
+                                  padding: "5px",
+                                  fontSize: getFontSize(
+                                    bod.complete_name.length,
+                                    17,
+                                    baseFontSize - 4
+                                  ),
+                                }}
+                              >
+                                {bod.complete_name}
+                              </Text>
+                            </View>
+                            <View
+                              style={{
+                                ...addBorder,
+                                width: "15%",
+                                height: "30px",
+                                display: "flex",
+                                flexDirection: "col",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  textAlign: "center",
+                                  padding: "0px",
+                                  fontSize: getFontSize(
+                                    bod.specific_residual_address.length,
+                                    38,
+                                    baseFontSize - 4
+                                  ),
+                                }}
+                              >
+                                {bod.specific_residual_address}
+                              </Text>
+                            </View>
+                            <View
+                              style={{
+                                ...addBorder,
+                                width: "12%",
+                                height: "30px",
+                                display: "flex",
+                                flexDirection: "col",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  textAlign: "center",
+                                  padding: "2px",
+                                  fontSize: getFontSize(
+                                    bod.nationality.length,
+                                    15,
+                                    baseFontSize - 4
+                                  ),
+                                }}
+                              >
+                                {bod.nationality}
+                              </Text>
+                            </View>
+                            <View
+                              style={{
+                                ...addBorder,
+                                width: "12%",
+                                height: "30px",
+                                display: "flex",
+                                flexDirection: "col",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  textAlign: "center",
+                                  padding: "2px",
+                                  fontSize: getFontSize(
+                                    bod.date_of_birth.length,
+                                    30,
+                                    baseFontSize - 4
+                                  ),
+                                }}
+                              >
+                                {bod.date_of_birth}
+                              </Text>
+                            </View>
+                            <View
+                              style={{
+                                ...addBorder,
+                                width: "12%",
+                                height: "30px",
+                                display: "flex",
+                                flexDirection: "col",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  textAlign: "center",
+                                  padding: "2px",
+                                  fontSize: getFontSize(
+                                    bod.tax_id_number.length,
+                                    26,
+                                    baseFontSize - 4
+                                  ),
+                                }}
+                              >
+                                {bod.tax_id_number}
+                              </Text>
+                            </View>
+                            <View
+                              style={{
+                                ...addBorder,
+                                width: "12%",
+                                height: "30px",
+                                display: "flex",
+                                flexDirection: "col",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  textAlign: "center",
+                                  padding: "2px",
+                                  fontSize: getFontSize(
+                                    bod.percent_of_ownership.length,
+                                    26,
+                                    baseFontSize - 4
+                                  ),
+                                }}
+                              >
+                                {`${bod.percent_of_ownership}`}
+                              </Text>
+                            </View>
+                            <View
+                              style={{
+                                ...addBorder,
+                                width: "12%",
+                                height: "30px",
+                                display: "flex",
+                                flexDirection: "col",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  textAlign: "center",
+                                  padding: "2px",
+                                  fontSize: getFontSize(
+                                    bod.type_of_beneficial_owner.length,
+                                    26,
+                                    baseFontSize - 4
+                                  ),
+                                }}
+                              >
+                                {bod.type_of_beneficial_owner}
+                              </Text>
+                            </View>
+                            <View
+                              style={{
+                                ...addBorder,
+                                borderRight: "1px solid black",
+                                width: "10%",
+                                height: "30px",
+                                display: "flex",
+                                flexDirection: "col",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  textAlign: "center",
+                                  padding: "2px",
+                                  fontSize: getFontSize(
+                                    bod.category_of_beneficial_ownership.length,
+                                    24,
+                                    baseFontSize - 4
+                                  ),
+                                }}
+                              >
+                                {bod.category_of_beneficial_ownership}
+                              </Text>
+                            </View>
+                          </View>
+                        );
+                      })}
                 </View>
-              );
-            })}
+                <View style={{ marginTop: `${bodTOP - 535}px` }}>
+                  <Text style={{ fontFamily: "CambriaBoldItalic" }}>
+                    Note: This page is not for uploading on the SEC iView.
+                  </Text>
+                  <View
+                    style={{
+                      marginLeft: "30px",
+                      marginTop: `3px`,
+                    }}
+                  >
+                    <Text>1 For Stock Corporations.</Text>
+                    <Text>2 For Non-Stock Corporations</Text>
+                    <Text>3 For Stock Corporations.</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
           </View>
         </View>
 
@@ -451,7 +868,7 @@ const PageTen = ({
             position: "absolute",
             zIndex: -1,
             top: 0,
-            width: "100%",
+            width: `100%`,
           }}
           src={pageTen}
         ></Image>

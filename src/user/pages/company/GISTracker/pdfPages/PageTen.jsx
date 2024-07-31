@@ -102,6 +102,24 @@ const formatNumberWithComma = (number) => {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
+const WrapText = (text, justifyContent, textAlign, fontSize) => {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: justifyContent,
+      }}
+    >
+      {text?.match(/\w+|\W+/g)?.map((seg, i) => (
+        <Text key={i} style={{ textAlign: textAlign, fontSize: fontSize }}>
+          {seg}
+        </Text>
+      ))}
+    </View>
+  );
+};
+
 const PageTen = ({
   formData,
   beneficial_ownership_declaration,
@@ -309,7 +327,7 @@ const PageTen = ({
                     <View
                       style={{
                         ...addBorder,
-                        width: "15%",
+                        width: "20%",
                         display: "flex",
                         flexDirection: "col",
                         justifyContent: "center",
@@ -450,14 +468,14 @@ const PageTen = ({
                               <View
                                 style={{
                                   ...addBorder,
-                                  width: "15%",
+                                  width: "20%",
                                   height: "30px",
                                   display: "flex",
                                   flexDirection: "col",
                                   justifyContent: "center",
                                 }}
                               >
-                                <Text
+                                {/* <Text
                                   style={{
                                     textAlign: "center",
                                     padding: "0px",
@@ -469,7 +487,17 @@ const PageTen = ({
                                   }}
                                 >
                                   {bod.specific_residual_address}
-                                </Text>
+                                </Text> */}
+                                {WrapText(
+                                  bod.specific_residual_address,
+                                  "center",
+                                  "center",
+                                  getFontSize(
+                                    bod.specific_residual_address.length,
+                                    95,
+                                    baseFontSize - 5
+                                  )
+                                )}
                               </View>
                               <View
                                 style={{
@@ -673,7 +701,7 @@ const PageTen = ({
                             <View
                               style={{
                                 ...addBorder,
-                                width: "15%",
+                                width: "20%",
                                 height: "30px",
                                 display: "flex",
                                 flexDirection: "col",
@@ -683,7 +711,7 @@ const PageTen = ({
                               <Text
                                 style={{
                                   textAlign: "center",
-                                  padding: "0px",
+                                  // padding: "0px",
                                   fontSize: getFontSize(
                                     bod.specific_residual_address.length,
                                     38,

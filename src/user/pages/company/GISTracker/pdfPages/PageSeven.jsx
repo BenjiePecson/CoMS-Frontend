@@ -439,9 +439,8 @@ const PageSeven = ({
           </View>
 
           <View style={styles_new.stockholders_info_view_outer}>
-            {formData.stock_holders_information.information
-              .slice(14, 21)
-              .map((stockholder, index) => {
+            {formData.stock_holders_information.information.map(
+              (stockholder, index) => {
                 if (!isNaN(Number(stockholder.amount))) {
                   page5TotalAmount += Number(stockholder.amount);
                 }
@@ -451,341 +450,367 @@ const PageSeven = ({
                   );
                 }
 
-                return (
-                  <View key={`stockholder_${index}`}>
-                    <View style={styles_new.stockholders_info_name_view_outer}>
-                      <View>
-                        <View
-                          style={styles_new.stockholders_info_name_view_inner}
-                        >
-                          <Text
-                            style={{
-                              ...styles_new.stockholders_info_name_text,
-                              fontSize: getFontSize(
-                                stockholder.name.length,
-                                36,
-                                baseFontSize - 4
-                              ),
-                            }}
-                          >
-                            {stockholder.name}
-                          </Text>
-                        </View>
-                        <View
-                          style={styles_new.stockholders_info_nationality_inner}
-                        >
-                          <Text
-                            style={{
-                              ...styles_new.stockholders_info_nationality_text,
-                              fontSize: getFontSize(
-                                stockholder.nationality.length,
-                                36,
-                                baseFontSize - 4
-                              ),
-                            }}
-                          >
-                            {stockholder.nationality}
-                          </Text>
-                        </View>
-                        <View
-                          style={
-                            styles_new.stockholders_info_address_view_inner
-                          }
-                        >
-                          <Text
-                            style={{
-                              ...styles_new.stockholders_info_address_text,
-                              fontSize: getFontSize(
-                                stockholder.current_residual_address.length,
-                                117,
-                                baseFontSize - 4
-                              ),
-                            }}
-                          >
-                            {stockholder.current_residual_address}
-                          </Text>
-                        </View>
-                      </View>
-
+                if (index >= 14 && index <= 20) {
+                  return (
+                    <View key={`stockholder_${index}`}>
                       <View
-                        style={{
-                          width: "35px",
-                          height: "13px",
-                        }}
+                        style={styles_new.stockholders_info_name_view_outer}
                       >
-                        <Text
+                        <View>
+                          <View
+                            style={styles_new.stockholders_info_name_view_inner}
+                          >
+                            <Text
+                              style={{
+                                ...styles_new.stockholders_info_name_text,
+                                fontSize: getFontSize(
+                                  stockholder.name.length,
+                                  36,
+                                  baseFontSize - 4
+                                ),
+                              }}
+                            >
+                              {stockholder.name}
+                            </Text>
+                          </View>
+                          <View
+                            style={
+                              styles_new.stockholders_info_nationality_inner
+                            }
+                          >
+                            <Text
+                              style={{
+                                ...styles_new.stockholders_info_nationality_text,
+                                fontSize: getFontSize(
+                                  stockholder.nationality.length,
+                                  36,
+                                  baseFontSize - 4
+                                ),
+                              }}
+                            >
+                              {stockholder.nationality}
+                            </Text>
+                          </View>
+                          <View
+                            style={
+                              styles_new.stockholders_info_address_view_inner
+                            }
+                          >
+                            <Text
+                              style={{
+                                ...styles_new.stockholders_info_address_text,
+                                fontSize: getFontSize(
+                                  stockholder.current_residual_address.length,
+                                  117,
+                                  baseFontSize - 4
+                                ),
+                              }}
+                            >
+                              {stockholder.current_residual_address}
+                            </Text>
+                          </View>
+                        </View>
+
+                        <View
                           style={{
-                            fontSize: getFontSize(
-                              stockholder.type.length,
-                              5,
-                              baseFontSize - 4
-                            ),
-                            textAlign: "center",
-                            marginTop: "1px",
+                            width: "35px",
+                            height: "13px",
                           }}
                         >
-                          {stockholder.type}
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          width: "62px",
-                          height: "56px",
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <View style={{ height: "13px" }}>
                           <Text
                             style={{
                               fontSize: getFontSize(
-                                !isNaN(Number(stockholder.number))
-                                  ? formatNumberWithComma(
-                                      Number(stockholder.number)
-                                    ).length
-                                  : 0,
-                                13,
+                                stockholder.type.length,
+                                5,
                                 baseFontSize - 4
                               ),
-                              textAlign: "right",
-                              paddingRight: "2px",
+                              textAlign: "center",
                               marginTop: "1px",
                             }}
                           >
-                            {!isNaN(Number(stockholder.number)) &&
-                              formatNumberWithComma(Number(stockholder.number))}
+                            {stockholder.type}
                           </Text>
                         </View>
-                        <View style={{ height: "13px" }}>
-                          <Text
-                            style={{
-                              fontSize: getFontSize(
-                                !isNaN(Number(stockholder.number))
-                                  ? formatNumberWithComma(
-                                      Number(stockholder.number)
-                                    ).length
-                                  : 0,
-                                13,
-                                baseFontSize - 4
-                              ),
-                              textAlign: "right",
-                              paddingRight: "2px",
-                              fontFamily: "CambriaBold",
-                            }}
-                          >
-                            {!isNaN(Number(stockholder.number)) &&
-                              formatNumberWithComma(Number(stockholder.number))}
-                          </Text>
+                        <View
+                          style={{
+                            width: "62px",
+                            height: "56px",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <View style={{ height: "13px" }}>
+                            <Text
+                              style={{
+                                fontSize: getFontSize(
+                                  !isNaN(Number(stockholder.number))
+                                    ? formatNumberWithComma(
+                                        Number(stockholder.number)
+                                      ).length
+                                    : 0,
+                                  13,
+                                  baseFontSize - 4
+                                ),
+                                textAlign: "right",
+                                paddingRight: "2px",
+                                marginTop: "1px",
+                              }}
+                            >
+                              {!isNaN(Number(stockholder.number)) &&
+                                formatNumberWithComma(
+                                  Number(stockholder.number)
+                                )}
+                            </Text>
+                          </View>
+                          <View style={{ height: "13px" }}>
+                            <Text
+                              style={{
+                                fontSize: getFontSize(
+                                  !isNaN(Number(stockholder.number))
+                                    ? formatNumberWithComma(
+                                        Number(stockholder.number)
+                                      ).length
+                                    : 0,
+                                  13,
+                                  baseFontSize - 4
+                                ),
+                                textAlign: "right",
+                                paddingRight: "2px",
+                                fontFamily: "CambriaBold",
+                              }}
+                            >
+                              {!isNaN(Number(stockholder.number)) &&
+                                formatNumberWithComma(
+                                  Number(stockholder.number)
+                                )}
+                            </Text>
+                          </View>
                         </View>
-                      </View>
-                      <View
-                        style={{
-                          width: "78px",
-                          height: "56px",
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <View style={{ height: "13px" }}>
-                          <Text
-                            style={{
-                              fontSize: getFontSize(
-                                !isNaN(Number(stockholder.amount))
-                                  ? formatNumberWithComma(
-                                      Number(stockholder.amount).toFixed(2)
-                                    ).length
-                                  : 0,
-                                17,
-                                baseFontSize - 4
-                              ),
-                              textAlign: "right",
-                              paddingRight: "3px",
-                              marginTop: "1px",
-                            }}
-                          >
-                            {!isNaN(Number(stockholder.amount)) &&
-                              formatNumberWithComma(
-                                Number(stockholder.amount).toFixed(2)
-                              )}
-                          </Text>
-                        </View>
+                        <View
+                          style={{
+                            width: "78px",
+                            height: "56px",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <View style={{ height: "13px" }}>
+                            <Text
+                              style={{
+                                fontSize: getFontSize(
+                                  !isNaN(Number(stockholder.amount))
+                                    ? formatNumberWithComma(
+                                        Number(stockholder.amount).toFixed(2)
+                                      ).length
+                                    : 0,
+                                  17,
+                                  baseFontSize - 4
+                                ),
+                                textAlign: "right",
+                                paddingRight: "3px",
+                                marginTop: "1px",
+                              }}
+                            >
+                              {!isNaN(Number(stockholder.amount)) &&
+                                formatNumberWithComma(
+                                  Number(stockholder.amount).toFixed(2)
+                                )}
+                            </Text>
+                          </View>
 
-                        <View style={{ height: "13px" }}>
+                          <View style={{ height: "13px" }}>
+                            <Text
+                              style={{
+                                fontSize: getFontSize(
+                                  !isNaN(Number(stockholder.amount))
+                                    ? formatNumberWithComma(
+                                        Number(stockholder.amount).toFixed(2)
+                                      ).length
+                                    : 0,
+                                  17,
+                                  baseFontSize - 4
+                                ),
+                                textAlign: "right",
+                                paddingRight: "3px",
+                                fontFamily: "CambriaBold",
+                              }}
+                            >
+                              {!isNaN(Number(stockholder.amount)) &&
+                                formatNumberWithComma(
+                                  Number(stockholder.amount).toFixed(2)
+                                )}
+                            </Text>
+                          </View>
+                        </View>
+                        <View
+                          style={{
+                            width: "38px",
+                            display: "flex",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <View style={{ height: "13px" }}>
+                            <Text
+                              style={{
+                                fontSize: getFontSize(
+                                  !isNaN(
+                                    Number(stockholder.percent_of_ownership)
+                                  )
+                                    ? `${formatNumberWithComma(
+                                        Number(
+                                          stockholder.percent_of_ownership
+                                        ).toFixed(2)
+                                      )}%`.length
+                                    : 0,
+                                  9,
+                                  baseFontSize - 4
+                                ),
+                                textAlign: "center",
+                              }}
+                            >
+                              {!isNaN(
+                                Number(stockholder.percent_of_ownership)
+                              ) &&
+                                `${formatNumberWithComma(
+                                  Number(
+                                    stockholder.percent_of_ownership
+                                  ).toFixed(2)
+                                )}%`}
+                            </Text>
+                          </View>
+                        </View>
+                        <View
+                          style={{
+                            width: "74px",
+                            display: "flex",
+                            justifyContent: "center",
+                          }}
+                        >
                           <Text
                             style={{
                               fontSize: getFontSize(
-                                !isNaN(Number(stockholder.amount))
-                                  ? formatNumberWithComma(
-                                      Number(stockholder.amount).toFixed(2)
-                                    ).length
+                                !isNaN(Number(stockholder.amount_paid))
+                                  ? `${formatNumberWithComma(
+                                      Number(stockholder.amount_paid).toFixed(2)
+                                    )}`.length
                                   : 0,
                                 17,
-                                baseFontSize - 4
-                              ),
-                              textAlign: "right",
-                              paddingRight: "3px",
-                              fontFamily: "CambriaBold",
-                            }}
-                          >
-                            {!isNaN(Number(stockholder.amount)) &&
-                              formatNumberWithComma(
-                                Number(stockholder.amount).toFixed(2)
-                              )}
-                          </Text>
-                        </View>
-                      </View>
-                      <View
-                        style={{
-                          width: "38px",
-                          display: "flex",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <View style={{ height: "13px" }}>
-                          <Text
-                            style={{
-                              fontSize: getFontSize(
-                                !isNaN(Number(stockholder.percent_of_ownership))
-                                  ? `${formatNumberWithComma(
-                                      Number(
-                                        stockholder.percent_of_ownership
-                                      ).toFixed(2)
-                                    )}%`.length
-                                  : 0,
-                                9,
                                 baseFontSize - 4
                               ),
                               textAlign: "center",
                             }}
                           >
-                            {!isNaN(Number(stockholder.percent_of_ownership)) &&
+                            {!isNaN(Number(stockholder.amount_paid)) &&
                               `${formatNumberWithComma(
-                                Number(
-                                  stockholder.percent_of_ownership
-                                ).toFixed(2)
-                              )}%`}
+                                Number(stockholder.amount_paid).toFixed(2)
+                              )}`}
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            width: "84px",
+                            display: "flex",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: getFontSize(
+                                stockholder.tax_id_number.length,
+                                17,
+                                baseFontSize - 4
+                              ),
+                              textAlign: "center",
+                            }}
+                          >
+                            {stockholder.tax_id_number}
                           </Text>
                         </View>
                       </View>
-                      <View
-                        style={{
-                          width: "74px",
-                          display: "flex",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Text
-                          style={{
-                            fontSize: getFontSize(
-                              !isNaN(Number(stockholder.amount_paid))
-                                ? `${formatNumberWithComma(
-                                    Number(stockholder.amount_paid).toFixed(2)
-                                  )}`.length
-                                : 0,
-                              17,
-                              baseFontSize - 4
-                            ),
-                            textAlign: "center",
-                          }}
-                        >
-                          {!isNaN(Number(stockholder.amount_paid)) &&
-                            `${formatNumberWithComma(
-                              Number(stockholder.amount_paid).toFixed(2)
-                            )}`}
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          width: "84px",
-                          display: "flex",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Text
-                          style={{
-                            fontSize: getFontSize(
-                              stockholder.tax_id_number.length,
-                              17,
-                              baseFontSize - 4
-                            ),
-                            textAlign: "center",
-                          }}
-                        >
-                          {stockholder.tax_id_number}
-                        </Text>
-                      </View>
                     </View>
-                  </View>
-                );
-              })}
+                  );
+                } else {
+                  return <View key={`stockholder_${index}`}></View>;
+                }
+              }
+            )}
           </View>
 
-          <View
-            style={{
-              marginTop: 583,
-              marginLeft: 296,
-              position: "absolute",
-              display: "flex",
-              flexDirection: "row",
-            }}
-          >
+          {formData.stock_holders_information.information.length >= 15 &&
+          formData.stock_holders_information.information.length.length <= 21 ? (
             <View
               style={{
-                width: "78px",
-                height: "14px",
-                fontSize: getFontSize(
-                  formatNumberWithComma(page5TotalAmount.toFixed(2)).length,
-                  18,
-                  baseFontSize - 4
-                ),
+                marginTop: 583,
+                marginLeft: 296,
+                position: "absolute",
                 display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
+                flexDirection: "row",
               }}
             >
-              <Text style={{ textAlign: "right", paddingRight: "3px" }}>
-                {formatNumberWithComma(page5TotalAmount.toFixed(2))}
-              </Text>
+              <View
+                style={{
+                  width: "78px",
+                  height: "14px",
+                  fontSize: getFontSize(
+                    formatNumberWithComma(page5TotalAmount.toFixed(2)).length,
+                    18,
+                    baseFontSize - 4
+                  ),
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={{ textAlign: "right", paddingRight: "3px" }}>
+                  {formatNumberWithComma(page5TotalAmount.toFixed(2))}
+                </Text>
+              </View>
+              <View
+                style={{
+                  width: "38px",
+                  height: "14px",
+                  fontSize: getFontSize(
+                    `${page5PercentageOfOwnership.toFixed(2)}%`.length,
+                    11,
+                    baseFontSize - 4
+                  ),
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  style={{ textAlign: "center", fontFamily: "CambriaBold" }}
+                >
+                  {`${page5PercentageOfOwnership.toFixed(2)}%`}
+                </Text>
+              </View>
+              <View
+                style={{
+                  width: "159px",
+                  height: "28px",
+                  fontSize: getFontSize(
+                    formatNumberWithComma(page5TotalAmount.toFixed(2)).length,
+                    18,
+                    baseFontSize - 4
+                  ),
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  style={{ textAlign: "center", fontFamily: "CambriaBold" }}
+                >
+                  {formatNumberWithComma(page5TotalAmount.toFixed(2))}
+                </Text>
+              </View>
             </View>
-            <View
-              style={{
-                width: "38px",
-                height: "14px",
-                fontSize: getFontSize(
-                  `${page5PercentageOfOwnership.toFixed(2)}%`.length,
-                  11,
-                  baseFontSize - 4
-                ),
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-              }}
-            >
-              <Text style={{ textAlign: "center", fontFamily: "CambriaBold" }}>
-                {`${page5PercentageOfOwnership.toFixed(2)}%`}
-              </Text>
-            </View>
-            <View
-              style={{
-                width: "159px",
-                height: "28px",
-                fontSize: getFontSize(
-                  formatNumberWithComma(page5TotalAmount.toFixed(2)).length,
-                  18,
-                  baseFontSize - 4
-                ),
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-              }}
-            >
-              <Text style={{ textAlign: "center", fontFamily: "CambriaBold" }}>
-                {formatNumberWithComma(page5TotalAmount.toFixed(2))}
-              </Text>
-            </View>
-          </View>
+          ) : (
+            <></>
+          )}
         </View>
         <Image style={styles_new.image} src={pageSeven}></Image>
       </Page>

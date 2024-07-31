@@ -146,7 +146,7 @@ function PageOne({
   industry_classification,
   primary_purpose,
 }) {
-  const baseFontSize = 10; // Base font size
+  const baseFontSize = 12; // Base font size
 
   const text =
     "To provide user support services, including but not limited to providing remote technical support services, customer support, customer careaa customer careaa customer careaa customer careaa customer careaa careaa customer careaa careaa customer careaa ";
@@ -154,6 +154,25 @@ function PageOne({
   const textCounter = (text) => {
     console.log(text.length);
   };
+
+  const WrapText = (text, justifyContent, textAlign, fontSize) => {
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          justifyContent: justifyContent,
+        }}
+      >
+        {text?.match(/\w+|\W+/g)?.map((seg, i) => (
+          <Text key={i} style={{ textAlign: textAlign, fontSize: fontSize }}>
+            {seg}
+          </Text>
+        ))}
+      </View>
+    );
+  };
+
   return (
     <Page size="A4" style={{ position: "relative", fontFamily: "Cambria" }}>
       <Text style={styles.year}>{year}</Text>
@@ -213,7 +232,11 @@ function PageOne({
         >
           <Text
             style={{
-              fontSize: getFontSize(corporate_name.length, 104, baseFontSize),
+              fontSize: getFontSize(
+                corporate_name.length,
+                104,
+                baseFontSize - 2
+              ),
               textAlign: "center",
               fontFamily: "CambriaBold",
               width: "100%",
@@ -234,7 +257,11 @@ function PageOne({
         >
           <Text
             style={{
-              fontSize: getFontSize(date_registered.length, 43, baseFontSize),
+              fontSize: getFontSize(
+                date_registered.length,
+                43,
+                baseFontSize - 2
+              ),
               textAlign: "center",
               width: "100%",
             }}
@@ -268,14 +295,14 @@ function PageOne({
               fontSize: getFontSize(
                 business_or_trade_name.length,
                 104,
-                baseFontSize
+                baseFontSize - 2
               ),
               fontFamily: "CambriaBold",
               textAlign: "center",
               width: "100%",
             }}
           >
-            {business_or_trade_name}
+            {business_or_trade_name.toUpperCase()}
           </Text>
         </View>
       </View>
@@ -305,7 +332,7 @@ function PageOne({
               fontSize: getFontSize(
                 sec_registration_number.length,
                 104,
-                baseFontSize
+                baseFontSize - 2
               ),
               textAlign: "center",
               width: "100%",
@@ -329,7 +356,11 @@ function PageOne({
         >
           <Text
             style={{
-              fontSize: getFontSize(fiscal_year_end.length, 43, baseFontSize),
+              fontSize: getFontSize(
+                fiscal_year_end.length,
+                43,
+                baseFontSize - 2
+              ),
               textAlign: "center",
             }}
           >
@@ -362,7 +393,7 @@ function PageOne({
               fontSize: getFontSize(
                 date_of_annual_meeting.length,
                 104,
-                baseFontSize
+                baseFontSize - 2
               ),
               textAlign: "center",
               width: "100%",
@@ -386,7 +417,7 @@ function PageOne({
         >
           <Text
             style={{
-              fontSize: getFontSize(corporate_tin.length, 21, baseFontSize),
+              fontSize: getFontSize(corporate_tin.length, 21, baseFontSize - 2),
               textAlign: "center",
             }}
           >
@@ -419,7 +450,7 @@ function PageOne({
               fontSize: getFontSize(
                 actual_date_of_annual_meeting.length,
                 104,
-                baseFontSize
+                baseFontSize - 2
               ),
               textAlign: "center",
               width: "100%",
@@ -445,7 +476,7 @@ function PageOne({
               fontSize: getFontSize(
                 website_url_address.length,
                 22,
-                baseFontSize
+                baseFontSize - 2
               ),
               textAlign: "center",
             }}
@@ -479,7 +510,7 @@ function PageOne({
               fontSize: getFontSize(
                 complete_principal_office_address.length,
                 104,
-                baseFontSize
+                baseFontSize - 2
               ),
               textAlign: "center",
               width: "100%",
@@ -506,7 +537,7 @@ function PageOne({
               fontSize: getFontSize(
                 official_email_address.length,
                 20,
-                baseFontSize
+                baseFontSize - 2
               ),
               textAlign: "center",
             }}
@@ -540,7 +571,7 @@ function PageOne({
               fontSize: getFontSize(
                 complete_principal_office_address.length,
                 104,
-                baseFontSize
+                baseFontSize - 2
               ),
               textAlign: "center",
               width: "100%",
@@ -563,7 +594,7 @@ function PageOne({
         >
           <Text
             style={{
-              fontSize: getFontSize(fax_number.length, 57, baseFontSize),
+              fontSize: getFontSize(fax_number.length, 57, baseFontSize - 2),
               textAlign: "center",
             }}
           >
@@ -597,7 +628,7 @@ function PageOne({
               fontSize: getFontSize(
                 official_email_address.length,
                 32,
-                baseFontSize
+                baseFontSize - 2
               ),
               textAlign: "center",
               width: "100%",
@@ -623,7 +654,7 @@ function PageOne({
               fontSize: getFontSize(
                 alternate_email_address.length,
                 57,
-                baseFontSize
+                baseFontSize - 2
               ),
               textAlign: "center",
             }}
@@ -648,7 +679,7 @@ function PageOne({
               fontSize: getFontSize(
                 official_mobile_number.length,
                 44,
-                baseFontSize
+                baseFontSize - 2
               ),
               textAlign: "center",
             }}
@@ -673,7 +704,7 @@ function PageOne({
               fontSize: getFontSize(
                 alternate_phone_number.length,
                 44,
-                baseFontSize
+                baseFontSize - 2
               ),
               textAlign: "center",
             }}
@@ -708,7 +739,7 @@ function PageOne({
               fontSize: getFontSize(
                 name_of_external_auditor.length,
                 122,
-                baseFontSize
+                baseFontSize - 2
               ),
               textAlign: "center",
               width: "100%",
@@ -735,7 +766,7 @@ function PageOne({
               fontSize: getFontSize(
                 sec_accreditation_number.length,
                 57,
-                baseFontSize
+                baseFontSize - 2
               ),
               textAlign: "center",
             }}
@@ -757,7 +788,11 @@ function PageOne({
         >
           <Text
             style={{
-              fontSize: getFontSize(telephone_number.length, 44, baseFontSize),
+              fontSize: getFontSize(
+                telephone_number.length,
+                44,
+                baseFontSize - 2
+              ),
               textAlign: "center",
             }}
           >
@@ -786,20 +821,30 @@ function PageOne({
             height: "28px",
           }}
         >
-          {primary_purpose != undefined && (
+          {/* {primary_purpose != undefined && (
             <Text
               style={{
                 fontSize: getFontSize(
                   primary_purpose.length,
-                  122,
-                  baseFontSize
+                  131,
+                  baseFontSize - 2
                 ),
+                // fontSize: baseFontSize -2,
+                whiteSpace: "nowrap",
                 textAlign: "center",
               }}
             >
               {primary_purpose}
             </Text>
-          )}
+          )} */}
+          {primary_purpose != "" &&
+            primary_purpose != undefined &&
+            WrapText(
+              primary_purpose,
+              "center",
+              "center",
+              getFontSize(primary_purpose.length, 131, baseFontSize - 2)
+            )}
         </View>
         <View
           style={{
@@ -819,7 +864,7 @@ function PageOne({
               fontSize: getFontSize(
                 industry_classification.length,
                 57,
-                baseFontSize
+                baseFontSize - 2
               ),
               textAlign: "center",
             }}
@@ -841,7 +886,11 @@ function PageOne({
         >
           <Text
             style={{
-              fontSize: getFontSize(geographical_code.length, 44, baseFontSize),
+              fontSize: getFontSize(
+                geographical_code.length,
+                44,
+                baseFontSize - 2
+              ),
               textAlign: "center",
             }}
           >

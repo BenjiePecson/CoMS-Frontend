@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     fontSize: "9px",
     // fontFamily: "Times-Roman",
-    marginBottom: 14,
+    marginBottom: 12,
   },
   text1: {
     width: "170px",
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
 const PageEight = ({ corporate_name }) => {
   return (
     <Page size="A4" style={{ position: "relative", fontFamily: "Cambria" }}>
-      <Text style={styles.corporateName}>{corporate_name}</Text>
+      <Text style={styles.corporateName}>{corporate_name.toUpperCase()}</Text>
       <View style={styles.view1}>
         <View style={styles.view1_1}>
           <Text style={styles.text1}>N/A</Text>

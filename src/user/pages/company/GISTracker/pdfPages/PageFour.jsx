@@ -70,6 +70,24 @@ const getFontSize = (textLength, maxLength, baseSize) => {
   return baseSize;
 };
 
+const WrapText = (text, justifyContent, textAlign, fontSize) => {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: justifyContent,
+      }}
+    >
+      {text?.match(/\w+|\W+/g)?.map((seg, i) => (
+        <Text key={i} style={{ textAlign: textAlign, fontSize: fontSize }}>
+          {seg}
+        </Text>
+      ))}
+    </View>
+  );
+};
+
 function PageFour({ formData, directors_or_officers, corporate_name }) {
   const baseFontSize = 12; // Base font size
 
@@ -179,12 +197,12 @@ function PageFour({ formData, directors_or_officers, corporate_name }) {
                       display: "flex",
                       flexDirection: "col",
                       width: "140px",
-                      height: "30px",
+                      height: "30px"
                     }}
                   >
                     <View
                       style={{
-                        fontSize: baseFontSize - 2,
+                        // height: "10px",
                       }}
                     >
                       <Text
@@ -195,14 +213,20 @@ function PageFour({ formData, directors_or_officers, corporate_name }) {
                             baseFontSize - 4
                           ),
                           fontFamily: "CambriaBold",
-                          padding: "0px 2px",
                         }}
                       >
                         {director.name}
                       </Text>
                     </View>
-                    <View style={{}}>
-                      <Text
+                    <View
+                      style={{
+                        // height: "17px",
+                        paddingRight: "2px",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {/* <Text
                         style={{
                           fontSize: getFontSize(
                             director.current_residual_address.length,
@@ -214,7 +238,17 @@ function PageFour({ formData, directors_or_officers, corporate_name }) {
                         }}
                       >
                         {director.current_residual_address}
-                      </Text>
+                      </Text> */}
+                      {WrapText(
+                        director.current_residual_address,
+                        "flex-start",
+                        "start",
+                        getFontSize(
+                          director.current_residual_address.length,
+                          85,
+                          baseFontSize - 5
+                        )
+                      )}
                     </View>
                   </View>
                   <View

@@ -894,14 +894,22 @@ const PageOneSpecial = ({
             height: "30px",
           }}
         >
-          <Text
+          {/* <Text
             style={{
               fontSize: getFontSize(primary_purpose.length, 122, baseFontSize),
               textAlign: "center",
             }}
           >
             {primary_purpose}
-          </Text>
+          </Text> */}
+          {primary_purpose != "" &&
+            primary_purpose != undefined &&
+            WrapText(
+              primary_purpose,
+              "center",
+              "center",
+              getFontSize(primary_purpose.length, 131, baseFontSize - 2)
+            )}
         </View>
         <View
           style={{

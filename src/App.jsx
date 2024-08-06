@@ -28,6 +28,8 @@ import RolesPage from "./user/pages/user/RolesPage";
 import PermissionsPage from "./user/pages/user/PermissionsPage";
 import UserDashboard from "./user/pages/user/UserDashboard";
 import CompanySetting from "./user/pages/company/CompanySetting";
+import CreateNOM from "./user/pages/company/BoardMeetings/NoticeOfMeetings/CreateNOMPage";
+import ViewNOMPage from "./user/pages/company/BoardMeetings/NoticeOfMeetings/ViewNOMPage";
 
 // axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
@@ -79,6 +81,14 @@ function App() {
             <Route
               path="company/:companyId/notice-of-meeting"
               element={<NoticeOfMeetings />}
+            />
+            <Route
+              path="company/:companyId/notice-of-meeting/create"
+              element={<CreateNOM />}
+            />
+            <Route
+              path="company/:companyId/notice-of-meeting/view/:nomId?"
+              element={<ViewNOMPage />}
             />
             <Route
               path="company/:companyId/minutes-of-meeting"

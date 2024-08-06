@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../../../components/Header";
@@ -11,6 +11,15 @@ import "react-toastify/dist/ReactToastify.css";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 
 import gdriveIcon from "/gdrive.svg";
+import DataTable, { createTheme } from "react-data-table-component";
+
+// import { fetchNoticeOfMeetings } from "./";
+import {
+  deleteNoticeOfMeeting,
+  fetchNoticeOfMeetings,
+  selectNoticeOfMeeting,
+} from "../../../store/boardmeetings/NoticeOfMeetingSlice.js";
+
 import {
   Document,
   Font,
@@ -32,6 +41,9 @@ const NoticeOfMeetings = () => {
   const { companyId } = useParams();
   const companyRecords = useSelector((state) => state.records.records);
   const selectedCompany = useSelector((state) => state.company.selectedCompany);
+  const noticeOfMeetingsRecord = useSelector(
+    (state) => state.noticeOfMeeting.noticeOfMeetings
+  );
 
   const file = {
     fileId: "",
@@ -62,6 +74,7 @@ const NoticeOfMeetings = () => {
   };
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState(noticeOfMeeting);
@@ -307,59 +320,6 @@ const NoticeOfMeetings = () => {
     }
   };
 
-  const isFormValid = async (isEdit) => {
-    let newErrors = {};
-
-    // if (formData.notice_date == "") {
-    //   newErrors.notice_date = "Notice Date is required";
-    // }
-
-    // if (formData.type_of_meeting == "") {
-    //   newErrors.type_of_meeting = "Type of Meeting is required";
-    // }
-
-    // if (formData.proposed_meeting_date == "") {
-    //   newErrors.proposed_meeting_date = "Proposed Meeting Date is required";
-    // }
-
-    // if (formData.status == "") {
-    //   newErrors.status = "Status is required";
-    // }
-
-    if (formData.folder_id == "" && formData.status == "Notice Completed") {
-      newErrors.folder_id = "Folder ID is required";
-    }
-
-    // if (formData.files.length === 0 && formData.status == "Notice Completed") {
-    //   newErrors.files = "Please attach a file";
-    // }
-
-    if (formData.others.actual_meeting == "") {
-      newErrors.actual_meeting = "Actual Meeting Date and Time is required";
-    }
-
-    if (formData.others.agendas.length == 0) {
-      newErrors.agendas = "Please select agenda";
-    }
-
-    if (formData.others.director == "") {
-      newErrors.director = "Director is required";
-    }
-
-    if (formData.others.confirmation_meeting == "") {
-      newErrors.confirmation_meeting =
-        "Confirmation Meeting Date and Time is required";
-    }
-
-    if (formData.others.notice_meeting == "") {
-      newErrors.notice_meeting =
-        "Proxy Notice Meeting Date and Time is required";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length == 0;
-  };
-
   const toggleDelete = (nomId) => {
     Swal.fire({
       title: "Are you sure?",
@@ -374,88 +334,26 @@ const NoticeOfMeetings = () => {
         let status = "error";
         let message = "Failed to delete record";
         try {
-          console.log(nomId);
           let response = await axios.delete(
             `/notice-of-meeting/${companyId}/${nomId}`
           );
           if (response.data.success) {
             status = "success";
             message = "Record deleted successfully!";
-            setRecords((data) => data.filter((u) => u.nomId !== nomId));
+            dispatch(deleteNoticeOfMeeting(nomId));
           }
         } catch (error) {
           console.error("Error deleting a record: ", error);
         } finally {
-          showAlert(status, message);
+          showToast(status, message);
         }
       }
     });
   };
 
-  const toggleCompleted = (index) => {
-    // Swal.fire({
-    //   title: "Are you sure?",
-    //   text: "You won't be able to revert this!",
-    //   icon: "warning",
-    //   showCancelButton: true,
-    //   confirmButtonColor: "#CF0404",
-    //   confirmButtonText: "Yes, delete it!",
-    //   cancelButtonColor: "#B4B4B8",
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     let status = "";
-    //     let message = "";
-    //     try {
-    //       status = "success";
-    //       message = "Record deleted successfully!";
-    //       // setRecords((data) => data.filter((u, idx) => idx !== index));
-    //     } catch (error) {
-    //       status = "error";
-    //       message = "Failed to delete record";
-    //       console.error("Error deleting a record: ", error);
-    //     } finally {
-    //       showAlert(status, message);
-    //     }
-    //   }
-    // });
-  };
-
-  const fetchRecords = async () => {
-    try {
-      let response = await axios.get(`/notice-of-meeting/${companyId}`);
-      setRecords(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // const fetchDirectors = async () => {
-  //   try {
-  //     let response = await axios.get(`/record/current/${companyId}`);
-  //     setSelectedDirector(
-  //       `${response.data[0].name} - ${response.data[0].officer}`
-  //     );
-  //     setListOfDirectors(response.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   useEffect(() => {
-    fetchRecords();
-    // fetchDirectors();
+    dispatch(fetchNoticeOfMeetings(companyId));
   }, []);
-
-  useEffect(() => {
-    if (Object.keys(selectedCompany.latestGIS).length) {
-      setListOfDirectors(selectedCompany.latestGIS.directors_or_officers);
-      if (selectedCompany.latestGIS.directors_or_officers.length != 0) {
-        setSelectedDirector(
-          `${selectedCompany.latestGIS.directors_or_officers[0].name} - ${selectedCompany.latestGIS.directors_or_officers[0].officer}`
-        );
-      }
-    }
-  }, [selectedCompany]);
 
   // Register font
   Font.register({ family: "ProximaNova", src: ProximaNova });
@@ -574,7 +472,7 @@ const NoticeOfMeetings = () => {
                   </td> */}
                   <td className="">
                     {/* {record.status != "Notice Completed" && ( */}
-                    <div className="flex flex-row w-full items-center justify-center gap-2">
+                    <div className="flex flex-row w-full items-center justify-end gap-2">
                       {/* <button
                         onClick={() => {
                           setFormData(record);
@@ -639,25 +537,30 @@ const NoticeOfMeetings = () => {
                       )}
 
                       <button
+                        // onClick={() => {
+                        //   // if (record.status != "Notice Completed") {
+                        //   setErrors([]);
+
+                        //   if (record.others == null) {
+                        //     other_details.director = selectedDirector;
+                        //     setFormData({ ...record, others: other_details });
+                        //   } else {
+                        //     setFormData(record);
+                        //   }
+
+                        //   // // setErrors([]);
+                        //   // // document.getElementById("editModal").showModal();
+                        //   // document.getElementById("newEditModal").showModal();
+                        //   // // }
+                        // }}
                         onClick={() => {
-                          // if (record.status != "Notice Completed") {
-                          setErrors([]);
-
-                          if (record.others == null) {
-                            other_details.director = selectedDirector;
-                            setFormData({ ...record, others: other_details });
-                          } else {
-                            setFormData(record);
-                          }
-
-                          // setErrors([]);
-                          // document.getElementById("editModal").showModal();
-                          document.getElementById("newEditModal").showModal();
-                          // }
+                          navigate(
+                            `/company/7d98c6f4-f03e-4f51-9296-3fb9a017e41c/notice-of-meeting/view/${record.nomId}`
+                          );
                         }}
                         // disabled={record.status == "Notice Completed"}
                       >
-                        <svg
+                        {/* <svg
                           width="44"
                           height="37"
                           viewBox="0 0 44 37"
@@ -671,6 +574,25 @@ const NoticeOfMeetings = () => {
                             strokeWidth="2"
                             strokeLinecap="round"
                             strokeLinejoin="round"
+                          />
+                        </svg> */}
+                        <svg
+                          width="44"
+                          height="37"
+                          viewBox="0 0 44 37"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <rect width="44" height="37" rx="10" fill="#273069" />
+                          <path
+                            d="M22.0001 20.6429C23.1576 20.6429 24.096 19.6835 24.096 18.5C24.096 17.3165 23.1576 16.3571 22.0001 16.3571C20.8425 16.3571 19.9041 17.3165 19.9041 18.5C19.9041 19.6835 20.8425 20.6429 22.0001 20.6429Z"
+                            fill="white"
+                          />
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M12 18.5C13.3354 14.1531 17.3075 11 22 11C26.6925 11 30.6646 14.1531 32 18.5C30.6646 22.8469 26.6925 26 22 26C17.3075 26 13.3354 22.8469 12 18.5ZM26.192 18.5C26.192 20.8669 24.3152 22.7857 22.0001 22.7857C19.6849 22.7857 17.8081 20.8669 17.8081 18.5C17.8081 16.1331 19.6849 14.2143 22.0001 14.2143C24.3152 14.2143 26.192 16.1331 26.192 18.5Z"
+                            fill="white"
                           />
                         </svg>
                       </button>
@@ -716,6 +638,177 @@ const NoticeOfMeetings = () => {
     </>
   );
 
+  const columns = [
+    {
+      name: "Notice Date",
+      selector: (row) => {
+        if (row.others == undefined) return null;
+        //26 July 2024, at 10AM
+        return moment(row.others.actual_meeting).format(
+          "DD MMMM YYYY, hh:mm A"
+        );
+      },
+      cell: (row) => {
+        if (row.others == undefined) return null;
+        //26 July 2024, at 10AM
+        return moment(row.others.actual_meeting).format(
+          "DD MMMM YYYY, hh:mm A"
+        );
+      },
+      sortable: true,
+    },
+    {
+      name: "Type of Meeting",
+      selector: (row) => row.type_of_meeting,
+      cell: (row) => row.type_of_meeting,
+
+      sortable: true,
+    },
+    {
+      name: "Place of Meeting",
+
+      selector: (row) => {
+        if (row.others == undefined) return null;
+        return row.others.place_of_meeting;
+      },
+      cell: (row) => {
+        if (row.others == undefined) return null;
+        return row.others.place_of_meeting;
+      },
+      sortable: true,
+    },
+    {
+      name: "Status",
+      selector: (row) => row.status,
+      cell: (row) => row.status,
+      sortable: true,
+    },
+    {
+      name: "Actions",
+      cell: (row) => {
+        return (
+          <div className="flex flex-row items-center justify-end gap-2">
+            {row.status === "Notice Completed" && (
+              <Link to={`/company/${companyId}/minutes-of-meeting`}>
+                <div className="tooltip" data-tip="Go to Minutes of Meeting">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25"
+                    />
+                  </svg>
+                </div>
+              </Link>
+            )}
+            {row.status === "Notice Completed" && (
+              <img
+                src={gdriveIcon}
+                alt=""
+                className="cursor-pointer"
+                onClick={() => {
+                  setErrors([]);
+                  if (row.others == null) {
+                    setFormData({ ...row, others: other_details });
+                  } else {
+                    setFormData(row);
+                  }
+                  document.getElementById("gdrive").showModal();
+                }}
+              />
+            )}
+
+            <button
+              onClick={() => {
+                dispatch(selectNoticeOfMeeting(row));
+                navigate(
+                  `/company/${companyId}/notice-of-meeting/view/${row.nomId}`
+                );
+              }}
+            >
+              <svg
+                width="44"
+                height="37"
+                viewBox="0 0 44 37"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect width="44" height="37" rx="10" fill="#273069" />
+                <path
+                  d="M22.0001 20.6429C23.1576 20.6429 24.096 19.6835 24.096 18.5C24.096 17.3165 23.1576 16.3571 22.0001 16.3571C20.8425 16.3571 19.9041 17.3165 19.9041 18.5C19.9041 19.6835 20.8425 20.6429 22.0001 20.6429Z"
+                  fill="white"
+                />
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M12 18.5C13.3354 14.1531 17.3075 11 22 11C26.6925 11 30.6646 14.1531 32 18.5C30.6646 22.8469 26.6925 26 22 26C17.3075 26 13.3354 22.8469 12 18.5ZM26.192 18.5C26.192 20.8669 24.3152 22.7857 22.0001 22.7857C19.6849 22.7857 17.8081 20.8669 17.8081 18.5C17.8081 16.1331 19.6849 14.2143 22.0001 14.2143C24.3152 14.2143 26.192 16.1331 26.192 18.5Z"
+                  fill="white"
+                />
+              </svg>
+            </button>
+
+            <button
+              onClick={() => {
+                toggleDelete(row.nomId);
+              }}
+            >
+              <svg
+                width="44"
+                height="37"
+                viewBox="0 0 44 37"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect width="44" height="37" rx="10" fill="#CF0404" />
+                <path
+                  d="M28.3333 17.667V25.5003C28.3333 25.7765 28.1095 26.0003 27.8333 26.0003H17.1667C16.8905 26.0003 16.6667 25.7765 16.6667 25.5003V17.667M20.8333 22.667V17.667M24.1667 22.667V17.667M30 14.3333H25.8333M25.8333 14.3333V11.5C25.8333 11.2239 25.6095 11 25.3333 11H19.6667C19.3905 11 19.1667 11.2239 19.1667 11.5V14.3333M25.8333 14.3333H19.1667M15 14.3333H19.1667"
+                  stroke="white"
+                  strokeWidth="1.95694"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+        );
+      },
+    },
+  ];
+
+  createTheme("customized", {
+    text: {
+      primary: "#000000",
+    },
+    background: {
+      default: "transparent",
+    },
+  });
+
+  const customStyles = {
+    headCells: {
+      style: {
+        font: "bold",
+      },
+    },
+  };
+
+  const conditionalRowStyles = [
+    {
+      when: (row) => row.status == "Notice Completed",
+      style: {
+        filter: "grayscale(100%)",
+        backgroundColor: "#D8D8D8",
+      },
+    },
+  ];
+
   return (
     <>
       <div>
@@ -725,10 +818,6 @@ const NoticeOfMeetings = () => {
             {
               goto: `/company/${selectedCompany.companyId}`,
               text: `${selectedCompany.companyName}`,
-            },
-            {
-              goto: `/company/${selectedCompany.companyId}/notice-of-meeting`,
-              text: "Board Meetings",
             },
             { goto: "/", text: "Notice of Meetings" },
           ]}
@@ -744,7 +833,25 @@ const NoticeOfMeetings = () => {
               Notice of Meetings
             </div>
             <div>
-              <button
+              <Link
+                to={`/company/${companyId}/notice-of-meeting/create`}
+                className="btn bg-primary text-white w-full flex flex-row"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-4 h-4"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Add Notice of Meeting
+              </Link>
+              {/* <button
                 className="btn bg-primary text-white w-full flex flex-row"
                 onClick={() => {
                   other_details.director = selectedDirector;
@@ -775,12 +882,23 @@ const NoticeOfMeetings = () => {
                   />
                 </svg>
                 Add Notice of Meeting
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
 
-        <div className="overflow-x-auto mt-5">{table}</div>
+        {/* <div className="overflow-x-auto mt-5">{table}</div> */}
+
+        <div className="pb-5">
+          <DataTable
+            columns={columns}
+            data={noticeOfMeetingsRecord}
+            persistTableHead={true}
+            customStyles={customStyles}
+            theme="customized"
+            conditionalRowStyles={conditionalRowStyles}
+          />
+        </div>
       </div>
 
       <dialog id="newAddModal" className="modal">

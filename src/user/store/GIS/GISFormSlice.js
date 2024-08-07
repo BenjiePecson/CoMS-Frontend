@@ -115,6 +115,12 @@ export const stockholdersInformationState = {
   total_amount: 0,
 };
 
+export const affiliationsState = {
+  name: "",
+  sec_no: "",
+  address: "",
+};
+
 const formDataState = {
   isAmended: false,
   isSpecialMeeting: false,
@@ -161,6 +167,10 @@ const formDataState = {
   },
   corporate_secretary: "",
   beneficial_ownership_declaration: [],
+  affiliations: {
+    parent: affiliationsState,
+    subsidiary_affiliate: affiliationsState,
+  },
 };
 
 const initialState = {
@@ -201,6 +211,6 @@ export const {
   setSubscribeCapital,
   setPaidUpCapital,
   setDirectorsOrOfficers,
-  setStockHoldersInformation
+  setStockHoldersInformation,
 } = GISFormSlice.actions;
 export default GISFormSlice.reducer;

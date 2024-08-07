@@ -39,12 +39,10 @@ const CreateNOM = () => {
   const [formData, setFormData] = useState(noticeOfMeeting);
   const [errors, setErrors] = useState({});
   const [listOfDirectors, setListOfDirectors] = useState([]);
-
   const [selectedDirector, setSelectedDirector] = useState("");
-  const [agenda, setAgenda] = useState("");
 
   const list_of_agendas = [
-    // "Call to order",
+    "Call to order",
     "Certification of Notice and quorum of the Meeting",
     "Approval of Authorized Representative to Transact with the Government Agencies",
     "Approval of Authorized Representative to Transact with the Banks",
@@ -61,10 +59,8 @@ const CreateNOM = () => {
     "Annual submission of GIS",
     "Appointment of a Tax Representative",
     "Declaration of Dividends out of the (YEAR) Unrestricted Retained Earnings",
-    // "Adjournment",
+    "Adjournment",
   ];
-
-  const [listOfAgendas, setListOfAgendas] = useState(list_of_agendas);
 
   const filteredListOfDirectors = listOfDirectors.map((director) => {
     return {
@@ -756,25 +752,12 @@ const CreateNOM = () => {
             )}
           </div>
 
-          <div className="flex flex-col gap-2  items-start pt-5">
+          <div className="flex flex-col gap-2  items-start">
             <div className="form-control w-full">
-              <div className="flex flex-row justify-between">
-                <div className="label">
-                  <span className="poppins-regular text-[12px]">
-                    Agendas <span className="text-red-500">*</span>
-                  </span>
-                </div>
-                <div className="label">
-                  <button
-                    type="button"
-                    className="btn btn-outline btn-sm text-[12px]"
-                    onClick={() => {
-                      document.getElementById("addAgendaModal").showModal();
-                    }}
-                  >
-                    Add New Agenda
-                  </button>
-                </div>
+              <div className="label">
+                <span className="poppins-regular text-[12px]">
+                  Agendas <span className="text-red-500">*</span>
+                </span>
               </div>
 
               {errors.agendas && (
@@ -797,73 +780,7 @@ const CreateNOM = () => {
 
               <div className="flex flex-col gap-2 form-control">
                 <div className="grid grip-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-4 w-full">
-                  <div
-                    className="flex flex-row gap-3 items-center"
-                    // key={`agenda-${index}`}
-                  >
-                    <input
-                      type="checkbox"
-                      className="checkbox"
-                      value={"Call to order"}
-                      name={"Call to order"}
-                      checked={formData.others.agendas.includes(
-                        "Call to order"
-                      )}
-                      onChange={(ev) => {
-                        if (ev.target.checked) {
-                          // setSelectedAgendas([...selectedAgendas, agenda]);
-                          let update_others = {
-                            ...formData.others,
-                            agendas: [
-                              ...formData.others.agendas,
-                              "Call to order",
-                            ],
-                          };
-                          setFormData({
-                            ...formData,
-                            others: update_others,
-                          });
-                          if (update_others.agendas.length == 0) {
-                            setErrors({
-                              ...errors,
-                              agendas: "Please select agenda",
-                            });
-                          } else {
-                            setErrors({
-                              ...errors,
-                              agendas: "",
-                            });
-                          }
-                        } else {
-                          const selected_agendas =
-                            formData.others.agendas.filter(
-                              (val) => val != ev.target.value
-                            );
-                          const update_others = {
-                            ...formData.others,
-                            agendas: selected_agendas,
-                          };
-                          if (update_others.agendas.length == 0) {
-                            setErrors({
-                              ...errors,
-                              agendas: "Please select agenda",
-                            });
-                          } else {
-                            setErrors({
-                              ...errors,
-                              agendas: "",
-                            });
-                          }
-                          setFormData({
-                            ...formData,
-                            others: update_others,
-                          });
-                        }
-                      }}
-                    />
-                    <span className="label-text">{"Call to Order"}</span>
-                  </div>
-                  {listOfAgendas.map((agenda, index) => {
+                  {list_of_agendas.map((agenda, index) => {
                     return (
                       <div
                         className="flex flex-row gap-3 items-center"
@@ -928,70 +845,6 @@ const CreateNOM = () => {
                       </div>
                     );
                   })}
-                  <div
-                    className="flex flex-row gap-3 items-center"
-                    // key={`agenda-${index}`}
-                  >
-                    <input
-                      type="checkbox"
-                      className="checkbox"
-                      value={"Adjournment"}
-                      name={"Adjournment"}
-                      checked={formData.others.agendas.includes("Adjournment")}
-                      onChange={(ev) => {
-                        if (ev.target.checked) {
-                          // setSelectedAgendas([...selectedAgendas, agenda]);
-                          let update_others = {
-                            ...formData.others,
-                            agendas: [
-                              ...formData.others.agendas,
-                              "Adjournment",
-                            ],
-                          };
-                          setFormData({
-                            ...formData,
-                            others: update_others,
-                          });
-                          if (update_others.agendas.length == 0) {
-                            setErrors({
-                              ...errors,
-                              agendas: "Please select agenda",
-                            });
-                          } else {
-                            setErrors({
-                              ...errors,
-                              agendas: "",
-                            });
-                          }
-                        } else {
-                          const selected_agendas =
-                            formData.others.agendas.filter(
-                              (val) => val != ev.target.value
-                            );
-                          const update_others = {
-                            ...formData.others,
-                            agendas: selected_agendas,
-                          };
-                          if (update_others.agendas.length == 0) {
-                            setErrors({
-                              ...errors,
-                              agendas: "Please select agenda",
-                            });
-                          } else {
-                            setErrors({
-                              ...errors,
-                              agendas: "",
-                            });
-                          }
-                          setFormData({
-                            ...formData,
-                            others: update_others,
-                          });
-                        }
-                      }}
-                    />
-                    <span className="label-text">{"Adjournment"}</span>
-                  </div>
                 </div>
               </div>
             </div>
@@ -1019,89 +872,6 @@ const CreateNOM = () => {
           <form method="dialog" className="modal-backdrop">
             <button>close</button>
           </form>
-        </dialog>
-
-        {/* Add Agenda Modal*/}
-        <dialog id="addAgendaModal" className="modal">
-          <div className="modal-box">
-            <div className="flex flex-row justify-between py-4">
-              <form method="dialog">
-                <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
-                  ✕
-                </button>
-              </form>
-            </div>
-            <div className="flex flex-col gap-3">
-              <h1 className="poppins-semibold text-md">Add New Agenda</h1>
-
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="poppins-regular text-[12px]">
-                    Agenda
-                    <span className="text-red-500">*</span>
-                  </span>
-                </div>
-                <input
-                  type="text"
-                  className={`input input-bordered w-full ${
-                    errors.agenda && `input-error`
-                  }`}
-                  name="set_folder_id"
-                  value={agenda}
-                  onChange={(e) => {
-                    setAgenda(e.target.value);
-
-                    // if (e.target.value == "") {
-                    //   setErrors({
-                    //     ...errors,
-                    //     set_folder_id: "Folder ID is required",
-                    //   });
-                    // } else {
-                    //   setErrors({ ...errors, set_folder_id: "" });
-                    // }
-                  }}
-                />
-                {errors.agenda && (
-                  <span className="text-[12px] text-red-500">
-                    {errors.agenda}
-                  </span>
-                )}
-              </label>
-
-              <button
-                className="btn bg-primary text-white"
-                onClick={async (e) => {
-                  // if (editFolderID == "") {
-                  //   setErrors({
-                  //     ...errors,
-                  //     set_folder_id: "Folder ID is required",
-                  //   });
-                  //   return;
-                  // }
-                  // try {
-                  //   formData.folder_id = editFolderID;
-
-                  //   let response = await axios.patch(
-                  //     `/notice-of-meeting/${companyId}`,
-                  //     formData
-                  //   );
-
-                  //   if (response.data.success) {
-                  //     dispatch(fetchNoticeOfMeeting({ companyId, nomId }));
-                  //   }
-                  // } catch (error) {
-                  //   console.log(error);
-                  // } finally {
-                  //   document.getElementById("changedriveID").close();
-                  // }
-                  setListOfAgendas([...listOfAgendas, agenda]);
-                  document.getElementById("addAgendaModal").close();
-                }}
-              >
-                Add
-              </button>
-            </div>
-          </div>
         </dialog>
       </>
     );

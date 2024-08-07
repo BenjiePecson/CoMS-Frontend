@@ -43,6 +43,7 @@ const step7 = () => {
                   !formData.isSpecialMeeting ? (
                     <PageOne
                       //view1
+                      formData={formData}
                       year={formData.year}
                       isAmended={formData.isAmended}
                       corporate_name={formData.corporate_name}
@@ -79,6 +80,7 @@ const step7 = () => {
                     />
                   ) : (
                     <PageOneSpecial //view1
+                      formData={formData}
                       year={formData.year}
                       isAmended={formData.isAmended}
                       corporate_name={formData.corporate_name}
@@ -117,6 +119,7 @@ const step7 = () => {
                 ) : (
                   <PageOne
                     //view1
+                    formData={formData}
                     year={formData.year}
                     amended={formData.amended}
                     corporate_name={formData.corporate_name}

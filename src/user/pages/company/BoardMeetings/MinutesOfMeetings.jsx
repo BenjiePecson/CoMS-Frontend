@@ -7,6 +7,7 @@ import { showAlert } from "../../../../assets/global";
 import axios from "axios";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import gdriveIcon from "/gdrive.svg";
+import DataTable, { createTheme } from "react-data-table-component";
 
 const MinutesOfMeetings = () => {
   const { companyId } = useParams();
@@ -306,40 +307,9 @@ const MinutesOfMeetings = () => {
     }
   };
 
-  useEffect(() => {
-    fetchRecords();
-  }, []);
-
-  return (
-    <>
-      <div>
-        <Breadcrumbs
-          lists={[
-            { goto: "/", text: "Home" },
-            {
-              goto: `/company/${selectedCompany.companyId}`,
-              text: `${selectedCompany.companyName}`,
-            },
-            {
-              goto: `/company/${selectedCompany.companyId}/minutes-of-meeting`,
-              text: "Board Meetings",
-            },
-            { goto: "/", text: "Minutes of Meetings" },
-          ]}
-        />
-      </div>
-      <div>
-        <div className="flex flex-row w-full justify-between items-center mt-5">
-          <div className="flex flex-row justify-between w-full">
-            <div className="poppins-bold text-color-2 text-[24px] flex items-center">
-              Minutes of Meeting
-            </div>
-            <div></div>
-          </div>
-        </div>
-
-        <div className="overflow-x-auto">{table}</div>
-
+  const dialogComponents = () => {
+    return (
+      <>
         <dialog id="editModal" className="modal">
           <div className="modal-box">
             <div className="flex flex-row justify-between">
@@ -775,7 +745,223 @@ const MinutesOfMeetings = () => {
             </div>
           </div>
         </dialog>
+      </>
+    );
+  };
+
+  const columns = [
+    {
+      name: "Board Meeting Date",
+      selector: (row) => {
+        if (row.others == undefined) return null;
+        //26 July 2024, at 10AM
+        return moment(row.others.actual_meeting).format(
+          "DD MMMM YYYY, hh:mm A"
+        );
+      },
+      cell: (row) => {
+        if (row.others == undefined) return null;
+        //26 July 2024, at 10AM
+        return moment(row.others.actual_meeting).format(
+          "DD MMMM YYYY, hh:mm A"
+        );
+      },
+      sortable: true,
+    },
+    {
+      name: "Type of Meeting",
+      selector: (row) => row.type_of_meeting,
+      cell: (row) => row.type_of_meeting,
+
+      sortable: true,
+    },
+    {
+      name: "Place of Meeting",
+
+      selector: (row) => {
+        if (row.others == undefined) return null;
+        return row.others.place_of_meeting;
+      },
+      cell: (row) => {
+        if (row.others == undefined) return null;
+        return row.others.place_of_meeting;
+      },
+      sortable: true,
+    },
+    {
+      name: "Quorum",
+      selector: (row) => row.status,
+      cell: (row) => row.status,
+      sortable: true,
+    },
+    {
+      name: "Actions",
+      cell: (row) => {
+        return (
+          <div className="flex flex-row items-center justify-end gap-2">
+            {row.status === "Notice Completed" && (
+              <Link to={`/company/${companyId}/minutes-of-meeting`}>
+                <div className="tooltip" data-tip="Go to Minutes of Meeting">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25"
+                    />
+                  </svg>
+                </div>
+              </Link>
+            )}
+            {row.status === "Notice Completed" && (
+              <img
+                src={gdriveIcon}
+                alt=""
+                className="cursor-pointer"
+                onClick={() => {
+                  setErrors([]);
+                  if (row.others == null) {
+                    setFormData({ ...row, others: other_details });
+                  } else {
+                    setFormData(row);
+                  }
+                  document.getElementById("gdrive").showModal();
+                }}
+              />
+            )}
+
+            <button
+              onClick={() => {
+                dispatch(selectNoticeOfMeeting(row));
+                navigate(
+                  `/company/${companyId}/notice-of-meeting/view/${row.nomId}`
+                );
+              }}
+            >
+              <svg
+                width="44"
+                height="37"
+                viewBox="0 0 44 37"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect width="44" height="37" rx="10" fill="#273069" />
+                <path
+                  d="M22.0001 20.6429C23.1576 20.6429 24.096 19.6835 24.096 18.5C24.096 17.3165 23.1576 16.3571 22.0001 16.3571C20.8425 16.3571 19.9041 17.3165 19.9041 18.5C19.9041 19.6835 20.8425 20.6429 22.0001 20.6429Z"
+                  fill="white"
+                />
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M12 18.5C13.3354 14.1531 17.3075 11 22 11C26.6925 11 30.6646 14.1531 32 18.5C30.6646 22.8469 26.6925 26 22 26C17.3075 26 13.3354 22.8469 12 18.5ZM26.192 18.5C26.192 20.8669 24.3152 22.7857 22.0001 22.7857C19.6849 22.7857 17.8081 20.8669 17.8081 18.5C17.8081 16.1331 19.6849 14.2143 22.0001 14.2143C24.3152 14.2143 26.192 16.1331 26.192 18.5Z"
+                  fill="white"
+                />
+              </svg>
+            </button>
+
+            <button
+              onClick={() => {
+                toggleDelete(row.nomId);
+              }}
+            >
+              <svg
+                width="44"
+                height="37"
+                viewBox="0 0 44 37"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect width="44" height="37" rx="10" fill="#CF0404" />
+                <path
+                  d="M28.3333 17.667V25.5003C28.3333 25.7765 28.1095 26.0003 27.8333 26.0003H17.1667C16.8905 26.0003 16.6667 25.7765 16.6667 25.5003V17.667M20.8333 22.667V17.667M24.1667 22.667V17.667M30 14.3333H25.8333M25.8333 14.3333V11.5C25.8333 11.2239 25.6095 11 25.3333 11H19.6667C19.3905 11 19.1667 11.2239 19.1667 11.5V14.3333M25.8333 14.3333H19.1667M15 14.3333H19.1667"
+                  stroke="white"
+                  strokeWidth="1.95694"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+        );
+      },
+    },
+  ];
+
+  createTheme("customized", {
+    text: {
+      primary: "#000000",
+    },
+    background: {
+      default: "transparent",
+    },
+  });
+
+  const customStyles = {
+    headCells: {
+      style: {
+        font: "bold",
+      },
+    },
+  };
+
+  const conditionalRowStyles = [
+    {
+      when: (row) => row.status == "Notice Completed",
+      style: {
+        filter: "grayscale(100%)",
+        backgroundColor: "#D8D8D8",
+      },
+    },
+  ];
+
+  useEffect(() => {
+    fetchRecords();
+  }, []);
+
+  return (
+    <>
+      <div>
+        <Breadcrumbs
+          lists={[
+            { goto: "/", text: "Home" },
+            {
+              goto: `/company/${selectedCompany.companyId}`,
+              text: `${selectedCompany.companyName}`,
+            },
+            { goto: "/", text: "Minutes of Meetings" },
+          ]}
+        />
       </div>
+      <div>
+        <div className="flex flex-row w-full justify-between items-center mt-5">
+          <div className="flex flex-row justify-between w-full">
+            <div className="poppins-bold text-color-2 text-[24px] flex items-center">
+              Minutes of Meeting
+            </div>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">{table}</div>
+
+        {/* <div className="pb-5">
+          <DataTable
+            columns={columns}
+            data={[]}
+            persistTableHead={true}
+            customStyles={customStyles}
+            theme="customized"
+            conditionalRowStyles={conditionalRowStyles}
+          />
+        </div> */}
+      </div>
+
+      {dialogComponents()}
     </>
   );
 };

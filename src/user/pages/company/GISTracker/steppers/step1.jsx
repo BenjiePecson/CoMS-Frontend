@@ -563,6 +563,117 @@ const step1 = () => {
         </label>
       </div>
 
+      <div className="w-full pt-10 pb-3">
+        <h1 className=" poppins-semibold text-[20px]">
+          Intercompany Affiliations
+        </h1>
+        <hr />
+      </div>
+      <div className="grid grip-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
+        <label className="form-control w-full">
+          <div className="label">
+            <span className="label-text">
+              Parent Company <span className="text-red-500">*</span>
+            </span>
+          </div>
+          <input
+            type="text"
+            className="input input-bordered w-full input-sm"
+            name="parent_company"
+            value={"N/A"}
+            disabled={true}
+            // onChange={(e) => {
+            //   handleOnChange(e);
+            // }}
+          />
+        </label>
+        <label className="form-control w-full">
+          <div className="label">
+            <span className="label-text">
+              SEC Registration No. <span className="text-red-500">*</span>
+            </span>
+          </div>
+          <input
+            type="text"
+            className="input input-bordered w-full input-sm"
+            name="sec_registration_no"
+            value={"N/A"}
+            disabled={true}
+            // onChange={(e) => {
+            //   handleOnChange(e);
+            // }}
+          />
+        </label>
+        <label className="form-control w-full">
+          <div className="label">
+            <span className="label-text">
+              Address <span className="text-red-500">*</span>
+            </span>
+          </div>
+          <input
+            type="text"
+            className="input input-bordered w-full input-sm"
+            name="address"
+            value={"N/A"}
+            disabled={true}
+            // onChange={(e) => {
+            //   handleOnChange(e);
+            // }}
+          />
+        </label>
+        <label className="form-control w-full">
+          <div className="label">
+            <span className="label-text">
+              Subsidiary/Affiliate <span className="text-red-500">*</span>
+            </span>
+          </div>
+          <input
+            type="text"
+            className="input input-bordered w-full input-sm"
+            name="subsidiary_affiliate"
+            value={"N/A"}
+            disabled={true}
+            // onChange={(e) => {
+            //   handleOnChange(e);
+            // }}
+          />
+        </label>
+        <label className="form-control w-full">
+          <div className="label">
+            <span className="label-text">
+              SEC Registration No. <span className="text-red-500">*</span>
+            </span>
+          </div>
+          <input
+            type="text"
+            className="input input-bordered w-full input-sm"
+            name="sec_reg_no"
+            value={"N/A"}
+            disabled={true}
+            // onChange={(e) => {
+            //   handleOnChange(e);
+            // }}
+          />
+        </label>
+        <label className="form-control w-full">
+          <div className="label">
+            <span className="label-text">
+              Address <span className="text-red-500">*</span>
+            </span>
+          </div>
+          <input
+            type="text"
+            className="input input-bordered w-full input-sm"
+            name="address"
+            value={"N/A"}
+            disabled={true}
+            // onChange={(e) => {
+            //   handleOnChange(e);
+            // }}
+          />
+        </label>
+      </div>
+
       <dialog id="step1FormModal" className="modal">
         <div className="modal-box w-full max-w-7xl">
           <div className="flex flex-row justify-between">

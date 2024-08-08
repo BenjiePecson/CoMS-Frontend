@@ -116,9 +116,9 @@ export const stockholdersInformationState = {
 };
 
 export const affiliationsState = {
-  name: "",
-  sec_no: "",
-  address: "",
+  name: "N/A",
+  sec_no: "N/A",
+  address: "N/A",
 };
 
 const formDataState = {
@@ -169,7 +169,7 @@ const formDataState = {
   beneficial_ownership_declaration: [],
   affiliations: {
     parent: affiliationsState,
-    subsidiary_affiliate: affiliationsState,
+    subsidiary_affiliate: [affiliationsState],
   },
 };
 

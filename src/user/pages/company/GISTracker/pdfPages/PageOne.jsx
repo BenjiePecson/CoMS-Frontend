@@ -122,6 +122,7 @@ const styles = StyleSheet.create({
 });
 
 function PageOne({
+  formData,
   year,
   isAmended,
   corporate_name,
@@ -897,6 +898,265 @@ function PageOne({
             {geographical_code}
           </Text>
         </View>
+      </View>
+
+      <View
+        style={{
+          fontSize: "10px",
+          marginTop: 647,
+          marginLeft: 18,
+          position: "absolute",
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            width: "215px",
+            height: "17px",
+          }}
+        >
+          {formData.affiliations.parent.name != "" &&
+            formData.affiliations.parent.name != undefined && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                  width: "100%",
+                }}
+              >
+                {formData.affiliations.parent.name
+                  ?.match(/\w+|\W+/g)
+                  ?.map((seg, i) => (
+                    <Text
+                      key={i}
+                      style={{
+                        textAlign: "center",
+                        fontSize: getFontSize(
+                          formData.affiliations.parent.name.length,
+                          48,
+                          baseFontSize - 2
+                        ),
+                      }}
+                    >
+                      {seg}
+                    </Text>
+                  ))}
+              </View>
+            )}
+        </View>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            width: "125px",
+            height: "17px",
+          }}
+        >
+          {formData.affiliations.parent.sec_no != "" &&
+            formData.affiliations.parent.sec_no != undefined && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                  width: "100%",
+                }}
+              >
+                {formData.affiliations.parent.sec_no
+                  ?.match(/\w+|\W+/g)
+                  ?.map((seg, i) => (
+                    <Text
+                      key={i}
+                      style={{
+                        textAlign: "center",
+                        fontSize: getFontSize(
+                          formData.affiliations.parent.sec_no.length,
+                          27,
+                          baseFontSize - 2
+                        ),
+                      }}
+                    >
+                      {seg}
+                    </Text>
+                  ))}
+              </View>
+            )}
+        </View>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            width: "220px",
+            height: "17px",
+          }}
+        >
+          {formData.affiliations.parent.address != "" &&
+            formData.affiliations.parent.address != undefined && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                  width: "100%",
+                }}
+              >
+                {formData.affiliations.parent.address
+                  ?.match(/\w+|\W+/g)
+                  ?.map((seg, i) => (
+                    <Text
+                      key={i}
+                      style={{
+                        textAlign: "center",
+                        fontSize: getFontSize(
+                          formData.affiliations.parent.address.length,
+                          48,
+                          baseFontSize - 2
+                        ),
+                      }}
+                    >
+                      {seg}
+                    </Text>
+                  ))}
+              </View>
+            )}
+        </View>
+      </View>
+
+      <View
+        style={{
+          fontSize: "10px",
+          marginTop: 674,
+          marginLeft: 18,
+          position: "absolute",
+          display: "flex",
+          flexDirection: "col",
+        }}
+      >
+        {formData.affiliations.subsidiary_affiliate.length != 0 &&
+          formData.affiliations.subsidiary_affiliate != undefined &&
+          formData.affiliations.subsidiary_affiliate
+            .slice(0, 5)
+            .map((affiliate, index) => {
+              return (
+                <View
+                  key={`aff-${index}`}
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                  }}
+                >
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      width: "215px",
+                      height: "17px",
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        flexWrap: "wrap",
+                        justifyContent: "center",
+                        width: "100%",
+                      }}
+                    >
+                      {affiliate.name?.match(/\w+|\W+/g)?.map((seg, i) => (
+                        <Text
+                          key={i}
+                          style={{
+                            textAlign: "center",
+                            fontSize: getFontSize(
+                              affiliate.name.length,
+                              48,
+                              baseFontSize - 2
+                            ),
+                          }}
+                        >
+                          {seg}
+                        </Text>
+                      ))}
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      width: "125px",
+                      height: "17px",
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        flexWrap: "wrap",
+                        justifyContent: "center",
+                        width: "100%",
+                      }}
+                    >
+                      {affiliate.sec_no?.match(/\w+|\W+/g)?.map((seg, i) => (
+                        <Text
+                          key={i}
+                          style={{
+                            textAlign: "center",
+                            fontSize: getFontSize(
+                              affiliate.sec_no.length,
+                              27,
+                              baseFontSize - 2
+                            ),
+                          }}
+                        >
+                          {seg}
+                        </Text>
+                      ))}
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      width: "220px",
+                      height: "17px",
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        flexWrap: "wrap",
+                        justifyContent: "center",
+                        width: "100%",
+                      }}
+                    >
+                      {affiliate.address?.match(/\w+|\W+/g)?.map((seg, i) => (
+                        <Text
+                          key={i}
+                          style={{
+                            textAlign: "center",
+                            fontSize: getFontSize(
+                              affiliate.address.length,
+                              48,
+                              baseFontSize - 2
+                            ),
+                          }}
+                        >
+                          {seg}
+                        </Text>
+                      ))}
+                    </View>
+                  </View>
+                </View>
+              );
+            })}
       </View>
 
       <Image

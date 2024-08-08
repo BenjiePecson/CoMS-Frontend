@@ -687,7 +687,7 @@ const NoticeOfMeetings = () => {
       name: "Actions",
       cell: (row) => {
         return (
-          <div className="flex flex-row items-center justify-end gap-2">
+          <div className="flex flex-row items-center justify-end gap-1 w-full">
             {row.status === "Notice Completed" && (
               <Link to={`/company/${companyId}/minutes-of-meeting`}>
                 <div className="tooltip" data-tip="Go to Minutes of Meeting">

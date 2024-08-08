@@ -861,7 +861,7 @@ const CreateNOM = () => {
                         }
                       }}
                     />
-                    <span className="label-text">{"Call to Order"}</span>
+                    <span className="label-text">{"Call to order"}</span>
                   </div>
                   {listOfAgendas.map((agenda, index) => {
                     return (

@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setFormData } from "../../../../store/GIS/GISFormSlice";
+import {
+  affiliationsState,
+  setFormData,
+} from "../../../../store/GIS/GISFormSlice";
 
 const step1 = () => {
   const formData = useSelector((state) => state.formGIS.formData);
@@ -579,11 +582,11 @@ const step1 = () => {
           <input
             type="text"
             className="input input-bordered w-full input-sm"
-            name="parent_company"
-            value={"N/A"}
+            name="name"
+            value={formData.affiliations.parent.name}
             disabled={true}
             // onChange={(e) => {
-            //   handleOnChange(e);
+            //   // handleOnChange(e);
             // }}
           />
         </label>
@@ -596,8 +599,8 @@ const step1 = () => {
           <input
             type="text"
             className="input input-bordered w-full input-sm"
-            name="sec_registration_no"
-            value={"N/A"}
+            name="sec_no"
+            value={formData.affiliations.parent.sec_no}
             disabled={true}
             // onChange={(e) => {
             //   handleOnChange(e);
@@ -614,14 +617,15 @@ const step1 = () => {
             type="text"
             className="input input-bordered w-full input-sm"
             name="address"
-            value={"N/A"}
+            value={formData.affiliations.parent.address}
             disabled={true}
             // onChange={(e) => {
             //   handleOnChange(e);
             // }}
           />
         </label>
-        <label className="form-control w-full">
+
+        {/* <label className="form-control w-full">
           <div className="label">
             <span className="label-text">
               Subsidiary/Affiliate <span className="text-red-500">*</span>
@@ -671,7 +675,95 @@ const step1 = () => {
             //   handleOnChange(e);
             // }}
           />
-        </label>
+        </label> */}
+      </div>
+
+      <div className="pt-5">
+        {/* <div className="w-full flex flex-row justify-between">
+          <h1 className="poppins-semibold text-[15px] text-black">
+            Subsidiary/Affiliate
+          </h1>
+          <button
+            className="btn btn-outline btn-sm"
+            type="button"
+            onClick={() => {
+              // console.log(formData.affiliations);
+              // console.log(affiliationsState);
+
+              let affiliations = {
+                ...formData.affiliations,
+                subsidiary_affiliate: [
+                  ...formData.affiliations.subsidiary_affiliate,
+                  affiliationsState,
+                ],
+              };
+              dispatch(setFormData({ ...formData, affiliations: affiliations }))
+            }}
+          >
+            Add row
+          </button>
+        </div> */}
+        <table className="table w-full">
+          <thead>
+            <tr>
+              <th>Subsidiary/Affiliate</th>
+              <th>SEC Registration No.</th>
+              <th>Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            {formData.affiliations.subsidiary_affiliate.map(
+              (affiliate, index) => {
+                return (
+                  <tr key={`row-${index}`}>
+                    <td>
+                      <label className="form-control w-full">
+                        <input
+                          type="text"
+                          className="input input-bordered w-full input-sm"
+                          name="name"
+                          value={affiliate.name}
+                          disabled={true}
+                          onChange={(e) => {
+                            // handleOnChange(e);
+                          }}
+                        />
+                      </label>
+                    </td>
+                    <td>
+                      <label className="form-control w-full">
+                        <input
+                          type="text"
+                          className="input input-bordered w-full input-sm"
+                          name="sec_no"
+                          value={affiliate.sec_no}
+                          disabled={true}
+                          onChange={(e) => {
+                            // handleOnChange(e);
+                          }}
+                        />
+                      </label>
+                    </td>
+                    <td>
+                      <label className="form-control w-full">
+                        <input
+                          type="text"
+                          className="input input-bordered w-full input-sm"
+                          name="address"
+                          value={affiliate.address}
+                          disabled={true}
+                          onChange={(e) => {
+                            // handleOnChange(e);
+                          }}
+                        />
+                      </label>
+                    </td>
+                  </tr>
+                );
+              }
+            )}
+          </tbody>
+        </table>
       </div>
 
       <dialog id="step1FormModal" className="modal">
@@ -1186,6 +1278,206 @@ const step1 = () => {
               </label>
             </div>
           </div>
+          <div className="w-full pt-10 pb-3">
+            <h1 className=" poppins-semibold text-[20px]">
+              Intercompany Affiliations
+            </h1>
+            <hr />
+          </div>
+          <div className="grid grip-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text">
+                  Parent Company <span className="text-red-500">*</span>
+                </span>
+              </div>
+              <input
+                type="text"
+                className="input input-bordered w-full input-sm"
+                value={formStep1.affiliations.parent.name}
+                onChange={(e) => {
+                  let updated = {
+                    ...formStep1.affiliations,
+                    parent: {
+                      ...formStep1.affiliations.parent,
+                      name: e.target.value,
+                    },
+                  };
+                  setformStep1({ ...formData, affiliations: updated });
+                }}
+              />
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text">
+                  SEC Registration No. <span className="text-red-500">*</span>
+                </span>
+              </div>
+              <input
+                type="text"
+                className="input input-bordered w-full input-sm"
+                value={formStep1.affiliations.parent.sec_no}
+                onChange={(e) => {
+                  let updated = {
+                    ...formStep1.affiliations,
+                    parent: {
+                      ...formStep1.affiliations.parent,
+                      sec_no: e.target.value,
+                    },
+                  };
+                  setformStep1({ ...formData, affiliations: updated });
+                }}
+              />
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text">
+                  Address <span className="text-red-500">*</span>
+                </span>
+              </div>
+              <input
+                type="text"
+                className="input input-bordered w-full input-sm"
+                value={formStep1.affiliations.parent.address}
+                onChange={(e) => {
+                  let updated = {
+                    ...formStep1.affiliations,
+                    parent: {
+                      ...formStep1.affiliations.parent,
+                      address: e.target.value,
+                    },
+                  };
+                  setformStep1({ ...formData, affiliations: updated });
+                }}
+              />
+            </label>
+          </div>
+          <div className="pt-5">
+            <div className="w-full flex flex-row justify-between">
+              <h1 className="poppins-semibold text-[15px] text-black">
+                Subsidiary/Affiliate
+              </h1>
+              <button
+                className="btn btn-outline btn-sm"
+                type="button"
+                onClick={() => {
+                  let affiliations = {
+                    ...formStep1.affiliations,
+                    subsidiary_affiliate: [
+                      ...formStep1.affiliations.subsidiary_affiliate,
+                      affiliationsState,
+                    ],
+                  };
+                  setformStep1({ ...formStep1, affiliations: affiliations });
+                }}
+              >
+                Add row
+              </button>
+            </div>
+            <table className="table w-full">
+              <thead>
+                <tr>
+                  <th>Subsidiary/Affiliate</th>
+                  <th>SEC Registration No.</th>
+                  <th>Address</th>
+                </tr>
+              </thead>
+              <tbody>
+                {formStep1.affiliations.subsidiary_affiliate.map(
+                  (affiliate, index) => {
+                    return (
+                      <tr key={`row-${index}`}>
+                        <td>
+                          <label className="form-control w-full">
+                            <input
+                              type="text"
+                              className="input input-bordered w-full input-sm"
+                              value={affiliate.name}
+                              onChange={(e) => {
+                                let updated =
+                                  formStep1.affiliations.subsidiary_affiliate.map(
+                                    (affiliate, idx) => {
+                                      if (index == idx) {
+                                        return {
+                                          ...affiliate,
+                                          name: e.target.value,
+                                        };
+                                      }
+                                      return affiliate;
+                                    }
+                                  );
+                                let affiliations = {
+                                  ...formStep1.affiliations,
+                                  subsidiary_affiliate: updated,
+                                };
+                                setformStep1({ ...formStep1, affiliations });
+                              }}
+                            />
+                          </label>
+                        </td>
+                        <td>
+                          <label className="form-control w-full">
+                            <input
+                              type="text"
+                              className="input input-bordered w-full input-sm"
+                              value={affiliate.sec_no}
+                              onChange={(e) => {
+                                let updated =
+                                  formStep1.affiliations.subsidiary_affiliate.map(
+                                    (affiliate, idx) => {
+                                      if (index == idx) {
+                                        return {
+                                          ...affiliate,
+                                          sec_no: e.target.value,
+                                        };
+                                      }
+                                      return affiliate;
+                                    }
+                                  );
+                                let affiliations = {
+                                  ...formStep1.affiliations,
+                                  subsidiary_affiliate: updated,
+                                };
+                                setformStep1({ ...formStep1, affiliations });
+                              }}
+                            />
+                          </label>
+                        </td>
+                        <td>
+                          <label className="form-control w-full">
+                            <input
+                              type="text"
+                              className="input input-bordered w-full input-sm"
+                              value={affiliate.address}
+                              onChange={(e) => {
+                                let updated =
+                                  formStep1.affiliations.subsidiary_affiliate.map(
+                                    (affiliate, idx) => {
+                                      if (index == idx) {
+                                        return {
+                                          ...affiliate,
+                                          address: e.target.value,
+                                        };
+                                      }
+                                      return affiliate;
+                                    }
+                                  );
+                                let affiliations = {
+                                  ...formStep1.affiliations,
+                                  subsidiary_affiliate: updated,
+                                };
+                                setformStep1({ ...formStep1, affiliations });
+                              }}
+                            />
+                          </label>
+                        </td>
+                      </tr>
+                    );
+                  }
+                )}
+              </tbody>
+            </table>
+          </div>
           <div className="divider"></div>
 
           <div className="flex flex-row justify-between">
@@ -1200,7 +1492,6 @@ const step1 = () => {
             <button
               onClick={(e) => {
                 dispatch(setFormData(formStep1));
-                console.log(formStep1);
                 document.getElementById("step1FormModal").close();
               }}
               className="btn btn-primary"

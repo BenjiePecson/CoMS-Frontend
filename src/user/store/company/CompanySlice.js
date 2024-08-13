@@ -1,6 +1,21 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+export const individualState = {
+  individuals_id: "",
+  companyId: "",
+  surname: "",
+  given_name: "",
+  middle_name: "",
+  ext_name: "",
+  address: "",
+  nationality: "",
+  date_of_birth: "",
+  tax_identification_no: "",
+  created_at: "",
+  updated_at: "",
+};
+
 const CompanyState = {
   companyId: "",
   companyName: "",
@@ -23,6 +38,7 @@ const CompanyState = {
   },
   latestGIS: {},
   letterHeader: null,
+  listOfIndividuals: [],
 };
 
 export const fetchCompanies = createAsyncThunk(
@@ -34,6 +50,9 @@ export const fetchCompanies = createAsyncThunk(
         company.gdrivefolders = CompanyState.gdrivefolders;
       } else {
         company.gdrivefolders = JSON.parse(company.gdrivefolders);
+      }
+      if (company.listOfIndividuals == null) {
+        company.listOfIndividuals = CompanyState.listOfIndividuals;
       }
       return company;
     });
@@ -50,6 +69,9 @@ export const fetchCompany = createAsyncThunk(
         company.gdrivefolders = CompanyState.gdrivefolders;
       } else {
         company.gdrivefolders = JSON.parse(company.gdrivefolders);
+      }
+      if (company.listOfIndividuals == null) {
+        company.listOfIndividuals = CompanyState.listOfIndividuals;
       }
       return company;
     });
@@ -101,6 +123,17 @@ const companySlice = createSlice({
       });
     },
 
+    addListOfIndividuals: (state, action) => {
+      state.selectedCompany.listOfIndividuals.push(action.payload);
+    },
+
+    removeIndividual: (state, action) => {
+      state.selectedCompany.listOfIndividuals =
+        state.selectedCompany.listOfIndividuals.filter(
+          (u) => u.individuals_id != action.payload
+        );
+    },
+
     deleteCompanyTest: (state, action) => {
       state.companies = state.companies.filter(
         (item) => item.id !== action.payload.id
@@ -147,6 +180,8 @@ export const {
   addCompany,
   updateCompany,
   changeCompanyStatus,
+  addListOfIndividuals,
+  removeIndividual,
   deleteCompanyTest,
   updateLetterHeader,
 } = companySlice.actions;

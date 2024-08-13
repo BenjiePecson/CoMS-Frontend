@@ -399,13 +399,23 @@ const create = () => {
     try {
       let response = await axios.get(`/record/${recordId}`);
       const data = response.data[0];
-      dispatch(
-        setFormData({
-          ...data.draftingInput,
-          affiliations: formData.affiliations,
-        })
-      );
-      setFormRecord({ 
+
+      if (data.draftingInput.affiliations != undefined) {
+        dispatch(
+          setFormData({
+            ...data.draftingInput,
+            affiliations: data.draftingInput.affiliations,
+          })
+        );
+      } else {
+        dispatch(
+          setFormData({
+            ...data.draftingInput,
+            affiliations: formData.affiliations,
+          })
+        );
+      }
+      setFormRecord({
         ...formRecord,
         companyId: companyId,
         recordId: recordId,

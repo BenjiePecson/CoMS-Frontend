@@ -296,6 +296,24 @@ const PageOneSpecial = ({
 
   const baseFontSize = 10; // Base font size
 
+  const WrapText = (text, justifyContent, textAlign, fontSize) => {
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          justifyContent: justifyContent,
+        }}
+      >
+        {text?.match(/\w+|\W+/g)?.map((seg, i) => (
+          <Text key={i} style={{ textAlign: textAlign, fontSize: fontSize }}>
+            {seg}
+          </Text>
+        ))}
+      </View>
+    );
+  };
+
   return (
     <Page size="A4" style={{ position: "relative", fontFamily: "Cambria" }}>
       <Text style={styles.year}>{year}</Text>

@@ -9,6 +9,7 @@ import {
   fetchCompany,
   individualState,
   removeIndividual,
+  updateIndividual,
   updateLetterHeader,
 } from "../../store/company/CompanySlice";
 import DataTable from "react-data-table-component";
@@ -218,7 +219,6 @@ const AccordionComponent = () => {
             />
           </svg>
         );
-
         const deleteSVG = (
           <svg
             width="44"
@@ -237,13 +237,15 @@ const AccordionComponent = () => {
             />
           </svg>
         );
+
         return (
           <div className="flex flex-row gap-2 items-center">
             <div
               className="cursor-pointer"
               onClick={() => {
-                // toggleDelete(row.individuals_id);
-                console.log(row);
+                const { created_at, updated_at, ...newRow } = row;
+                setIndividualForm(newRow);
+                document.getElementById("editIndividualModal").showModal();
               }}
             >
               {editSVG}
@@ -368,11 +370,30 @@ const AccordionComponent = () => {
 
     if (await isFormValid(isEdit)) {
       setLoading(true);
-      let message = "Failed to add record.";
-      let type = "error";
+
       if (isEdit) {
+        let message = "Failed to update record.";
+        let type = "error";
+        try {
+          let response = await axios.patch(
+            `/individuals/${companyId}/${individualForm.individuals_id}`,
+            individualForm
+          );
+          if (response.status === 200) {
+            message = "Record was updated successfully.";
+            type = "success";
+            dispatch(updateIndividual(response.data));
+          }
+        } catch (error) {
+          console.log(error);
+        } finally {
+          document.getElementById("editIndividualModal").close();
+          showToast(type, message);
+          setLoading(false);
+        }
       } else {
-        console.log(individualForm);
+        let message = "Failed to add record.";
+        let type = "error";
         try {
           let response = await axios.post(
             `/individuals/${companyId}`,

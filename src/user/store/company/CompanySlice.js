@@ -123,6 +123,16 @@ const companySlice = createSlice({
       });
     },
 
+    updateIndividual: (state, action) => {
+      state.selectedCompany.listOfIndividuals =
+        state.selectedCompany.listOfIndividuals.map((individual) => {
+          if (individual.individuals_id == action.payload.individuals_id) {
+            return action.payload;
+          }
+          return individual;
+        });
+    },
+
     addListOfIndividuals: (state, action) => {
       state.selectedCompany.listOfIndividuals.push(action.payload);
     },
@@ -181,6 +191,7 @@ export const {
   updateCompany,
   changeCompanyStatus,
   addListOfIndividuals,
+  updateIndividual,
   removeIndividual,
   deleteCompanyTest,
   updateLetterHeader,

@@ -395,32 +395,76 @@ const create = () => {
     return "Next";
   };
 
+  const extractDirectorDetails = (individual) => {
+    const {
+      given_name,
+      middle_name,
+      surname,
+      ext_name,
+      address,
+      individuals_id,
+      nationality,
+      tax_identification_no,
+    } = individual;
+
+    const middlename = middle_name != "" ? `${middle_name[0].toUpperCase()}.` : "";
+    const name = `${given_name} ${middlename} ${surname} ${ext_name}`;
+
+    return {
+      name,
+      current_residual_address: address,
+      individuals_id,
+      nationality,
+      tax_id_number: tax_identification_no,
+    };
+  };
+
   const updateFormData = async () => {
     try {
       let response = await axios.get(`/record/${recordId}`);
       const data = response.data[0];
 
+      let individuals = await axios.get(`/individuals/${companyId}`);
+      const updateDirectorsDetails =
+        data.draftingInput.directors_or_officers.map((director) => {
+          const director_in_list = individuals.data.filter(
+            (u) => u.individuals_id == director.individuals_id
+          );
+          if (director_in_list.length > 0) {
+            return {
+              ...director,
+              ...extractDirectorDetails(director_in_list[0]),
+            };
+          } else {
+            return { ...director, individuals_id: "" };
+          }
+        });
+
+      let newFormData = {
+        ...data.draftingInput,
+        directors_or_officers: updateDirectorsDetails,
+      };
+
       if (data.draftingInput.affiliations != undefined) {
-        dispatch(
-          setFormData({
-            ...data.draftingInput,
-            affiliations: data.draftingInput.affiliations,
-          })
-        );
+        newFormData = {
+          ...newFormData,
+          affiliations: data.draftingInput.affiliations,
+        };
       } else {
-        dispatch(
-          setFormData({
-            ...data.draftingInput,
-            affiliations: formData.affiliations,
-          })
-        );
+        newFormData = {
+          ...newFormData,
+          affiliations: formData.affiliations,
+        };
       }
+
+      dispatch(setFormData(newFormData));
+
       setFormRecord({
         ...formRecord,
         companyId: companyId,
         recordId: recordId,
         createdBy: "Michael",
-        draftingInput: data.draftingInput,
+        draftingInput: newFormData,
       });
     } catch (error) {
       console.log(error);
@@ -563,7 +607,7 @@ const create = () => {
           )}
 
           <div className="w-full flex-col items-center justify-center my-5">
-            {step === 1 && <Step1 />}
+            {step === 1 && <Step4 />}
             {step === 2 && <Step2 />}
             {step === 3 && <Step3 />}
             {step === 4 && <Step4 />}

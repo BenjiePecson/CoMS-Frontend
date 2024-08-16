@@ -24,7 +24,7 @@ const step6 = () => {
       selector: (row) => row.complete_name,
     },
     {
-      name: "Specific Residual Address",
+      name: "Specific Residential Address",
       selector: (row) => row.specific_residual_address,
     },
     {
@@ -69,7 +69,7 @@ const step6 = () => {
       },
     },
     {
-      name: "Specific Residual Address",
+      name: "Specific Residential Address",
       cell: (row, rowIndex) => {
         return (
           <InputComponent

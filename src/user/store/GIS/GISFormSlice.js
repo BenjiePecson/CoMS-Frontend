@@ -88,6 +88,7 @@ export const directorsOrOfficersState = {
   officer: "",
   executive_committe: "",
   tax_id_number: "",
+  individuals_id: "",
 };
 
 export const beneficialOwnershipDeclarationState = {

@@ -33,7 +33,7 @@ const step5 = () => {
       selector: (row) => row.nationality,
     },
     {
-      name: "Current Residual Address",
+      name: "Current Residential Address",
       selector: (row) => row.current_residual_address,
     },
     {
@@ -103,7 +103,7 @@ const step5 = () => {
       },
     },
     {
-      name: "Current Residual Address",
+      name: "Current Residential Address",
       cell: (row, rowIndex) => {
         return (
           <InputComponent

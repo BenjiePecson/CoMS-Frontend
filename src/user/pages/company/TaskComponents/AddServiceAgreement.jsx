@@ -4,6 +4,7 @@ import options from "./workflow";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { showToast } from "../../../../assets/global";
 
 const SubdataRow = ({
   subIndex,
@@ -208,7 +209,11 @@ const DataRow = ({
     </div>
   );
 };
-const AddServiceAgreement = () => {
+const AddServiceAgreement = ({
+  getWorkFlows,
+  setGetAllWorkFlow,
+  fetchWorkflow,
+}) => {
   const user = useSelector((state) => state.user.user);
 
   // Highlighted: Priority options for react-select
@@ -374,54 +379,61 @@ const AddServiceAgreement = () => {
       priorityLevel: priorityLevel ? priorityLevel.value : null, // Highlighted: Include priority level in form dataata,
     };
 
+    let type = "error";
+    let message = "Failed to add task"
+
     try {
-      console.log(formData);
+      // console.log(formData);
       await addWorkFlow(formData);
-      // setTasksList((prevTasks) => [...prevTasks, task]);
-      // setGetAllWorkFlow({ ...getAllWorkFlow, formData });
-      getAllWorkFlow;
+      fetchWorkflow();
+      type = "success";
+      message = "Added task successfully."
+      // // setTasksList((prevTasks) => [...prevTasks, task]);
+      // // setGetAllWorkFlow({ ...getAllWorkFlow, formData });
+      // getAllWorkFlow;
     } catch (error) {
       console.log(error);
     } finally {
+      showToast(type, message);
       document.getElementById("addAgreement").close();
     }
     // Send formData to your backend server here using fetch or axios
-    console.log("Form Data Submitted: ", formData);
+    // console.log("Form Data Submitted: ", formData);
     logAssignees();
   };
 
   const logAssignees = () => {
     selectedData.forEach((data, dataIndex) => {
-      console.log(`Task ${dataIndex + 1}: ${data.assignees.join(", ")}`);
+      // console.log(`Task ${dataIndex + 1}: ${data.assignees.join(", ")}`);
     });
   };
 
-  const [getWorkFlows, setGetAllWorkFlow] = useState([]);
+  // const [getWorkFlows, setGetAllWorkFlow] = useState([]);
 
-  //get all task
-  const getAllWorkFlow = () => {
-    return axios.get(`/workflow/${companyId}`);
-  };
+  // //get all task
+  // const getAllWorkFlow = () => {
+  //   return axios.get(`/workflow/${companyId}`);
+  // };
 
-  // Fetch workflows
-  const fetchWorkflow = async () => {
-    try {
-      const response = await getAllWorkFlow();
-      setGetAllWorkFlow(response.data);
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
-    }
-  };
+  // // Fetch workflows
+  // const fetchWorkflow = async () => {
+  //   try {
+  //     const response = await getAllWorkFlow();
+  //     setGetAllWorkFlow(response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching tasks:", error);
+  //   }
+  // };
 
-  // Effect to fetch data on component mount
-  useEffect(() => {
-    fetchWorkflow();
-  }, []);
+  // // Effect to fetch data on component mount
+  // useEffect(() => {
+  //   fetchWorkflow();
+  // }, []);
 
-  // Effect to log data when it changes
-  useEffect(() => {
-    console.log(getWorkFlows);
-  }, [getWorkFlows]);
+  // // Effect to log data when it changes
+  // useEffect(() => {
+  //   console.log(getWorkFlows);
+  // }, [getWorkFlows]);
 
   return (
     <div>

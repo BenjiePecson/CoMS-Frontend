@@ -27,8 +27,8 @@ const Tasks = () => {
   const [getWorkFlows, setGetAllWorkFlow] = useState([]);
 
   //get all task
-  const getAllWorkFlow = () => {
-    return axios.get(`/workflow/${companyId}`);
+  const getAllWorkFlow = async () => {
+    return await axios.get(`/workflow/${companyId}`);
   };
 
   // Fetch workflows
@@ -47,9 +47,9 @@ const Tasks = () => {
   }, []);
 
   // Effect to log data when it changes
-  useEffect(() => {
-    console.log(getWorkFlows);
-  }, [getWorkFlows]);
+  // useEffect(() => {
+  //   console.log(getWorkFlows);
+  // }, [getWorkFlows]);
   return (
     <div>
       <Breadcrumbs
@@ -68,10 +68,19 @@ const Tasks = () => {
           <div className="poppins-bold text-color-2 text-[24px] flex items-center">
             Tasks
           </div>
-          <AddServiceAgreement />
+          <AddServiceAgreement
+            fetchWorkflow={() => {
+              fetchWorkflow();
+            }}
+          />
         </div>
       </div>
-      <Accordions />
+      <Accordions
+        getWorkFlows={getWorkFlows}
+        setGetAllWorkFlow={() => {
+          setGetAllWorkFlow();
+        }}
+      />
     </div>
   );
 };

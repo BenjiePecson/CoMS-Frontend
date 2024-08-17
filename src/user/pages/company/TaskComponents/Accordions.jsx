@@ -59,36 +59,37 @@ const AccordionItem = ({
   );
 };
 
-const Accordions = () => {
-  const [getWorkFlows, setGetAllWorkFlow] = useState([]);
+const Accordions = ({getWorkFlows, setGetAllWorkFlow}) => {
+
+  // const [getWorkFlows, setGetAllWorkFlow] = useState([]);
 
   const { companyId } = useParams();
 
-  //get all task
-  const getAllWorkFlow = () => {
-    return axios.get(`/workflow/${companyId}`);
-  };
+  // //get all task
+  // const getAllWorkFlow = () => {
+  //   return axios.get(`/workflow/${companyId}`);
+  // };
 
-  // Fetch workflows
-  const fetchWorkflow = async () => {
-    try {
-      const response = await getAllWorkFlow();
-      setGetAllWorkFlow(response.data);
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
-    }
-  };
+  // // Fetch workflows
+  // const fetchWorkflow = async () => {
+  //   try {
+  //     const response = await getAllWorkFlow();
+  //     setGetAllWorkFlow(response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching tasks:", error);
+  //   }
+  // };
 
-  // Effect to fetch data on component mount
-  useEffect(() => {
-    fetchWorkflow();
-  }, []);
+  // // Effect to fetch data on component mount
+  // useEffect(() => {
+  //   fetchWorkflow();
+  // }, []);
 
-  //Effect to log data when it changes
-  useEffect(() => {
-    console.log(getWorkFlows);
-    console.log("Accordion");
-  }, [getWorkFlows]);
+  // //Effect to log data when it changes
+  // useEffect(() => {
+  //   console.log(getWorkFlows);
+  //   console.log("Accordion");
+  // }, [getWorkFlows]);
 
   const [openItems, setOpenItems] = useState([]);
 

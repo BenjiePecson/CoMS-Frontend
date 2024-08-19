@@ -67,17 +67,51 @@ const DataRow = ({
   handleStatusChange,
   handleDateChange,
 }) => {
+  const [users, setUsers] = useState([]);
+  // Fetch users from the API
+  // const fetchUsers = async () => {
+  //   try {
+  //     const response = await axios.get("/users");
+  //     // Transform user data into options format expected by react-select, excluding users with empty slackId
+
+  //     // Filter users with empty slackId and log them
+  //     // response.data.forEach((user) => {
+  //     //   if (!user.slackId) {
+  //     //     console.log(
+  //     //       `User with empty slackId: ${user.first_name} ${user.last_name}`
+  //     //     );
+  //     //   }
+  //     // });
+
+  //     const usersOptions = response.data
+  //       // .filter((user) => user.slackId) // Filter out users with empty slackId
+  //       .map((user) => ({
+  //         value: user.user_id,
+  //         label: user.first_name + " " + user.last_name,
+  //       }));
+
+  //     setUsers(usersOptions);
+  //   } catch (err) {
+  //     setError(err);
+  //   }
+  // };
+
+  // const assigneeOptions = users;
+  //console.log("asdasdadsd", assigneeOptions);
   const assigneeOptions = [
-    { value: "Michael", label: "Michael" },
-    { value: "Angelo", label: "Angelo" },
+    { value: "Michael Angelo", label: "Michael Angelo" },
     { value: "Benjie", label: "Benjie" },
     { value: "Marla", label: "Marla" },
   ];
 
   const statusOptions = [
-    { value: "not started", label: "Not Started" },
-    { value: "in progress", label: "In Progress" },
-    { value: "completed", label: "Completed" },
+    { value: "To Do", label: "To Do" },
+    { value: "Draft", label: "Draft" },
+    { value: "In Progress", label: "In Progress" },
+    { value: "For Review", label: "For Review" },
+    { value: "Approved", label: "Approved" },
+    { value: "On Hold", label: "On Hold" },
+    { value: "Done", label: "Done" },
   ];
 
   return (

@@ -38,7 +38,7 @@ const AccordionItem = ({
             <TaskCard content={content} />
           </div> */}
 
-          <div className="flex flex-col lg:flex-row">
+          <div className="flex flex-col lg:flex-wrap lg:flex-row">
             {tasks.map((task) => (
               <TaskCard
                 key={task.taskId}
@@ -101,7 +101,7 @@ const Accordions = () => {
   };
 
   return (
-    <div className="join join-vertical w-full">
+    <div className="join join-vertical w-full ">
       {getWorkFlows.map((workflow) => (
         <AccordionItem
           key={workflow.workFlowId}

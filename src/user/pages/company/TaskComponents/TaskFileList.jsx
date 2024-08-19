@@ -14,7 +14,7 @@ const TaskFileList = () => {
         </thead>
         <tbody>
           {/* row 1 */}
-          {/* <tr>
+          <tr>
             <td>Cy Ganderton</td>
 
             <td className="flex flex-row">
@@ -51,9 +51,9 @@ const TaskFileList = () => {
                 </svg>
               </button>
             </td>
-          </tr> */}
+          </tr>
           {/* row 2 */}
-          {/* <tr>
+          <tr>
             <td>Hart Hagerty</td>
             <td className="flex flex-row">
               <button className="btn btn-square mx-1 btn-xs">
@@ -89,9 +89,9 @@ const TaskFileList = () => {
                 </svg>
               </button>
             </td>
-          </tr> */}
+          </tr>
           {/* row 3 */}
-          {/* <tr>
+          <tr>
             <td>Brice Swyre</td>
             <td className="flex flex-row">
               <button className="btn btn-square mx-1 btn-xs">
@@ -127,7 +127,7 @@ const TaskFileList = () => {
                 </svg>
               </button>
             </td>
-          </tr> */}
+          </tr>
         </tbody>
       </table>
     </div>

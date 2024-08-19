@@ -616,131 +616,8 @@ const options = [
     ],
   },
   {
-    value: "7",
-    label: "IACS",
-    data: [
-      {
-        taskName: "Cover Sheet",
-        taskDescription: "",
-        assignees: [],
-        priority: "",
-        status: "",
-        targetDate: "",
-        subdata: [],
-      },
-      {
-        taskName: "Certificate of Increase of Capital Stock",
-        taskDescription: "",
-        assignees: [],
-        priority: "",
-        status: "",
-        targetDate: "",
-        subdata: [],
-      },
-      {
-        taskName: "Treasurer's Affidavit",
-        taskDescription:
-          "Certifying the increase of capital stock, the amount subscribe and the amount received as payment thereto",
-        assignees: [],
-        priority: "",
-        status: "",
-        targetDate: "",
-        subdata: [],
-      },
-      {
-        taskName: "Amended Articles of Incorporation",
-        taskDescription: "",
-        assignees: [],
-        priority: "",
-        status: "",
-        targetDate: "",
-        subdata: [],
-      },
-      {
-        taskName: "Directors' certificate",
-        taskDescription:
-          "A notarized document signed by majority of the directors and the corporate secretary certifying the amendment of the Articles of Incorporation increasing the authorized capital stock, the votes of the directors and stockholders thereto, and the date and place of the stockholders meeting",
-        assignees: [],
-        priority: "",
-        status: "",
-        targetDate: "",
-        subdata: [],
-      },
-      {
-        taskName: "Audited financial statements",
-        taskDescription:
-          "as of the last fiscal year stamped receive by BIR and SEC(if the advances are already reflectin therein)",
-        assignees: [],
-        priority: "",
-        status: "",
-        targetDate: "",
-        subdata: [],
-      },
-      {
-        taskName: "List of stockholders",
-        taskDescription:
-          "of record as of adate of meeting approving the ioncrease, indication their nationalities and their respective subscribed and paid-up capital on the present authorized capital stock certified under oath by the corporate secretary",
-        assignees: [],
-        priority: "",
-        status: "",
-        targetDate: "",
-        subdata: [],
-      },
-      {
-        taskName: "Deed of Assignment",
-        taskDescription:
-          "to be executed by the creditor/subscriber assigning the advances as payment of the subscription",
-        assignees: [],
-        priority: "",
-        status: "",
-        targetDate: "",
-        subdata: [],
-      },
-      {
-        taskName: "Secretary's certificate",
-        taskDescription:
-          "certifying that all non-subscribing stockholders have waived their pre-emptive rights to subscribe",
-        assignees: [],
-        priority: "",
-        status: "",
-        targetDate: "",
-        subdata: [],
-      },
-      {
-        taskName:
-          "Notarized Secretary's Certificate on no pending case of intra-corporate dispute",
-        taskDescription:
-          "certifying that all non-subscribing stockholders have waived their pre-emptive rights to subscribe",
-        assignees: [],
-        priority: "",
-        status: "",
-        targetDate: "",
-        subdata: [],
-      },
-      {
-        taskName: "Registration under Foreign Investment Act(FIA)",
-        taskDescription: "if the foreign equity increased to more than 40%",
-        assignees: [],
-        priority: "",
-        status: "",
-        targetDate: "",
-        subdata: [],
-      },
-      {
-        taskName:
-          "Clearance from other departments or other goverment agencies",
-        taskDescription: "",
-        assignees: [],
-        priority: "",
-        status: "",
-        targetDate: "",
-        subdata: [],
-      },
-    ],
-  },
-  {
-    value: "10",
-    label: "",
+    value: "0",
+    label: "Option 3",
     data: [
       {
         taskName: "Option 3",
@@ -753,21 +630,6 @@ const options = [
       },
     ],
   },
-  // {
-  //   value: "0",
-  //   label: "",
-  //   data: [
-  //     {
-  //       taskName: "Option 3",
-  //       taskDescription: "This is option 3",
-  //       assignees: [],
-  //       priority: "",
-  //       status: "",
-  //       targetDate: "",
-  //       subdata: [],
-  //     },
-  //   ],
-  // },
   { value: "other", label: "Other" },
 ];
 

@@ -1411,7 +1411,7 @@ const ViewNOMPage = () => {
           </div>
         </dialog>
 
-        {/* Preview Change Google Drive ID*/}
+        {/* Mark as Completed Modal*/}
         <dialog id="setNoticeCompeleted" className="modal">
           <div className="modal-box">
             <div className="flex flex-row justify-between py-4">

@@ -1,6 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+export const gdrivefoldersState = {
+  drafted: "",
+  signed: "",
+  notarized: "",
+  filed: "",
+};
+
 const RecordState = {
   recordId: "",
   companyId: "",
@@ -13,20 +20,30 @@ const RecordState = {
   createdBy: "",
   created_at: "",
   updated_at: "",
+  // gdrivefolders: gdrivefoldersState,
 };
 
 export const fetchRecords = createAsyncThunk(
   "records/fetchRecords",
   async (companyId) => {
     let response = await axios.get(`/record/company/${companyId}`);
+    // let records = response.data.map((record) => {
+    //   if (record.gdrivefolders == null) {
+    //     record.gdrivefolders = gdrivefoldersState;
+    //   }
+    //   return record;
+    // });
     return response.data;
   }
 );
 
-// export const fetchCompany = createAsyncThunk("records/fetchCompany", async (companyId) => {
-//   let response = await axios.get(`/company/${companyId}`);
-//   return response.data;
-// });
+export const fetchRecord = createAsyncThunk(
+  "records/fetchRecord",
+  async (recordId) => {
+    let response = await axios.get(`/record/record/${recordId}`);
+    return response.data;
+  }
+);
 
 const initialState = {
   records: [],
@@ -80,6 +97,15 @@ const GISRecordSlice = createSlice({
         }
       });
     },
+
+    updateRecordGdriveFolders: (state, action) => {
+      state.records = state.records.map((record) => {
+        if (record.recordId == action.payload.recordId) {
+          record.folder_id = action.payload.folder_id;
+        }
+        return record;
+      });
+    },
   },
   extraReducers: (builder) => {
     //fetch records
@@ -95,18 +121,18 @@ const GISRecordSlice = createSlice({
       state.records = [];
     });
 
-    // //fetch record
-    // builder.addCase(fetchCompany.pending, (state) => {
-    //   state.status = "pending";
-    // });
-    // builder.addCase(fetchCompany.fulfilled, (state, action) => {
-    //   state.status = "fulfilled";
-    //   state.selectedRecord = action.payload[0];
-    // });
-    // builder.addCase(fetchCompany.rejected, (state, action) => {
-    //   state.status = "rejected";
-    //   state.selectedRecord = RecordState;
-    // });
+    //fetch record
+    builder.addCase(fetchRecord.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(fetchRecord.fulfilled, (state, action) => {
+      state.status = "fulfilled";
+      state.selectedRecord = action.payload;
+    });
+    builder.addCase(fetchRecord.rejected, (state, action) => {
+      state.status = "rejected";
+      state.selectedRecord = RecordState;
+    });
   },
 });
 
@@ -116,5 +142,6 @@ export const {
   changeRecordStatus,
   deleteRecord,
   renameRecordName,
+  updateRecordGdriveFolders,
 } = GISRecordSlice.actions;
 export default GISRecordSlice.reducer;

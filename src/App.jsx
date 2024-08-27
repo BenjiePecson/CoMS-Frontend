@@ -75,7 +75,7 @@ function App() {
               element={<GIScreate />}
             />
             <Route
-              path="company/:companyId/gis-tracker/view/:id?"
+              path="company/:companyId/gis-tracker/view/:recordId?"
               element={<GISview />}
             />
             <Route

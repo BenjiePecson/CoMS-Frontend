@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { showAlert } from "../../../../assets/global";
+import { showAlert, showToast } from "../../../../assets/global";
 import {
   Page,
   Text,
@@ -26,19 +26,31 @@ import Step6 from "./steppers/step6";
 import Step7 from "./steppers/step7";
 
 import { setFormData } from "../../../store/GIS/GISFormSlice";
+import { gdrivefoldersState } from "../../../store/GIS/GISRecordSlice";
+import { fetchUser } from "../../../store/user/UserSlice";
 
 const create = () => {
-  const { companyId } = useParams();
-  const { recordId } = useParams();
+  const { companyId, recordId } = useParams();
 
   const record = useSelector((state) => state.records.record);
   const selectedCompany = useSelector((state) => state.company.selectedCompany);
   const formData = useSelector((state) => state.formGIS.formData);
+  const currentUser = useSelector((state) => state.user.user);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [formRecord, setFormRecord] = useState(record);
+
+  const [GDriveFolders, setGDriveFolders] = useState(gdrivefoldersState);
+
+  const defaultState = {
+    date_filed: "",
+    // gdrivefolders: gdrivefoldersState,
+    folder_id: "",
+  };
+  const [errors, setErrors] = useState(defaultState);
+  const [formPublish, setFormPublish] = useState(defaultState);
 
   //#region Functions in Object Form Data
 
@@ -407,7 +419,8 @@ const create = () => {
       tax_identification_no,
     } = individual;
 
-    const middlename = middle_name != "" ? `${middle_name[0].toUpperCase()}.` : "";
+    const middlename =
+      middle_name != "" ? `${middle_name[0].toUpperCase()}.` : "";
     const name = `${given_name} ${middlename} ${surname} ${ext_name}`;
 
     return {
@@ -421,9 +434,8 @@ const create = () => {
 
   const updateFormData = async () => {
     try {
-      let response = await axios.get(`/record/${recordId}`);
-      const data = response.data[0];
-
+      let response = await axios.get(`/record/record/${recordId}`);
+      const data = response.data;
       let individuals = await axios.get(`/individuals/${companyId}`);
       const updateDirectorsDetails =
         data.draftingInput.directors_or_officers.map((director) => {
@@ -461,9 +473,7 @@ const create = () => {
 
       setFormRecord({
         ...formRecord,
-        companyId: companyId,
-        recordId: recordId,
-        createdBy: "Michael",
+        ...data,
         draftingInput: newFormData,
       });
     } catch (error) {
@@ -476,6 +486,7 @@ const create = () => {
   const toggleDownloadPDF = () => {
     console.log("Download PDF");
   };
+
   const toggleSaveAsDraft = async () => {
     let status = "error";
     let message = "Failed to save as draft. Please try again.";
@@ -483,7 +494,7 @@ const create = () => {
     try {
       let form = formRecord;
       form.status = "Saved as Draft";
-      let response = await axios.post(`/record`, form);
+      let response = await axios.post(`/record/`, form);
 
       const data = response.data;
       status = "success";
@@ -505,15 +516,226 @@ const create = () => {
     setFormRecord({ ...formRecord, draftingInput: formData });
 
     if (step === 7) {
-      console.log("Publish");
+      setFormPublish({ ...formPublish, folder_id: formRecord.folder_id });
+      document.getElementById("publishModal").showModal();
     }
   };
   //#endregion
 
+  const handlePublishButton = async (ev) => {
+    ev.preventDefault();
+    let status = "error";
+    let message = "Failed to update the record.";
+    try {
+      let form = formRecord;
+      form.status = "Completed";
+      form.date_filed = formPublish.date_filed;
+      form.folder_id = formPublish.folder_id;
+      // form.gdrivefolders = formPublish.gdrivefolders;
+
+      let response = await axios.post(`/record`, form);
+      if (response.status === 200) {
+        status = "success";
+        message = "Submitted Successfully.";
+        navigate(`/company/${companyId}/gis-tracker`);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      showToast(status, message);
+      document.getElementById("publishModal").close();
+    }
+  };
+
+  const handleOnChange = (ev) => {
+    const { name, value } = ev.target;
+    if (name != "date_filed" && name != "folder_id") {
+      let gdrivefolders = { ...formPublish.gdrivefolders, [name]: value };
+      setFormPublish({ ...formPublish, gdrivefolders });
+    } else {
+      setFormPublish({ ...formPublish, [name]: value });
+    }
+  };
+
+  const dialogComponents = () => {
+    return (
+      <>
+        {/* Publish Modal */}
+        <dialog id="publishModal" className="modal">
+          <div className="modal-box">
+            <div className="flex flex-row justify-between py-4">
+              <form method="dialog">
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                  ✕
+                </button>
+              </form>
+            </div>
+            <form onSubmit={handlePublishButton}>
+              <div className="flex flex-col gap-5">
+                {/* <h1 className="poppins-semibold text-md">
+                Update Google Drive Folder ID
+              </h1> */}
+                {/* 
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="poppins-regular text-[12px]">
+                      Drafted GIS File Folder ID{" "}
+                      <span className="text-red-500">*</span>
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    className={`input input-bordered w-full ${
+                      errors.gdrivefolders.drafted && `input-error`
+                    }`}
+                    name="drafted"
+                    value={formPublish.gdrivefolders.drafted}
+                    onChange={handleOnChange}
+                  />
+                  {errors.gdrivefolders.drafted && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.gdrivefolders.drafted}
+                    </span>
+                  )}
+                </label>
+
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="poppins-regular text-[12px]">
+                      Signed GIS File Folder ID{" "}
+                      <span className="text-red-500">*</span>
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    className={`input input-bordered w-full ${
+                      errors.gdrivefolders.signed && `input-error`
+                    }`}
+                    name="signed"
+                    value={formPublish.gdrivefolders.signed}
+                    onChange={handleOnChange}
+                  />
+                  {errors.gdrivefolders.signed && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.gdrivefolders.signed}
+                    </span>
+                  )}
+                </label>
+
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="poppins-regular text-[12px]">
+                      Notarized GIS File Folder ID{" "}
+                      <span className="text-red-500">*</span>
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    className={`input input-bordered w-full ${
+                      errors.gdrivefolders.notarized && `input-error`
+                    }`}
+                    name="notarized"
+                    value={formPublish.gdrivefolders.notarized}
+                    onChange={handleOnChange}
+                  />
+                  {errors.gdrivefolders.notarized && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.gdrivefolders.notarized}
+                    </span>
+                  )}
+                </label>
+
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="poppins-regular text-[12px]">
+                      SEC Filed GIS Folder ID{" "}
+                      <span className="text-red-500">*</span>
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    className={`input input-bordered w-full ${
+                      errors.gdrivefolders.filed && `input-error`
+                    }`}
+                    name="filed"
+                    value={formPublish.gdrivefolders.filed}
+                    onChange={handleOnChange}
+                  />
+                  {errors.gdrivefolders.filed && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.gdrivefolders.filed}
+                    </span>
+                  )}
+                </label>
+
+                 */}
+
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="poppins-regular text-[12px]">
+                      SEC Filed GIS Folder ID{" "}
+                      <span className="text-red-500">*</span>
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    className={`input input-bordered w-full ${
+                      errors.folder_id && `input-error`
+                    }`}
+                    name="folder_id"
+                    value={formPublish.folder_id}
+                    onChange={handleOnChange}
+                  />
+                  {errors.folder_id && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.folder_id}
+                    </span>
+                  )}
+                </label>
+
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="poppins-regular text-[12px]">
+                      Date Filed
+                      <span className="text-red-500">*</span>
+                    </span>
+                  </div>
+                  <input
+                    type="date"
+                    className={`input input-bordered w-full ${
+                      errors.date_filed && `input-error`
+                    }`}
+                    name="date_filed"
+                    value={formPublish.date_filed}
+                    onChange={handleOnChange}
+                  />
+                  {errors.date_filed && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.date_filed}
+                    </span>
+                  )}
+                </label>
+
+                <button className="btn bg-primary text-white" type="submit">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </dialog>
+      </>
+    );
+  };
+
   //#region use effects
+
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    dispatch(fetchUser(token));
+  }, []);
+
   useEffect(() => {
     //setformrecord
-
     if (recordId !== undefined) {
       //record exists
       updateFormData();
@@ -522,7 +744,7 @@ const create = () => {
       setFormRecord({
         ...formRecord,
         companyId: companyId,
-        createdBy: "Michael",
+        createdBy: `${currentUser.first_name} ${currentUser.last_name}`,
         draftingInput: formData,
       });
 
@@ -530,15 +752,16 @@ const create = () => {
         dispatch(
           setFormData({
             ...formData,
-            corporate_name: selectedCompany.companyName,
-            sec_registration_number: selectedCompany.secNumber,
-            corporate_tin: selectedCompany.corporateTin,
-            date_registered: selectedCompany.dateRegistered,
+            ...selectedCompany.latestGIS,
+            // corporate_name: selectedCompany.companyName,
+            // sec_registration_number: selectedCompany.secNumber,
+            // corporate_tin: selectedCompany.corporateTin,
+            // date_registered: selectedCompany.dateRegistered,
           })
         );
       }
     }
-  }, []);
+  }, [selectedCompany]);
 
   useEffect(() => {
     if (formRecord.companyId !== "") {
@@ -548,92 +771,93 @@ const create = () => {
   //#endregion
 
   return (
-    <div className="flex flex-col my-5">
-      <div className="bg-white w-full rounded-xl shadow-lg">
-        <div className="flex flex-col items-center justify-center py-5">
-          <ul className="steps steps-horizontal w-full z-0">
-            <li
-              className={stepStyle(1)}
-              onClick={() => {
-                setStep(1);
-              }}
-            ></li>
-            <li
-              className={stepStyle(2)}
-              onClick={() => {
-                setStep(2);
-              }}
-            ></li>
-            <li
-              className={stepStyle(3)}
-              onClick={() => {
-                setStep(3);
-              }}
-            ></li>
-            <li
-              className={stepStyle(4)}
-              onClick={() => {
-                setStep(4);
-              }}
-            ></li>
-            <li
-              className={stepStyle(5)}
-              onClick={() => {
-                setStep(5);
-              }}
-            ></li>
-            <li
-              className={stepStyle(6)}
-              onClick={() => {
-                setStep(6);
-              }}
-            ></li>
-            <li
-              className={stepStyle(7)}
-              onClick={() => {
-                setStep(7);
-              }}
-            ></li>
-          </ul>
-        </div>
-        <hr />
-        <div className="p-5 text-center">
-          {step <= 6 && (
-            <div>
-              <h1 className="poppins-semibold text-[20px]">
-                General Information Sheet
-              </h1>
-            </div>
-          )}
-
-          <div className="w-full flex-col items-center justify-center my-5">
-            {step === 1 && <Step1 />}
-            {step === 2 && <Step2 />}
-            {step === 3 && <Step3 />}
-            {step === 4 && <Step4 />}
-            {step === 5 && <Step5 />}
-            {step === 6 && <Step6 />}
-            {step === 7 && <Step7 />}
+    <>
+      <div className="flex flex-col my-5">
+        <div className="bg-white w-full rounded-xl shadow-lg">
+          <div className="flex flex-col items-center justify-center py-5">
+            <ul className="steps steps-horizontal w-full z-0">
+              <li
+                className={stepStyle(1)}
+                onClick={() => {
+                  setStep(1);
+                }}
+              ></li>
+              <li
+                className={stepStyle(2)}
+                onClick={() => {
+                  setStep(2);
+                }}
+              ></li>
+              <li
+                className={stepStyle(3)}
+                onClick={() => {
+                  setStep(3);
+                }}
+              ></li>
+              <li
+                className={stepStyle(4)}
+                onClick={() => {
+                  setStep(4);
+                }}
+              ></li>
+              <li
+                className={stepStyle(5)}
+                onClick={() => {
+                  setStep(5);
+                }}
+              ></li>
+              <li
+                className={stepStyle(6)}
+                onClick={() => {
+                  setStep(6);
+                }}
+              ></li>
+              <li
+                className={stepStyle(7)}
+                onClick={() => {
+                  setStep(7);
+                }}
+              ></li>
+            </ul>
           </div>
+          <hr />
+          <div className="p-5 text-center">
+            {step <= 6 && (
+              <div>
+                <h1 className="poppins-semibold text-[20px]">
+                  General Information Sheet
+                </h1>
+              </div>
+            )}
 
-          <div className="w-full flex justify-between">
-            <button
-              onClick={() => {
-                if (step == 1) {
-                  navigate(-1);
-                } else {
-                  if (step >= 1 && step <= 7) {
-                    setStep(step - 1);
-                    scrollToTop();
+            <div className="w-full flex-col items-center justify-center my-5">
+              {step === 1 && <Step1 />}
+              {step === 2 && <Step2 />}
+              {step === 3 && <Step3 />}
+              {step === 4 && <Step4 />}
+              {step === 5 && <Step5 />}
+              {step === 6 && <Step6 />}
+              {step === 7 && <Step7 />}
+            </div>
+
+            <div className="w-full flex justify-between">
+              <button
+                onClick={() => {
+                  if (step == 1) {
+                    navigate(-1);
+                  } else {
+                    if (step >= 1 && step <= 7) {
+                      setStep(step - 1);
+                      scrollToTop();
+                    }
                   }
-                }
-              }}
-              className="btn btn-error text-white"
-            >
-              {btnCancelText()}
-            </button>
-            <div className="flex flex-row gap-10">
-              {/* <PDFDownloadLink
+                }}
+                className="btn btn-error text-white"
+              >
+                {btnCancelText()}
+              </button>
+              <div className="flex flex-row gap-10">
+                {/* <PDFDownloadLink
                 className={
                   `btn bg-primary text-white ` + (step != 7 && "hidden")
                 }
@@ -642,30 +866,33 @@ const create = () => {
               >
                 Download PDF
               </PDFDownloadLink> */}
-              <button
-                // className={
-                //   `btn bg-primary text-white ` + (step != 7 && "hidden")
-                // }
-                className={`btn bg-primary text-white `}
-                onClick={() => {
-                  toggleSaveAsDraft();
-                }}
-              >
-                Save as Draft
-              </button>
-              <button
-                className="btn bg-primary text-white"
-                onClick={() => {
-                  toggleSubmit();
-                }}
-              >
-                {btnNextText()}
-              </button>
+                <button
+                  // className={
+                  //   `btn bg-primary text-white ` + (step != 7 && "hidden")
+                  // }
+                  className={`btn bg-primary text-white `}
+                  onClick={() => {
+                    toggleSaveAsDraft();
+                  }}
+                >
+                  Save as Draft
+                </button>
+                <button
+                  className="btn bg-primary text-white"
+                  onClick={() => {
+                    toggleSubmit();
+                  }}
+                >
+                  {btnNextText()}
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {dialogComponents()}
+    </>
   );
 };
 

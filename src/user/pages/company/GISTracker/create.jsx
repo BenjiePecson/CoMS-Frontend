@@ -749,7 +749,7 @@ const create = () => {
       });
 
       if (formData.corporate_name === "") {
-        if (selectedCompany.latestGIS.length > 0) {
+        if (selectedCompany.latestGIS != undefined) {
           dispatch(
             setFormData({
               ...formData,

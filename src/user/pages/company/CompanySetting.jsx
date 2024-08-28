@@ -351,9 +351,9 @@ const AccordionComponent = () => {
         case "nationality":
           errorMessage = "Nationality is Required";
           break;
-        case "date_of_birth":
-          errorMessage = "Date of Birth is Required";
-          break;
+        // case "date_of_birth":
+        //   errorMessage = "Date of Birth is Required";
+        //   break;
         case "tax_identification_no":
           errorMessage = "Tax Identification Number is Required";
           break;
@@ -430,9 +430,9 @@ const AccordionComponent = () => {
     if (individualForm.nationality == "") {
       newErrors.nationality = "Nationality is Required";
     }
-    if (individualForm.date_of_birth == "") {
-      newErrors.date_of_birth = "Date of Birth is Required";
-    }
+    // if (individualForm.date_of_birth == "") {
+    //   newErrors.date_of_birth = "Date of Birth is Required";
+    // }
     if (individualForm.tax_identification_no == "") {
       newErrors.tax_identification_no = "Tax Identification Number is Required";
     }
@@ -607,7 +607,7 @@ const AccordionComponent = () => {
                   )}
                 </label>
 
-                <label className="form-control w-full">
+                {/* <label className="form-control w-full">
                   <span>
                     Date of Birth <span className="text-red-500">*</span>
                   </span>
@@ -625,7 +625,7 @@ const AccordionComponent = () => {
                       {errors.date_of_birth}
                     </span>
                   )}
-                </label>
+                </label> */}
 
                 <label className="form-control w-full">
                   <span>

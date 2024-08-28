@@ -749,16 +749,28 @@ const create = () => {
       });
 
       if (formData.corporate_name === "") {
-        dispatch(
-          setFormData({
-            ...formData,
-            ...selectedCompany.latestGIS,
-            // corporate_name: selectedCompany.companyName,
-            // sec_registration_number: selectedCompany.secNumber,
-            // corporate_tin: selectedCompany.corporateTin,
-            // date_registered: selectedCompany.dateRegistered,
-          })
-        );
+        if (selectedCompany.latestGIS.length > 0) {
+          dispatch(
+            setFormData({
+              ...formData,
+              ...selectedCompany.latestGIS,
+              // corporate_name: selectedCompany.companyName,
+              // sec_registration_number: selectedCompany.secNumber,
+              // corporate_tin: selectedCompany.corporateTin,
+              // date_registered: selectedCompany.dateRegistered,
+            })
+          );
+        } else {
+          dispatch(
+            setFormData({
+              ...formData,
+              corporate_name: selectedCompany.companyName,
+              sec_registration_number: selectedCompany.secNumber,
+              corporate_tin: selectedCompany.corporateTin,
+              date_registered: selectedCompany.dateRegistered,
+            })
+          );
+        }
       }
     }
   }, [selectedCompany]);

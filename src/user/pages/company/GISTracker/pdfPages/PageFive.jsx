@@ -665,11 +665,14 @@ const PageFive = ({
                                   !isNaN(
                                     Number(stockholder.percent_of_ownership)
                                   )
-                                    ? `${formatNumberWithComma(
-                                        Number(
-                                          stockholder.percent_of_ownership
-                                        ).toFixed(2)
-                                      )}%`.length
+                                    ? // `${formatNumberWithComma(
+                                      //     Number(
+                                      //       stockholder.percent_of_ownership
+                                      //     ).toFixed(2)
+                                      //   )}%`.length
+                                      `${Number(
+                                        stockholder.percent_of_ownership
+                                      ).toFixed(4)}%`.length
                                     : 0,
                                   17,
                                   baseFontSize - 4
@@ -680,11 +683,14 @@ const PageFive = ({
                               {!isNaN(
                                 Number(stockholder.percent_of_ownership)
                               ) &&
-                                `${formatNumberWithComma(
-                                  Number(
-                                    stockholder.percent_of_ownership
-                                  ).toFixed(2)
-                                )}%`}
+                                // `${formatNumberWithComma(
+                                //   Number(
+                                //     stockholder.percent_of_ownership
+                                //   ).toFixed(2)
+                                // )}%`
+                                `${Number(
+                                  stockholder.percent_of_ownership
+                                ).toFixed(4)}%`}
                             </Text>
                           </View>
                         </View>

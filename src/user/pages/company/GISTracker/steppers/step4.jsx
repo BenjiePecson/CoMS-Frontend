@@ -456,10 +456,11 @@ const step4 = () => {
       newErrors.incorporator = "Incorporator is required";
     }
 
-    if (formDirector.board == "") {
-      newErrors.board = "Board is required";
-    }
+    // if (formDirector.board == "") {
+    //   newErrors.board = "Board is required";
+    // }
 
+    console.log(formDirector);
     if (formDirector.gender == "") {
       newErrors.gender = "Gender is required";
     }
@@ -622,7 +623,6 @@ const step4 = () => {
                         incorporator: "Y",
                         stock_holder: "Y",
                         gender: "M",
-                        board: "C",
                         officer: "N/A",
                         executive_committe: "N/A",
                       });
@@ -981,9 +981,7 @@ const step4 = () => {
               </div>
               <label className="form-control w-full">
                 <div className="label">
-                  <span className="label-text">
-                    Board<span className="text-red-500">*</span>
-                  </span>
+                  <span className="label-text">Board</span>
                 </div>
                 <select
                   className="select select-bordered"
@@ -995,6 +993,7 @@ const step4 = () => {
                   }}
                   value={formDirector.board}
                 >
+                  <option value="">Select Option</option>
                   <option value="C">Chairman</option>
                   <option value="M">Member</option>
                   <option value="I">Independent Director</option>
@@ -1217,6 +1216,7 @@ const step4 = () => {
                       id: listOfDirectors.length + 1,
                       ...formDirector,
                     };
+
                     setListOfDirectors([...listOfDirectors, director]);
                     document.getElementById("addRowModal").close();
                   }

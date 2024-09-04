@@ -527,6 +527,8 @@ function PageThree({
     );
   };
 
+  console.log(formData);
+
   const page3 = () => {
     let text =
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime, accusantium eveniet odit quaerat ut harum totam eligendi consequatur asperiores alias dicta repellendus natus atque esse. Animi est magnam repellat earum.";
@@ -2028,14 +2030,8 @@ function PageThree({
                   >
                     <Text
                       style={{
-                        // fontSize: getFontSize(
-                        //   paid_up_capital.percent_of_ownership.length,
-                        //   17,
-                        //   baseFontSize - 4
-                        // ),
                         fontSize: getFontSize(
-                          `${paid_up_capital.percent_of_ownership.toFixed(2)}%`
-                            .length,
+                          paid_up_capital.percent_of_ownership.length,
                           17,
                           baseFontSize - 4
                         ),
@@ -2043,8 +2039,7 @@ function PageThree({
                         width: "100%",
                       }}
                     >
-                      {/* {`${paid_up_capital.percent_of_ownership}%`} */}
-                      {`${paid_up_capital.percent_of_ownership.toFixed(2)}%`}
+                      {`${paid_up_capital.percent_of_ownership}%`}
                     </Text>
                   </View>
                 </View>

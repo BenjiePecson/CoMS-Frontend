@@ -35,6 +35,62 @@ const step3 = () => {
     formData.paid_up_capital.foreign
   );
 
+  // Function Definitions
+  const formatIntegerWithComma = (integerPart) => {
+    return integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  const formatDecimalPlaces = (decimalPart) => {
+    // if (decimalPart === undefined) {
+    //   return "00";
+    // } else if (decimalPart.length === 1) {
+    //   return `${decimalPart}0`;
+    // } else if (decimalPart.length > 2) {
+    //   return decimalPart;
+    // } else {
+    //   return decimalPart.padEnd(2, "0");
+    // }
+
+    if (decimalPart === undefined) {
+      return "00"; // No decimal part, return "00"
+    }
+
+    // Truncate or round to a maximum of four decimal places
+    let formattedDecimalPart = decimalPart.substring(0, 4);
+
+    // Ensure exactly two decimal places
+    if (formattedDecimalPart.length === 0) {
+      return "00"; // No decimal part at all
+    } else if (formattedDecimalPart.length === 1) {
+      return `${formattedDecimalPart}0`; // One decimal place, append one zero
+    } else if (formattedDecimalPart.length === 2) {
+      return `${formattedDecimalPart}`; // Two decimal places
+    } else if (formattedDecimalPart.length === 3) {
+      return `${formattedDecimalPart}`; // Three decimal places
+    } else {
+      return formattedDecimalPart; // Four decimal places or more, no extra padding needed
+    }
+  };
+
+  const formatNumberWithCommaAndDecimal = (number) => {
+    const numStr = number.toString();
+    const [integerPart, decimalPart] = numStr.split(".");
+    const formattedIntegerPart = formatIntegerWithComma(integerPart);
+    const formattedDecimalPart = formatDecimalPlaces(decimalPart);
+    return `${formattedIntegerPart}.${formattedDecimalPart}`;
+  };
+
+  const formatNumberWithCommaOnly = (number) => {
+    const numStr = number.toString();
+    const [integerPart, decimalPart] = numStr.split(".");
+    if (decimalPart != undefined) {
+      const formattedInteger = formatIntegerWithComma(integerPart);
+      const formattedDecimal = decimalPart.substring(0, 4);
+      return `${formattedInteger}.${formattedDecimal}`;
+    }
+    return formatIntegerWithComma(integerPart);
+  };
+
   const authCapitalStockColumn = [
     {
       name: "Type of Shares",
@@ -42,7 +98,7 @@ const step3 = () => {
     },
     {
       name: "Number of Shares",
-      selector: (row) => formatNumberWithComma(row.number_of_shares),
+      selector: (row) => formatNumberWithCommaOnly(row.number_of_shares),
     },
     {
       name: "Par/Stated Value",
@@ -50,11 +106,12 @@ const step3 = () => {
     },
     {
       name: "Amount (PhP)",
-      selector: (row) => {
-        let amount = row.amount;
-        amount = Number(amount);
-        return formatNumberWithComma(amount.toFixed(2));
-      },
+      // selector: (row) => {
+      //   let amount = row.amount;
+      //   amount = Number(amount);
+      //   return formatNumberWithComma(amount.toFixed(2));
+      // },
+      selector: (row) => formatNumberWithCommaAndDecimal(row.amount),
     },
   ];
 
@@ -159,6 +216,12 @@ const step3 = () => {
     {
       name: "Number of Shares",
       selector: (row) => row.number_of_shares,
+      // cell: (row) => {
+      //   let number_of_shares = row.number_of_shares;
+      //   number_of_shares = Number(number_of_shares);
+      //   return formatNumberWithComma(number_of_shares);
+      // },
+      cell: (row) => formatNumberWithCommaOnly(row.number_of_shares),
     },
     {
       name: "Number of Shares in the Hands of the Public",
@@ -170,11 +233,13 @@ const step3 = () => {
     },
     {
       name: "Amount (PhP)",
-      selector: (row) => {
-        let amount = row.amount;
-        amount = Number(amount);
-        return formatNumberWithComma(amount.toFixed(2));
-      },
+      selector: (row) => row.amount,
+      // selector: (row) => {
+      //   let amount = row.amount;
+      //   amount = Number(amount);
+      //   return formatNumberWithComma(amount);
+      // },
+      cell: (row) => formatNumberWithCommaAndDecimal(row.amount),
     },
     {
       name: "% of Ownership",
@@ -337,6 +402,12 @@ const step3 = () => {
     {
       name: "Number of Shares",
       selector: (row) => row.number_of_shares,
+      // cell: (row) => {
+      //   let number_of_shares = row.number_of_shares;
+      //   number_of_shares = Number(number_of_shares);
+      //   return formatNumberWithComma(number_of_shares);
+      // },
+      cell: (row) => formatNumberWithCommaOnly(row.number_of_shares),
     },
     {
       name: "Number of Shares in the Hands of the Public",
@@ -348,11 +419,13 @@ const step3 = () => {
     },
     {
       name: "Amount (PhP)",
-      selector: (row) => {
-        let amount = row.amount;
-        amount = Number(amount);
-        return formatNumberWithComma(amount.toFixed(2));
-      },
+      selector: (row) => (row) => row.amount,
+      // selector: (row) => {
+      //   let amount = row.amount;
+      //   amount = Number(amount);
+      //   return formatNumberWithComma(amount);
+      // },
+      cell: (row) => formatNumberWithCommaAndDecimal(row.amount),
     },
     {
       name: "% of Ownership",
@@ -521,6 +594,7 @@ const step3 = () => {
     {
       name: "Number of Shares",
       selector: (row) => row.number_of_shares,
+      cell: (row) => formatNumberWithCommaOnly(row.number_of_shares),
     },
     {
       name: "Par/Stated Value",
@@ -528,11 +602,13 @@ const step3 = () => {
     },
     {
       name: "Amount (PhP)",
-      selector: (row) => {
-        let amount = row.amount;
-        amount = Number(amount);
-        return formatNumberWithComma(amount.toFixed(2));
-      },
+      selector: (row) => row.amount,
+      // selector: (row) => {
+      //   let amount = row.amount;
+      //   amount = Number(amount);
+      //   return formatNumberWithComma(amount.toFixed(2));
+      // },
+      cell: (row) => formatNumberWithCommaAndDecimal(row.amount),
     },
     {
       name: "% of Ownership",
@@ -680,6 +756,7 @@ const step3 = () => {
     {
       name: "Number of Shares",
       selector: (row) => row.number_of_shares,
+      cell: (row) => formatNumberWithCommaOnly(row.number_of_shares),
     },
     {
       name: "Par/Stated Value",
@@ -687,11 +764,13 @@ const step3 = () => {
     },
     {
       name: "Amount (PhP)",
-      selector: (row) => {
-        let amount = row.amount;
-        amount = Number(amount);
-        return formatNumberWithComma(amount.toFixed(2));
-      },
+      selector: (row) => row.amount,
+      // selector: (row) => {
+      //   let amount = row.amount;
+      //   amount = Number(amount);
+      //   return formatNumberWithComma(amount.toFixed(2));
+      // },
+      cell: (row) => formatNumberWithCommaAndDecimal(row.amount),
     },
     {
       name: "% of Ownership",
@@ -844,6 +923,57 @@ const step3 = () => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
+  // const formatNumberWithComma = (number) => {
+  //   // Convert the number to a string
+  //   const numStr = number.toString();
+
+  //   // Split the number into integer and decimal parts
+  //   const [integerPart, decimalPart] = numStr.split(".");
+
+  //   // Format the integer part with commas
+  //   const formattedIntegerPart = integerPart.replace(
+  //     /\B(?=(\d{3})+(?!\d))/g,
+  //     ","
+  //   );
+
+  //   // Combine the integer part and decimal part
+  //   return decimalPart
+  //     ? `${formattedIntegerPart}.${decimalPart}`
+  //     : formattedIntegerPart;
+  // };
+
+  // const formatNumberWithComma = (number) => {
+  //   // Convert the number to a string
+  //   const numStr = number.toString();
+
+  //   // Split the number into integer and decimal parts
+  //   const [integerPart, decimalPart] = numStr.split(".");
+
+  //   // Format the integer part with commas
+  //   const formattedIntegerPart = integerPart.replace(
+  //     /\B(?=(\d{3})+(?!\d))/g,
+  //     ","
+  //   );
+
+  //   // Handle the decimal part
+  //   let formattedNumber;
+  //   if (decimalPart === undefined) {
+  //     // No decimal part, append ".00"
+  //     formattedNumber = `${formattedIntegerPart}.00`;
+  //   } else if (decimalPart.length === 1) {
+  //     // One decimal place, append one zero
+  //     formattedNumber = `${formattedIntegerPart}.${decimalPart}0`;
+  //   } else if (decimalPart.length > 2) {
+  //     // More than two decimal places, just use the provided decimal part
+  //     formattedNumber = `${formattedIntegerPart}.${decimalPart}`;
+  //   } else {
+  //     // Exactly two decimal places
+  //     formattedNumber = `${formattedIntegerPart}.${decimalPart}`;
+  //   }
+
+  //   return formattedNumber;
+  // };
+
   const removeIconSVG = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -908,13 +1038,19 @@ const step3 = () => {
           </div>
           <div className="flex flex-col">
             <h1 className="poppins-semibold">
-              {formatNumberWithComma(
+              {/* {formatNumberWithComma(
+                formData.auth_capital_stock.total_number_of_shares
+              )} */}
+              {formatNumberWithCommaOnly(
                 formData.auth_capital_stock.total_number_of_shares
               )}
             </h1>
             <h1 className="poppins-semibold">
-              {formatNumberWithComma(
+              {/* {formatNumberWithComma(
                 formData.auth_capital_stock.total_amount.toFixed(2)
+              )} */}
+              {formatNumberWithCommaAndDecimal(
+                formData.auth_capital_stock.total_amount
               )}
             </h1>
           </div>
@@ -997,15 +1133,13 @@ const step3 = () => {
             </div>
             <div className="flex flex-col">
               <h1 className="poppins-semibold">
-                {formatNumberWithComma(
+                {formatNumberWithCommaOnly(
                   formData.subscribe_capital.sub_total_number_of_shares_filipino
                 )}
               </h1>
               <h1 className="poppins-semibold">
-                {formatNumberWithComma(
-                  formData.subscribe_capital.sub_total_amount_filipino.toFixed(
-                    2
-                  )
+                {formatNumberWithCommaAndDecimal(
+                  formData.subscribe_capital.sub_total_amount_filipino
                 )}
               </h1>
               <h1 className="poppins-semibold">
@@ -1091,13 +1225,19 @@ const step3 = () => {
             </div>
             <div className="flex flex-col">
               <h1 className="poppins-semibold">
-                {formatNumberWithComma(
+                {formatNumberWithCommaOnly(
                   formData.subscribe_capital.sub_total_number_of_shares_foreign
                 )}
+                {/* {formatNumberWithComma(
+                  formData.subscribe_capital.sub_total_number_of_shares_foreign
+                )} */}
               </h1>
               <h1 className="poppins-semibold">
-                {formatNumberWithComma(
+                {/* {formatNumberWithComma(
                   formData.subscribe_capital.sub_total_amount_foreign.toFixed(2)
+                )} */}
+                {formatNumberWithCommaAndDecimal(
+                  formData.subscribe_capital.sub_total_amount_foreign
                 )}
               </h1>
               <h1 className="poppins-semibold">
@@ -1127,8 +1267,11 @@ const step3 = () => {
                 %
               </h1>
               <h1 className="poppins-semibold">
-                {formatNumberWithComma(
+                {/* {formatNumberWithComma(
                   formData.subscribe_capital.total_amount.toFixed(2)
+                )} */}
+                {formatNumberWithCommaAndDecimal(
+                  formData.subscribe_capital.total_amount
                 )}
               </h1>
               <h1 className="poppins-semibold">
@@ -1216,13 +1359,19 @@ const step3 = () => {
             </div>
             <div className="flex flex-col">
               <h1 className="poppins-semibold">
-                {formatNumberWithComma(
+                {formatNumberWithCommaOnly(
                   formData.paid_up_capital.sub_total_number_of_shares_filipino
                 )}
+                {/* {formatNumberWithComma(
+                  formData.paid_up_capital.sub_total_number_of_shares_filipino
+                )} */}
               </h1>
               <h1 className="poppins-semibold">
-                {formatNumberWithComma(
+                {/* {formatNumberWithComma(
                   formData.paid_up_capital.sub_total_amount_filipino.toFixed(2)
+                )} */}
+                {formatNumberWithCommaAndDecimal(
+                  formData.paid_up_capital.sub_total_amount_filipino
                 )}
               </h1>
               <h1 className="poppins-semibold">
@@ -1304,13 +1453,16 @@ const step3 = () => {
             </div>
             <div className="flex flex-col">
               <h1 className="poppins-semibold">
-                {formatNumberWithComma(
+                {/* {formatNumberWithComma(
+                  formData.paid_up_capital.sub_total_number_of_shares_foreign
+                )} */}
+                {formatNumberWithCommaOnly(
                   formData.paid_up_capital.sub_total_number_of_shares_foreign
                 )}
               </h1>
               <h1 className="poppins-semibold">
-                {formatNumberWithComma(
-                  formData.paid_up_capital.sub_total_amount_foreign.toFixed(2)
+                {formatNumberWithCommaAndDecimal(
+                  formData.paid_up_capital.sub_total_amount_foreign
                 )}
               </h1>
               <h1 className="poppins-semibold">

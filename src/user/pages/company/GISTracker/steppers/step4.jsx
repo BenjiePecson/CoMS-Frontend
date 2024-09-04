@@ -437,9 +437,8 @@ const step4 = () => {
       tax_identification_no,
     } = individual;
 
-    const middlename =
-      middle_name != "" ? `${middle_name[0].toUpperCase()}.` : "";
-    const name = `${given_name} ${middlename} ${surname} ${ext_name}`;
+    const middlename = middle_name != "" ? `${middle_name.toUpperCase()}` : "";
+    const name = `${given_name.toUpperCase()} ${middlename.toUpperCase()} ${surname.toUpperCase()} ${ext_name.toUpperCase()}`;
 
     return {
       name,
@@ -729,7 +728,6 @@ const step4 = () => {
                       (u) => u.individuals_id == ev.target.value
                     );
                     const director = extractDirectorDetails(individual[0]);
-                    console.log({ ...formDirector, director });
                     setFormDirector({ ...formDirector, ...director });
                   }}
                   value={formDirector.individuals_id}

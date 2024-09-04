@@ -225,6 +225,52 @@ const formatNumberWithComma = (number) => {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
+// Function Definitions
+const formatIntegerWithComma = (integerPart) => {
+  return integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+const formatDecimalPlaces = (decimalPart) => {
+  if (decimalPart === undefined) {
+    return "00"; // No decimal part, return "00"
+  }
+
+  // Truncate or round to a maximum of four decimal places
+  let formattedDecimalPart = decimalPart.substring(0, 4);
+
+  // Ensure exactly two decimal places
+  if (formattedDecimalPart.length === 0) {
+    return "00"; // No decimal part at all
+  } else if (formattedDecimalPart.length === 1) {
+    return `${formattedDecimalPart}0`; // One decimal place, append one zero
+  } else if (formattedDecimalPart.length === 2) {
+    return `${formattedDecimalPart}`; // Two decimal places
+  } else if (formattedDecimalPart.length === 3) {
+    return `${formattedDecimalPart}`; // Three decimal places
+  } else {
+    return formattedDecimalPart; // Four decimal places or more, no extra padding needed
+  }
+};
+
+const formatNumberWithCommaAndDecimal = (number) => {
+  const numStr = number.toString();
+  const [integerPart, decimalPart] = numStr.split(".");
+  const formattedIntegerPart = formatIntegerWithComma(integerPart);
+  const formattedDecimalPart = formatDecimalPlaces(decimalPart);
+  return `${formattedIntegerPart}.${formattedDecimalPart}`;
+};
+
+const formatNumberWithCommaOnly = (number) => {
+  const numStr = number.toString();
+  const [integerPart, decimalPart] = numStr.split(".");
+  if (decimalPart != undefined) {
+    const formattedInteger = formatIntegerWithComma(integerPart);
+    const formattedDecimal = decimalPart.substring(0, 4);
+    return `${formattedInteger}.${formattedDecimal}`;
+  }
+  return formatIntegerWithComma(integerPart);
+};
+
 // Function to determine font size based on text length
 const getFontSize = (textLength, maxLength, baseSize) => {
   if (textLength > maxLength) {
@@ -600,9 +646,16 @@ function PageThree({
                   >
                     <Text
                       style={{
+                        // fontSize: getFontSize(
+                        //   formatNumberWithComma(capital_stock.number_of_shares)
+                        //     .length,
+                        //   17,
+                        //   baseFontSize - 4
+                        // ),
                         fontSize: getFontSize(
-                          formatNumberWithComma(capital_stock.number_of_shares)
-                            .length,
+                          formatNumberWithCommaOnly(
+                            capital_stock.number_of_shares
+                          ).length,
                           17,
                           baseFontSize - 4
                         ),
@@ -610,7 +663,10 @@ function PageThree({
                         width: "100%",
                       }}
                     >
-                      {formatNumberWithComma(capital_stock.number_of_shares)}
+                      {/* {formatNumberWithComma(capital_stock.number_of_shares)} */}
+                      {formatNumberWithCommaOnly(
+                        capital_stock.number_of_shares
+                      )}
                     </Text>
                   </View>
 
@@ -655,8 +711,8 @@ function PageThree({
                           // formatNumberWithComma(capital_stock.amount.toFixed(2))
                           //   .length,
                           !isNaN(Number(capital_stock.amount))
-                            ? formatNumberWithComma(
-                                Number(capital_stock.amount).toFixed(2)
+                            ? formatNumberWithCommaAndDecimal(
+                                Number(capital_stock.amount) //.toFixed(2)
                               ).length
                             : 0,
                           47,
@@ -668,8 +724,8 @@ function PageThree({
                     >
                       {/* {formatNumberWithComma(capital_stock.amount.toFixed(2))} */}
                       {!isNaN(Number(capital_stock.amount)) &&
-                        formatNumberWithComma(
-                          Number(capital_stock.amount).toFixed(2)
+                        formatNumberWithCommaAndDecimal(
+                          Number(capital_stock.amount) //.toFixed(2)
                         )}
                     </Text>
                   </View>
@@ -700,7 +756,7 @@ function PageThree({
             <Text
               style={{
                 fontSize: getFontSize(
-                  formatNumberWithComma(
+                  formatNumberWithCommaOnly(
                     formData.auth_capital_stock.total_number_of_shares
                   ).length,
                   11,
@@ -712,7 +768,7 @@ function PageThree({
                 width: "100%",
               }}
             >
-              {formatNumberWithComma(
+              {formatNumberWithCommaOnly(
                 formData.auth_capital_stock.total_number_of_shares
               )}
             </Text>
@@ -730,8 +786,8 @@ function PageThree({
             <Text
               style={{
                 fontSize: getFontSize(
-                  formatNumberWithComma(
-                    formData.auth_capital_stock.total_amount.toFixed(2)
+                  formatNumberWithCommaAndDecimal(
+                    formData.auth_capital_stock.total_amount
                   ).length,
                   43,
                   baseFontSize - 4
@@ -741,8 +797,8 @@ function PageThree({
                 width: "100%",
               }}
             >
-              {formatNumberWithComma(
-                formData.auth_capital_stock.total_amount.toFixed(2)
+              {formatNumberWithCommaAndDecimal(
+                formData.auth_capital_stock.total_amount
               )}
             </Text>
           </View>
@@ -849,7 +905,7 @@ function PageThree({
                       <Text
                         style={{
                           fontSize: getFontSize(
-                            formatNumberWithComma(
+                            formatNumberWithCommaOnly(
                               subscribe_capital.number_of_shares
                             ).length,
                             18,
@@ -859,7 +915,7 @@ function PageThree({
                           width: "100%",
                         }}
                       >
-                        {formatNumberWithComma(
+                        {formatNumberWithCommaOnly(
                           subscribe_capital.number_of_shares
                         )}
                       </Text>
@@ -924,8 +980,8 @@ function PageThree({
                         style={{
                           fontSize: getFontSize(
                             !isNaN(Number(subscribe_capital.amount))
-                              ? formatNumberWithComma(
-                                  Number(subscribe_capital.amount).toFixed(2)
+                              ? formatNumberWithCommaAndDecimal(
+                                  Number(subscribe_capital.amount)
                                 ).length
                               : 0,
                             38,
@@ -936,8 +992,8 @@ function PageThree({
                         }}
                       >
                         {!isNaN(Number(subscribe_capital.amount)) &&
-                          formatNumberWithComma(
-                            Number(subscribe_capital.amount).toFixed(2)
+                          formatNumberWithCommaAndDecimal(
+                            Number(subscribe_capital.amount)
                           )}
                       </Text>
                     </View>
@@ -968,6 +1024,7 @@ function PageThree({
               }
             )}
           </View>
+
           <View
             style={{
               marginTop: 329,
@@ -990,7 +1047,7 @@ function PageThree({
               <Text
                 style={{
                   fontSize: getFontSize(
-                    formatNumberWithComma(
+                    formatNumberWithCommaOnly(
                       formData.subscribe_capital
                         .sub_total_number_of_shares_filipino
                     ).length,
@@ -1003,7 +1060,7 @@ function PageThree({
                   width: "100%",
                 }}
               >
-                {formatNumberWithComma(
+                {formatNumberWithCommaOnly(
                   formData.subscribe_capital.sub_total_number_of_shares_filipino
                 )}
               </Text>
@@ -1021,10 +1078,8 @@ function PageThree({
               <Text
                 style={{
                   fontSize: getFontSize(
-                    formatNumberWithComma(
-                      formData.subscribe_capital.sub_total_amount_filipino.toFixed(
-                        2
-                      )
+                    formatNumberWithCommaAndDecimal(
+                      formData.subscribe_capital.sub_total_amount_filipino
                     ).length,
                     38,
                     baseFontSize - 4
@@ -1035,10 +1090,8 @@ function PageThree({
                   width: "100%",
                 }}
               >
-                {formatNumberWithComma(
-                  formData.subscribe_capital.sub_total_amount_filipino.toFixed(
-                    2
-                  )
+                {formatNumberWithCommaAndDecimal(
+                  formData.subscribe_capital.sub_total_amount_filipino
                 )}
               </Text>
             </View>
@@ -1173,7 +1226,7 @@ function PageThree({
                       <Text
                         style={{
                           fontSize: getFontSize(
-                            formatNumberWithComma(
+                            formatNumberWithCommaOnly(
                               subscribe_capital.number_of_shares
                             ).length,
                             18,
@@ -1183,7 +1236,7 @@ function PageThree({
                           width: "100%",
                         }}
                       >
-                        {formatNumberWithComma(
+                        {formatNumberWithCommaOnly(
                           subscribe_capital.number_of_shares
                         )}
                       </Text>
@@ -1248,8 +1301,8 @@ function PageThree({
                         style={{
                           fontSize: getFontSize(
                             !isNaN(Number(subscribe_capital.amount))
-                              ? formatNumberWithComma(
-                                  Number(subscribe_capital.amount).toFixed(2)
+                              ? formatNumberWithCommaAndDecimal(
+                                  Number(subscribe_capital.amount)
                                 ).length
                               : 0,
                             38,
@@ -1263,8 +1316,8 @@ function PageThree({
                           subscribe_capital.amount.toFixed(2)
                         )} */}
                         {!isNaN(Number(subscribe_capital.amount)) &&
-                          formatNumberWithComma(
-                            Number(subscribe_capital.amount).toFixed(2)
+                          formatNumberWithCommaAndDecimal(
+                            Number(subscribe_capital.amount)
                           )}
                       </Text>
                     </View>
@@ -1317,7 +1370,7 @@ function PageThree({
               <Text
                 style={{
                   fontSize: getFontSize(
-                    formatNumberWithComma(
+                    formatNumberWithCommaOnly(
                       formData.subscribe_capital
                         .sub_total_number_of_shares_foreign
                     ).length,
@@ -1330,7 +1383,7 @@ function PageThree({
                   width: "100%",
                 }}
               >
-                {formatNumberWithComma(
+                {formatNumberWithCommaOnly(
                   formData.subscribe_capital.sub_total_number_of_shares_foreign
                 )}
               </Text>
@@ -1348,10 +1401,8 @@ function PageThree({
               <Text
                 style={{
                   fontSize: getFontSize(
-                    formatNumberWithComma(
-                      formData.subscribe_capital.sub_total_amount_foreign.toFixed(
-                        2
-                      )
+                    formatNumberWithCommaAndDecimal(
+                      formData.subscribe_capital.sub_total_amount_foreign
                     ).length,
                     38,
                     baseFontSize - 4
@@ -1362,8 +1413,8 @@ function PageThree({
                   width: "100%",
                 }}
               >
-                {formatNumberWithComma(
-                  formData.subscribe_capital.sub_total_amount_foreign.toFixed(2)
+                {formatNumberWithCommaAndDecimal(
+                  formData.subscribe_capital.sub_total_amount_foreign
                 )}
               </Text>
             </View>
@@ -1440,8 +1491,8 @@ function PageThree({
               <Text
                 style={{
                   fontSize: getFontSize(
-                    formatNumberWithComma(
-                      formData.subscribe_capital.total_amount.toFixed(2)
+                    formatNumberWithCommaAndDecimal(
+                      formData.subscribe_capital.total_amount
                     ).length,
                     38,
                     baseFontSize - 4
@@ -1452,8 +1503,8 @@ function PageThree({
                   width: "100%",
                 }}
               >
-                {formatNumberWithComma(
-                  formData.subscribe_capital.total_amount.toFixed(2)
+                {formatNumberWithCommaAndDecimal(
+                  formData.subscribe_capital.total_amount
                 )}
               </Text>
             </View>
@@ -1506,7 +1557,7 @@ function PageThree({
               (subscribe_capital, index) => {
                 return (
                   <View
-                    key={`subscribe_capital_${index}`}
+                    key={`paid_up_capital_${index}`}
                     style={{
                       display: "flex",
                       flexDirection: "row",
@@ -1590,7 +1641,7 @@ function PageThree({
                       <Text
                         style={{
                           fontSize: getFontSize(
-                            formatNumberWithComma(
+                            formatNumberWithCommaOnly(
                               subscribe_capital.number_of_shares
                             ).length,
                             18,
@@ -1600,7 +1651,7 @@ function PageThree({
                           width: "100%",
                         }}
                       >
-                        {formatNumberWithComma(
+                        {formatNumberWithCommaOnly(
                           subscribe_capital.number_of_shares
                         )}
                       </Text>
@@ -1646,8 +1697,8 @@ function PageThree({
                             //   subscribe_capital.amount.toFixed(2)
                             // ).length,
                             !isNaN(Number(subscribe_capital.amount))
-                              ? formatNumberWithComma(
-                                  Number(subscribe_capital.amount).toFixed(2)
+                              ? formatNumberWithCommaAndDecimal(
+                                  Number(subscribe_capital.amount)
                                 ).length
                               : 0,
                             38,
@@ -1661,8 +1712,8 @@ function PageThree({
                           subscribe_capital.amount.toFixed(2)
                         )} */}
                         {!isNaN(Number(subscribe_capital.amount)) &&
-                          formatNumberWithComma(
-                            Number(subscribe_capital.amount).toFixed(2)
+                          formatNumberWithCommaAndDecimal(
+                            Number(subscribe_capital.amount)
                           )}
                       </Text>
                     </View>
@@ -1715,7 +1766,7 @@ function PageThree({
               <Text
                 style={{
                   fontSize: getFontSize(
-                    formatNumberWithComma(
+                    formatNumberWithCommaOnly(
                       formData.paid_up_capital
                         .sub_total_number_of_shares_filipino
                     ).length,
@@ -1728,7 +1779,7 @@ function PageThree({
                   width: "100%",
                 }}
               >
-                {formatNumberWithComma(
+                {formatNumberWithCommaOnly(
                   formData.paid_up_capital.sub_total_number_of_shares_filipino
                 )}
               </Text>
@@ -1746,10 +1797,8 @@ function PageThree({
               <Text
                 style={{
                   fontSize: getFontSize(
-                    formatNumberWithComma(
-                      formData.paid_up_capital.sub_total_amount_filipino.toFixed(
-                        2
-                      )
+                    formatNumberWithCommaAndDecimal(
+                      formData.paid_up_capital.sub_total_amount_filipino
                     ).length,
                     38,
                     baseFontSize - 4
@@ -1760,8 +1809,8 @@ function PageThree({
                   width: "100%",
                 }}
               >
-                {formatNumberWithComma(
-                  formData.paid_up_capital.sub_total_amount_filipino.toFixed(2)
+                {formatNumberWithCommaAndDecimal(
+                  formData.paid_up_capital.sub_total_amount_filipino
                 )}
               </Text>
             </View>
@@ -1895,7 +1944,7 @@ function PageThree({
                     <Text
                       style={{
                         fontSize: getFontSize(
-                          formatNumberWithComma(
+                          formatNumberWithCommaOnly(
                             paid_up_capital.number_of_shares
                           ).length,
                           18,
@@ -1905,7 +1954,9 @@ function PageThree({
                         width: "100%",
                       }}
                     >
-                      {formatNumberWithComma(paid_up_capital.number_of_shares)}
+                      {formatNumberWithCommaOnly(
+                        paid_up_capital.number_of_shares
+                      )}
                     </Text>
                   </View>
                   <View
@@ -1949,8 +2000,8 @@ function PageThree({
                           //   paid_up_capital.amount.toFixed(2)
                           // ).length,
                           !isNaN(Number(paid_up_capital.amount))
-                            ? formatNumberWithComma(
-                                Number(paid_up_capital.amount).toFixed(2)
+                            ? formatNumberWithCommaAndDecimal(
+                                Number(paid_up_capital.amount)
                               ).length
                             : 0,
                           38,
@@ -1962,8 +2013,8 @@ function PageThree({
                     >
                       {/* {formatNumberWithComma(paid_up_capital.amount.toFixed(2))} */}
                       {!isNaN(Number(paid_up_capital.amount)) &&
-                        formatNumberWithComma(
-                          Number(paid_up_capital.amount).toFixed(2)
+                        formatNumberWithCommaAndDecimal(
+                          Number(paid_up_capital.amount)
                         )}
                     </Text>
                   </View>
@@ -1977,8 +2028,14 @@ function PageThree({
                   >
                     <Text
                       style={{
+                        // fontSize: getFontSize(
+                        //   paid_up_capital.percent_of_ownership.length,
+                        //   17,
+                        //   baseFontSize - 4
+                        // ),
                         fontSize: getFontSize(
-                          paid_up_capital.percent_of_ownership.length,
+                          `${paid_up_capital.percent_of_ownership.toFixed(2)}%`
+                            .length,
                           17,
                           baseFontSize - 4
                         ),
@@ -1986,7 +2043,8 @@ function PageThree({
                         width: "100%",
                       }}
                     >
-                      {`${paid_up_capital.percent_of_ownership}%`}
+                      {/* {`${paid_up_capital.percent_of_ownership}%`} */}
+                      {`${paid_up_capital.percent_of_ownership.toFixed(2)}%`}
                     </Text>
                   </View>
                 </View>
@@ -2015,7 +2073,7 @@ function PageThree({
               <Text
                 style={{
                   fontSize: getFontSize(
-                    formatNumberWithComma(
+                    formatNumberWithCommaOnly(
                       formData.paid_up_capital
                         .sub_total_number_of_shares_foreign
                     ).length,
@@ -2028,7 +2086,7 @@ function PageThree({
                   width: "100%",
                 }}
               >
-                {formatNumberWithComma(
+                {formatNumberWithCommaOnly(
                   formData.paid_up_capital.sub_total_number_of_shares_foreign
                 )}
               </Text>
@@ -2046,10 +2104,8 @@ function PageThree({
               <Text
                 style={{
                   fontSize: getFontSize(
-                    formatNumberWithComma(
-                      formData.paid_up_capital.sub_total_amount_foreign.toFixed(
-                        2
-                      )
+                    formatNumberWithCommaAndDecimal(
+                      formData.paid_up_capital.sub_total_amount_foreign
                     ).length,
                     38,
                     baseFontSize - 4
@@ -2060,8 +2116,8 @@ function PageThree({
                   width: "100%",
                 }}
               >
-                {formatNumberWithComma(
-                  formData.paid_up_capital.sub_total_amount_foreign.toFixed(2)
+                {formatNumberWithCommaAndDecimal(
+                  formData.paid_up_capital.sub_total_amount_foreign
                 )}
               </Text>
             </View>
@@ -2138,8 +2194,8 @@ function PageThree({
               <Text
                 style={{
                   fontSize: getFontSize(
-                    formatNumberWithComma(
-                      formData.paid_up_capital.total_amount.toFixed(2)
+                    formatNumberWithCommaAndDecimal(
+                      formData.paid_up_capital.total_amount
                     ).length,
                     38,
                     baseFontSize - 4
@@ -2150,8 +2206,8 @@ function PageThree({
                   width: "100%",
                 }}
               >
-                {formatNumberWithComma(
-                  formData.paid_up_capital.total_amount.toFixed(2)
+                {formatNumberWithCommaAndDecimal(
+                  formData.paid_up_capital.total_amount
                 )}
               </Text>
             </View>
@@ -2168,7 +2224,7 @@ function PageThree({
                 style={{
                   fontSize: getFontSize(
                     `${formData.paid_up_capital.total_percent_of_ownership.toFixed(
-                      0
+                      2
                     )}%`.length,
                     17,
                     baseFontSize - 4
@@ -2180,7 +2236,7 @@ function PageThree({
                 }}
               >
                 {`${formData.paid_up_capital.total_percent_of_ownership.toFixed(
-                  0
+                  2
                 )}%`}
               </Text>
             </View>

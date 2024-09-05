@@ -270,7 +270,6 @@ const step4 = () => {
 
   const handleDragEnd = (ev) => {
     const { active, over } = ev;
-    console.log(active);
 
     if (active.id === over.id) return;
 
@@ -460,7 +459,6 @@ const step4 = () => {
     //   newErrors.board = "Board is required";
     // }
 
-    console.log(formDirector);
     if (formDirector.gender == "") {
       newErrors.gender = "Gender is required";
     }
@@ -1254,7 +1252,6 @@ const step4 = () => {
                       (u) => u.individuals_id == ev.target.value
                     );
                     const director = extractDirectorDetails(individual[0]);
-                    console.log({ ...formDirector, director });
                     setFormDirector({ ...formDirector, ...director });
                   }}
                   value={formDirector.individuals_id}

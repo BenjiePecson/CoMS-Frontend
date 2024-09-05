@@ -432,7 +432,7 @@ const create = () => {
     };
   };
 
-  const updateFormData = async () => {
+  const updateFormData = async (selected_company) => {
     try {
       let response = await axios.get(`/record/record/${recordId}`);
       const data = response.data;
@@ -454,6 +454,7 @@ const create = () => {
 
       let newFormData = {
         ...data.draftingInput,
+        date_registered: selected_company.dateRegistered,
         directors_or_officers: updateDirectorsDetails,
       };
 
@@ -738,7 +739,7 @@ const create = () => {
     //setformrecord
     if (recordId !== undefined) {
       //record exists
-      updateFormData();
+      updateFormData(selectedCompany);
     } else {
       //record does not exists
       setFormRecord({

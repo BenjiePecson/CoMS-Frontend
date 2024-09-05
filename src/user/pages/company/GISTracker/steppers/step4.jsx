@@ -1521,6 +1521,7 @@ const step4 = () => {
                   }}
                   value={formDirector.board}
                 >
+                  <option value="">Select Option</option>
                   <option value="C">Chairman</option>
                   <option value="M">Member</option>
                   <option value="I">Independent Director</option>

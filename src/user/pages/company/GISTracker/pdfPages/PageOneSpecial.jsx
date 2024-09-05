@@ -93,6 +93,7 @@ import pageOne from "../photos/page1special_new.jpg";
 
 import Cambria from "/fonts/Cambria.ttf";
 import CambriaBold from "/fonts/CambriaBold.ttf";
+import moment from "moment/moment";
 
 // Function to determine font size based on text length
 const getFontSize = (textLength, maxLength, baseSize) => {
@@ -361,12 +362,16 @@ const PageOneSpecial = ({
         >
           <Text
             style={{
-              fontSize: getFontSize(date_registered.length, 43, baseFontSize),
+              fontSize: getFontSize(
+                moment(date_registered).format("MMMM DD, YYYY").length,
+                43,
+                baseFontSize
+              ),
               textAlign: "center",
               width: "100%",
             }}
           >
-            {date_registered}
+            {moment(date_registered).format("MMMM DD, YYYY")}
           </Text>
         </View>
       </View>

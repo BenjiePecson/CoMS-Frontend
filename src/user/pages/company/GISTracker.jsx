@@ -192,7 +192,7 @@ const GISTracker = () => {
       status = "success";
       message = "Error updating the record.";
 
-      let response = await axios.patch(`/record/${formData.recordId}`, {
+      let response = await axios.patch(`/record/record/${formData.recordId}`, {
         recordName: formData.recordName,
       });
 

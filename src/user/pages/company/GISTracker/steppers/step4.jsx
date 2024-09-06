@@ -622,6 +622,7 @@ const step4 = () => {
                         stock_holder: "Y",
                         gender: "M",
                         officer: "N/A",
+                        board: "",
                         executive_committe: "N/A",
                       });
                     }

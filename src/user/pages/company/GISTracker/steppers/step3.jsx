@@ -73,6 +73,7 @@ const step3 = () => {
   };
 
   const formatNumberWithCommaAndDecimal = (number) => {
+    if (number == null || number == "") return "";
     const numStr = number.toString();
     const [integerPart, decimalPart] = numStr.split(".");
     const formattedIntegerPart = formatIntegerWithComma(integerPart);
@@ -81,6 +82,7 @@ const step3 = () => {
   };
 
   const formatNumberWithCommaOnly = (number) => {
+    if (number == null || number == "") return "";
     const numStr = number.toString();
     const [integerPart, decimalPart] = numStr.split(".");
     if (decimalPart != undefined) {

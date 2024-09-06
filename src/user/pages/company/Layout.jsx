@@ -336,7 +336,7 @@ const Layout = () => {
               </div>
             </div>
           </div>
-          <div className="w-full pt-24 px-2 md:px-5 min-h-screen">
+          <div className="flex flex-col w-full pt-24 px-2 md:px-5 min-h-screen">
             <Outlet />
           </div>
         </div>

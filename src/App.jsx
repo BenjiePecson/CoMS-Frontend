@@ -30,6 +30,8 @@ import UserDashboard from "./user/pages/user/UserDashboard";
 import CompanySetting from "./user/pages/company/CompanySetting";
 import CreateNOM from "./user/pages/company/BoardMeetings/NoticeOfMeetings/CreateNOMPage";
 import ViewNOMPage from "./user/pages/company/BoardMeetings/NoticeOfMeetings/ViewNOMPage";
+import AddSecCert from "./user/pages/company/BoardMeetings/SecretaryCertificate/AddSecCert";
+import ViewSecCert from "./user/pages/company/BoardMeetings/SecretaryCertificate/ViewSecCert";
 
 // axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
@@ -101,6 +103,14 @@ function App() {
             <Route
               path="company/:companyId/secretary-certificate"
               element={<SecretaryCertificate />}
+            />
+            <Route
+              path="company/:companyId/secretary-certificate/create"
+              element={<AddSecCert />}
+            />
+            <Route
+              path="company/:companyId/secretary-certificate/view/:seccert_id"
+              element={<ViewSecCert />}
             />
             <Route
               path="company/:companyId/treasurer-certificate"

@@ -523,7 +523,7 @@ const AddSecCert = () => {
       // let companyName = removeTrailingPeriod(selectedCompany.companyName);
       let companyName = selectedCompany.companyName;
 
-      if (selectedCompany.latestGIS != undefined) {
+      if (Object.keys(selectedCompany.latestGIS).length > 0) {
         if (selectedCompany.latestGIS.length != 0) {
           if (selectedCompany.latestGIS.directors_or_officers.length != 0) {
             let corp_sec =

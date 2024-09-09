@@ -78,7 +78,11 @@ export const fetchCompany = createAsyncThunk(
 
     let responseCurrentGIS = await axios.get(`/record/currentGIS/${companyId}`);
 
-    companies[0].latestGIS = responseCurrentGIS.data;
+    if (responseCurrentGIS.data.length > 0) {
+      companies[0].latestGIS = responseCurrentGIS.data;
+    } else {
+      companies[0].latestGIS = {};
+    }
 
     return companies;
   }

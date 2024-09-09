@@ -750,15 +750,16 @@ const create = () => {
       });
 
       if (formData.corporate_name === "") {
-        if (selectedCompany.latestGIS != undefined) {
+        if (Object.keys(selectedCompany.latestGIS).length > 0) {
           let { date_registered, ...rest } = selectedCompany.latestGIS;
+
           dispatch(
             setFormData({
               ...formData,
               ...rest,
-              // corporate_name: selectedCompany.companyName,
-              // sec_registration_number: selectedCompany.secNumber,
-              // corporate_tin: selectedCompany.corporateTin,
+              corporate_name: selectedCompany.companyName,
+              sec_registration_number: selectedCompany.secNumber,
+              corporate_tin: selectedCompany.corporateTin,
               date_registered: selectedCompany.dateRegistered,
             })
           );

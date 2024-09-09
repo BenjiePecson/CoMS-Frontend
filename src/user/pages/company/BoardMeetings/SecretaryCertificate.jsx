@@ -92,8 +92,8 @@ const SecretaryCertificate = () => {
       name: "Actions",
       cell: (row) => {
         return (
-          <div className="w-full">
-            <div className="grid grid-cols-3 grid-rows-1 gap-1 w-full">
+          <div className="">
+            <div className="grid grid-cols-3 grid-rows-1 gap-2 w-full place-items-center">
               {row.status == "Completed" && (
                 <div className="col-start-1">
                   <img
@@ -167,6 +167,7 @@ const SecretaryCertificate = () => {
           </div>
         );
       },
+      width: "200px",
     },
   ];
 

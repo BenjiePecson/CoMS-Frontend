@@ -392,8 +392,8 @@ const GISTracker = () => {
 
         if (
           row.folder_id != "" &&
-          row.folder_id != null &&
-          row.status == "Completed"
+          row.folder_id != null
+          // row.status == "Completed"
         ) {
           showGDrive = true;
         }

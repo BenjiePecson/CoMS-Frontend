@@ -26,6 +26,7 @@ const ApproveComponent = () => {
   const { companyId, recordId } = useParams();
 
   const selectedRecord = useSelector((state) => state.records.selectedRecord);
+  const currentUser = useSelector((state) => state.user.user);
 
   const [formData, setFormData] = useState(selectedRecord.draftingInput);
 
@@ -211,9 +212,11 @@ const ApproveComponent = () => {
                     let status = "error";
                     let message = "Failed to update the record.";
                     try {
+                      const modified_by = `${currentUser.first_name} ${currentUser.last_name}`;
+
                       let response = await axios.patch(
                         `/record/record/${recordId}`,
-                        { status: "Routed for Signature" }
+                        { status: "Routed for Signature", modified_by }
                       );
 
                       if (response.status === 200) {

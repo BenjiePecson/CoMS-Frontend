@@ -15,6 +15,8 @@ const RoutedForSignatureComponent = () => {
 
   const selectedRecord = useSelector((state) => state.records.selectedRecord);
 
+  const currentUser = useSelector((state) => state.user.user);
+
   const [errors, setErrors] = useState([]);
 
   const [gdrivefolder, setgdrivefolder] = useState("");
@@ -333,9 +335,11 @@ const RoutedForSignatureComponent = () => {
                     let status = "error";
                     let message = "Failed to update the record.";
                     try {
+                      const modified_by = `${currentUser.first_name} ${currentUser.last_name}`;
+
                       let response = await axios.patch(
                         `/record/record/${recordId}`,
-                        { status: "Notarized" }
+                        { status: "Notarized", modified_by }
                       );
 
                       if (response.status === 200) {

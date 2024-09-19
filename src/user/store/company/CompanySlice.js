@@ -29,6 +29,7 @@ const CompanyState = {
   status: true,
   gdrivefolders: {
     root: "",
+    MC28Form: "",
     finaldocs: "",
     sec_cert: "",
     art_of_inc: "",
@@ -49,7 +50,10 @@ export const fetchCompanies = createAsyncThunk(
       if (company.gdrivefolders == null) {
         company.gdrivefolders = CompanyState.gdrivefolders;
       } else {
-        company.gdrivefolders = JSON.parse(company.gdrivefolders);
+        company.gdrivefolders = {
+          ...CompanyState.gdrivefolders,
+          ...JSON.parse(company.gdrivefolders),
+        };
       }
       if (company.listOfIndividuals == null) {
         company.listOfIndividuals = CompanyState.listOfIndividuals;
@@ -68,7 +72,10 @@ export const fetchCompany = createAsyncThunk(
       if (company.gdrivefolders == null) {
         company.gdrivefolders = CompanyState.gdrivefolders;
       } else {
-        company.gdrivefolders = JSON.parse(company.gdrivefolders);
+        company.gdrivefolders = {
+          ...CompanyState.gdrivefolders,
+          ...JSON.parse(company.gdrivefolders),
+        };
       }
       if (company.listOfIndividuals == null) {
         company.listOfIndividuals = CompanyState.listOfIndividuals;

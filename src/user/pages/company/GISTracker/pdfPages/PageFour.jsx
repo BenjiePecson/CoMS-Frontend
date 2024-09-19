@@ -197,13 +197,15 @@ function PageFour({ formData, directors_or_officers, corporate_name }) {
                       display: "flex",
                       flexDirection: "col",
                       width: "140px",
-                      height: "30px"
+                      height: "30px",
                     }}
                   >
                     <View
-                      style={{
-                        // height: "10px",
-                      }}
+                      style={
+                        {
+                          // height: "10px",
+                        }
+                      }
                     >
                       <Text
                         style={{
@@ -312,7 +314,7 @@ function PageFour({ formData, directors_or_officers, corporate_name }) {
                     <Text
                       style={{
                         fontSize: getFontSize(
-                          director.board.length,
+                          director.board != undefined && director.board.length,
                           8,
                           baseFontSize - 4
                         ),
@@ -320,7 +322,7 @@ function PageFour({ formData, directors_or_officers, corporate_name }) {
                         width: "100%",
                       }}
                     >
-                      {director.board}
+                      {director.board != undefined && director.board}
                     </Text>
                   </View>
                   <View

@@ -23,6 +23,16 @@ const RecordState = {
   // gdrivefolders: gdrivefoldersState,
 };
 
+export const fetchAllRecords = createAsyncThunk(
+  "records/fetchRecords",
+  async (status) => {
+    let response = await axios.get(`/record/`, {
+      params: { status },
+    });
+    return response.data;
+  }
+);
+
 export const fetchRecords = createAsyncThunk(
   "records/fetchRecords",
   async (companyId) => {

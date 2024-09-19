@@ -18,6 +18,7 @@ const RecordState = {
   secFileLink: "",
   folder_id: "",
   createdBy: "",
+  modified_by: "",
   created_at: "",
   updated_at: "",
   // gdrivefolders: gdrivefoldersState,

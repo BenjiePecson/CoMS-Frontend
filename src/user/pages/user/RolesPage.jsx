@@ -10,14 +10,13 @@ import { useSelector } from "react-redux";
 import Unathorized from "../../components/Unathorized";
 
 const RolesPage = () => {
-
   const user = useSelector((state) => state.user.user);
 
   const columns = [
     {
       name: "Role Name",
       selector: (row) => row.role_name,
-      width: "30%"
+      width: "30%",
     },
     {
       name: "Permissions",
@@ -26,18 +25,24 @@ const RolesPage = () => {
         return (
           <>
             <div className="flex flex-row gap-2">
-              <div className="rounded-full px-4 bg-neutral text-white p-2 cursor-pointer" onClick={(e) => {
-                setSelectedPermissions(row.permissions);
-                document.getElementById("showPermissionsModal").showModal();
-              }}>
+              <div
+                className="rounded-full px-4 bg-neutral text-white p-2 cursor-pointer"
+                onClick={(e) => {
+                  setSelectedPermissions(row.permissions);
+                  document.getElementById("showPermissionsModal").showModal();
+                }}
+              >
                 {row.permissions.length > 0 &&
                   row.permissions[0].permission_name}
               </div>
               {row.permissions.length > 1 && (
-                <div className="rounded-full px-4 bg-neutral text-white p-2 cursor-pointer" onClick={(e) => {
-                  setSelectedPermissions(row.permissions);
-                  document.getElementById("showPermissionsModal").showModal();
-                }}>
+                <div
+                  className="rounded-full px-4 bg-neutral text-white p-2 cursor-pointer"
+                  onClick={(e) => {
+                    setSelectedPermissions(row.permissions);
+                    document.getElementById("showPermissionsModal").showModal();
+                  }}
+                >
                   {row.permissions.length - 1}+
                 </div>
               )}
@@ -45,18 +50,20 @@ const RolesPage = () => {
           </>
         );
       },
-       width: "50%"
+      width: "50%",
     },
     {
       name: "Actions",
-      selector: (row)=>row.permissions,
+      selector: (row) => row.permissions,
       cell: (row, rowIndex) => {
-
-        if (!user.permissions.includes("Edit Roles") && !user.permissions.includes("Delete Roles")) return;
+        if (
+          !user.permissions.includes("Edit Roles") &&
+          !user.permissions.includes("Delete Roles")
+        )
+          return;
         return (
           <div className="flex flex-row justify-center item-center gap-2 w-full">
-            {
-              user.permissions.includes("Edit Roles") &&
+            {user.permissions.includes("Edit Roles") && (
               <button
                 onClick={() => {
                   setFormData({ ...row, rowIndex });
@@ -87,10 +94,9 @@ const RolesPage = () => {
                   />
                 </svg>
               </button>
-            }
+            )}
 
-            {
-              user.permissions.includes("Delete Roles") &&
+            {user.permissions.includes("Delete Roles") && (
               <button
                 onClick={() => {
                   toggleDelete(row.role_id);
@@ -113,11 +119,11 @@ const RolesPage = () => {
                   />
                 </svg>
               </button>
-            }
+            )}
           </div>
         );
       },
-       width: "20%"
+      width: "20%",
     },
   ];
 
@@ -174,7 +180,6 @@ const RolesPage = () => {
   };
 
   const btnAddComponent = () => {
-
     if (!user.permissions.includes("Add Roles")) {
       return;
     }
@@ -208,16 +213,20 @@ const RolesPage = () => {
       if (searchSelectedPermission == "") {
         return permission;
       } else if (
-        permission.permission_name.toLocaleLowerCase().includes(searchSelectedPermission.toLocaleLowerCase())
+        permission.permission_name
+          .toLocaleLowerCase()
+          .includes(searchSelectedPermission.toLocaleLowerCase())
       ) {
         return role;
       }
     });
 
     if (permissions.length > 0) {
-      row = permissions.map((permission, index) => <tr key={`permission-${index}`}>
-        <td className="">{permission.permission_name}</td>
-      </tr>);
+      row = permissions.map((permission, index) => (
+        <tr key={`permission-${index}`}>
+          <td className="">{permission.permission_name}</td>
+        </tr>
+      ));
     }
 
     const table = (
@@ -227,13 +236,11 @@ const RolesPage = () => {
             <th></th>
           </tr>
         </thead>
-        <tbody>
-          {row}
-        </tbody>
+        <tbody>{row}</tbody>
       </table>
-    )
+    );
     return table;
-  }
+  };
 
   //toggle button for submit
   const handleSubmit = async (e, isEdit) => {
@@ -426,9 +433,7 @@ const RolesPage = () => {
   if (pageIsLoading) {
     return loadingComponent;
   } else {
-    if (
-      user.permissions.includes("View Roles")
-    ) {
+    if (user.permissions.includes("View Roles")) {
       return (
         <>
           <div>
@@ -459,8 +464,6 @@ const RolesPage = () => {
                 persistTableHead={true}
               />
             </div>
-
-
           </div>
 
           <dialog id="addModal" className="modal">
@@ -488,8 +491,9 @@ const RolesPage = () => {
                     </div>
                     <input
                       type="text"
-                      className={`input input-bordered w-full ${errors.role_name && `input-error`
-                        }`}
+                      className={`input input-bordered w-full ${
+                        errors.role_name && `input-error`
+                      }`}
                       name="role_name"
                       value={formData.role_name}
                       onChange={(e) => {
@@ -581,8 +585,9 @@ const RolesPage = () => {
                     </div>
                     <input
                       type="text"
-                      className={`input input-bordered w-full ${errors.role_name && `input-error`
-                        }`}
+                      className={`input input-bordered w-full ${
+                        errors.role_name && `input-error`
+                      }`}
                       name="role_name"
                       value={formData.role_name}
                       onChange={(e) => {
@@ -688,8 +693,8 @@ const RolesPage = () => {
                         clipRule="evenodd"
                       />
                     </svg>
-                  </label></div>
-
+                  </label>
+                </div>
               </div>
               <div className="flex flex-col gap-2">
                 {getSelectedPermissions()}

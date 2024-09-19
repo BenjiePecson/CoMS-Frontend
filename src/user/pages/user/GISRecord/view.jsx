@@ -31,6 +31,7 @@ import axios from "axios";
 const view = () => {
   const { recordId } = useParams();
   const selectedRecord = useSelector((state) => state.records.selectedRecord);
+  const currentUser = useSelector((state) => state.user.user);
 
   const [formData, setFormData] = useState(selectedRecord.draftingInput);
 
@@ -101,8 +102,11 @@ const view = () => {
         let type = "error";
         let message = "Failed to approve the record.";
         try {
+          const modified_by = `${currentUser.first_name} ${currentUser.last_name}`;
+
           let response = await axios.patch(`/record/record/${recordId}`, {
             status: "Approved",
+            modified_by,
           });
 
           if (response.status === 200) {

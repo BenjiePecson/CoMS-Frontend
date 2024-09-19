@@ -295,7 +295,6 @@ const GISTracker = () => {
         let message = "Failed to delete record";
         try {
           let response = await axios.delete(`/record/record/${recordId}`);
-          console.log(response.data);
 
           if (response.status === 200) {
             dispatch(deleteRecord(recordId));
@@ -375,15 +374,16 @@ const GISTracker = () => {
       cell: (row) => {
         let modified_by = "";
         let date_modified = "";
-        if (row.created_at != null || row.created_at != "") {
+        if (row.updated_at != null && row.updated_at != "") {
           let format =
-            moment(row.created_at).format("MMM") != "May"
+            moment(row.updated_at).format("MMM") != "May"
               ? `MMM. DD, yyyy`
               : `MMM DD, yyyy`;
-          date_modified = moment(row.created_at).format(format);
+          date_modified = moment(row.updated_at).format(format);
         }
-        if (row.createdBy != null || row.createdBy != "") {
-          let fullname = row.createdBy.split(" ");
+        if (row.modified_by != null && row.modified_by != "") {
+          let fullname = row.modified_by.split(" ");
+
           if (fullname.length == 1 && fullname[0] != undefined) {
             modified_by = fullname[0];
           } else if (
@@ -392,12 +392,18 @@ const GISTracker = () => {
             fullname[1][0] != undefined
           ) {
             modified_by = `${fullname[0]} ${fullname[1][0]}`;
-          } else if (
-            fullname.length > 2 &&
-            fullname[0] != undefined &&
-            fullname[fullname.length - 1][0] != undefined
-          ) {
-            modified_by = `${fullname[0]} ${fullname[fullname.length - 1][0]}`;
+          } else if (fullname.length > 2 && fullname[0] != undefined) {
+            if (fullname[fullname.length - 1][0] != undefined) {
+              modified_by = `${fullname[0]} ${
+                fullname[fullname.length - 1][0]
+              }`;
+            } else if (fullname[fullname.length - 2][0] != undefined) {
+              modified_by = `${fullname[0]} ${
+                fullname[fullname.length - 2][0]
+              }`;
+            } else {
+              modified_by = `${fullname[0]}`;
+            }
           }
         }
         return (

@@ -511,12 +511,17 @@ const create = () => {
     try {
       let form = formRecord;
       form.status = "Saved as Draft";
+
+      const name = `${currentUser.first_name} ${currentUser.last_name}`;
+      form.modified_by = name;
+
       let response = await axios.post(`/record/`, form);
 
-      const data = response.data;
-      status = "success";
-      message = "Saved as Draft.";
-      navigate(`/company/${companyId}/gis-tracker`);
+      if (response.status === 200) {
+        status = "success";
+        message = "Saved as Draft.";
+        navigate(`/company/${companyId}/gis-tracker`);
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -858,6 +863,9 @@ const create = () => {
                       // form.date_filed = formPublish.date_filed;
                       // form.folder_id = formPublish.folder_id;
                       // form.gdrivefolders = formPublish.gdrivefolders;
+                      const name = `${currentUser.first_name} ${currentUser.last_name}`;
+                      form.modified_by = name;
+
                       let response = await axios.post(`/record`, form);
                       if (response.status === 200) {
                         status = "success";

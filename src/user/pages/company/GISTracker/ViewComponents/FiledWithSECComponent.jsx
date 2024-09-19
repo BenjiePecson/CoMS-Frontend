@@ -14,6 +14,7 @@ const FiledWithSECComponent = () => {
   const { companyId, recordId } = useParams();
 
   const selectedRecord = useSelector((state) => state.records.selectedRecord);
+  const currentUser = useSelector((state) => state.user.user);
 
   const [recordData, setRecordData] = useState(selectedRecord);
   const [showEdit, setShowEdit] = useState(false);
@@ -441,11 +442,14 @@ const FiledWithSECComponent = () => {
                     let status = "error";
                     let message = "Failed to update the record.";
                     try {
+                      const modified_by = `${currentUser.first_name} ${currentUser.last_name}`;
+
                       let response = await axios.patch(
                         `/record/record/${selectedRecord.recordId}`,
                         {
                           date_filed: recordData.date_filed,
                           status: "Completed",
+                          modified_by,
                         }
                       );
 

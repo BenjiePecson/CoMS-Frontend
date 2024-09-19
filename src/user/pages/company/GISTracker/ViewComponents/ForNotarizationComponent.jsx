@@ -14,6 +14,7 @@ const ForNotarizationComponent = () => {
   const { companyId, recordId } = useParams();
 
   const selectedRecord = useSelector((state) => state.records.selectedRecord);
+  const currentUser = useSelector((state) => state.user.user);
 
   const [errors, setErrors] = useState([]);
 
@@ -353,9 +354,11 @@ const ForNotarizationComponent = () => {
                     let status = "error";
                     let message = "Failed to update the record.";
                     try {
+                      const modified_by = `${currentUser.first_name} ${currentUser.last_name}`;
+
                       let response = await axios.patch(
                         `/record/record/${selectedRecord.recordId}`,
-                        { status: "Filed with SEC" }
+                        { status: "Filed with SEC", modified_by }
                       );
 
                       if (response.status === 200) {

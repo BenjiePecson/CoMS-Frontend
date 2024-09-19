@@ -113,9 +113,8 @@ const Layout = () => {
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (token == null || token == undefined) {
-      alert("Session expired. Please login again.");
-
       navigate("/login");
+      alert("Session expired. Please login again.");
     } else {
       dispatch(fetchUser(token));
       setLoading(false);

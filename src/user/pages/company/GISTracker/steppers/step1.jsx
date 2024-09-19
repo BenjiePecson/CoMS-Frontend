@@ -111,7 +111,7 @@ const step1 = () => {
           </div>
           <div className="flex flex-col">
             <h1 className="w-[60%] text-start">
-              Is Amended <span className="text-red-500">*</span>
+              For Amendment <span className="text-red-500">*</span>
             </h1>
             <div className="flex flex-row gap-12">
               <div className="form-control">
@@ -818,7 +818,7 @@ const step1 = () => {
               </div>
               <div className="flex flex-col">
                 <h1 className="w-[60%] text-start">
-                  Is Amended <span className="text-red-500">*</span>
+                  For Amendment <span className="text-red-500">*</span>
                 </h1>
                 <div className="flex flex-row gap-12">
                   <div className="form-control">

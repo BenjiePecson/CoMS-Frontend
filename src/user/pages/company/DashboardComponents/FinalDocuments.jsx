@@ -284,7 +284,7 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
           setSelectedDrive(gdrivefolder);
         }}
       >
-        {folderIcon}
+        <span className="">{folderIcon}</span>
         <h1 className="font-bold text-xs">{folderName}</h1>
       </div>
     );
@@ -423,6 +423,7 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
                       <div
                         className="py-2"
                         onClick={() => {
+                          console.log(formDrive);
                           document
                             .getElementById("updateGdriveModal")
                             .showModal();
@@ -507,6 +508,12 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
             LGUBusinessPermitRow,
             selectedCompany.gdrivefolders.lgu_business_permit
           )}
+          {listFolder(
+            "MC28 Form",
+            LGUBusinessPermit,
+            LGUBusinessPermitRow,
+            selectedCompany.gdrivefolders.MC28Form
+          )}
         </div>
       </div>
     );
@@ -514,7 +521,7 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
 
   const gridView = () => {
     return (
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2">
         {folder("SEC Certificates", selectedCompany.gdrivefolders.sec_cert)}
         {folder(
           "Articles of Incorporation",
@@ -526,6 +533,7 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
           "LGU Business Permit",
           selectedCompany.gdrivefolders.lgu_business_permit
         )}
+        {folder("MC28 Form", selectedCompany.gdrivefolders.MC28Form)}
       </div>
     );
   };
@@ -597,17 +605,11 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
     }
   };
 
-  function resizeIframe(obj) {
-    console.log(obj.contentWindow);
-    // obj.style.height =
-    //   obj.contentWindow.document.documentElement.scrollHeight + "px";
-  }
-
   const [showEdit, setShowEdit] = useState(false);
 
-  useEffect(() => {
-    fetchFinalDocs();
-  }, []);
+  // useEffect(() => {
+  // fetchFinalDocs();
+  // }, []);
 
   return (
     <div>
@@ -626,6 +628,7 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
               Company Documents
               <button
                 onClick={() => {
+                  setFormDrive(selectedCompany.gdrivefolders);
                   document.getElementById("updateGdriveModal").showModal();
                 }}
                 className={`${showEdit ? "" : "hidden"}`}
@@ -1239,6 +1242,7 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
                     </span>
                   )}
                 </label>
+
                 <label className="form-control w-full">
                   <div className="label">
                     <span className="label-text">
@@ -1261,6 +1265,31 @@ const FinalDocuments = ({ isGridView, setIsGridView }) => {
                   {errors.lgu_business_permit && (
                     <span className="text-[12px] text-red-500">
                       {errors.lgu_business_permit}
+                    </span>
+                  )}
+                </label>
+
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="label-text">
+                      MC28 Form <span className="text-red-500">*</span>
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    value={formDrive.MC28Form}
+                    name="MC28Form"
+                    onChange={(e) => {
+                      setFormDrive({
+                        ...formDrive,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                    className="input input-bordered w-full"
+                  />
+                  {errors.MC28Form && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.MC28Form}
                     </span>
                   )}
                 </label>

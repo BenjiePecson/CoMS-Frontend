@@ -28,6 +28,7 @@ import Step7 from "./steppers/step7";
 import { setFormData } from "../../../store/GIS/GISFormSlice";
 import { gdrivefoldersState } from "../../../store/GIS/GISRecordSlice";
 import { fetchUser } from "../../../store/user/UserSlice";
+import Swal from "sweetalert2";
 
 const create = () => {
   const { companyId, recordId } = useParams();
@@ -488,6 +489,21 @@ const create = () => {
     console.log("Download PDF");
   };
 
+  const warningSVG = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className="size-5 text-orange-500"
+    >
+      <path
+        fillRule="evenodd"
+        d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+
   const toggleSaveAsDraft = async () => {
     let status = "error";
     let message = "Failed to save as draft. Please try again.";
@@ -508,6 +524,44 @@ const create = () => {
     }
   };
 
+  //Toggle publish button
+  const togglePublish = (newForm) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You want to proceed to the next step?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#273069",
+      confirmButtonText: "Yes, proceed!",
+      cancelButtonColor: "#CDCDCD",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let status = "error";
+        let message = "Failed to publish the record.";
+        try {
+          let form = formRecord;
+          form.status = "Pending for Approval";
+          form.draftingInput = newForm;
+          // form.date_filed = formPublish.date_filed;
+          // form.folder_id = formPublish.folder_id;
+          // form.gdrivefolders = formPublish.gdrivefolders;
+
+          let response = await axios.post(`/record`, form);
+          if (response.status === 200) {
+            status = "success";
+            message = "Submitted Successfully.";
+            navigate(`/company/${companyId}/gis-tracker`);
+          }
+        } catch (error) {
+          console.log(error);
+        } finally {
+          showToast(status, message);
+        }
+        ///
+      }
+    });
+  };
+
   const toggleSubmit = () => {
     if (step >= 1 && step < 7) {
       setStep(step + 1);
@@ -517,8 +571,12 @@ const create = () => {
     setFormRecord({ ...formRecord, draftingInput: formData });
 
     if (step === 7) {
-      setFormPublish({ ...formPublish, folder_id: formRecord.folder_id });
-      document.getElementById("publishModal").showModal();
+      // setFormPublish({ ...formPublish, folder_id: formRecord.folder_id });
+      // document.getElementById("publishModal").showModal();
+      // setFormRecord({ ...record, draftingInput: formData });
+      // togglePublish(formData);
+
+      document.getElementById("confirmationModal").showModal();
     }
   };
   //#endregion
@@ -559,6 +617,29 @@ const create = () => {
   };
 
   const dialogComponents = () => {
+    const warningSVG = (
+      <svg
+        width="91"
+        height="91"
+        viewBox="0 0 91 91"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M45.6423 23.8995V50.18M45.6423 67.7447L45.6861 67.6961M45.6422 89.6016C69.8546 89.6016 89.4829 69.9911 89.4829 45.8008C89.4829 21.6103 69.8546 2 45.6422 2C21.4297 2 1.80151 21.6103 1.80151 45.8008C1.80151 69.9911 21.4297 89.6016 45.6422 89.6016Z"
+          stroke="#F38F33"
+          strokeWidth="2.62921"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+
+    let comments = [];
+    if (formRecord.comments != undefined) {
+      formRecord.comments.split("\n").map((comment) => comments.push(comment));
+    }
+
     return (
       <>
         {/* Publish Modal */}
@@ -724,7 +805,104 @@ const create = () => {
             </form>
           </div>
         </dialog>
+
+        {/* Comments Modal */}
+        <dialog id="commentsModal" className="modal">
+          <div className="modal-box">
+            <div className="flex flex-row justify-between">
+              <h1 className="p-1 text-[20px] font-bold">Comments</h1>
+              <form method="dialog">
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                  ✕
+                </button>
+              </form>
+            </div>
+            <hr />
+            <label className="label w-full">
+              <ul className="flex flex-col gap-2">
+                {comments.map((comment, index) => {
+                  if (comment == "") return;
+                  return (
+                    <li className="list-disc" key={`comment-${index}`}>
+                      {comment}
+                    </li>
+                  );
+                })}
+              </ul>
+            </label>
+          </div>
+        </dialog>
+
+        {/* Confirmation Modal */}
+        <dialog id="confirmationModal" className="modal">
+          <div className="modal-box w-full md:w-1/2 lg:w-1/3  max-w-5xl">
+            <div className="flex flex-col gap-5 items-center">
+              {warningSVG}
+
+              <h1 className="poppins-bold text-[20px]">Are you sure?</h1>
+
+              <p className="poppins-regular text-[15px]">
+                You want to proceed to the next step?
+              </p>
+
+              <div className="flex flex-row gap-10">
+                <button
+                  className="btn bg-primary text-white btn-sm py-5 flex flex-col justify-center items-center"
+                  onClick={async (e) => {
+                    let status = "error";
+                    let message = "Failed to publish the record.";
+                    try {
+                      let form = formRecord;
+                      form.status = "Pending for Approval";
+                      form.draftingInput = formData;
+                      // form.date_filed = formPublish.date_filed;
+                      // form.folder_id = formPublish.folder_id;
+                      // form.gdrivefolders = formPublish.gdrivefolders;
+                      let response = await axios.post(`/record`, form);
+                      if (response.status === 200) {
+                        status = "success";
+                        message = "Submitted Successfully.";
+                        navigate(`/company/${companyId}/gis-tracker`);
+                      }
+                    } catch (error) {
+                      console.log(error);
+                    } finally {
+                      showToast(status, message);
+                    }
+                  }}
+                >
+                  Yes, proceed!
+                </button>
+
+                <button
+                  className="btn bg-[#CDCDCD] btn-sm py-5 flex flex-col justify-center items-center px-5"
+                  onClick={(e) => {
+                    document.getElementById("confirmationModal").close();
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </dialog>
       </>
+    );
+  };
+
+  const revertedComponent = () => {
+    return (
+      <div className="flex flex-col items-end">
+        <div
+          className="flex flex-row items-center gap-2  bg-orange-200  rounded-3xl px-5 py-2 justify-center cursor-pointer"
+          onClick={() => {
+            document.getElementById("commentsModal").showModal();
+          }}
+        >
+          {warningSVG}
+          <span>Reverted</span>
+        </div>
+      </div>
     );
   };
 
@@ -787,7 +965,8 @@ const create = () => {
 
   return (
     <>
-      <div className="flex flex-col my-5">
+      <div className="flex flex-col my-5 gap-4">
+        {formRecord.status == "Reverted" && revertedComponent()}
         <div className="bg-white w-full rounded-xl shadow-lg">
           <div className="flex flex-col items-center justify-center py-5">
             <ul className="steps steps-horizontal w-full z-0">

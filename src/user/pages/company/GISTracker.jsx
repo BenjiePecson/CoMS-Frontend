@@ -348,10 +348,10 @@ const GISTracker = () => {
       width: "30%",
     },
     {
-      name: "Date Filed",
+      name: "Date Received",
       selector: (row) => moment(row.date_filed).format("MM/DD/YYYY"),
       cell: (row) => {
-        if (row.date_filed == null) {
+        if (row.date_filed == null || row.date_filed == "") {
           return;
         }
         return moment(row.date_filed).format("MM/DD/YYYY");
@@ -364,21 +364,55 @@ const GISTracker = () => {
       sortable: true,
     },
     {
-      name: "Type of Meeting",
-      selector: (row) => {
-        return row.draftingInput.isSpecialMeeting != undefined
-          ? row.draftingInput.isSpecialMeeting
-            ? "Special"
-            : "Annual"
-          : "";
+      name: "Last Modified",
+      // selector: (row) => {
+      //   return row.draftingInput.isSpecialMeeting != undefined
+      //     ? row.draftingInput.isSpecialMeeting
+      //       ? "Special"
+      //       : "Annual"
+      //     : "";
+      // },
+      cell: (row) => {
+        let modified_by = "";
+        let date_modified = "";
+        if (row.created_at != null || row.created_at != "") {
+          let format =
+            moment(row.created_at).format("MMM") != "May"
+              ? `MMM. DD, yyyy`
+              : `MMM DD, yyyy`;
+          date_modified = moment(row.created_at).format(format);
+        }
+        if (row.createdBy != null || row.createdBy != "") {
+          let fullname = row.createdBy.split(" ");
+          if (fullname.length == 1 && fullname[0] != undefined) {
+            modified_by = fullname[0];
+          } else if (
+            fullname.length == 2 &&
+            fullname[0] != undefined &&
+            fullname[1][0] != undefined
+          ) {
+            modified_by = `${fullname[0]} ${fullname[1][0]}`;
+          } else if (
+            fullname.length > 2 &&
+            fullname[0] != undefined &&
+            fullname[fullname.length - 1][0] != undefined
+          ) {
+            modified_by = `${fullname[0]} ${fullname[fullname.length - 1][0]}`;
+          }
+        }
+        return (
+          <div className="flex flex-col justify-evenly h-full">
+            <span>{date_modified}</span>
+            <span>{modified_by}</span>
+          </div>
+        );
       },
-      sortable: true,
     },
     {
       name: "Actions",
       cell: (row) => {
         let goto = "view";
-        if (row.status === "Saved as Draft") {
+        if (row.status === "Saved as Draft" || row.status === "Reverted") {
           goto = "create";
         }
 
@@ -392,7 +426,7 @@ const GISTracker = () => {
 
         if (
           row.folder_id != "" &&
-          row.folder_id != null
+          row.folder_id != null //&&
           // row.status == "Completed"
         ) {
           showGDrive = true;

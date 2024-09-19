@@ -346,7 +346,7 @@ const Layout = () => {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu m-0 p-0 w-80 min-h-full bg-[#031C30] pt-4 text-base-content flex flex-col justify-between">
+          <ul className="menu m-0 p-0 w-80 min-h-full bg-[#031C30] pt-4 text-base-content flex flex-col justify-between h-full">
             {/* Sidebar content here */}
 
             <div className="flex flex-col divide-y-[.1px] gap-4">
@@ -824,9 +824,8 @@ const Layout = () => {
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (token == null || token == undefined) {
-      alert("Session expired. Please login again.");
-
       navigate("/login");
+      alert("Session expired. Please login again.");
     } else {
       dispatch(fetchUser(token));
       dispatch(fetchCompany(companyId));

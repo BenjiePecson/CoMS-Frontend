@@ -971,6 +971,40 @@ const GISTracker = () => {
               </form>
             </div>
             <div className="flex flex-col gap-2">
+              <h1>GIS File Naming Convention</h1>
+              <kbd className="kbd kbd-sm">
+                CompanyName GIS YEAR TypeOfMeeting DateOfMeeting
+              </kbd>
+              <div className="text-xs mx-3">
+                <ol class="list-decimal">
+                  <li>
+                    <strong> CompanyName:</strong> Abbreviation of the company's
+                    name (e.g., ESPH).
+                  </li>
+                  <li>
+                    {" "}
+                    <strong>GIS:</strong> Keep this as "GIS".
+                  </li>
+                  <li>
+                    {" "}
+                    <strong>YEAR: </strong>Four-digit year (e.g., 2024).
+                  </li>
+                  <li>
+                    {" "}
+                    <strong>TypeOfMeeting:</strong>Use ANNUAL for regular
+                    meetings, AMENDMENT if the meeting is special..
+                  </li>
+                  <li>
+                    {" "}
+                    <strong>DateOfMeeting: </strong>In MMDDYYYY format (e.g.,
+                    09182024)..
+                  </li>
+                </ol>
+                <div className="my-3">
+                  <h1 className="font-bold">EXAMPLE:</h1>
+                  <p>ESPH GIS 2024 ANNUAL 09182024</p>
+                </div>
+              </div>
               <label className="form-control w-full">
                 <div className="label">
                   <span className="poppins-regular text-[12px]">

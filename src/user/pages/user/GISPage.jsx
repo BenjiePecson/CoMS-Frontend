@@ -7,10 +7,13 @@ import { Link } from "react-router-dom";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import DataTable, { createTheme } from "react-data-table-component";
 import moment from "moment";
+import Unathorized from "../../components/Unathorized";
+import axios from "axios";
 
 const GISPage = () => {
   // const companyRecords = useSelector((state) => state.records.records);
   const records = useSelector((state) => state.records.records);
+  const currentUser = useSelector((state) => state.user.user);
 
   const dispatch = useDispatch();
 
@@ -185,6 +188,10 @@ const GISPage = () => {
     dispatch(fetchAllRecords("Pending for Approval"));
   }, []);
 
+  if (!currentUser.permissions.includes("View Permissions")) {
+    return <Unathorized />;
+  }
+
   return (
     <>
       <div>
@@ -201,7 +208,21 @@ const GISPage = () => {
         </div> */}
         <div className="flex flex-row w-full justify-between items-center">
           <div className="poppins-bold text-color-2 text-[24px]">GIS</div>
-          <div></div>
+          <div>
+            <button
+              className="btn btn-ghost"
+              onClick={async () => {
+                try {
+                  let respose = await axios.get(
+                    "https://script.google.com/a/macros/fullsuite.ph/s/AKfycbyfVtz-HFaK80Hrmo-EQ64ifl82LVzOvqPEo21taAIDJu4ZyP01S_jyWaU6S9uPxI2T/exec"
+                  );
+                  console.log(respose.data);
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
+            ></button>
+          </div>
         </div>
         <div className="flex flex-col w-full mt-5">
           <DataTable

@@ -528,14 +528,44 @@ const ApproveComponent = () => {
           {approveSVG}
         </div>
         <div className="w-full px-5 flex flex-row justify-between">
-          <PDFDownloadLink
+          {/* <PDFDownloadLink
             className="btn bg-primary text-white"
             document={PDFdocument()}
             fileName={selectedRecord.recordName}
           >
             <span>{downloadSVG}</span>
             <span>Download GIS File</span>
-          </PDFDownloadLink>
+          </PDFDownloadLink> */}
+          <button
+            className="btn bg-primary text-white"
+            onClick={async () => {
+              try {
+                let response = await axios.get(
+                  `/record/generate/${selectedRecord.recordId}`,
+                  {
+                    params: {
+                      recordId: selectedRecord.recordId,
+                    },
+                  }
+                );
+
+                const newWindow = window.open(
+                  "",
+                  "_blank",
+                  "width=1280,height=720"
+                );
+
+                if (newWindow) {
+                  newWindow.document.write(response.data);
+                  newWindow.document.close(); // Ensure the document is rendered
+                }
+              } catch (error) {
+                console.log(error);
+              }
+            }}
+          >
+            Generate GIS File
+          </button>
           <button
             className="btn btn-outline text-primary"
             onClick={() => {

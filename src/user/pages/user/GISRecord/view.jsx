@@ -446,7 +446,7 @@ const view = () => {
     <>
       <button
         onClick={() => {
-          navigate(-1);
+          navigate("/gis");
         }}
         className="flex flex-row gap-3 my-5 p-2 items-center w-32"
       >
@@ -491,9 +491,9 @@ const view = () => {
             </div>
           </div>
           <div className="flex flex-col text-end">
-            <span className="poppins-medium text-[10px]">Created By</span>
+            <span className="poppins-medium text-[10px]">Last Modified By</span>
             <span className="poppins-semibold text-[16px]">
-              {selectedRecord.createdBy}
+              {selectedRecord.modified_by}
             </span>
           </div>
         </div>

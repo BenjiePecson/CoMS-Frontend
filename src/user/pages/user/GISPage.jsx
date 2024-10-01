@@ -208,21 +208,6 @@ const GISPage = () => {
         </div> */}
         <div className="flex flex-row w-full justify-between items-center">
           <div className="poppins-bold text-color-2 text-[24px]">GIS</div>
-          <div>
-            <button
-              className="btn btn-ghost"
-              onClick={async () => {
-                try {
-                  let respose = await axios.get(
-                    "https://script.google.com/a/macros/fullsuite.ph/s/AKfycbyfVtz-HFaK80Hrmo-EQ64ifl82LVzOvqPEo21taAIDJu4ZyP01S_jyWaU6S9uPxI2T/exec"
-                  );
-                  console.log(respose.data);
-                } catch (error) {
-                  console.log(error);
-                }
-              }}
-            ></button>
-          </div>
         </div>
         <div className="flex flex-col w-full mt-5">
           <DataTable

@@ -363,6 +363,12 @@ const GISTracker = () => {
       sortable: true,
     },
     {
+      name: "Type of Meeting",
+      selector: (row) =>
+        row.draftingInput.isSpecialMeeting ? "Special" : "Annual",
+      sortable: true,
+    },
+    {
       name: "Last Modified",
       // selector: (row) => {
       //   return row.draftingInput.isSpecialMeeting != undefined
@@ -976,7 +982,7 @@ const GISTracker = () => {
                 CompanyName GIS YEAR TypeOfMeeting DateOfMeeting
               </kbd>
               <div className="text-xs mx-3">
-                <ol class="list-decimal">
+                <ol className="list-decimal">
                   <li>
                     <strong> CompanyName:</strong> Abbreviation of the company's
                     name (e.g., ESPH).

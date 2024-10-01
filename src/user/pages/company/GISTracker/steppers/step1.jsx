@@ -363,7 +363,7 @@ const step1 = () => {
             </span>
           </div>
           <input
-            type="number"
+            type="text"
             placeholder=""
             className="input input-bordered w-full input-sm"
             name="official_mobile_number"
@@ -1081,7 +1081,7 @@ const step1 = () => {
                   </span>
                 </div>
                 <input
-                  type="number"
+                  type="text"
                   placeholder=""
                   className="input input-bordered w-full input-sm"
                   name="official_mobile_number"

@@ -591,11 +591,22 @@ const create = () => {
     let status = "error";
     let message = "Failed to update the record.";
     try {
+      // let form = formRecord;
+      // form.status = "Completed";
+      // form.date_filed = formPublish.date_filed;
+      // form.folder_id = formPublish.folder_id;
+      // // form.gdrivefolders = formPublish.gdrivefolders;
+
+      // console.log(form);
+
       let form = formRecord;
       form.status = "Completed";
+      form.draftingInput = formData;
       form.date_filed = formPublish.date_filed;
       form.folder_id = formPublish.folder_id;
       // form.gdrivefolders = formPublish.gdrivefolders;
+      const name = `${currentUser.first_name} ${currentUser.last_name}`;
+      form.modified_by = name;
 
       let response = await axios.post(`/record`, form);
       if (response.status === 200) {
@@ -1068,6 +1079,17 @@ const create = () => {
               >
                 Download PDF
               </PDFDownloadLink> */}
+                <button
+                  className={`btn bg-primary text-white ${
+                    step === 7 && formData.year < 2023 ? "" : "hidden"
+                  }`}
+                  onClick={() => {
+                    // toggleSubmit();
+                    document.getElementById("publishModal").showModal();
+                  }}
+                >
+                  Mark as Completed
+                </button>
                 <button
                   // className={
                   //   `btn bg-primary text-white ` + (step != 7 && "hidden")

@@ -436,7 +436,7 @@ const RolesPage = () => {
     if (user.permissions.includes("View Roles")) {
       return (
         <>
-          <div>
+          {/* <div>
             <Breadcrumbs
               lists={[
                 { goto: "/", text: "Home" },
@@ -444,8 +444,8 @@ const RolesPage = () => {
                 { goto: "", text: "Roles" },
               ]}
             />
-          </div>
-          <div className="flex flex-col gap-5">
+          </div> */}
+          <div className="flex flex-col gap-5 mt-5">
             <div className="flex flex-col md:flex-row w-full gap-2">
               <div className="flex flex-row w-full justify-between items-center">
                 <div>{labelComponent()}</div>

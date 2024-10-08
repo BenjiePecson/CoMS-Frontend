@@ -358,7 +358,11 @@ const ForNotarizationComponent = () => {
 
                       let response = await axios.patch(
                         `/record/record/${selectedRecord.recordId}`,
-                        { status: "Filed with SEC", modified_by }
+                        {
+                          status: "Filed with SEC",
+                          modified_by,
+                          folder_id: gdrivefolder,
+                        }
                       );
 
                       if (response.status === 200) {
@@ -470,6 +474,64 @@ const ForNotarizationComponent = () => {
             </div>
           </div>
         </dialog>
+
+        <dialog id="attachGDriveFolder" className="modal">
+          <div className="modal-box">
+            <div className="flex flex-row justify-between py-4">
+              <form method="dialog">
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                  ✕
+                </button>
+              </form>
+            </div>
+            <div className="flex flex-col gap-5">
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="poppins-regular text-[12px]">
+                    Google Drive Folder ID{" "}
+                    <span className="text-red-500">*</span>
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  className={`input input-bordered w-full ${
+                    errors.gdrivefolder && `input-error`
+                  }`}
+                  name="gdrivefolders"
+                  value={gdrivefolder}
+                  onChange={(e) => {
+                    setgdrivefolder(e.target.value);
+
+                    if (e.target.value == "") {
+                      setErrors({ gdrivefolder: "Folder ID is required." });
+                    } else {
+                      setErrors({ gdrivefolder: "" });
+                    }
+                  }}
+                />
+                {errors.gdrivefolder && (
+                  <span className="text-[12px] text-red-500">
+                    {errors.gdrivefolder}
+                  </span>
+                )}
+              </label>
+
+              <button
+                className={`btn bg-primary text-white`}
+                disabled={errors.gdrivefolder != ""}
+                onClick={(e) => {
+                  if (gdrivefolder != "") {
+                    document.getElementById("confirmationModal").showModal();
+                  } else {
+                    setErrors({ gdrivefolder: "Folder ID is required." });
+                  }
+                }}
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </dialog>
       </>
     );
   };
@@ -486,19 +548,19 @@ const ForNotarizationComponent = () => {
         <div className="flex flex-col justify-center flex-1 w-full items-center">
           {forNotarizationSVG}
         </div>
-        <div className="w-full px-5 flex flex-row justify-between">
-          <button
+        <div className="w-full px-5 flex flex-row justify-end">
+          {/* <button
             className="btn bg-primary text-white"
             onClick={() => {
               document.getElementById("attachFileModal").showModal();
             }}
           >
             Attach Files
-          </button>
+          </button> */}
           <button
             className="btn"
             onClick={() => {
-              document.getElementById("confirmationModal").showModal();
+              document.getElementById("attachGDriveFolder").showModal();
             }}
           >
             Filed with SEC

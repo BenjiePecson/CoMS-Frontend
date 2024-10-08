@@ -467,15 +467,15 @@ const RoutedForSignatureComponent = () => {
         <div className="flex flex-col justify-center flex-1 w-full items-center">
           {routedForSignatureSVG}
         </div>
-        <div className="w-full px-5 flex flex-row justify-between">
-          <button
+        <div className="w-full px-5 flex flex-row justify-end">
+          {/* <button
             className="btn bg-primary text-white"
             onClick={() => {
               document.getElementById("attachFileModal").showModal();
             }}
           >
             Attach Files
-          </button>
+          </button> */}
           <button
             className="btn btn-outline text-primary"
             onClick={() => {

@@ -255,7 +255,7 @@ const UsersPage = () => {
     if (userSlice.permissions.includes("View Users")) {
       return (
         <>
-          <div>
+          {/* <div>
             <Breadcrumbs
               lists={[
                 { goto: "/", text: "Home" },
@@ -263,8 +263,8 @@ const UsersPage = () => {
                 { goto: "", text: "Users" },
               ]}
             />
-          </div>
-          <div className="flex flex-col gap-5">
+          </div> */}
+          <div className="flex flex-col gap-5 mt-5">
             <div className="flex flex-col sm:flex-row w-full justify-between gap-2">
               <div className="poppins-bold text-color-2 text-[24px]">Users</div>
               <div>

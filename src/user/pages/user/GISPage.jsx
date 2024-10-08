@@ -194,19 +194,19 @@ const GISPage = () => {
 
   return (
     <>
-      <div>
+      {/* <div>
         <Breadcrumbs
           lists={[
             { goto: "/", text: "Home" },
             { goto: "/gis", text: "GIS" },
           ]}
         />
-      </div>
+      </div> */}
       <div>
         {/* <div>
           <Header />
         </div> */}
-        <div className="flex flex-row w-full justify-between items-center">
+        <div className="flex flex-row w-full justify-between items-center mt-5">
           <div className="poppins-bold text-color-2 text-[24px]">GIS</div>
         </div>
         <div className="flex flex-col w-full mt-5">

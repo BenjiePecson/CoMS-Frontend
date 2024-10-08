@@ -15,17 +15,20 @@ const PermissionsPage = () => {
     {
       name: "Permission Name",
       selector: (row) => row.permission_name,
-      width: "80%"
+      width: "80%",
     },
     {
       name: "Actions",
       cell: (row, rowIndex) => {
-        if (!user.permissions.includes("Edit Permissions") && !user.permissions.includes("Delete Permissions")) return;
+        if (
+          !user.permissions.includes("Edit Permissions") &&
+          !user.permissions.includes("Delete Permissions")
+        )
+          return;
 
         return (
           <div className="flex flex-row justify-start item-center gap-2 w-full">
-            {
-              user.permissions.includes("Edit Permissions") &&
+            {user.permissions.includes("Edit Permissions") && (
               <button
                 onClick={() => {
                   setFormData({ ...row, rowIndex });
@@ -49,9 +52,8 @@ const PermissionsPage = () => {
                   />
                 </svg>
               </button>
-            }
-            {
-              user.permissions.includes("Delete Permissions") &&
+            )}
+            {user.permissions.includes("Delete Permissions") && (
               <button
                 onClick={() => {
                   toggleDelete(row.permission_id);
@@ -74,11 +76,11 @@ const PermissionsPage = () => {
                   />
                 </svg>
               </button>
-            }
+            )}
           </div>
         );
       },
-      width: "20%"
+      width: "20%",
     },
   ];
 
@@ -95,7 +97,6 @@ const PermissionsPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [pageIsLoading, setPageIsLoading] = useState(true);
-
 
   const searchComponent = () => {
     return (
@@ -132,7 +133,6 @@ const PermissionsPage = () => {
   };
 
   const btnAddComponent = () => {
-
     if (!user.permissions.includes("Add Permissions")) return;
 
     return (
@@ -327,7 +327,6 @@ const PermissionsPage = () => {
     setFilteredPermissions(filter);
   }, [search]);
 
-
   useEffect(() => {
     if (user.user_id != "") {
       setPageIsLoading(false);
@@ -340,7 +339,7 @@ const PermissionsPage = () => {
     if (user.permissions.includes("View Permissions")) {
       return (
         <>
-          <div>
+          {/* <div>
             <Breadcrumbs
               lists={[
                 { goto: "/", text: "Home" },
@@ -348,8 +347,8 @@ const PermissionsPage = () => {
                 { goto: "", text: "Permissions" },
               ]}
             />
-          </div>
-          <div className="flex flex-col gap-5">
+          </div> */}
+          <div className="flex flex-col gap-5 mt-5">
             <div className="flex flex-col md:flex-row w-full gap-2">
               <div className="flex flex-row w-full justify-between items-center">
                 <div>{labelComponent()}</div>
@@ -393,8 +392,9 @@ const PermissionsPage = () => {
                       </div>
                       <input
                         type="text"
-                        className={`input input-bordered w-full ${errors.permission_name && `input-error`
-                          }`}
+                        className={`input input-bordered w-full ${
+                          errors.permission_name && `input-error`
+                        }`}
                         name="permission_name"
                         value={formData.permission_name}
                         onChange={(e) => {
@@ -447,8 +447,9 @@ const PermissionsPage = () => {
                       </div>
                       <input
                         type="text"
-                        className={`input input-bordered w-full ${errors.permission_name && `input-error`
-                          }`}
+                        className={`input input-bordered w-full ${
+                          errors.permission_name && `input-error`
+                        }`}
                         name="permission_name"
                         value={formData.permission_name}
                         onChange={(e) => {
@@ -482,8 +483,6 @@ const PermissionsPage = () => {
     }
     return <Unathorized />;
   }
-
-
 };
 
 export default PermissionsPage;

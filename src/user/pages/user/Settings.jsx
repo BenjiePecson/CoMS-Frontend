@@ -5,18 +5,15 @@ import Breadcrumbs from "../../components/Breadcrumbs";
 const Settings = () => {
   return (
     <>
-      <div>
+      {/* <div>
         <Breadcrumbs
           lists={[
             { goto: "/", text: "Home" },
             { goto: "/settings", text: "Settings" },
           ]}
         />
-      </div>
-      <div>
-        {/* <div>
-        <Header />
       </div> */}
+      <div>
         <div className="flex flex-row w-full justify-between items-center mt-5">
           <div className="poppins-bold text-color-2 text-[24px]">Settings</div>
         </div>

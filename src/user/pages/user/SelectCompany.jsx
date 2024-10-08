@@ -686,14 +686,14 @@ const SelectCompany = () => {
 
   return (
     <>
-      <div>
+      {/* <div>
         <Breadcrumbs
           lists={[
             { goto: "/", text: "Home" },
             { goto: "/", text: "Companies" },
           ]}
         />
-      </div>
+      </div> */}
       <div>
         {/* <div className="flex flex-col mb-5">
           <Header />

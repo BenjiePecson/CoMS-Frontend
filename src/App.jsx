@@ -32,6 +32,7 @@ import CreateNOM from "./user/pages/company/BoardMeetings/NoticeOfMeetings/Creat
 import ViewNOMPage from "./user/pages/company/BoardMeetings/NoticeOfMeetings/ViewNOMPage";
 import AddSecCert from "./user/pages/company/BoardMeetings/SecretaryCertificate/AddSecCert";
 import ViewSecCert from "./user/pages/company/BoardMeetings/SecretaryCertificate/ViewSecCert";
+import MainDashboard from "./user/pages/user/MainDashboard";
 
 // axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
@@ -54,9 +55,10 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
 
-          <Route path="/" element={<Login />} />
+          {/* <Route path="/" element={<Login />} /> */}
 
           <Route element={<CompanyLayout />}>
+            <Route path="/" element={<MainDashboard />} />
             <Route path="/company" element={<SelectCompany />} />
             <Route path="/users" element={<UsersPage />} />
             <Route path="/users-task" element={<UserDashboard />} />

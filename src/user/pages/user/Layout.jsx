@@ -90,6 +90,21 @@ const Layout = () => {
     </svg>
   );
 
+  const dashboardIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="#EFF2F4"
+      className="size-7"
+    >
+      <path
+        fillRule="evenodd"
+        d="M3 6a3 3 0 0 1 3-3h2.25a3 3 0 0 1 3 3v2.25a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6Zm9.75 0a3 3 0 0 1 3-3H18a3 3 0 0 1 3 3v2.25a3 3 0 0 1-3 3h-2.25a3 3 0 0 1-3-3V6ZM3 15.75a3 3 0 0 1 3-3h2.25a3 3 0 0 1 3 3V18a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-2.25Zm9.75 0a3 3 0 0 1 3-3H18a3 3 0 0 1 3 3V18a3 3 0 0 1-3 3h-2.25a3 3 0 0 1-3-3v-2.25Z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+
   const logout = async () => {
     // const token = localStorage.getItem("access_token").split(" ")[1];
 
@@ -105,7 +120,7 @@ const Layout = () => {
     setActive(
       window.location.pathname.split("/")[1] === "" ||
         window.location.pathname.split("/")[1] === undefined
-        ? "/company"
+        ? "/dashboard"
         : `/${window.location.pathname.split("/")[1]}`
     );
   }, [window.location.pathname]);
@@ -190,6 +205,19 @@ const Layout = () => {
 
                   <div className="px-4">
                     <Link
+                      to="/"
+                      onClick={() => {
+                        setActive("/dashboard");
+                      }}
+                    >
+                      <NavBar
+                        isActive={active === "/dashboard"}
+                        text="Dashboard"
+                        icon={dashboardIcon}
+                      />
+                    </Link>
+
+                    <Link
                       to="/company"
                       onClick={() => {
                         setActive("/company");
@@ -202,7 +230,7 @@ const Layout = () => {
                       />
                     </Link>
 
-                    <Link
+                    {/* <Link
                       to="/users-task"
                       onClick={() => {
                         setActive("/users-task");
@@ -213,7 +241,7 @@ const Layout = () => {
                         text="Users Task"
                         icon={companyIcon}
                       />
-                    </Link>
+                    </Link> */}
 
                     {user.permissions.includes("View GIS Approval") && (
                       <Link

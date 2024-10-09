@@ -2,24 +2,24 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-function Notarization() {
+function RoutedforSignature() {
     const handleOpenModal = () => {
-        document.getElementById('notarization').showModal();
+        document.getElementById('routed').showModal();
     };
 
     const handleCloseModal = () => {
-        document.getElementById('notarization').close();
+        document.getElementById('routed').close();
     };
 
-    const [notarize, setNotarize] = useState([]);
+    const [routed, setRouted] = useState([]);
 
-    const fetchNotarize = async () => {
+    const fetchRouted = async () => {
         let response = await axios.get("/main-dashboard/");
-        setNotarize(response.data.notarization);
+        setRouted(response.data.routed);
     }
 
     useEffect(() => {
-        fetchNotarize();
+        fetchRouted();
     }, []);
 
     const tableComponent = (
@@ -34,8 +34,8 @@ function Notarization() {
                     </tr>
                 </thead>
                 <tbody>
-                    {notarize.length !== 0 ? (
-                        notarize.map((record) => {
+                    {routed.length !== 0 ? (
+                        routed.map((record) => {
                             return (
                                 <tr key={record.recordId}>
                                     <td>{record.recordName}</td>
@@ -81,13 +81,13 @@ function Notarization() {
     return (
         <div className="card bg-base-100 w-50 shadow-xl m-2">
             <div className="card-body cursor-pointer" onClick={handleOpenModal}>
-                <h2 className="card-title text-center">For Notarization</h2>
-                <p className="text-center text-lg">{notarize.length}</p>
+                <h2 className="card-title text-center">Routed for Signature</h2>
+                <p className="text-center text-lg">{routed.length}</p>
             </div>
 
-            <dialog id="notarization" className="modal">
+            <dialog id="routed" className="modal">
                 <div className="modal-box w-11/12 max-w-5xl">
-                    <h3 className="font-bold text-lg">List of 'For Notarization'</h3>
+                    <h3 className="font-bold text-lg">List of 'Routed for Signature'</h3>
                     {tableComponent}
                     <div className="modal-action">
                         <button className="btn" onClick={handleCloseModal}>Close</button>
@@ -98,4 +98,4 @@ function Notarization() {
     );
 };
 
-export default Notarization;
+export default RoutedforSignature;

@@ -22,7 +22,7 @@ const Login = () => {
         if (response.data.success) {
           localStorage.setItem("access_token", response.data.tokens.access_token);
           dispatch(fetchUser(response.data.tokens.access_token));
-          navigate("/company");
+          navigate("/");
         } else {
           showToast("error", "Your account is currently inactive. Please contact the administrator for assistance.");
         }
@@ -45,7 +45,7 @@ const Login = () => {
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (token != null && token != undefined) {
-      navigate("/company");
+      navigate("/");
     }
   }, []);
 

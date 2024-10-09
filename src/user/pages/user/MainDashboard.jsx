@@ -4,7 +4,7 @@ import Drafted from "./MainDashboard/Drafted.jsx";
 import PendingforApproval from "./MainDashboard/PendingforApproval.jsx";
 import Approved from "./MainDashboard/Approved.jsx";
 import RoutedforSignature from "./MainDashboard/RoutedforSignature.jsx";
-import FiledwithSEC from "./MainDashboard/FiledwithSec.jsx";
+import FiledwithSEC from "./MainDashboard/FiledwithSEC.jsx";
 import Completed from "./MainDashboard/Completed.jsx";
 
 const MainDashboard = () => {

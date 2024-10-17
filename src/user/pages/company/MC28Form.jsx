@@ -558,6 +558,56 @@ const MC28Form = () => {
         <label className="form-control w-full">
           <div className="label">
             <span className="label-text">
+              Alternate Email Address to be replaced
+              <span className="text-red-500">*</span>
+            </span>
+          </div>
+          <input
+            type="email"
+            className={`input input-bordered w-full ${
+              errors.old_email2 && `input-error`
+            }`}
+            name="old_email2"
+            value={formData.form_data.old_email2}
+            onChange={(e) => {
+              handleOnChange(e, "Alternate Email Address to be replaced");
+            }}
+          />
+          {errors.old_email2 && (
+            <span className="text-[12px] text-red-500">
+              {errors.old_email2}
+            </span>
+          )}
+        </label>
+
+        <label className="form-control w-full">
+          <div className="label">
+            <span className="label-text">
+              New Alternate Email Address
+              <span className="text-red-500">*</span>
+            </span>
+          </div>
+          <input
+            type="email"
+            className={`input input-bordered w-full ${
+              errors.new_email2 && `input-error`
+            }`}
+            name="new_email2"
+            value={formData.form_data.new_email2}
+            onChange={(e) => {
+              handleOnChange(e, "New Alternate Email Address");
+            }}
+          />
+          {errors.new_email2 && (
+            <span className="text-[12px] text-red-500">
+              {errors.new_email2}
+            </span>
+          )}
+        </label>
+
+        <label className="form-control w-full">
+          <div className="label">
+            <span className="label-text">
               Official Mobile Number to be replaced
               <span className="text-red-500">*</span>
             </span>
@@ -1052,6 +1102,9 @@ const MC28Form = () => {
           selectedCompany.latestGIS.actual_date_of_annual_meeting;
 
         form_data.old_email1 = selectedCompany.latestGIS.official_email_address;
+        form_data.old_email2 =
+          selectedCompany.latestGIS.alternate_email_address;
+
         form_data.old_phone_number1 =
           selectedCompany.latestGIS.official_mobile_number;
         form_data.old_phone_number2 =

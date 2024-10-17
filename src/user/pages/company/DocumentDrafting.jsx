@@ -282,7 +282,6 @@ const DocumentDrafting = () => {
   };
 
   const handleOnGenerate = async () => {
-
     try {
       let response = await axios.get("/document-drafting-generate", {
         params: {
@@ -547,7 +546,7 @@ const DocumentDrafting = () => {
 
     let new_form_data = { ...formData.form_data };
 
-    if (selectedCompany.latestGIS) {
+    if (Object.keys(selectedCompany.latestGIS).length != 0) {
       new_form_data.corporate_name = selectedCompany.latestGIS.corporate_name;
       new_form_data.office_address =
         selectedCompany.latestGIS.complete_principal_office_address;
@@ -557,6 +556,7 @@ const DocumentDrafting = () => {
         new_form_data.officer_name = officer.name;
         new_form_data.officer_position = officer.officer;
       }
+
       setOfficers(selectedCompany.latestGIS.directors_or_officers);
     }
 

@@ -152,6 +152,21 @@ const Layout = () => {
     </svg>
   );
 
+  const companyIcon = (
+    <svg
+      width="23"
+      height="26"
+      viewBox="0 0 23 26"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M16.7981 0.115601C20.6634 0.115601 22.8156 2.34288 22.8156 6.15929V19.085C22.8156 22.964 20.6634 25.1412 16.7981 25.1412H6.31115C2.50725 25.1412 0.29248 22.964 0.29248 19.085V6.15929C0.29248 2.34288 2.50725 0.115601 6.31115 0.115601H16.7981ZM6.64899 17.3082C6.27361 17.2707 5.91074 17.4459 5.71053 17.7712C5.51033 18.084 5.51033 18.4969 5.71053 18.8223C5.91074 19.1351 6.27361 19.3228 6.64899 19.2727H16.459C16.9583 19.2227 17.3349 18.796 17.3349 18.2967C17.3349 17.7837 16.9583 17.3583 16.459 17.3082H6.64899ZM16.459 11.6011H6.64899C6.10969 11.6011 5.67299 12.0403 5.67299 12.5784C5.67299 13.1164 6.10969 13.5544 6.64899 13.5544H16.459C16.9971 13.5544 17.435 13.1164 17.435 12.5784C17.435 12.0403 16.9971 11.6011 16.459 11.6011ZM10.3891 5.93406H6.64899V5.94657C6.10969 5.94657 5.67299 6.38452 5.67299 6.92257C5.67299 7.46063 6.10969 7.89857 6.64899 7.89857H10.3891C10.9284 7.89857 11.3663 7.46063 11.3663 6.90881C11.3663 6.37201 10.9284 5.93406 10.3891 5.93406Z"
+        fill="#EFF2F4"
+      />
+    </svg>
+  );
+
   const companyList = filteredCompany
     .filter((company) => {
       if (!company.status) return false;
@@ -438,6 +453,25 @@ const Layout = () => {
 
                     <Link
                       className={`flex flex-row hover:bg-[#667A8A] h-[45px] rounded-[3px] items-center my-1 ${
+                        active === "MC28Form" ? "bg-[#667A8A]" : ""
+                      } ${
+                        active === "MC28Form"
+                          ? "poppins-semibold"
+                          : "poppins-regular"
+                      } text-white`}
+                      to={`/company/${companyId}/MC28Form`}
+                      onClick={() => {
+                        setActive("MC28Form");
+                      }}
+                    >
+                      <div className="flex flex-row px-4 items-center">
+                        <div className="pr-4">{companyIcon}</div>
+                        <h1 className="text-white">MC28 Form</h1>
+                      </div>
+                    </Link>
+
+                    <Link
+                      className={`flex flex-row hover:bg-[#667A8A] h-[45px] rounded-[3px] items-center my-1 ${
                         active === "gis-tracker" ? "bg-[#667A8A]" : ""
                       } ${
                         active === "gis-tracker"
@@ -454,6 +488,7 @@ const Layout = () => {
                         <h1 className="text-white">GIS Tracker</h1>
                       </div>
                     </Link>
+
                     <li>
                       <details open>
                         <summary className="h-[45px] my-1 flex flex-row justify-between items-center">

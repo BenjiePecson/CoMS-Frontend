@@ -5,6 +5,7 @@ import GISFormSlice from "./GIS/GISFormSlice";
 import UserSlice from "./user/UserSlice";
 import NoticeOfMeetingSlice from "./boardmeetings/NoticeOfMeetingSlice";
 import SecretaryCertificateSlice from "./boardmeetings/SecretaryCertificateSlice";
+import MC28FormSlice from "./MC28Form/MC28FormSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     user: UserSlice,
     noticeOfMeeting: NoticeOfMeetingSlice,
     secretaryCertificate: SecretaryCertificateSlice,
+    MC28Form: MC28FormSlice,
   },
 });
 

@@ -3,7 +3,7 @@ import Header from "../../components/Header";
 import { Link, useParams } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
-import { showAlert, showToast } from "../../../assets/global";
+import { showToast } from "../../../assets/global";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Breadcrumbs from "../../components/Breadcrumbs";
@@ -91,7 +91,7 @@ const MC28Form = () => {
         message = "Error updating the record.";
         console.error("Error updating the record.: ", error);
       } finally {
-        showAlert(status, message);
+        showToast(status, message);
         document.getElementById("addMC28FormModal").close();
       }
     }
@@ -185,7 +185,7 @@ const MC28Form = () => {
         } catch (error) {
           console.error("Error deleting a record: ", error);
         } finally {
-          showAlert(status, message);
+          showToast(status, message);
         }
       }
     });

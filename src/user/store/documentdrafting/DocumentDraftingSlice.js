@@ -1,45 +1,29 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import MC28Form from "../../pages/company/MC28Form";
 
-export const MC28FormDataState = {
-  type: "New",
+export const DocumentDraftingDataState = {
+  type: "Certificate of Gross Sales/Receipts",
+
   corporate_name: "",
-  sec_registration_number: "",
-  official_email_address: "",
-  official_mobile_number: "",
-  alternative_email_address: "",
-  alternative_mobile_number: "",
-
-  old_email1: "",
-  new_email1: "",
-  is_official_email1: false,
-  is_alternate_email1: false,
-  old_email2: "",
-  new_email2: "",
-  is_official_email2: false,
-  is_alternate_email2: false,
-  old_phone_number1: "",
-  new_phone_number1: "",
-  is_official_phone_number1: false,
-  is_alternate_phone_number1: false,
-  old_phone_number2: "",
-  new_phone_number2: "",
-  is_official_phone_number2: false,
-  is_alternate_phone_number2: false,
-
-  auth_name: "",
   office_address: "",
-  date_of_resolution: "",
-  is_representative: false,
+  total_revenue: "",
+  date_from: "",
+  date_to: "",
+  year: "",
+  revenue_q1: "",
+  revenue_q2: "",
+  revenue_q3: "",
+  revenue_q4: "",
+  officer_name: "",
+  officer_position: "",
 };
 
-const MC28FormState = {
+const DocumentDraftingState = {
   form_id: "",
   company_id: "",
   form_name: "",
   status: "",
-  form_data: MC28FormDataState,
+  form_data: DocumentDraftingDataState,
   folder_id: "",
   created_by: "",
   modified_by: "",
@@ -48,41 +32,48 @@ const MC28FormState = {
 };
 
 export const fetchAllRecords = createAsyncThunk(
-  "MC28Form/fetchAllRecords",
+  "DocumentDrafting/fetchAllRecords",
   async (status) => {
     let response = await axios.get(`/mc28forms/`, {
       params: { status },
     });
+
+    return [];
     return response.data;
   }
 );
 
 export const fetchRecords = createAsyncThunk(
-  "MC28Form/fetchRecords",
+  "DocumentDrafting/fetchRecords",
   async (companyId) => {
     let response = await axios.get(`/mc28forms/${companyId}`);
+    return [];
+
     return response.data;
   }
 );
 
 export const fetchRecord = createAsyncThunk(
-  "MC28Form/fetchRecord",
+  "DocumentDrafting/fetchRecord",
   async ({ form_id, company_id }) => {
     let response = await axios.get(`/mc28forms/${company_id}/${form_id}`);
+    return [];
+
     return response.data;
   }
 );
 
 const initialState = {
+  get_all_records: [],
   get_all_company_records: [],
-  get_record: MC28FormState,
-  selected_record: MC28FormState,
+  get_record: DocumentDraftingState,
+  selected_record: DocumentDraftingState,
   status: "idle",
   error: null,
 };
 
-const MC28FormSlice = createSlice({
-  name: "MC28Form",
+const DocumentDraftingSlice = createSlice({
+  name: "DocumentDrafting",
   initialState,
   reducers: {
     addNewRecord: (state, action) => {
@@ -92,9 +83,9 @@ const MC28FormSlice = createSlice({
     updateRecord: (state, action) => {
       state.get_all_company_records.map((obj) => {
         if (obj.companyId === action.payload.companyId) {
-          obj.logo = action.payload.logo;
-          obj.companyName = action.payload.companyName;
-          obj.secNumber = action.payload.secNumber;
+          // obj.logo = action.payload.logo;
+          // obj.companyName = action.payload.companyName;
+          // obj.secNumber = action.payload.secNumber;
         }
       });
     },
@@ -107,6 +98,19 @@ const MC28FormSlice = createSlice({
   },
   extraReducers: (builder) => {
     //fetch all records
+    builder.addCase(fetchAllRecords.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(fetchAllRecords.fulfilled, (state, action) => {
+      state.status = "fulfilled";
+      state.get_all_records = action.payload;
+    });
+    builder.addCase(fetchAllRecords.rejected, (state, action) => {
+      state.status = "rejected";
+      state.get_all_records = [];
+    });
+
+    //fetch all company records
     builder.addCase(fetchRecords.pending, (state) => {
       state.status = "pending";
     });
@@ -129,11 +133,11 @@ const MC28FormSlice = createSlice({
     });
     builder.addCase(fetchRecord.rejected, (state, action) => {
       state.status = "rejected";
-      state.selected_record = MC28FormState;
+      state.selected_record = DocumentDraftingState;
     });
   },
 });
 
 export const { addNewRecord, updateRecord, deleteRecord } =
-  MC28FormSlice.actions;
-export default MC28FormSlice.reducer;
+  DocumentDraftingSlice.actions;
+export default DocumentDraftingSlice.reducer;

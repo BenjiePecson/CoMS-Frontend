@@ -36,6 +36,7 @@ import MainDashboard from "./user/pages/user/MainDashboard";
 import MC28Form from "./user/pages/company/MC28Form";
 import ViewMC28Form from "./user/pages/company/MC28Form/view";
 import DocumentDrafting from "./user/pages/company/DocumentDrafting";
+import ViewDocumentDrafting from "./user/pages/company/DocumentDrafting/view";
 
 // axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
@@ -82,7 +83,14 @@ function App() {
               path="company/:companyId/mc28form/view/:form_id?"
               element={<ViewMC28Form />}
             />
-            <Route path="company/:companyId/document-drafting" element={<DocumentDrafting />} />
+            <Route
+              path="company/:companyId/document-drafting"
+              element={<DocumentDrafting />}
+            />
+            <Route
+              path="company/:companyId/document-drafting/view/:document_id?"
+              element={<ViewDocumentDrafting />}
+            />
             <Route
               path="company/:companyId/gis-tracker/create/:recordId?"
               element={<GIScreate />}

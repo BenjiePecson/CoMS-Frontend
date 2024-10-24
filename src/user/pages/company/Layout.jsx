@@ -22,6 +22,8 @@ const Layout = () => {
   const [filteredCompany, setFilteredCompany] = useState(companies);
   const [search, setSearch] = useState("");
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const dispatch = useDispatch();
 
   const loading = (
@@ -896,6 +898,8 @@ const Layout = () => {
       dispatch(fetchUser(token));
       dispatch(fetchCompany(companyId));
       dispatch(fetchCompanies());
+
+      setIsLoading(false);
     }
   }, []);
 
@@ -920,11 +924,13 @@ const Layout = () => {
   return (
     <>
       {/* {content} */}
-      {status === "pending"
+      {/* {status === "pending"
         ? loading
         : status === "rejected"
         ? companyNotFound
-        : content}
+        : content} */}
+
+      {isLoading ? loading : content}
     </>
   );
 };

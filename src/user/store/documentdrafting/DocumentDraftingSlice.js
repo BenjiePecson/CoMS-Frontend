@@ -1,9 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+export const appointeeState = {
+  name: "",
+  id_no: "",
+  date_place_issued: "",
+};
+
 export const DocumentDraftingDataState = {
   type: "Certificate of Gross Sales/Receipts",
-
   corporate_name: "",
   office_address: "",
   total_revenue: "",
@@ -16,10 +21,12 @@ export const DocumentDraftingDataState = {
   revenue_q4: "",
   officer_name: "",
   officer_position: "",
+  officer_nationality: "",
+  appointees: [appointeeState],
 };
 
 const DocumentDraftingState = {
-  form_id: "",
+  document_id: "",
   company_id: "",
   form_name: "",
   status: "",
@@ -34,11 +41,12 @@ const DocumentDraftingState = {
 export const fetchAllRecords = createAsyncThunk(
   "DocumentDrafting/fetchAllRecords",
   async (status) => {
-    let response = await axios.get(`/mc28forms/`, {
+    let response = await axios.get(`/document-drafting/`, {
       params: { status },
     });
 
-    return [];
+    console.log(response.data);
+
     return response.data;
   }
 );
@@ -46,8 +54,7 @@ export const fetchAllRecords = createAsyncThunk(
 export const fetchRecords = createAsyncThunk(
   "DocumentDrafting/fetchRecords",
   async (companyId) => {
-    let response = await axios.get(`/mc28forms/${companyId}`);
-    return [];
+    let response = await axios.get(`/document-drafting/${companyId}`);
 
     return response.data;
   }
@@ -55,10 +62,10 @@ export const fetchRecords = createAsyncThunk(
 
 export const fetchRecord = createAsyncThunk(
   "DocumentDrafting/fetchRecord",
-  async ({ form_id, company_id }) => {
-    let response = await axios.get(`/mc28forms/${company_id}/${form_id}`);
-    return [];
-
+  async ({ document_id, company_id }) => {
+    let response = await axios.get(
+      `/document-drafting/${company_id}/${document_id}`
+    );
     return response.data;
   }
 );

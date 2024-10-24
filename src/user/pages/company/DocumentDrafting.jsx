@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Form, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Form, Link, useParams } from "react-router-dom";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import DataTable, { createTheme } from "react-data-table-component";
 import { showToast } from "../../../assets/global";
 import axios from "axios";
+import {
+  appointeeState,
+  fetchAllRecords,
+  fetchRecords,
+} from "../../store/documentdrafting/DocumentDraftingSlice";
+import moment from "moment";
+import Swal from "sweetalert2";
 
 const DocumentDrafting = () => {
   const { companyId } = useParams();
@@ -22,16 +29,14 @@ const DocumentDrafting = () => {
 
   const [officers, setOfficers] = useState([]);
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const dispatch = useDispatch();
+
   const columns = [
     {
       name: "Document Name",
       selector: (row) => row.form_name,
-      sortable: true,
-      width: "30%",
-    },
-    {
-      name: "Document Type",
-      selector: (row) => row.type,
       sortable: true,
       width: "30%",
     },
@@ -118,7 +123,7 @@ const DocumentDrafting = () => {
             )}
             <div>
               <Link
-                to={`/company/${companyId}/mc28form/${goto}/${row.form_id}`}
+                to={`/company/${companyId}/document-drafting/${goto}/${row.document_id}`}
               >
                 <button>
                   <svg
@@ -146,7 +151,7 @@ const DocumentDrafting = () => {
             <div>
               <button
                 onClick={() => {
-                  toggleDelete(row.form_id);
+                  toggleDelete(row.document_id);
                 }}
               >
                 <svg
@@ -173,6 +178,39 @@ const DocumentDrafting = () => {
     },
   ];
 
+  const toggleDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#CF0404",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonColor: "#B4B4B8",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let status = "error";
+        let message = "Failed to delete record";
+
+        try {
+          let response = await axios.delete(
+            `/document-drafting/${companyId}/${id}`
+          );
+
+          if (response.status === 204) {
+            dispatch(fetchRecords(companyId));
+            status = "success";
+            message = "Record deleted successfully!";
+          }
+        } catch (error) {
+          console.error("Error deleting a record: ", error);
+        } finally {
+          showToast(status, message);
+        }
+      }
+    });
+  };
+
   createTheme("customized", {
     text: {
       primary: "#000000",
@@ -190,6 +228,21 @@ const DocumentDrafting = () => {
     },
   };
 
+  const removeIconSVG = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className="w-6 h-6 mx-auto text-[#ff5858]"
+    >
+      <path
+        fillRule="evenodd"
+        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+
   const openDialogAddForm = () => {
     document.getElementById("addDocumentModal").showModal();
   };
@@ -201,16 +254,23 @@ const DocumentDrafting = () => {
       let status = "error";
       let message = "Error updating the record.";
 
-      console.log(formData);
+      let newForm = { ...formData };
+
+      newForm.status = "Sent for Approval";
+      const name = `${currentUser.first_name} ${currentUser.last_name}`;
+
+      newForm.modified_by = name;
 
       try {
-        return;
-        let response = await axios.post(`/mc28forms/${companyId}`, newFormData);
+        let response = await axios.post(
+          `/document-drafting/${companyId}`,
+          newForm
+        );
 
         if (response.status === 201) {
           dispatch(fetchRecords(companyId));
           status = "success";
-          message = "Record updated successfully!";
+          message = "Record added successfully!";
         }
       } catch (error) {
         status = "error";
@@ -281,8 +341,25 @@ const DocumentDrafting = () => {
     }
   };
 
+  const handleOnChangeAppointees = async (e, index) => {
+    const { name, value } = e.target;
+
+    let newFormData = { ...formData };
+    let new_form_data = { ...formData.form_data };
+    let new_appointees = [...new_form_data.appointees];
+    new_form_data.appointees = new_appointees.map((appointee, _index) => {
+      if (index == _index) {
+        return { ...appointee, [name]: value };
+      }
+      return appointee;
+    });
+    newFormData.form_data = new_form_data;
+    setFormData(newFormData);
+  };
+
   const handleOnGenerate = async () => {
     try {
+      setIsLoading(true);
       let response = await axios.get("/document-drafting-generate", {
         params: {
           formData: formData,
@@ -298,6 +375,8 @@ const DocumentDrafting = () => {
     } catch (error) {
       console.log(error);
       showToast("error", "Failed to generate the record.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -328,104 +407,107 @@ const DocumentDrafting = () => {
   const dialogComponents = () => {
     const CGR_form = (
       <>
-        <div>
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">Year</span>
-            </div>
-            <input
-              type="text"
-              value={formData.form_data.year}
-              onChange={(e) => {
-                handleOnChange(e, "Year");
-              }}
-              name="year"
-              className="input input-bordered w-full"
-            />
-          </label>
+        <div className="flex flex-col gap-2">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text">Year</span>
+              </div>
+              <input
+                type="text"
+                value={formData.form_data.year}
+                onChange={(e) => {
+                  handleOnChange(e, "Year");
+                }}
+                name="year"
+                className="input input-bordered w-full"
+              />
+            </label>
 
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">Date From</span>
-            </div>
-            <input
-              type="date"
-              className="input input-bordered w-full"
-              name="date_from"
-              onChange={(e) => {
-                handleOnChange(e, "Date From");
-              }}
-            />
-          </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text">Date From</span>
+              </div>
+              <input
+                type="date"
+                className="input input-bordered w-full"
+                name="date_from"
+                onChange={(e) => {
+                  handleOnChange(e, "Date From");
+                }}
+              />
+            </label>
 
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">Date To</span>
-            </div>
-            <input
-              type="date"
-              className="input input-bordered w-full"
-              name="date_to"
-              onChange={(e) => {
-                handleOnChange(e, "Date To");
-              }}
-            />
-          </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text">Date To</span>
+              </div>
+              <input
+                type="date"
+                className="input input-bordered w-full"
+                name="date_to"
+                onChange={(e) => {
+                  handleOnChange(e, "Date To");
+                }}
+              />
+            </label>
+          </div>
 
           <div className="divider">Revenue Generated</div>
-
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">Q1 {formData.form_data.year}</span>
-            </div>
-            <input
-              type="text"
-              name="revenue_q1"
-              onChange={(e) => {
-                handleOnChange(e, "Q1 Revenue");
-              }}
-              className="input input-bordered w-full"
-            />
-          </label>
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">Q2 {formData.form_data.year}</span>
-            </div>
-            <input
-              type="text"
-              name="revenue_q2"
-              onChange={(e) => {
-                handleOnChange(e, "Q2 Revenue");
-              }}
-              className="input input-bordered w-full"
-            />
-          </label>
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">Q3 {formData.form_data.year}</span>
-            </div>
-            <input
-              type="text"
-              name="revenue_q3"
-              onChange={(e) => {
-                handleOnChange(e, "Q3 Revenue");
-              }}
-              className="input input-bordered w-full"
-            />
-          </label>
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">Q4 {formData.form_data.year}</span>
-            </div>
-            <input
-              type="text"
-              name="revenue_q4"
-              onChange={(e) => {
-                handleOnChange(e, "Q4 Revenue");
-              }}
-              className="input input-bordered w-full"
-            />
-          </label>
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text">Q1 {formData.form_data.year}</span>
+              </div>
+              <input
+                type="text"
+                name="revenue_q1"
+                onChange={(e) => {
+                  handleOnChange(e, "Q1 Revenue");
+                }}
+                className="input input-bordered w-full"
+              />
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text">Q2 {formData.form_data.year}</span>
+              </div>
+              <input
+                type="text"
+                name="revenue_q2"
+                onChange={(e) => {
+                  handleOnChange(e, "Q2 Revenue");
+                }}
+                className="input input-bordered w-full"
+              />
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text">Q3 {formData.form_data.year}</span>
+              </div>
+              <input
+                type="text"
+                name="revenue_q3"
+                onChange={(e) => {
+                  handleOnChange(e, "Q3 Revenue");
+                }}
+                className="input input-bordered w-full"
+              />
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text">Q4 {formData.form_data.year}</span>
+              </div>
+              <input
+                type="text"
+                name="revenue_q4"
+                onChange={(e) => {
+                  handleOnChange(e, "Q4 Revenue");
+                }}
+                className="input input-bordered w-full"
+              />
+            </label>
+          </div>
 
           <div className="flex w-full my-2 justify-end">
             {formData.form_data.total_revenue != "" &&
@@ -472,19 +554,255 @@ const DocumentDrafting = () => {
               })}
             </select>
           </label>
+
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Officer Name</span>
+            </div>
+            <input
+              type="text"
+              className="input input-bordered w-full"
+              name="officer_name"
+              value={formData.form_data.officer_name}
+              onChange={(e) => {
+                handleOnChange(e, "Officer Name");
+              }}
+            />
+          </label>
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Officer Position</span>
+            </div>
+            <input
+              type="text"
+              className="input input-bordered w-full"
+              name="officer_position"
+              value={formData.form_data.officer_position}
+              onChange={(e) => {
+                handleOnChange(e, "Officer Position");
+              }}
+            />
+          </label>
         </div>
       </>
     );
+
     const SPA_form = (
       <>
-        <div className="my-5">SPA Form</div>
+        <div className="flex flex-col gap-2">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text">Year</span>
+              </div>
+              <input
+                type="text"
+                value={formData.form_data.year}
+                onChange={(e) => {
+                  handleOnChange(e, "Year");
+                }}
+                name="year"
+                className="input input-bordered w-full"
+              />
+            </label>
+          </div>
+
+          <div className="w-full">
+            <div className="form-control w-full">
+              <div className="flex flex-row justify-between my-2 items-end">
+                <span className="label-text">Appointees</span>
+                <button
+                  className="btn btn-outline btn-primary btn-sm"
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      form_data: {
+                        ...formData.form_data,
+                        appointees: [
+                          ...formData.form_data.appointees,
+                          appointeeState,
+                        ],
+                      },
+                    });
+                  }}
+                >
+                  Add row
+                </button>
+              </div>
+              <div className="flex flex-col gap-2">
+                {formData.form_data.appointees.map((appointee, index) => {
+                  return (
+                    <div
+                      key={`appointee-${index}`}
+                      className="flex flex-row gap-2 items-center"
+                    >
+                      <label className="form-control w-full">
+                        {index == 0 && (
+                          <div className="label font-bold">
+                            <span className="label-text">Name</span>
+                          </div>
+                        )}
+                        <input
+                          type="text"
+                          className="input input-bordered w-full"
+                          name="name"
+                          value={appointee.name}
+                          onChange={(e) => {
+                            handleOnChangeAppointees(e, index);
+                          }}
+                        />
+                      </label>
+
+                      <label className="form-control w-full">
+                        {index == 0 && (
+                          <div className="label font-bold">
+                            <span className="label-text line-clamp-1">
+                              ID Number
+                            </span>
+                          </div>
+                        )}
+                        <input
+                          type="text"
+                          className="input input-bordered w-full"
+                          name="id_no"
+                          value={appointee.id_no}
+                          onChange={(e) => {
+                            handleOnChangeAppointees(e, index);
+                          }}
+                        />
+                      </label>
+
+                      <label className="form-control w-full">
+                        {index == 0 && (
+                          <div className="label font-bold">
+                            <span className="label-text line-clamp-1">
+                              Date and Place Issued
+                            </span>
+                          </div>
+                        )}
+                        <input
+                          type="text"
+                          className="input input-bordered w-full"
+                          name="date_place_issued"
+                          value={appointee.date_place_issued}
+                          onChange={(e) => {
+                            handleOnChangeAppointees(e, index);
+                          }}
+                        />
+                      </label>
+
+                      <button
+                        className={`${index == 0 && "mt-8"} `}
+                        onClick={(e) => {
+                          const updatedAppointees =
+                            formData.form_data.appointees.filter(
+                              (_, _index) => index !== _index
+                            );
+
+                          setFormData({
+                            ...formData,
+                            form_data: {
+                              ...formData.form_data,
+                              appointees: updatedAppointees,
+                            },
+                          });
+                        }}
+                      >
+                        {removeIconSVG}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          <div className="divider">Signatory</div>
+
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Officer</span>
+            </div>
+            <select
+              className="select select-bordered"
+              name="officer"
+              onChange={(e) => {
+                let name = officers[e.target.value].name;
+                let position = officers[e.target.value].officer;
+
+                setFormData({
+                  ...formData,
+                  form_data: {
+                    ...formData.form_data,
+                    officer_name: name,
+                    officer_position: position,
+                  },
+                });
+              }}
+            >
+              {officers.map((officer, index) => {
+                const value = `${officer.name}-${officer.officer}`;
+                return (
+                  <option key={`officer-${index}`} value={index}>
+                    {value}
+                  </option>
+                );
+              })}
+            </select>
+          </label>
+
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Officer Name</span>
+            </div>
+            <input
+              type="text"
+              className="input input-bordered w-full"
+              name="officer_name"
+              value={formData.form_data.officer_name}
+              onChange={(e) => {
+                handleOnChange(e, "Officer Name");
+              }}
+            />
+          </label>
+
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Officer Position</span>
+            </div>
+            <input
+              type="text"
+              className="input input-bordered w-full"
+              name="officer_position"
+              value={formData.form_data.officer_position}
+              onChange={(e) => {
+                handleOnChange(e, "Officer Position");
+              }}
+            />
+          </label>
+
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Officer Nationality</span>
+            </div>
+            <input
+              type="text"
+              className="input input-bordered w-full"
+              name="officer_nationality"
+              value={formData.form_data.officer_nationality}
+              onChange={(e) => {
+                handleOnChange(e, "Officer Nationality");
+              }}
+            />
+          </label>
+        </div>
       </>
     );
 
     return (
       <>
         <dialog id="addDocumentModal" className="modal">
-          <div className="modal-box">
+          <div className="modal-box w-2/3 max-w-full">
             <div className="flex flex-row justify-between">
               <h3 className="font-bold text-lg">Add New Document</h3>
               <form method="dialog">
@@ -494,36 +812,41 @@ const DocumentDrafting = () => {
               </form>
             </div>
             <div className="flex flex-col">
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="label-text">Document Type</span>
-                </div>
-                <select
-                  className="select select-bordered"
-                  name="type"
-                  onChange={(e) => {
-                    handleOnChange(e, "Document Type");
-                  }}
-                >
-                  <option>Certificate of Gross Sales/Receipts</option>
-                  <option>Special Power of Attorney</option>
-                </select>
-              </label>
-
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="label-text">Document Type</span>
+                  </div>
+                  <select
+                    className="select select-bordered"
+                    name="type"
+                    onChange={(e) => {
+                      handleOnChange(e, "Document Type");
+                    }}
+                  >
+                    <option>Certificate of Gross Sales/Receipts</option>
+                    <option>SPA - Business Renewal</option>
+                  </select>
+                </label>
+              </div>
+              <div className="divider">{formData.form_data.type}</div>
               {formData.form_data.type ==
                 "Certificate of Gross Sales/Receipts" && CGR_form}
-              {formData.form_data.type == "Special Power of Attorney" &&
-                SPA_form}
+              {formData.form_data.type == "SPA - Business Renewal" && SPA_form}
 
-              <div className="flex flex-row justify-between mt-4">
-                <button
+              <div className="flex flex-row justify-end mt-4">
+                {/* <button
                   onClick={(e) => {
                     handleOnGenerate();
                   }}
                   className="btn btn-outline text-primary"
+                  disabled={isLoading}
                 >
+                  {isLoading && (
+                    <span className="loading loading-spinner"></span>
+                  )}
                   Generate
-                </button>
+                </button> */}
 
                 <button
                   onClick={(e) => {
@@ -542,36 +865,47 @@ const DocumentDrafting = () => {
   };
 
   const formDefault = () => {
-    let newFormData = { ...formData };
+    if (selectedCompany.companyId != "") {
+      let newFormData = { ...formData };
 
-    let new_form_data = { ...formData.form_data };
+      let new_form_data = { ...formData.form_data };
 
-    if (Object.keys(selectedCompany.latestGIS).length != 0) {
-      new_form_data.corporate_name = selectedCompany.latestGIS.corporate_name;
-      new_form_data.office_address =
-        selectedCompany.latestGIS.complete_principal_office_address;
+      if (Object.keys(selectedCompany.latestGIS).length != 0) {
+        new_form_data.corporate_name = selectedCompany.latestGIS.corporate_name;
+        new_form_data.office_address =
+          selectedCompany.latestGIS.complete_principal_office_address;
 
-      if (selectedCompany.latestGIS.directors_or_officers.length != 0) {
-        let officer = selectedCompany.latestGIS.directors_or_officers[0];
-        new_form_data.officer_name = officer.name;
-        new_form_data.officer_position = officer.officer;
+        if (selectedCompany.latestGIS.directors_or_officers.length != 0) {
+          let officer = selectedCompany.latestGIS.directors_or_officers[0];
+          new_form_data.officer_name = officer.name;
+          new_form_data.officer_position = officer.officer;
+          new_form_data.officer_nationality = officer.nationality;
+        }
+
+        let officers = selectedCompany.latestGIS.directors_or_officers.filter(
+          (officer) => officer.officer != "N/A"
+        );
+
+        setOfficers(officers);
       }
+      const name = `${currentUser.first_name} ${currentUser.last_name}`;
 
-      setOfficers(selectedCompany.latestGIS.directors_or_officers);
+      newFormData.modified_by = name;
+      newFormData.company_id = selectedCompany.companyId;
+
+      newFormData.form_data = new_form_data;
+
+      setFormData(newFormData);
     }
-
-    newFormData.form_data = new_form_data;
-
-    setFormData(newFormData);
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    formDefault();
+  }, [selectedCompany]);
 
   useEffect(() => {
-    if (selectedCompany.companyId != "") {
-      formDefault();
-    }
-  }, [selectedCompany]);
+    dispatch(fetchRecords(companyId));
+  }, []);
 
   return (
     <>

@@ -78,6 +78,10 @@ const MC28Form = () => {
 
       newFormData.form_data = new_form_data;
 
+      const name = `${currentUser.first_name} ${currentUser.last_name}`;
+
+      newFormData.modified_by = name;
+
       try {
         let response = await axios.post(`/mc28forms/${companyId}`, newFormData);
 

@@ -12,6 +12,7 @@ const ViewDocumentDrafting = () => {
   const dispatch = useDispatch();
   const [selectedStatus, setSelectedStatus] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const currentUser = useSelector((state) => state.user.user);
 
   const statuses = [
     "Drafted",
@@ -162,9 +163,11 @@ const ViewDocumentDrafting = () => {
   const handleOnGenerate = async () => {
     try {
       setIsLoading(true);
+
       let response = await axios.get("/document-drafting-generate", {
         params: {
-          formData: selectedRecord,
+          company_id: selectedRecord.company_id,
+          document_id: selectedRecord.document_id,
         },
       });
 

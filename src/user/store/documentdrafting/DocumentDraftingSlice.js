@@ -7,10 +7,22 @@ export const appointeeState = {
   date_place_issued: "",
 };
 
+export const stockholderState = {
+  name: "",
+  nationality: "",
+  no_of_subscribed_shares: "",
+  amount_of_subscribed_shares: "",
+  paidup_capital: "",
+  amount_of_paid_APIC: "",
+  total_amount_paid: "",
+};
+
 export const DocumentDraftingDataState = {
   type: "Certificate of Gross Sales/Receipts",
   corporate_name: "",
   office_address: "",
+
+  //CGR
   total_revenue: "",
   date_from: "",
   date_to: "",
@@ -19,9 +31,45 @@ export const DocumentDraftingDataState = {
   revenue_q2: "",
   revenue_q3: "",
   revenue_q4: "",
+
+  //Preemptive Rights
+  meeting_date: "",
+  meeting_place: "",
+  from: "",
+  from_divided_into: "",
+  from_par_value: "",
+  to: "",
+  to_divided_into: "",
+  to_par_value: "",
+
+  //List of Stockholders
+  as_of: "",
+  stockholders_data: [],
+
+  //For Authorization
+  // meeting_date: "",
+  resolutions: [
+    "RESOLVED, as it resolved that the Board of Directors hereby appoint {{name}}, {{position}} as the Point of Contact to transact, apply, submit, receive, sign for on behalf of the company in all Converge related transactions.",
+    "RESOLVED FURTHER, to authorize, negotiate, secure, claim and receive from the above stated agency any and all documents related to the above mentioned power. ",
+    "RESOLVED FINALLY, to authorize the above-named person/s to perform such other acts and to execute and sign any and all documents necessary to the accomplishment of the above mentioned authority.",
+  ],
+
+  //Signatory
   officer_name: "",
   officer_position: "",
   officer_nationality: "",
+
+  //Corporate Secretary
+  corp_sec: "",
+  corp_sec_address: "",
+
+  //Affidavit of Loss
+  list_items: [
+    "I am the registered Corporate Secretary of {{corporate_name}}, a company duly registered with the Security and Exchange Commissions under SEC Registration No. {{sec_registration_number}} and with TIN {{corporate_tin}}, with principal office address at {{complete_principal_office_address}};",
+    "That the said loss was discovered on or about {{last_dicovered_date}} and despite diligent efforts, we are unable to locate or recover the said {{missing_items}};",
+    "I am executing this affidavit to attest to the truth of the foregoing in order to secure a certified true copy of the documents required for updating the Corporation’s head office address from {{old_head_office}} to {{new_head_office}}.",
+  ],
+
   appointees: [appointeeState],
 };
 

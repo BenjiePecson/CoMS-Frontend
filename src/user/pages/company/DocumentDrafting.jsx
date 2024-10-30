@@ -9,9 +9,17 @@ import {
   appointeeState,
   fetchAllRecords,
   fetchRecords,
+  stockholderState,
 } from "../../store/documentdrafting/DocumentDraftingSlice";
 import moment from "moment";
 import Swal from "sweetalert2";
+import CGRForm from "./DocumentDrafting/forms/CGRForm";
+import SPAForm from "./DocumentDrafting/forms/SPAForm";
+import PreEmptiveRightsForm from "./DocumentDrafting/forms/PreEmptiveRightsForm";
+import NoDisputeForm from "./DocumentDrafting/forms/NoDisputeForm";
+import ListOfStockholdersForm from "./DocumentDrafting/forms/ListOfStockholdersForm";
+import ForAuthorizationForm from "./DocumentDrafting/forms/ForAuthorizationForm";
+import AffidavitForm from "./DocumentDrafting/forms/AffidavitForm";
 
 const DocumentDrafting = () => {
   const { companyId } = useParams();
@@ -30,6 +38,18 @@ const DocumentDrafting = () => {
   const [officers, setOfficers] = useState([]);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const [documents, setDocuments] = useState([
+    "Certificate of Gross Sales/Receipts",
+    "SPA - Business Renewal",
+    "SECCERT - Waiver of Preemptive Rights",
+    "SECCERT - No Dispute",
+    "SECCERT - List of Stockholders",
+    "SECCERT - For Authorization",
+    "Affidavit of Loss",
+  ]);
+
+  const [listOfStockholder, setlistOfStockholder] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -228,21 +248,6 @@ const DocumentDrafting = () => {
     },
   };
 
-  const removeIconSVG = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className="w-6 h-6 mx-auto text-[#ff5858]"
-    >
-      <path
-        fillRule="evenodd"
-        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-
   const openDialogAddForm = () => {
     document.getElementById("addDocumentModal").showModal();
   };
@@ -405,400 +410,6 @@ const DocumentDrafting = () => {
   };
 
   const dialogComponents = () => {
-    const CGR_form = (
-      <>
-        <div className="flex flex-col gap-2">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="label-text">Year</span>
-              </div>
-              <input
-                type="text"
-                value={formData.form_data.year}
-                onChange={(e) => {
-                  handleOnChange(e, "Year");
-                }}
-                name="year"
-                className="input input-bordered w-full"
-              />
-            </label>
-
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="label-text">Date From</span>
-              </div>
-              <input
-                type="date"
-                className="input input-bordered w-full"
-                name="date_from"
-                onChange={(e) => {
-                  handleOnChange(e, "Date From");
-                }}
-              />
-            </label>
-
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="label-text">Date To</span>
-              </div>
-              <input
-                type="date"
-                className="input input-bordered w-full"
-                name="date_to"
-                onChange={(e) => {
-                  handleOnChange(e, "Date To");
-                }}
-              />
-            </label>
-          </div>
-
-          <div className="divider">Revenue Generated</div>
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="label-text">Q1 {formData.form_data.year}</span>
-              </div>
-              <input
-                type="text"
-                name="revenue_q1"
-                onChange={(e) => {
-                  handleOnChange(e, "Q1 Revenue");
-                }}
-                className="input input-bordered w-full"
-              />
-            </label>
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="label-text">Q2 {formData.form_data.year}</span>
-              </div>
-              <input
-                type="text"
-                name="revenue_q2"
-                onChange={(e) => {
-                  handleOnChange(e, "Q2 Revenue");
-                }}
-                className="input input-bordered w-full"
-              />
-            </label>
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="label-text">Q3 {formData.form_data.year}</span>
-              </div>
-              <input
-                type="text"
-                name="revenue_q3"
-                onChange={(e) => {
-                  handleOnChange(e, "Q3 Revenue");
-                }}
-                className="input input-bordered w-full"
-              />
-            </label>
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="label-text">Q4 {formData.form_data.year}</span>
-              </div>
-              <input
-                type="text"
-                name="revenue_q4"
-                onChange={(e) => {
-                  handleOnChange(e, "Q4 Revenue");
-                }}
-                className="input input-bordered w-full"
-              />
-            </label>
-          </div>
-
-          <div className="flex w-full my-2 justify-end">
-            {formData.form_data.total_revenue != "" &&
-              formData.form_data.total_revenue != undefined && (
-                <span>
-                  <span className="font-bold">Total Revenue: </span>
-                  <span>
-                    Php {Number(formData.form_data.total_revenue).toFixed(2)}
-                  </span>
-                </span>
-              )}
-          </div>
-
-          <div className="divider">Signatory</div>
-
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">Officer</span>
-            </div>
-            <select
-              className="select select-bordered"
-              name="officer"
-              onChange={(e) => {
-                let name = officers[e.target.value].name;
-                let position = officers[e.target.value].officer;
-
-                setFormData({
-                  ...formData,
-                  form_data: {
-                    ...formData.form_data,
-                    officer_name: name,
-                    officer_position: position,
-                  },
-                });
-              }}
-            >
-              {officers.map((officer, index) => {
-                const value = `${officer.name}-${officer.officer}`;
-                return (
-                  <option key={`officer-${index}`} value={index}>
-                    {value}
-                  </option>
-                );
-              })}
-            </select>
-          </label>
-
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">Officer Name</span>
-            </div>
-            <input
-              type="text"
-              className="input input-bordered w-full"
-              name="officer_name"
-              value={formData.form_data.officer_name}
-              onChange={(e) => {
-                handleOnChange(e, "Officer Name");
-              }}
-            />
-          </label>
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">Officer Position</span>
-            </div>
-            <input
-              type="text"
-              className="input input-bordered w-full"
-              name="officer_position"
-              value={formData.form_data.officer_position}
-              onChange={(e) => {
-                handleOnChange(e, "Officer Position");
-              }}
-            />
-          </label>
-        </div>
-      </>
-    );
-
-    const SPA_form = (
-      <>
-        <div className="flex flex-col gap-2">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="label-text">Year</span>
-              </div>
-              <input
-                type="text"
-                value={formData.form_data.year}
-                onChange={(e) => {
-                  handleOnChange(e, "Year");
-                }}
-                name="year"
-                className="input input-bordered w-full"
-              />
-            </label>
-          </div>
-
-          <div className="w-full">
-            <div className="form-control w-full">
-              <div className="flex flex-row justify-between my-2 items-end">
-                <span className="label-text">Appointees</span>
-                <button
-                  className="btn btn-outline btn-primary btn-sm"
-                  onClick={() => {
-                    setFormData({
-                      ...formData,
-                      form_data: {
-                        ...formData.form_data,
-                        appointees: [
-                          ...formData.form_data.appointees,
-                          appointeeState,
-                        ],
-                      },
-                    });
-                  }}
-                >
-                  Add row
-                </button>
-              </div>
-              <div className="flex flex-col gap-2">
-                {formData.form_data.appointees.map((appointee, index) => {
-                  return (
-                    <div
-                      key={`appointee-${index}`}
-                      className="flex flex-row gap-2 items-center"
-                    >
-                      <label className="form-control w-full">
-                        {index == 0 && (
-                          <div className="label font-bold">
-                            <span className="label-text">Name</span>
-                          </div>
-                        )}
-                        <input
-                          type="text"
-                          className="input input-bordered w-full"
-                          name="name"
-                          value={appointee.name}
-                          onChange={(e) => {
-                            handleOnChangeAppointees(e, index);
-                          }}
-                        />
-                      </label>
-
-                      <label className="form-control w-full">
-                        {index == 0 && (
-                          <div className="label font-bold">
-                            <span className="label-text line-clamp-1">
-                              ID Number
-                            </span>
-                          </div>
-                        )}
-                        <input
-                          type="text"
-                          className="input input-bordered w-full"
-                          name="id_no"
-                          value={appointee.id_no}
-                          onChange={(e) => {
-                            handleOnChangeAppointees(e, index);
-                          }}
-                        />
-                      </label>
-
-                      <label className="form-control w-full">
-                        {index == 0 && (
-                          <div className="label font-bold">
-                            <span className="label-text line-clamp-1">
-                              Date and Place Issued
-                            </span>
-                          </div>
-                        )}
-                        <input
-                          type="text"
-                          className="input input-bordered w-full"
-                          name="date_place_issued"
-                          value={appointee.date_place_issued}
-                          onChange={(e) => {
-                            handleOnChangeAppointees(e, index);
-                          }}
-                        />
-                      </label>
-
-                      <button
-                        className={`${index == 0 && "mt-8"} `}
-                        onClick={(e) => {
-                          const updatedAppointees =
-                            formData.form_data.appointees.filter(
-                              (_, _index) => index !== _index
-                            );
-
-                          setFormData({
-                            ...formData,
-                            form_data: {
-                              ...formData.form_data,
-                              appointees: updatedAppointees,
-                            },
-                          });
-                        }}
-                      >
-                        {removeIconSVG}
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          <div className="divider">Signatory</div>
-
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">Officer</span>
-            </div>
-            <select
-              className="select select-bordered"
-              name="officer"
-              onChange={(e) => {
-                let name = officers[e.target.value].name;
-                let position = officers[e.target.value].officer;
-
-                setFormData({
-                  ...formData,
-                  form_data: {
-                    ...formData.form_data,
-                    officer_name: name,
-                    officer_position: position,
-                  },
-                });
-              }}
-            >
-              {officers.map((officer, index) => {
-                const value = `${officer.name}-${officer.officer}`;
-                return (
-                  <option key={`officer-${index}`} value={index}>
-                    {value}
-                  </option>
-                );
-              })}
-            </select>
-          </label>
-
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">Officer Name</span>
-            </div>
-            <input
-              type="text"
-              className="input input-bordered w-full"
-              name="officer_name"
-              value={formData.form_data.officer_name}
-              onChange={(e) => {
-                handleOnChange(e, "Officer Name");
-              }}
-            />
-          </label>
-
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">Officer Position</span>
-            </div>
-            <input
-              type="text"
-              className="input input-bordered w-full"
-              name="officer_position"
-              value={formData.form_data.officer_position}
-              onChange={(e) => {
-                handleOnChange(e, "Officer Position");
-              }}
-            />
-          </label>
-
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">Officer Nationality</span>
-            </div>
-            <input
-              type="text"
-              className="input input-bordered w-full"
-              name="officer_nationality"
-              value={formData.form_data.officer_nationality}
-              onChange={(e) => {
-                handleOnChange(e, "Officer Nationality");
-              }}
-            />
-          </label>
-        </div>
-      </>
-    );
-
     return (
       <>
         <dialog id="addDocumentModal" className="modal">
@@ -824,15 +435,80 @@ const DocumentDrafting = () => {
                       handleOnChange(e, "Document Type");
                     }}
                   >
-                    <option>Certificate of Gross Sales/Receipts</option>
-                    <option>SPA - Business Renewal</option>
+                    {documents.map((document, index) => {
+                      return (
+                        <option key={`document-${index}`}>{document}</option>
+                      );
+                    })}
                   </select>
                 </label>
               </div>
               <div className="divider">{formData.form_data.type}</div>
-              {formData.form_data.type ==
-                "Certificate of Gross Sales/Receipts" && CGR_form}
-              {formData.form_data.type == "SPA - Business Renewal" && SPA_form}
+              {formData.form_data.type == documents[0] && (
+                <CGRForm
+                  formData={formData}
+                  officers={officers}
+                  handleOnChange={(e) => {
+                    handleOnChange(e);
+                  }}
+                  setFormData={setFormData}
+                />
+              )}
+              {formData.form_data.type == documents[1] && (
+                <SPAForm
+                  formData={formData}
+                  officers={officers}
+                  setFormData={setFormData}
+                  handleOnChange={handleOnChange}
+                  handleOnChangeAppointees={handleOnChangeAppointees}
+                />
+              )}
+              {formData.form_data.type == documents[2] && (
+                <PreEmptiveRightsForm
+                  formData={formData}
+                  officers={officers}
+                  setFormData={setFormData}
+                  handleOnChange={handleOnChange}
+                  handleOnChangeAppointees={handleOnChangeAppointees}
+                />
+              )}
+              {formData.form_data.type == documents[3] && (
+                <NoDisputeForm
+                  formData={formData}
+                  officers={officers}
+                  setFormData={setFormData}
+                  handleOnChange={handleOnChange}
+                  handleOnChangeAppointees={handleOnChangeAppointees}
+                />
+              )}
+              {formData.form_data.type == documents[4] && (
+                <ListOfStockholdersForm
+                  formData={formData}
+                  officers={officers}
+                  setFormData={setFormData}
+                  handleOnChange={handleOnChange}
+                  handleOnChangeAppointees={handleOnChangeAppointees}
+                />
+              )}
+              {formData.form_data.type == documents[5] && (
+                <ForAuthorizationForm
+                  formData={formData}
+                  officers={officers}
+                  setFormData={setFormData}
+                  handleOnChange={handleOnChange}
+                  handleOnChangeAppointees={handleOnChangeAppointees}
+                />
+              )}
+
+              {formData.form_data.type == documents[6] && (
+                <AffidavitForm
+                  formData={formData}
+                  selectedCompany={selectedCompany}
+                  setFormData={setFormData}
+                  handleOnChange={handleOnChange}
+                  handleOnChangeAppointees={handleOnChangeAppointees}
+                />
+              )}
 
               <div className="flex flex-row justify-end mt-4">
                 {/* <button
@@ -883,8 +559,33 @@ const DocumentDrafting = () => {
         }
 
         let officers = selectedCompany.latestGIS.directors_or_officers.filter(
-          (officer) => officer.officer != "N/A"
+          (officer) => {
+            if (officer.officer.toLowerCase().includes("secretary")) {
+              new_form_data.corp_sec = officer.name;
+              new_form_data.corp_sec_address = officer.current_residual_address;
+            }
+            return officer.officer != "N/A";
+          }
         );
+
+        const stockholder =
+          selectedCompany.latestGIS.stock_holders_information.information.map(
+            (stockholder) => {
+              let setStockholder = {
+                ...stockholderState,
+                name: stockholder.name,
+                nationality: stockholder.nationality,
+                no_of_subscribed_shares: stockholder.number,
+                amount_of_subscribed_shares: stockholder.amount,
+                paidup_capital: stockholder.amount_paid,
+                amount_of_paid_APIC: "-",
+                total_amount_paid: stockholder.amount_paid,
+              };
+
+              return setStockholder;
+            }
+          );
+        new_form_data.stockholders_data = stockholder;
 
         setOfficers(officers);
       }

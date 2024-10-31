@@ -34,6 +34,8 @@ const ApproveComponent = () => {
 
   const [gdrivefolder, setgdrivefolder] = useState("");
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const approveSVG = (
     <svg
       // width="486"
@@ -538,7 +540,9 @@ const ApproveComponent = () => {
           </PDFDownloadLink> */}
           <button
             className="btn bg-primary text-white"
+            disabled={isLoading}
             onClick={async () => {
+              setIsLoading(true);
               try {
                 let response = await axios.get(
                   `/record/generate/${selectedRecord.recordId}`,
@@ -561,9 +565,14 @@ const ApproveComponent = () => {
                 }
               } catch (error) {
                 console.log(error);
+              }finally{
+                setIsLoading(false);
               }
             }}
           >
+            {isLoading && (
+              <span className="loading loading-spinner loading-sm"></span>
+            )}
             Generate GIS File
           </button>
           <button

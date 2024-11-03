@@ -33,8 +33,15 @@ import ViewNOMPage from "./user/pages/company/BoardMeetings/NoticeOfMeetings/Vie
 import AddSecCert from "./user/pages/company/BoardMeetings/SecretaryCertificate/AddSecCert";
 import ViewSecCert from "./user/pages/company/BoardMeetings/SecretaryCertificate/ViewSecCert";
 import MainDashboard from "./user/pages/user/MainDashboard";
+
 import BusinessRenewal from "./user/pages/company/BusinessRenewal";
 import Quote from "./user/pages/user/Quote";
+
+import MC28Form from "./user/pages/company/MC28Form";
+import ViewMC28Form from "./user/pages/company/MC28Form/view";
+import DocumentDrafting from "./user/pages/company/DocumentDrafting";
+import ViewDocumentDrafting from "./user/pages/company/DocumentDrafting/view";
+
 
 // axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
@@ -76,6 +83,19 @@ function App() {
             <Route
               path="company/:companyId/gis-tracker"
               element={<GISTracker />}
+            />
+            <Route path="company/:companyId/MC28Form" element={<MC28Form />} />
+            <Route
+              path="company/:companyId/mc28form/view/:form_id?"
+              element={<ViewMC28Form />}
+            />
+            <Route
+              path="company/:companyId/document-drafting"
+              element={<DocumentDrafting />}
+            />
+            <Route
+              path="company/:companyId/document-drafting/view/:document_id?"
+              element={<ViewDocumentDrafting />}
             />
             <Route
               path="company/:companyId/gis-tracker/create/:recordId?"

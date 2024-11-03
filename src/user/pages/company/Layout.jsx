@@ -22,6 +22,8 @@ const Layout = () => {
   const [filteredCompany, setFilteredCompany] = useState(companies);
   const [search, setSearch] = useState("");
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const dispatch = useDispatch();
 
   const loading = (
@@ -59,6 +61,18 @@ const Layout = () => {
         d="M18.3914 0.06704C20.1914 -0.045459 21.9664 0.579535 23.3039 1.80452C24.5289 3.14201 25.1539 4.917 25.0539 6.72948V18.4044C25.1664 20.2169 24.5289 21.9918 23.3164 23.3293C21.9789 24.5543 20.1914 25.1793 18.3914 25.0668H6.71644C4.90394 25.1793 3.12895 24.5543 1.79145 23.3293C0.566448 21.9918 -0.0585518 20.2169 0.053948 18.4044V6.72948C-0.0585518 4.917 0.566448 3.14201 1.79145 1.80452C3.12895 0.579535 4.90394 -0.045459 6.71644 0.06704H18.3914ZM18.0664 5.77949C17.2914 5.0045 16.0414 5.0045 15.2664 5.77949L14.4289 6.62948C14.3039 6.75448 14.3039 6.96698 14.4289 7.09198C14.4289 7.09198 14.4535 7.11636 14.4971 7.15977L14.8046 7.46556C14.9825 7.64251 15.2045 7.8635 15.4274 8.08572L16.1833 8.84124C16.341 8.99968 16.4456 9.10585 16.4539 9.11696C16.5914 9.26696 16.6789 9.46696 16.6789 9.69195C16.6789 10.1419 16.3164 10.5169 15.8539 10.5169C15.6414 10.5169 15.4414 10.4294 15.3039 10.2919L13.2164 8.21697C13.1164 8.11697 12.9414 8.11697 12.8414 8.21697L6.87894 14.1794C6.46644 14.5919 6.22894 15.1419 6.21644 15.7294L6.14144 18.6919C6.14144 18.8544 6.19144 19.0044 6.30394 19.1169C6.41644 19.2294 6.56644 19.2919 6.72894 19.2919H9.66644C10.2664 19.2919 10.8414 19.0544 11.2789 18.6294L19.6914 10.1919C20.4539 9.41696 20.4539 8.16697 19.6914 7.40447L18.0664 5.77949Z"
         fill="white"
       />
+    </svg>
+  );
+
+  const documentDraftingIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className="size-6"
+    >
+      <path d="M7.5 3.375c0-1.036.84-1.875 1.875-1.875h.375a3.75 3.75 0 0 1 3.75 3.75v1.875C13.5 8.161 14.34 9 15.375 9h1.875A3.75 3.75 0 0 1 21 12.75v3.375C21 17.16 20.16 18 19.125 18h-9.75A1.875 1.875 0 0 1 7.5 16.125V3.375Z" />
+      <path d="M15 5.25a5.23 5.23 0 0 0-1.279-3.434 9.768 9.768 0 0 1 6.963 6.963A5.23 5.23 0 0 0 17.25 7.5h-1.875A.375.375 0 0 1 15 7.125V5.25ZM4.875 6H6v10.125A3.375 3.375 0 0 0 9.375 19.5H16.5v1.125c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 0 1 3 20.625V7.875C3 6.839 3.84 6 4.875 6Z" />
     </svg>
   );
 
@@ -148,6 +162,21 @@ const Layout = () => {
         fillRule="evenodd"
         d="M11.03 3.97a.75.75 0 0 1 0 1.06l-6.22 6.22H21a.75.75 0 0 1 0 1.5H4.81l6.22 6.22a.75.75 0 1 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 0Z"
         clipRule="evenodd"
+      />
+    </svg>
+  );
+
+  const companyIcon = (
+    <svg
+      width="23"
+      height="26"
+      viewBox="0 0 23 26"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M16.7981 0.115601C20.6634 0.115601 22.8156 2.34288 22.8156 6.15929V19.085C22.8156 22.964 20.6634 25.1412 16.7981 25.1412H6.31115C2.50725 25.1412 0.29248 22.964 0.29248 19.085V6.15929C0.29248 2.34288 2.50725 0.115601 6.31115 0.115601H16.7981ZM6.64899 17.3082C6.27361 17.2707 5.91074 17.4459 5.71053 17.7712C5.51033 18.084 5.51033 18.4969 5.71053 18.8223C5.91074 19.1351 6.27361 19.3228 6.64899 19.2727H16.459C16.9583 19.2227 17.3349 18.796 17.3349 18.2967C17.3349 17.7837 16.9583 17.3583 16.459 17.3082H6.64899ZM16.459 11.6011H6.64899C6.10969 11.6011 5.67299 12.0403 5.67299 12.5784C5.67299 13.1164 6.10969 13.5544 6.64899 13.5544H16.459C16.9971 13.5544 17.435 13.1164 17.435 12.5784C17.435 12.0403 16.9971 11.6011 16.459 11.6011ZM10.3891 5.93406H6.64899V5.94657C6.10969 5.94657 5.67299 6.38452 5.67299 6.92257C5.67299 7.46063 6.10969 7.89857 6.64899 7.89857H10.3891C10.9284 7.89857 11.3663 7.46063 11.3663 6.90881C11.3663 6.37201 10.9284 5.93406 10.3891 5.93406Z"
+        fill="#EFF2F4"
       />
     </svg>
   );
@@ -438,6 +467,25 @@ const Layout = () => {
 
                     <Link
                       className={`flex flex-row hover:bg-[#667A8A] h-[45px] rounded-[3px] items-center my-1 ${
+                        active === "MC28Form" ? "bg-[#667A8A]" : ""
+                      } ${
+                        active === "MC28Form"
+                          ? "poppins-semibold"
+                          : "poppins-regular"
+                      } text-white`}
+                      to={`/company/${companyId}/MC28Form`}
+                      onClick={() => {
+                        setActive("MC28Form");
+                      }}
+                    >
+                      <div className="flex flex-row px-4 items-center">
+                        <div className="pr-4">{companyIcon}</div>
+                        <h1 className="text-white">MC28 Form</h1>
+                      </div>
+                    </Link>
+
+                    <Link
+                      className={`flex flex-row hover:bg-[#667A8A] h-[45px] rounded-[3px] items-center my-1 ${
                         active === "gis-tracker" ? "bg-[#667A8A]" : ""
                       } ${
                         active === "gis-tracker"
@@ -454,6 +502,26 @@ const Layout = () => {
                         <h1 className="text-white">GIS Tracker</h1>
                       </div>
                     </Link>
+
+                    <Link
+                      className={`flex flex-row hover:bg-[#667A8A] h-[45px] rounded-[3px] items-center my-1 ${
+                        active === "document-drafting" ? "bg-[#667A8A]" : ""
+                      } ${
+                        active === "document-drafting"
+                          ? "poppins-semibold"
+                          : "poppins-regular"
+                      } text-white`}
+                      to={`/company/${companyId}/document-drafting`}
+                      onClick={() => {
+                        setActive("document-drafting");
+                      }}
+                    >
+                      <div className="flex flex-row px-4 items-center">
+                        <div className="pr-4">{documentDraftingIcon}</div>
+                        <h1 className="text-white">Document Drafting</h1>
+                      </div>
+                    </Link>
+
                     <li>
                       <details open>
                         <summary className="h-[45px] my-1 flex flex-row justify-between items-center">
@@ -851,6 +919,8 @@ const Layout = () => {
       dispatch(fetchUser(token));
       dispatch(fetchCompany(companyId));
       dispatch(fetchCompanies());
+
+      setIsLoading(false);
     }
   }, []);
 
@@ -875,11 +945,13 @@ const Layout = () => {
   return (
     <>
       {/* {content} */}
-      {status === "pending"
+      {/* {status === "pending"
         ? loading
         : status === "rejected"
         ? companyNotFound
-        : content}
+        : content} */}
+
+      {isLoading ? loading : content}
     </>
   );
 };

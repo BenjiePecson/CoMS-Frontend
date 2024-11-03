@@ -33,10 +33,15 @@ import ViewNOMPage from "./user/pages/company/BoardMeetings/NoticeOfMeetings/Vie
 import AddSecCert from "./user/pages/company/BoardMeetings/SecretaryCertificate/AddSecCert";
 import ViewSecCert from "./user/pages/company/BoardMeetings/SecretaryCertificate/ViewSecCert";
 import MainDashboard from "./user/pages/user/MainDashboard";
+
+import BusinessRenewal from "./user/pages/company/BusinessRenewal";
+import Quote from "./user/pages/user/Quote";
+
 import MC28Form from "./user/pages/company/MC28Form";
 import ViewMC28Form from "./user/pages/company/MC28Form/view";
 import DocumentDrafting from "./user/pages/company/DocumentDrafting";
 import ViewDocumentDrafting from "./user/pages/company/DocumentDrafting/view";
+
 
 // axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
@@ -64,6 +69,7 @@ function App() {
           <Route element={<CompanyLayout />}>
             <Route path="/" element={<MainDashboard />} />
             <Route path="/company" element={<SelectCompany />} />
+            <Route path="/quote" element={<Quote />} />
             <Route path="/users" element={<UsersPage />} />
             <Route path="/users-task" element={<UserDashboard />} />
             <Route path="/roles" element={<RolesPage />} />
@@ -137,6 +143,10 @@ function App() {
             />
 
             <Route path="company/:companyId/tasks" element={<Tasks />} />
+            <Route
+              path="company/:companyId/businessRenewalPermit"
+              element={<BusinessRenewal />}
+            />
             <Route
               path="company/:companyId/settings"
               element={<CompanySetting />}

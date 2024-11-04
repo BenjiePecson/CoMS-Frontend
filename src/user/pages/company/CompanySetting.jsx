@@ -187,16 +187,16 @@ const AccordionComponent = () => {
   const column = [
     {
       name: "Complete Name (Surname, Given Name, Middle Name, Name Extension (i.e., Jr., Sr., III)",
-      selector: (row) =>
+      cell: (row) =>
         `${row.surname}, ${row.given_name} ${row.middle_name} ${row.ext_name}`,
     },
     {
       name: "Address",
-      selector: (row) => row.address,
+      cell: (row) => row.address,
     },
     {
       name: "Nationality",
-      selector: (row) => row.nationality,
+      cell: (row) => row.nationality,
     },
     {
       name: "Actions",
@@ -287,9 +287,9 @@ const AccordionComponent = () => {
     ),
     content: (
       <>
-        <div className="w-full overflow-auto">
-          <div className="flex flex-col gap-3 w-full">
-            <div className="flex flex-row justify-end w-full">
+        <div className="flex flex-col items-center">
+          <div className="grid grid-cols-1 gap-2">
+            <div className="flex justify-end">
               <button
                 className="btn bg-primary text-white"
                 onClick={() => {
@@ -308,16 +308,93 @@ const AccordionComponent = () => {
                 Add
               </button>
             </div>
+            <DataTable columns={column} data={listOfIndividuals}></DataTable>
 
-            <div className="overflow-x-auto">
-              <div>
-                <DataTable
-                  columns={column}
-                  data={listOfIndividuals}
-                  persistTableHead
-                ></DataTable>
-              </div>
-            </div>
+            {/* <table className="table">
+                <thead>
+                  <tr>
+                    <th>Complete Name</th>
+                    <th>Address</th>
+                    <th className="hidden sm:flex">Nationality</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {listOfIndividuals.map((row) => {
+                    const editSVG = (
+                      <svg
+                        width="44"
+                        height="37"
+                        viewBox="0 0 44 37"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <rect width="44" height="37" rx="10" fill="#273069" />
+                        <path
+                          d="M15 26H30M22.6849 13.357L25.042 11L29.1667 15.1248L26.8097 17.4818M22.6849 13.357L18.0127 18.0292C17.8564 18.1855 17.7686 18.3975 17.7686 18.6185V22.398H21.5483C21.7693 22.398 21.9812 22.3103 22.1375 22.154L26.8097 17.4818M22.6849 13.357L26.8097 17.4818"
+                          stroke="white"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    );
+                    const deleteSVG = (
+                      <svg
+                        width="44"
+                        height="37"
+                        viewBox="0 0 44 37"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <rect width="44" height="37" rx="10" fill="#CF0404" />
+                        <path
+                          d="M28.3333 17.667V25.5003C28.3333 25.7765 28.1095 26.0003 27.8333 26.0003H17.1667C16.8905 26.0003 16.6667 25.7765 16.6667 25.5003V17.667M20.8333 22.667V17.667M24.1667 22.667V17.667M30 14.3333H25.8333M25.8333 14.3333V11.5C25.8333 11.2239 25.6095 11 25.3333 11H19.6667C19.3905 11 19.1667 11.2239 19.1667 11.5V14.3333M25.8333 14.3333H19.1667M15 14.3333H19.1667"
+                          stroke="white"
+                          strokeWidth="1.95694"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    );
+
+                    const actions = (
+                      <div className="flex flex-row gap-2 items-center">
+                        <div
+                          className="cursor-pointer"
+                          onClick={() => {
+                            const { created_at, updated_at, ...newRow } = row;
+                            setIndividualForm(newRow);
+                            document
+                              .getElementById("editIndividualModal")
+                              .showModal();
+                          }}
+                        >
+                          {editSVG}
+                        </div>
+
+                        <div
+                          className="cursor-pointer"
+                          onClick={() => {
+                            toggleDelete(row.individuals_id);
+                          }}
+                        >
+                          {deleteSVG}
+                        </div>
+                      </div>
+                    );
+
+                    return (
+                      <tr>
+                        <td>{`${row.surname}, ${row.given_name} ${row.middle_name} ${row.ext_name}`}</td>
+                        <td>{row.address}</td>
+                        <td className="hidden sm:flex">{row.nationality}</td>
+                        <td>{actions}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table> */}
           </div>
         </div>
       </>

@@ -79,20 +79,22 @@ function Completed() {
     );
 
     return (
-        <div className="card bg-base-100 w-50 shadow-xl m-2">
-            <div className="card-body cursor-pointer" onClick={handleOpenModal}>
-                <h2 className="card-title text-center">Completed</h2>
-                <p className="text-center text-lg">{completed.length}</p>
+        <div className="card bg-blue-900 w-50 h-5/6 shadow-xl m-2 border border-white rounded-2xl">
+            <div className="cursor-pointer h-full p-4" onClick={handleOpenModal}>
+                <h2 className="text-center text-white font-semibold">Completed</h2>
+                <p className="text-center text-white text-sm">{completed.length}</p>
             </div>
 
             <dialog id="completed" className="modal">
+                {/* <button className="btn" onClick={handleCloseModal}>Close</button> */}
                 <div className="modal-box w-11/12 max-w-5xl">
                     <h3 className="font-bold text-lg">List of 'Completed'</h3>
                     {tableComponent}
-                    <div className="modal-action">
-                        <button className="btn" onClick={handleCloseModal}>Close</button>
-                    </div>
                 </div>
+
+                <form method="dialog" className="modal-backdrop cursor-pointer bg-blue-900 opacity-40">
+                    <button>close</button>
+                </form>
             </dialog>
         </div>
     );

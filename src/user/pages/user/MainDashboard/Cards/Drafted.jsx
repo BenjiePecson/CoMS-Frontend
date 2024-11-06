@@ -2,24 +2,24 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-function RoutedforSignature() {
+function Drafted() {
     const handleOpenModal = () => {
-        document.getElementById('routed').showModal();
+        document.getElementById('drafted').showModal();
     };
 
     const handleCloseModal = () => {
-        document.getElementById('routed').close();
+        document.getElementById('drafted').close();
     };
 
-    const [routed, setRouted] = useState([]);
+    const [drafted, setDrafted] = useState([]);
 
-    const fetchRouted = async () => {
+    const fetchDrafted = async () => {
         let response = await axios.get("/main-dashboard/");
-        setRouted(response.data.routed);
+        setDrafted(response.data.drafted);
     }
 
     useEffect(() => {
-        fetchRouted();
+        fetchDrafted();
     }, []);
 
     const tableComponent = (
@@ -34,8 +34,8 @@ function RoutedforSignature() {
                     </tr>
                 </thead>
                 <tbody>
-                    {routed.length !== 0 ? (
-                        routed.map((record) => {
+                    {drafted.length !== 0 ? (
+                        drafted.map((record) => {
                             return (
                                 <tr key={record.recordId}>
                                     <td>{record.recordName}</td>
@@ -79,23 +79,26 @@ function RoutedforSignature() {
     );
 
     return (
-        <div className="card bg-base-100 w-50 shadow-xl m-2">
-            <div className="card-body cursor-pointer" onClick={handleOpenModal}>
-                <h2 className="card-title text-center">Routed for Signature</h2>
-                <p className="text-center text-lg">{routed.length}</p>
+        <div className="bg-blue-900 h-5/6 w-50 shadow-xl m-2 border border-white rounded-2xl">
+
+            <div className="cursor-pointer h-full p-4" onClick={handleOpenModal}>
+                <h2 className="text-center text-white font-semibold">Drafted</h2>
+                <p className="text-center text-white text-sm">{drafted.length}</p>
             </div>
 
-            <dialog id="routed" className="modal">
+            <dialog id="drafted" className="modal">
+                {/* <button className="btn" onClick={handleCloseModal}>Close</button> */}
                 <div className="modal-box w-11/12 max-w-5xl">
-                    <h3 className="font-bold text-lg">List of 'Routed for Signature'</h3>
+                    <h3 className="font-bold text-lg">List of 'Drafted'</h3>
                     {tableComponent}
-                    <div className="modal-action">
-                        <button className="btn" onClick={handleCloseModal}>Close</button>
-                    </div>
                 </div>
+
+                <form method="dialog" className="modal-backdrop cursor-pointer bg-blue-900 opacity-40">
+                    <button>close</button>
+                </form>
             </dialog>
         </div>
     );
 };
 
-export default RoutedforSignature;
+export default Drafted;

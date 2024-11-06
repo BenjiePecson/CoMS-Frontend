@@ -2,24 +2,24 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-function FiledwithSEC() {
+function Approved() {
     const handleOpenModal = () => {
-        document.getElementById('filed').showModal();
+        document.getElementById('approved').showModal();
     };
 
     const handleCloseModal = () => {
-        document.getElementById('filed').close();
+        document.getElementById('approved').close();
     };
 
-    const [filed, setFiled] = useState([]);
+    const [approved, setApproved] = useState([]);
 
-    const fetchFiled = async () => {
+    const fetchApproved = async () => {
         let response = await axios.get("/main-dashboard/");
-        setFiled(response.data.filed);
+        setApproved(response.data.approved);
     }
 
     useEffect(() => {
-        fetchFiled();
+        fetchApproved();
     }, []);
 
     const tableComponent = (
@@ -34,8 +34,8 @@ function FiledwithSEC() {
                     </tr>
                 </thead>
                 <tbody>
-                    {filed.length !== 0 ? (
-                        filed.map((record) => {
+                    {approved.length !== 0 ? (
+                        approved.map((record) => {
                             return (
                                 <tr key={record.recordId}>
                                     <td>{record.recordName}</td>
@@ -79,23 +79,25 @@ function FiledwithSEC() {
     );
 
     return (
-        <div className="card bg-base-100 w-50 shadow-xl m-2">
-            <div className="card-body cursor-pointer" onClick={handleOpenModal}>
-                <h2 className="card-title text-center">Filed with SEC</h2>
-                <p className="text-center text-lg">{filed.length}</p>
+        <div className="bg-blue-900 w-50 h-5/6 shadow-xl m-2 border border-white rounded-2xl">
+            <div className="cursor-pointer h-full p-4" onClick={handleOpenModal}>
+                <h2 className="text-center text-white font-semibold">Approved</h2>
+                <p className="text-center text-white text-sm">{approved.length}</p>
             </div>
 
-            <dialog id="filed" className="modal">
+            <dialog id="approved" className="modal">
+            {/* <button className="btn" onClick={handleCloseModal}>Close</button> */}
                 <div className="modal-box w-11/12 max-w-5xl">
-                    <h3 className="font-bold text-lg">List of 'Filed with SEC'</h3>
+                    <h3 className="font-bold text-lg">List of 'For Approved'</h3>
                     {tableComponent}
-                    <div className="modal-action">
-                        <button className="btn" onClick={handleCloseModal}>Close</button>
-                    </div>
                 </div>
+
+                <form method="dialog" className="modal-backdrop cursor-pointer bg-blue-900 opacity-40">
+                    <button>close</button>
+                </form>
             </dialog>
         </div>
     );
 };
 
-export default FiledwithSEC;
+export default Approved;

@@ -2,24 +2,24 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-function PendingforApproval() {
+function RoutedforSignature() {
     const handleOpenModal = () => {
-        document.getElementById('pending').showModal();
+        document.getElementById('routed').showModal();
     };
 
     const handleCloseModal = () => {
-        document.getElementById('pending').close();
+        document.getElementById('routed').close();
     };
 
-    const [pending, setPending] = useState([]);
+    const [routed, setRouted] = useState([]);
 
-    const fetchPending = async () => {
+    const fetchRouted = async () => {
         let response = await axios.get("/main-dashboard/");
-        setPending(response.data.pending);
+        setRouted(response.data.routed);
     }
 
     useEffect(() => {
-        fetchPending();
+        fetchRouted();
     }, []);
 
     const tableComponent = (
@@ -34,8 +34,8 @@ function PendingforApproval() {
                     </tr>
                 </thead>
                 <tbody>
-                    {pending.length !== 0 ? (
-                        pending.map((record) => {
+                    {routed.length !== 0 ? (
+                        routed.map((record) => {
                             return (
                                 <tr key={record.recordId}>
                                     <td>{record.recordName}</td>
@@ -79,23 +79,25 @@ function PendingforApproval() {
     );
 
     return (
-        <div className="card bg-base-100 w-50 shadow-xl m-2 align-middle">
-            <div className="card-body cursor-pointer" onClick={handleOpenModal}>
-                <h2 className="card-title text-center">Pending for Approval</h2>
-                <p className="text-center text-lg">{pending.length}</p>
+        <div className="bg-blue-900 w-50 h-5/6 shadow-xl m-2 border border-white rounded-2xl">
+            <div className="cursor-pointer h-full p-4" onClick={handleOpenModal}>
+                <h2 className="text-center text-white font-semibold">Routed for Signature</h2>
+                <p className="text-center text-white text-sm">{routed.length}</p>
             </div>
 
-            <dialog id="pending" className="modal">
+            <dialog id="routed" className="modal">
+                {/* <button className="btn" onClick={handleCloseModal}>Close</button> */}
                 <div className="modal-box w-11/12 max-w-5xl">
-                    <h3 className="font-bold text-lg">List of 'Pending for Approval'</h3>
+                    <h3 className="font-bold text-lg">List of 'Routed for Signature'</h3>
                     {tableComponent}
-                    <div className="modal-action">
-                        <button className="btn" onClick={handleCloseModal}>Close</button>
-                    </div>
                 </div>
+
+                <form method="dialog" className="modal-backdrop cursor-pointer bg-blue-900 opacity-40">
+                    <button>close</button>
+                </form>
             </dialog>
         </div>
     );
 };
 
-export default PendingforApproval;
+export default RoutedforSignature;

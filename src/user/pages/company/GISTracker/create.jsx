@@ -1048,7 +1048,15 @@ const create = () => {
               {step === 2 && <Step2 />}
               {step === 3 && <Step3 />}
               {step === 4 && <Step4 />}
-              {step === 5 && <Step5 />}
+              {/* {step === 5 && <Step5 />} */}
+              {step === 5 && (
+                <>
+                  <div className="min-h-40 justify-center flex items-center">
+                    Next
+                  </div>
+                </>
+              )}
+
               {step === 6 && <Step6 />}
               {step === 7 && <Step7 />}
             </div>

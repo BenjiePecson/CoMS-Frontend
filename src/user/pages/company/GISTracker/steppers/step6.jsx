@@ -8,6 +8,7 @@ import {
 } from "../../../../store/GIS/GISFormSlice";
 import InputComponent from "../../../../components/InputComponent";
 import DataTable, { createTheme } from "react-data-table-component";
+import moment from "moment";
 
 const step6 = () => {
   const formData = useSelector((state) => state.formGIS.formData);
@@ -33,7 +34,11 @@ const step6 = () => {
     },
     {
       name: "Date of Birth",
-      selector: (row) => row.date_of_birth,
+      selector: (row) => {
+        let dateOfBirth = row.date_of_birth;
+
+        return moment(dateOfBirth).format("MMMM DD, YYYY");
+      },
     },
     {
       name: "Tax Identification Number",
@@ -103,7 +108,7 @@ const step6 = () => {
       cell: (row, rowIndex) => {
         return (
           <InputComponent
-            type={"text"}
+            type={"date"}
             value={row.date_of_birth}
             name={"date_of_birth"}
             rowIndex={rowIndex}
@@ -247,57 +252,58 @@ const step6 = () => {
 
   return (
     <>
-      <div className="flex flex-row justify-between items-center">
-        <h1 className="poppins-semibold text-[15px] text-black"></h1>
-        <button
-          className="btn btn-outline btn-primary btn-sm"
-          onClick={(e) => {
-            setBeneficialOwnershipDeclaration(
-              formData.beneficial_ownership_declaration
-            );
-            document
-              .getElementById("beneficialOwnershipDeclarationTable")
-              .showModal();
-          }}
-        >
-          {editSVG} Update Details
-        </button>
-      </div>
-      <div className="p-5 max-w-sm">
-        <label className="form-control w-full">
-          <div className="label text-start">
-            <span className="label-text">
-              Corporate Secretary <span className="text-red-500">*</span>
-            </span>
-          </div>
-          <input
-            type="text"
-            placeholder=""
-            className="input input-bordered w-full input-sm"
-            name="corporate_secretary"
-            value={formData.corporate_secretary}
-            disabled={true}
-            onChange={(e) => {
-              handleOnChange(e);
+      <div className="flex flex-col">
+        <div className="flex flex-row items-center justify-end">
+          <button
+            className="btn btn-outline btn-sm"
+            onClick={(e) => {
+              setBeneficialOwnershipDeclaration(
+                formData.beneficial_ownership_declaration
+              );
+              document
+                .getElementById("beneficialOwnershipDeclarationTable")
+                .showModal();
             }}
-          />
-        </label>
-      </div>
+          >
+            Update Details
+          </button>
+        </div>
 
-      {/* Beneficial Ownership Declaration */}
-      <div className="w-full p-5">
-        <div className="flex flex-col gap-5">
-          <div className="flex flex-row justify-between items-center">
-            <h1 className="poppins-semibold text-[15px] text-black">
-              Beneficial Ownership Declaration
-            </h1>
+        <div className="grid grid-cols-1 w-full">
+          <div className="grid grid-cols-1 w-full gap-5">
+            <div className="max-w-sm">
+              <label className="form-control w-full">
+                <div className="label text-start">
+                  <span className="label-text">
+                    Corporate Secretary <span className="text-red-500">*</span>
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  placeholder=""
+                  className="input input-bordered w-full input-sm"
+                  name="corporate_secretary"
+                  value={formData.corporate_secretary}
+                  disabled={true}
+                  onChange={(e) => {
+                    handleOnChange(e);
+                  }}
+                />
+              </label>
+            </div>
+
+            {/* Beneficial Ownership Declaration */}
+            <div className="w-full">
+              <div className="flex flex-col">
+                <DataTable
+                  customStyles={tableCustomStyles}
+                  columns={beneficialOwnershipDeclarationColumn}
+                  data={formData.beneficial_ownership_declaration}
+                  persistTableHead={true}
+                />
+              </div>
+            </div>
           </div>
-          <DataTable
-            customStyles={tableCustomStyles}
-            columns={beneficialOwnershipDeclarationColumn}
-            data={formData.beneficial_ownership_declaration}
-            persistTableHead={true}
-          />
         </div>
       </div>
 
@@ -338,7 +344,7 @@ const step6 = () => {
                 Beneficial Ownership Declaration
               </h1>
               <button
-                className="btn btn-outline btn-primary btn-sm"
+                className="btn btn-outline btn-sm"
                 onClick={(e) => {
                   setBeneficialOwnershipDeclaration([
                     ...beneficialOwnershipDeclaration,
@@ -383,7 +389,7 @@ const step6 = () => {
                   .getElementById("beneficialOwnershipDeclarationTable")
                   .close();
               }}
-              className="btn btn-primary"
+              className="btn bg-primary text-white"
             >
               Save
             </button>

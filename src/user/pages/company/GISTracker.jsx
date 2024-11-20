@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import {
   deleteRecord,
@@ -26,6 +26,7 @@ const GISTracker = () => {
   const selectedCompany = useSelector((state) => state.company.selectedCompany);
   const record = useSelector((state) => state.records.record);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [errors, setErrors] = useState([]);
   const [isPending, setIsPending] = useState(true);
@@ -336,7 +337,7 @@ const GISTracker = () => {
               setSelectedIndex(null);
             }}
           >
-            <div>{row.recordName}</div>
+            <div className="">{row.recordName}</div>
             <div className={`${selectedIndex == rowIndex ? "" : "hidden"}`}>
               {btnRename}
             </div>
@@ -344,7 +345,8 @@ const GISTracker = () => {
         );
       },
       sortable: true,
-      width: "30%",
+      minWidth: "320px",
+      maxWidth: "320px",
     },
     {
       name: "Date Received",
@@ -356,27 +358,28 @@ const GISTracker = () => {
         return moment(row.date_filed).format("MM/DD/YYYY");
       },
       sortable: true,
+      minWidth: "150px",
+      maxWidth: "150px",
     },
     {
       name: "Status",
       selector: (row) => row.status,
       sortable: true,
+      minWidth: "150px",
+      maxWidth: "150px",
     },
     {
       name: "Type of Meeting",
+      minWidth: "150px",
+      maxWidth: "150px",
       selector: (row) =>
         row.draftingInput.isSpecialMeeting ? "Special" : "Annual",
       sortable: true,
     },
     {
       name: "Last Modified",
-      // selector: (row) => {
-      //   return row.draftingInput.isSpecialMeeting != undefined
-      //     ? row.draftingInput.isSpecialMeeting
-      //       ? "Special"
-      //       : "Annual"
-      //     : "";
-      // },
+      minWidth: "150px",
+      maxWidth: "150px",
       cell: (row) => {
         let modified_by = "";
         let date_modified = "";
@@ -422,6 +425,8 @@ const GISTracker = () => {
     },
     {
       name: "Actions",
+      minWidth: "150px",
+      maxWidth: "150px",
       cell: (row) => {
         let goto = "view";
         if (row.status === "Saved as Draft" || row.status === "Reverted") {
@@ -429,12 +434,6 @@ const GISTracker = () => {
         }
 
         let showGDrive = false;
-
-        // Object.values(row.gdrivefolders).map((folder) => {
-        //   if (folder != "") {
-        //     showGDrive = true;
-        //   }
-        // });
 
         if (
           row.folder_id != "" &&
@@ -445,54 +444,55 @@ const GISTracker = () => {
         }
 
         return (
-          <div className="flex flex-row  gap-2 items-center justify-end w-full">
-            {showGDrive && (
-              <img
-                src={gdriveIcon}
-                alt=""
-                className="cursor-pointer"
+          <>
+            <div className="grid grid-cols-3 grid-rows-1 gap-1 items-center h-full">
+              {showGDrive && (
+                <img
+                  src={gdriveIcon}
+                  alt=""
+                  className="cursor-pointer w-full"
+                  onClick={() => {
+                    setRecordData(row);
+                    document.getElementById("gdrive").showModal();
+                  }}
+                />
+              )}
+
+              <button
                 onClick={() => {
-                  setRecordData(row);
-                  document.getElementById("gdrive").showModal();
+                  navigate(
+                    `/company/${companyId}/gis-tracker/${goto}/${row.recordId}`
+                  );
                 }}
-              />
-            )}
-            <div>
-              <Link
-                to={`/company/${companyId}/gis-tracker/${goto}/${row.recordId}`}
+                className="col-start-2"
               >
-                <button>
-                  <svg
-                    width="44"
-                    height="37"
-                    viewBox="0 0 44 37"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <rect width="44" height="37" rx="10" fill="#273069" />
-                    <path
-                      d="M22.0003 20C23.1048 20 24.0003 19.1046 24.0003 18C24.0003 16.8954 23.1048 16 22.0003 16C20.8957 16 20.0003 16.8954 20.0003 18C20.0003 19.1046 20.8957 20 22.0003 20Z"
-                      fill="white"
-                    />
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M12.458 18C13.7323 13.9429 17.5226 11 22.0002 11C26.4778 11 30.2681 13.9429 31.5424 18C30.2682 22.0571 26.4778 25 22.0002 25C17.5226 25 13.7323 22.0571 12.458 18ZM26.0003 18C26.0003 20.2091 24.2094 22 22.0003 22C19.7911 22 18.0003 20.2091 18.0003 18C18.0003 15.7909 19.7911 14 22.0003 14C24.2094 14 26.0003 15.7909 26.0003 18Z"
-                      fill="white"
-                    />
-                  </svg>
-                </button>
-              </Link>
-            </div>
-            <div>
+                <svg
+                  className="w-full"
+                  viewBox="0 0 44 37"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect width="44" height="37" rx="10" fill="#273069" />
+                  <path
+                    d="M22.0003 20C23.1048 20 24.0003 19.1046 24.0003 18C24.0003 16.8954 23.1048 16 22.0003 16C20.8957 16 20.0003 16.8954 20.0003 18C20.0003 19.1046 20.8957 20 22.0003 20Z"
+                    fill="white"
+                  />
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M12.458 18C13.7323 13.9429 17.5226 11 22.0002 11C26.4778 11 30.2681 13.9429 31.5424 18C30.2682 22.0571 26.4778 25 22.0002 25C17.5226 25 13.7323 22.0571 12.458 18ZM26.0003 18C26.0003 20.2091 24.2094 22 22.0003 22C19.7911 22 18.0003 20.2091 18.0003 18C18.0003 15.7909 19.7911 14 22.0003 14C24.2094 14 26.0003 15.7909 26.0003 18Z"
+                    fill="white"
+                  />
+                </svg>
+              </button>
               <button
                 onClick={() => {
                   toggleDelete(row.recordId);
                 }}
+                className="col-start-3"
               >
                 <svg
-                  width="44"
-                  height="37"
+                  className="w-full"
                   viewBox="0 0 44 37"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -508,7 +508,7 @@ const GISTracker = () => {
                 </svg>
               </button>
             </div>
-          </div>
+          </>
         );
       },
     },

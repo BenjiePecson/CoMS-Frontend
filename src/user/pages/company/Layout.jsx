@@ -319,7 +319,7 @@ const Layout = () => {
     <>
       <div className="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-        <div className="drawer-content flex flex-col w-full min-h-screen">
+        <div className="drawer-content flex flex-col w-full min-h-screen min-w-[320px]">
           <div className="flex flex-row w-full items-center bg-white shadow-md fixed z-10">
             <label
               htmlFor="my-drawer-2"
@@ -365,7 +365,7 @@ const Layout = () => {
               </div>
             </div>
           </div>
-          <div className="flex flex-col w-full pt-24 px-2 md:px-5 min-h-screen">
+          <div className="flex flex-col w-full pt-24 px-2 md:px-5 min-h-screen max-w-[1920px] mx-auto">
             <Outlet />
           </div>
         </div>

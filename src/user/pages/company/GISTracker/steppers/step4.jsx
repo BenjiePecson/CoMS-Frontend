@@ -536,63 +536,46 @@ const step4 = () => {
   //   console.log(formData.directors_or_officers);
   // }, [formData.directors_or_officers]);
 
-  return (
-    <>
-      {/* Directors/Officers */}
-      {/* <div>
-        <TableComponent
-          id={"directorsOrOfficersTable"}
-          tableName={"Directors/Officers"}
-          setTable={() => {
-            setDirectorsOrOfficersData(formData.directors_or_officers);
-          }}
-          setAddTable={() => {
-            setDirectorsOrOfficersData([
-              ...directorsOrOfficersData,
-              directorsOrOfficersState,
-            ]);
-          }}
-          column={directorsOrOfficersColumn}
-          data={formData.directors_or_officers}
-          tableData={directorsOrOfficersData}
-          tableDataState={directorsOrOfficersState}
-          editColumn={editDirectorsOrOfficersColumn}
-          addFunction={() => {
-            dispatch(setDirectorsOrOfficers(directorsOrOfficersData));
-          }}
-        />
-      </div> */}
+  const old_directors = () => {
+    return (
+      <>
+        <div className="w-full p-5">
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-row justify-between items-center">
+              <h1 className="poppins-semibold text-[15px] text-black">
+                {"Directors/Officers"}
+              </h1>
+              <button
+                className="btn btn-outline btn-primary btn-sm"
+                onClick={(e) => {
+                  let directorsList = formData.directors_or_officers.map(
+                    (director, index) => {
+                      return { id: index + 1, ...director };
+                    }
+                  );
+                  setListOfDirectors(directorsList);
+                  document.getElementById("addModal").showModal();
+                }}
+              >
+                {editSVG} Update Table
+              </button>
+            </div>
 
-      <div className="w-full p-5">
-        <div className="flex flex-col gap-5">
-          <div className="flex flex-row justify-between items-center">
-            <h1 className="poppins-semibold text-[15px] text-black">
-              {"Directors/Officers"}
-            </h1>
-            <button
-              className="btn btn-outline btn-primary btn-sm"
-              onClick={(e) => {
-                let directorsList = formData.directors_or_officers.map(
-                  (director, index) => {
-                    return { id: index + 1, ...director };
-                  }
-                );
-                setListOfDirectors(directorsList);
-                document.getElementById("addModal").showModal();
-              }}
-            >
-              {editSVG} Update Table
-            </button>
+            <DataTable
+              customStyles={tableCustomStyles}
+              columns={directorsOrOfficersColumn}
+              data={formData.directors_or_officers}
+              persistTableHead={true}
+            />
           </div>
-
-          <DataTable
-            customStyles={tableCustomStyles}
-            columns={directorsOrOfficersColumn}
-            data={formData.directors_or_officers}
-            persistTableHead={true}
-          />
         </div>
+      </>
+    );
+  };
 
+  const dialogComponents = () => {
+    return (
+      <>
         <dialog id={"addModal"} className="modal">
           <div className="modal-box w-full max-w-7xl">
             <div className="flex flex-row justify-between">
@@ -610,7 +593,7 @@ const step4 = () => {
                   {"Directors/Officers"}
                 </h1>
                 <button
-                  className="btn btn-outline btn-primary btn-sm"
+                  className="btn btn-outline btn-sm"
                   onClick={(e) => {
                     if (listOfIndividuals.length != 0) {
                       const extractedDirector = extractDirectorDetails(
@@ -693,7 +676,7 @@ const step4 = () => {
                   dispatch(setDirectorsOrOfficers(list_of_directors));
                   document.getElementById("addModal").close();
                 }}
-                className="btn btn-primary"
+                className="btn bg-primary text-white"
               >
                 Save
               </button>
@@ -771,7 +754,10 @@ const step4 = () => {
                   name="name"
                   value={formDirector.name}
                   onChange={(e) => {
-                    setFormDirector({ ...formDirector, name: e.target.value });
+                    setFormDirector({
+                      ...formDirector,
+                      name: e.target.value,
+                    });
                   }}
                   disabled
                 />
@@ -1297,7 +1283,10 @@ const step4 = () => {
                   name="name"
                   value={formDirector.name}
                   onChange={(e) => {
-                    setFormDirector({ ...formDirector, name: e.target.value });
+                    setFormDirector({
+                      ...formDirector,
+                      name: e.target.value,
+                    });
                   }}
                   disabled
                 />
@@ -1622,6 +1611,51 @@ const step4 = () => {
             </div>
           </div>
         </dialog>
+      </>
+    );
+  };
+
+  const directorsComponent = () => {
+    return (
+      <>
+        <div className="mb-10">
+          <div className="grid grid-cols-1 w-full">
+            <DataTable
+              customStyles={tableCustomStyles}
+              columns={directorsOrOfficersColumn}
+              data={formData.directors_or_officers}
+              persistTableHead={true}
+            />
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  return (
+    <>
+      <div className="flex flex-col gap-5">
+        <div className="flex flex-row justify-between items-center">
+          <div className="poppins-bold text-sm">Directors/Officers</div>
+          <button
+            className="btn btn-sm btn-outline"
+            onClick={(e) => {
+              let directorsList = formData.directors_or_officers.map(
+                (director, index) => {
+                  return { id: index + 1, ...director };
+                }
+              );
+              setListOfDirectors(directorsList);
+              document.getElementById("addModal").showModal();
+            }}
+          >
+            Update Details
+          </button>
+        </div>
+
+        {directorsComponent()}
+
+        {dialogComponents()}
       </div>
     </>
   );

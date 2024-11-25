@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Step1 from "./steppers/step1";
 import Step2 from "./steppers/step2";
@@ -57,6 +57,8 @@ const NewCreate = () => {
   };
   const [errors, setErrors] = useState(defaultState);
   const [formPublish, setFormPublish] = useState(defaultState);
+
+  const middleRowRef = useRef(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -160,7 +162,7 @@ const NewCreate = () => {
     const divider = (isDone = false) => {
       return (
         <div
-          className={`h-[2px] ${
+          className={` h-[2px] ${
             isDone ? "bg-primary" : "bg-gray-300"
           } rounded-full  w-10`}
         ></div>
@@ -171,7 +173,7 @@ const NewCreate = () => {
       // Create a step div with the current step
       const stepDiv = (
         <div
-          key={`steps-${index}`}
+          key={` flex-shrink-0 steps-${index}`}
           className="flex flex-col items-center h-full justify-center gap-2 cursor-pointer"
           onClick={() => {
             setStepSelected(index);
@@ -224,10 +226,17 @@ const NewCreate = () => {
   };
 
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    // window.scrollTo({
+    //   top: 0,
+    //   behavior: "smooth",
+    // });
+
+    if (middleRowRef.current) {
+      middleRowRef.current.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
   };
 
   const informationComponent = (step) => {
@@ -602,6 +611,7 @@ const NewCreate = () => {
           }
         });
 
+        console.log(selected_company);
       let newFormData = {
         ...data.draftingInput,
         date_registered: selected_company.dateRegistered,
@@ -684,12 +694,150 @@ const NewCreate = () => {
     if (formRecord.companyId !== "") {
       setFormRecord({ ...formRecord, draftingInput: formData });
     }
-    console.log(formData);
   }, [formData]);
+
+  const getAvatar = (step) => {
+    const active = (
+      <div className="avatar placeholder">
+        <div className="rounded-full bg-primary text-neutral-content w-6">
+          <span className="text-xs">{step}</span>
+        </div>
+      </div>
+    );
+
+    const done = (
+      <div className="avatar placeholder">
+        <div className="rounded-full bg-primary text-neutral-content w-6">
+          <span className="text-xs">✓</span>
+        </div>
+      </div>
+    );
+
+    const undone = (
+      <div className="avatar placeholder">
+        <div className="rounded-full border border-primary text-primary w-6">
+          <span className="text-xs">{step}</span>
+        </div>
+      </div>
+    );
+
+    if (stepSelected === step - 1) {
+      return active;
+    } else if (stepSelected > step - 1) {
+      return done;
+    }
+    return undone;
+  };
+
+  const getTitle = (index, title) => {
+    return (
+      <td
+        className={`py-0 pt-1 text-sm cursor-pointer ${
+          stepSelected == index && "font-bold"
+        }`}
+        onClick={() => {
+          setStepSelected(index);
+          scrollToTop();
+        }}
+      >
+        {title}
+      </td>
+    );
+  };
 
   return (
     <>
-      <div className="grid grid-cols-1 w-full place-items-start gap-5 h-full pb-5">
+      <div className="grid grid-rows-[auto,1fr,auto] h-full border rounded-lg w-full">
+        <div className="border-b-2 bg-white rounded-t-lg grid grid-cols-1">
+          <div className="overflow-x-auto">
+            <table className="table w-[75%] text-center my-4 mx-auto">
+              <tbody>
+                <tr className="border-0">
+                  <td className="py-0 pb-1">{getAvatar(1)}</td>
+                  <td
+                    className={`py-0 pb-1 border-b-2 ${
+                      stepSelected >= 1 ? "border-primary" : "border-slate-300"
+                    }`}
+                  ></td>
+                  <td className="py-0 pb-1">{getAvatar(2)}</td>
+                  <td
+                    className={`py-0 pb-1 border-b-2 ${
+                      stepSelected >= 2 ? "border-primary" : "border-slate-300"
+                    }`}
+                  ></td>
+                  <td className="py-0 pb-1">{getAvatar(3)}</td>
+                  <td
+                    className={`py-0 pb-1 border-b-2 ${
+                      stepSelected >= 3 ? "border-primary" : "border-slate-300"
+                    }`}
+                  ></td>
+                  <td className="py-0 pb-1">{getAvatar(4)}</td>
+                </tr>
+                <tr>
+                  {getTitle(0, "General Information")}
+                  <td className="py-0 pt-1"></td>
+                  {getTitle(1, "Capital Structure")}
+                  <td className="py-0 pt-1"></td>
+                  {getTitle(2, "Beneficial Ownership Declaration")}
+                  <td className="py-0 pt-1"></td>
+                  {getTitle(3, "Preview")}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="overflow-y-auto w-full bg-white" ref={middleRowRef}>
+          {displayComponent(stepSelected)}
+        </div>
+
+        <div className="border-t-2 bg-white  rounded-b-lg w-full">
+          <div className="grid grid-cols-1">
+            <div className="flex flex-row justify-between p-3">
+              <button
+                className="btn btn-ghost hover:bg-red-300"
+                onClick={handleBackBtn}
+              >
+                {stepSelected == 0 ? "Cancel" : "Back"}
+              </button>
+              <div className="flex flex-row gap-10">
+                <button
+                  className={`btn bg-primary text-white ${
+                    stepSelected === listOfSteps.length - 1 &&
+                    formData.year < 2023
+                      ? ""
+                      : "hidden"
+                  }`}
+                  onClick={() => {
+                    document.getElementById("publishModal").showModal();
+                  }}
+                >
+                  Mark as Completed
+                </button>
+                <button
+                  // className={
+                  //   `btn bg-primary text-white ` + (step != 7 && "hidden")
+                  // }
+                  className={`btn bg-primary text-white `}
+                  onClick={() => {
+                    toggleSaveAsDraft();
+                  }}
+                >
+                  Save as Draft
+                </button>
+                <button
+                  className="btn bg-primary text-white"
+                  onClick={handleNextBtn}
+                >
+                  {listOfSteps.length - 1 == stepSelected ? "Publish" : "Next"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* <div className="grid grid-cols-1 w-full place-items-start gap-5 h-full pb-5">
         <div className="flex flex-col rounded-2xl w-full bg-white shadow-sm border h-full">
           <div className="border-b-2">
             <div className="overflow-x-auto mx-10 ">
@@ -702,6 +850,7 @@ const NewCreate = () => {
           <div className="grid grid-cols-1 items-center justify-center w-full place-items-center h-full">
             {displayComponent(stepSelected)}
           </div>
+
           <div className="border-t-2">
             <div className="grid grid-cols-1">
               <div className="flex flex-row justify-between p-3">
@@ -750,7 +899,7 @@ const NewCreate = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {dialogComponents()}
     </>

@@ -26,6 +26,8 @@ const Layout = () => {
 
   const dispatch = useDispatch();
 
+  const listOfCustomBG = ["eDLA Philippines Inc."];
+
   const loading = (
     <>
       <div className="min-h-screen flex flex-col justify-center items-center">
@@ -208,7 +210,9 @@ const Layout = () => {
           key={`company-${index}`}
         >
           <img
-            className="w-12 aspect-square object-contain rounded-full"
+            className={`w-12 aspect-square object-contain rounded-full ${
+              listOfCustomBG.includes(company.companyName) && "bg-slate-500"
+            }`}
             src={company.logo}
             alt={company.companyName}
           />
@@ -232,7 +236,10 @@ const Layout = () => {
         </div>
         <div className="flex flex-col gap-5 text-center justify-center items-center">
           <img
-            className="w-24 aspect-square object-contain rounded-full border p-2"
+            className={`w-24 aspect-square object-contain rounded-full border p-2 ${
+              listOfCustomBG.includes(selectedCompany.companyName) &&
+              "bg-slate-500"
+            }`}
             src={selectedCompany.logo}
             alt=""
           />
@@ -320,54 +327,63 @@ const Layout = () => {
       <div className="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col w-full min-h-screen min-w-[320px]">
-          <div className="flex flex-row w-full items-center bg-white shadow-md fixed z-10">
-            <label
-              htmlFor="my-drawer-2"
-              className="btn btn-ghost bg-[#f7f7f7] lg:hidden shadow-sm w-16 m-2"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-6 h-6"
+          <div className="grid grid-rows-[auto,1fr] h-screen">
+            <div className="flex flex-row bg-white shadow-md">
+              <label
+                htmlFor="my-drawer-2"
+                className="btn btn-ghost bg-[#f7f7f7] lg:hidden shadow-sm w-16 m-2"
               >
-                <path
-                  fillRule="evenodd"
-                  d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </label>
-            <div className="w-[75%] text-center">
-              <div className="dropdown dropdown-bottom dropdown-end">
-                <div tabIndex={0} role="" className="btn btn-ghost m-2">
-                  <div className="flex flex-row gap-2 justify-center items-center">
-                    <img
-                      className="w-12 aspect-square object-contain rounded-full border p-2"
-                      src={selectedCompany.logo}
-                      alt=""
-                    />
-                    <h1 className="poppins-bold text-[15px]">
-                      {selectedCompany.companyName}
-                    </h1>
-                  </div>
-                </div>
-                <div
-                  tabIndex={1}
-                  className="dropdown-content z-[1] card card-compact w-72 py-2 shadow bg-white border"
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-6 h-6"
                 >
-                  <div className="card-body">
-                    {isChangeCompany
-                      ? changeCompanyDetails()
-                      : companyDetailsComponent()}
+                  <path
+                    fillRule="evenodd"
+                    d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </label>
+              <div className="w-full text-center">
+                <div className="dropdown dropdown-bottom dropdown-end">
+                  <div tabIndex={0} role="" className="btn btn-ghost m-2">
+                    <div className="flex flex-row gap-2 justify-center items-center">
+                      <img
+                        className={`w-12 aspect-square object-contain rounded-full border p-2 ${
+                          listOfCustomBG.includes(
+                            selectedCompany.companyName
+                          ) && "bg-slate-500"
+                        } `}
+                        src={selectedCompany.logo}
+                        alt=""
+                      />
+                      <h1 className="poppins-bold text-[15px]">
+                        {selectedCompany.companyName}
+                      </h1>
+                    </div>
+                  </div>
+                  <div
+                    tabIndex={1}
+                    className="dropdown-content z-[1] card card-compact w-72 py-2 shadow bg-white border"
+                  >
+                    <div className="card-body">
+                      {isChangeCompany
+                        ? changeCompanyDetails()
+                        : companyDetailsComponent()}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+
+            <div className="p-3 overflow-y-auto max-w-[1920px] mx-auto w-full">
+              <Outlet />
+            </div>
           </div>
-          <div className="flex flex-col w-full pt-24 px-2 md:px-5 min-h-screen max-w-[1920px] mx-auto">
-            <Outlet />
-          </div>
+          {/* <div className="flex flex-row w-full items-center bg-white shadow-md fixed z-10"></div>
+          <div className="flex flex-col w-full pt-24 px-2 md:px-5 min-h-screen max-w-[1920px] mx-auto"></div> */}
         </div>
         <div className="drawer-side z-20">
           <label
@@ -375,11 +391,9 @@ const Layout = () => {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu m-0 p-0 w-80 min-h-full bg-[#031C30] pt-4 text-base-content flex flex-col justify-between h-full">
-            {/* Sidebar content here */}
-
-            <div className="flex flex-col divide-y-[.1px] gap-4">
-              <div className="px-4">
+          <ul className="menu m-0 p-0 w-80 min-h-full bg-[#031C30] text-base-content flex flex-col justify-between h-full">
+            <div className="grid grid-rows-[auto,1fr] h-screen">
+              <div className="p-4 border-b">
                 <Link to={"/company"}>
                   <button className="btn btn-sm btn-ghost flex flex-row gap-2 items-center text-white">
                     {arrowBack} Back
@@ -387,63 +401,7 @@ const Layout = () => {
                 </Link>
               </div>
 
-              {/* <div className="">
-                <svg
-                  width="37"
-                  height="35"
-                  viewBox="0 0 37 35"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <rect
-                    x="0.522949"
-                    y="0.0307693"
-                    width="35.8685"
-                    height="34.9054"
-                    rx="7.50769"
-                    fill="white"
-                  />
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M13.6951 9.8475C13.1835 9.34316 13.1835 8.52546 13.6951 8.02112L17.5027 4.26758C18.0143 3.76324 18.8438 3.76324 19.3554 4.26758L23.163 8.02112C23.6746 8.52546 23.6746 9.34316 23.163 9.8475L19.3554 13.601C18.8438 14.1054 18.0143 14.1054 17.5027 13.601L13.6951 9.8475ZM17.7309 17.9513C17.4751 17.6991 17.4751 17.2902 17.7309 17.0381L17.9837 16.7888C18.2396 16.5366 18.6543 16.5366 18.9101 16.7888L19.163 17.0381C19.4188 17.2902 19.4188 17.6991 19.163 17.9513L18.9101 18.2006C18.6543 18.4527 18.2396 18.4527 17.9837 18.2006L17.7309 17.9513ZM22.6811 16.6008C22.1694 17.1051 22.1694 17.9228 22.6811 18.4272L26.4887 22.1807C27.0003 22.6851 27.8298 22.6851 28.3414 22.1807L32.149 18.4272C32.6606 17.9228 32.6606 17.1051 32.149 16.6008L28.3414 12.8473C27.8298 12.3429 27.0003 12.3429 26.4887 12.8473L22.6811 16.6008ZM4.76505 18.4175C4.25345 17.9132 4.25345 17.0955 4.76505 16.5912L8.57268 12.8376C9.08428 12.3333 9.91376 12.3333 10.4254 12.8376L14.233 16.5912C14.7446 17.0955 14.7446 17.9132 14.233 18.4175L10.4254 22.1711C9.91376 22.6754 9.08428 22.6754 8.57268 22.1711L4.76505 18.4175ZM13.6951 25.1194C13.1835 25.6238 13.1835 26.4415 13.6951 26.9458L17.5027 30.6994C18.0143 31.2037 18.8438 31.2037 19.3554 30.6994L23.163 26.9458C23.6746 26.4415 23.6746 25.6238 23.163 25.1194L19.3554 21.3659C18.8438 20.8616 18.0143 20.8616 17.5027 21.3659L13.6951 25.1194Z"
-                    fill="#2196F3"
-                  />
-                </svg>
-              </div> */}
-              <div className="px-4">
-                {/* <Link
-                  to={`/company/${companyId}/`}
-                  onClick={() => {
-                    setActive("dashboard");
-                  }}
-                >
-                  <NavBar
-                    isActive={active === "dashboard"}
-                    text="Dashboard"
-                    icon={dashboardIcon}
-                  />
-                </Link>
-
-                <Link
-                  to={`/company/${companyId}/gis-tracker`}
-                  onClick={() => {
-                    setActive("gis-tracker");
-                  }}
-                >
-                  <NavBar
-                    isActive={active === "gis-tracker"}
-                    text="GIS Tracker"
-                    icon={trackerIcon}
-                  />
-                </Link>
-
-                <NavBar
-                  isActive={false}
-                  text="Board Meetings"
-                  icon={trackerIcon}
-                /> */}
-
+              <div className="p-2 overflow-y-auto">
                 <div>
                   <ul className="menu w-full rounded-box text-white">
                     <Link
@@ -694,41 +652,6 @@ const Layout = () => {
                 </div>
               </div>
             </div>
-            {/* <div className="px-4">
-              <div className="flex flex-row text-white justify-between items-center">
-                <div className="flex flex-row items-center gap-5">
-                  {lightMode}
-                </div>
-                <div>
-                  <input
-                    type="checkbox"
-                    className="toggle"
-                    onChange={() => {
-                      setIsDarkMode(!isDarkMode);
-                    }}
-                    value={isDarkMode}
-                  />
-                </div>
-              </div>
-
-              <div className="flex flex-row hover:bg-[#667A8A] h-[45px] rounded-[3px] items-center my-4 bg-[#667A8A]">
-                <div className="px-5">
-                  <svg
-                    width="27"
-                    height="26"
-                    viewBox="0 0 27 26"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M11.9191 0.933289C15.0255 0.933289 17.559 3.42334 17.559 6.48898V12.4826H9.92032C9.37289 12.4826 8.94003 12.9081 8.94003 13.4461C8.94003 13.9716 9.37289 14.4096 9.92032 14.4096H17.559V20.3907C17.559 23.4564 15.0255 25.9589 11.8936 25.9589H5.69361C2.5745 25.9589 0.0410156 23.4689 0.0410156 20.4032V6.50149C0.0410156 3.42334 2.58723 0.933289 5.70634 0.933289H11.9191ZM20.7375 9.12944C21.1129 8.74154 21.726 8.74154 22.1014 9.11692L25.7551 12.7582C25.9428 12.9458 26.0429 13.1836 26.0429 13.4464C26.0429 13.6966 25.9428 13.9469 25.7551 14.1221L22.1014 17.7633C21.9137 17.951 21.6634 18.0511 21.4257 18.0511C21.1754 18.0511 20.9252 17.951 20.7375 17.7633C20.3621 17.3879 20.3621 16.7748 20.7375 16.3994L22.7395 14.4098H17.5592V12.4829H22.7395L20.7375 10.4933C20.3621 10.1179 20.3621 9.50482 20.7375 9.12944Z"
-                      fill="white"
-                    />
-                  </svg>
-                </div>
-                <div className={"poppins-semibold text-white"}>Logout</div>
-              </div>
-            </div> */}
           </ul>
         </div>
       </div>

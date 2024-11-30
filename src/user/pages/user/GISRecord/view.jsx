@@ -107,6 +107,7 @@ const view = () => {
           let response = await axios.patch(`/record/record/${recordId}`, {
             status: "Approved",
             modified_by,
+            comments: comment,
           });
 
           if (response.status === 200) {
@@ -139,9 +140,12 @@ const view = () => {
     let type = "error";
     let message = "Failed to revert this record.";
     try {
+      const modified_by = `${currentUser.first_name} ${currentUser.last_name}`;
+
       let response = await axios.patch(`/record/record/${recordId}`, {
         comments: comment,
         status: "Reverted",
+        modified_by,
       });
       if (response.status === 200) {
         type = "success";
@@ -434,6 +438,25 @@ const view = () => {
     );
   };
 
+  const getName = (fullname) => {
+    let fullnameShort = "";
+    if (fullname == "" || fullname == null) return;
+    const parts = fullname.split(" ");
+
+    fullnameShort = `${parts.shift()} ${parts.pop()[0]}.`;
+
+    return fullnameShort;
+  };
+
+  const getLastModified = () => {
+    let modified_by = selectedRecord.modified_by;
+
+    if (selectedRecord.timestamps.length != 0) {
+      modified_by = selectedRecord.timestamps[0].modified_by;
+    }
+    return getName(modified_by);
+  };
+
   useEffect(() => {
     dispatch(fetchRecord(recordId));
   }, []);
@@ -493,7 +516,7 @@ const view = () => {
           <div className="flex flex-col text-end">
             <span className="poppins-medium text-[10px]">Last Modified By</span>
             <span className="poppins-semibold text-[16px]">
-              {selectedRecord.modified_by}
+              {getLastModified()}
             </span>
           </div>
         </div>

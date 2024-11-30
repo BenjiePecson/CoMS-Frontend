@@ -27,8 +27,8 @@ const step7 = () => {
   return (
     <>
       <div className="flex flex-col w-full">
-        <div className="flex flex-col w-full p-5">
-          <div className="my-5 w-full text-start h-screen">
+        <div className="flex flex-col w-full">
+          <div className="w-full text-start h-screen">
             <PDFViewer
               style={{
                 position: "relative",

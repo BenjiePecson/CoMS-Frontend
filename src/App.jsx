@@ -42,7 +42,12 @@ import MC28Form from "./user/pages/company/MC28Form";
 import ViewMC28Form from "./user/pages/company/MC28Form/view";
 import DocumentDrafting from "./user/pages/company/DocumentDrafting";
 import ViewDocumentDrafting from "./user/pages/company/DocumentDrafting/view";
+
+import NewCreate from "./user/pages/company/GISTracker/NewCreate";
+import NewView from "./user/pages/company/GISTracker/NewView";
+
 import TaskView from "./user/pages/company/TaskView";
+
 
 // axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
@@ -100,11 +105,23 @@ function App() {
             />
             <Route
               path="company/:companyId/gis-tracker/create/:recordId?"
+              // element={<GIScreate />}
+              element={<NewCreate />}
+            />
+            {/* <Route
+              path="company/:companyId/gis-tracker-old/create/:recordId?"
               element={<GIScreate />}
+              // element={<NewCreate />}
             />
             <Route
-              path="company/:companyId/gis-tracker/view/:recordId?"
+              path="company/:companyId/gis-tracker-old/view/:recordId?"
               element={<GISview />}
+              // element={<NewView />}
+            /> */}
+            <Route
+              path="company/:companyId/gis-tracker/view/:recordId?"
+              // element={<GISview />}
+              element={<NewView />}
             />
             <Route
               path="company/:companyId/notice-of-meeting"

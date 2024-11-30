@@ -42,14 +42,18 @@ const SelectCompany = () => {
   const navigate = useNavigate();
   const [filteredCompanies, setFilteredCompanies] = useState([]);
 
+  const listOfCustomBG = ["eDLA Philippines Inc."];
+
   const columns = [
     {
       // name: "Logo",
       width: "20%",
       cell: (company) => (
-        <div className="flex flex-row justify-center aspect-square w-full max-h-24">
+        <div className="flex flex-row justify-center aspect-square w-full max-h-24 ">
           <img
-            className="w-[50%] object-contain py-2"
+            className={`w-3/4 object-contain m-5 ${
+              listOfCustomBG.includes(company.companyName) && "bg-slate-500"
+            }`}
             src={company.logo}
             alt="Logo..."
           />

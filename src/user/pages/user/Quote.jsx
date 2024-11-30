@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 import Select from "react-select";
 
@@ -54,7 +55,7 @@ const Quote = () => {
     setCurrency(selectedOption.value);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const formData = {
       ...companyDetails,
       currency,
@@ -63,6 +64,21 @@ const Quote = () => {
 
     console.log("Submitted Data: ", formData);
     // You can now send formData to your backend API or handle it as needed
+
+    //TODO Apps script
+
+    try {
+      let response = await axios.get("/document-drafting-quotation-generate");
+
+      const newWindow = window.open("", "_blank", "width=1280,height=720");
+
+      if (newWindow) {
+        newWindow.document.write(response.data);
+        newWindow.document.close(); // Ensure the document is rendered
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div>

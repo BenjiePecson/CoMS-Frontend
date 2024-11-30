@@ -345,8 +345,7 @@ const GISTracker = () => {
         );
       },
       sortable: true,
-      minWidth: "320px",
-      maxWidth: "320px",
+      width: "320px",
     },
     {
       name: "Date Received",
@@ -358,28 +357,33 @@ const GISTracker = () => {
         return moment(row.date_filed).format("MM/DD/YYYY");
       },
       sortable: true,
-      minWidth: "150px",
-      maxWidth: "150px",
+      width: "150px",
     },
     {
       name: "Status",
-      selector: (row) => row.status,
+      selector: (row) => {
+        let status = "";
+
+        if (row.timestamps.length != 0) {
+          status = row.timestamps[0].status;
+        } else {
+          status = row.status;
+        }
+
+        return status;
+      },
       sortable: true,
-      minWidth: "150px",
-      maxWidth: "150px",
+      width: "150px",
     },
     {
       name: "Type of Meeting",
-      minWidth: "150px",
-      maxWidth: "150px",
+      width: "150px",
       selector: (row) =>
         row.draftingInput.isSpecialMeeting ? "Special" : "Annual",
       sortable: true,
     },
     {
       name: "Last Modified",
-      minWidth: "150px",
-      maxWidth: "150px",
       cell: (row) => {
         let modified_by = "";
         let date_modified = "";
@@ -422,11 +426,10 @@ const GISTracker = () => {
           </div>
         );
       },
+      width: "150px",
     },
     {
       name: "Actions",
-      minWidth: "150px",
-      maxWidth: "150px",
       cell: (row) => {
         let goto = "view";
         if (row.status === "Saved as Draft" || row.status === "Reverted") {
@@ -511,6 +514,7 @@ const GISTracker = () => {
           </>
         );
       },
+      width: "150px",
     },
   ];
 
@@ -1308,13 +1312,19 @@ const GISTracker = () => {
         {/* <div>
           <Header />
         </div> */}
-        <div className="flex flex-row w-full justify-between items-center">
-          <div className="flex flex-row gap-5">
+        <div className="flex flex-col w-full ">
+          <div className="flex flex-col sm:flex-row justify-between gap-2">
             <div className="poppins-bold text-color-2 text-[24px] flex items-center">
               GIS Tracker
             </div>
-            <Link to={`/company/${companyId}/gis-tracker/create`}>
-              <button className="btn btn-md bg-[#273069] border-none text-white flex flex-row justify-center items-center rounded-[15px]">
+
+            <div>
+              <button
+                className="btn btn-md bg-primary border-none text-white flex flex-row justify-center items-center rounded-[15px]"
+                onClick={() => {
+                  navigate(`/company/${companyId}/gis-tracker/create`);
+                }}
+              >
                 <svg
                   width="20"
                   height="18"
@@ -1331,12 +1341,12 @@ const GISTracker = () => {
                 </svg>
                 FILE NEW GIS
               </button>
-            </Link>
+            </div>
           </div>
         </div>
-        <div className="flex flex-col w-full mt-5">
-          <div className="flex flex-row w-full gap-5 items-center">
-            <div className="flex flex-row bg-white rounded-[14px] justify-center items-center gap-2 h-[32px]">
+        <div className="flex flex-col  w-full mt-5">
+          <div className="flex flex-col sm:flex-row w-full  gap-5">
+            <div className="flex flex-row bg-white rounded-[14px] justify-center items-center gap-2 h-[32px] w-full md:max-w-xs">
               <svg
                 width="17"
                 height="17"
@@ -1360,9 +1370,13 @@ const GISTracker = () => {
                 />
               </svg>
 
-              <input className="mr-5" type="text" placeholder="Search File" />
+              <input
+                className="mr-5 w-full"
+                type="text"
+                placeholder="Search File"
+              />
             </div>
-            <div className="flex flex-row justify-center items-center gap-2">
+            <div className="flex flex-row items-center gap-2">
               <div>Filtering</div>
               <div>
                 <select
@@ -1373,9 +1387,9 @@ const GISTracker = () => {
                   <option value="">All</option>
                 </select>
               </div>
+              <div className="badge">Done</div>
+              <div className="badge">Pending</div>
             </div>
-            <div className="badge">Done</div>
-            <div className="badge">Pending</div>
           </div>
         </div>
 

@@ -100,6 +100,11 @@ function App() {
             />
             <Route
               path="company/:companyId/gis-tracker/create/:recordId?"
+              // element={<GIScreate />}
+              element={<NewCreate />}
+            />
+            {/* <Route
+              path="company/:companyId/gis-tracker-old/create/:recordId?"
               element={<GIScreate />}
               // element={<NewCreate />}
             />
@@ -107,7 +112,7 @@ function App() {
               path="company/:companyId/gis-tracker-old/view/:recordId?"
               element={<GISview />}
               // element={<NewView />}
-            />
+            /> */}
             <Route
               path="company/:companyId/gis-tracker/view/:recordId?"
               // element={<GISview />}

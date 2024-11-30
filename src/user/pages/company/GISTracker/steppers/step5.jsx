@@ -1021,11 +1021,8 @@ const step5 = () => {
             </button>
             <button
               onClick={(e) => {
-                // dispatch(setFormData(formStep5));
-
-                console.log(formStep5);
-
-                // document.getElementById("newStockHoldersTable").close();
+                dispatch(setFormData(formStep5));
+                document.getElementById("newStockHoldersTable").close();
               }}
               className="btn bg-primary text-white"
             >

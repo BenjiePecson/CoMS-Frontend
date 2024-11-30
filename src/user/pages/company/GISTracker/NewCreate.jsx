@@ -12,7 +12,7 @@ import { fetchUser } from "../../../store/user/UserSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { setFormData } from "../../../store/GIS/GISFormSlice";
 import axios from "axios";
-import { showAlert } from "../../../../assets/global";
+import { showAlert, showToast } from "../../../../assets/global";
 
 const warningSVG = (
   <svg
@@ -544,6 +544,7 @@ const NewCreate = () => {
                       console.log(error);
                     } finally {
                       showToast(status, message);
+                      document.getElementById("confirmationModal").close();
                     }
                   }}
                 >
@@ -560,6 +561,26 @@ const NewCreate = () => {
                 </button>
               </div>
             </div>
+          </div>
+        </dialog>
+
+        {/* Comments Modal */}
+        <dialog id="commentsModal" className="modal">
+          <div className="modal-box">
+            <div className="flex flex-row justify-between">
+              <h1 className="p-1 text-[20px] font-bold">Remarks</h1>
+              <form method="dialog">
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                  ✕
+                </button>
+              </form>
+            </div>
+            <hr />
+            {formRecord.timestamps.length != 0 && (
+              <p className="py-2 poppins-normal text-sm">
+                {formRecord.timestamps[0].remarks}
+              </p>
+            )}
           </div>
         </dialog>
       </>
@@ -611,7 +632,6 @@ const NewCreate = () => {
           }
         });
 
-        console.log(selected_company);
       let newFormData = {
         ...data.draftingInput,
         date_registered: selected_company.dateRegistered,
@@ -747,94 +767,131 @@ const NewCreate = () => {
 
   return (
     <>
-      <div className="grid grid-rows-[auto,1fr,auto] h-full border rounded-lg w-full">
-        <div className="border-b-2 bg-white rounded-t-lg grid grid-cols-1">
-          <div className="overflow-x-auto">
-            <table className="table w-[75%] text-center my-4 mx-auto">
-              <tbody>
-                <tr className="border-0">
-                  <td className="py-0 pb-1">{getAvatar(1)}</td>
-                  <td
-                    className={`py-0 pb-1 border-b-2 ${
-                      stepSelected >= 1 ? "border-primary" : "border-slate-300"
-                    }`}
-                  ></td>
-                  <td className="py-0 pb-1">{getAvatar(2)}</td>
-                  <td
-                    className={`py-0 pb-1 border-b-2 ${
-                      stepSelected >= 2 ? "border-primary" : "border-slate-300"
-                    }`}
-                  ></td>
-                  <td className="py-0 pb-1">{getAvatar(3)}</td>
-                  <td
-                    className={`py-0 pb-1 border-b-2 ${
-                      stepSelected >= 3 ? "border-primary" : "border-slate-300"
-                    }`}
-                  ></td>
-                  <td className="py-0 pb-1">{getAvatar(4)}</td>
-                </tr>
-                <tr>
-                  {getTitle(0, "General Information")}
-                  <td className="py-0 pt-1"></td>
-                  {getTitle(1, "Capital Structure")}
-                  <td className="py-0 pt-1"></td>
-                  {getTitle(2, "Beneficial Ownership Declaration")}
-                  <td className="py-0 pt-1"></td>
-                  {getTitle(3, "Preview")}
-                </tr>
-              </tbody>
-            </table>
+      <div className="relative h-full">
+        <div className="grid grid-rows-[auto,1fr,auto] h-full border rounded-lg w-full">
+          <div className="border-b-2 bg-white rounded-t-lg grid grid-cols-1">
+            <div className="overflow-x-auto">
+              <table className="table w-[75%] text-center my-4 mx-auto">
+                <tbody>
+                  <tr className="border-0">
+                    <td className="py-0 pb-1">{getAvatar(1)}</td>
+                    <td
+                      className={`py-0 pb-1 border-b-2 ${
+                        stepSelected >= 1
+                          ? "border-primary"
+                          : "border-slate-300"
+                      }`}
+                    ></td>
+                    <td className="py-0 pb-1">{getAvatar(2)}</td>
+                    <td
+                      className={`py-0 pb-1 border-b-2 ${
+                        stepSelected >= 2
+                          ? "border-primary"
+                          : "border-slate-300"
+                      }`}
+                    ></td>
+                    <td className="py-0 pb-1">{getAvatar(3)}</td>
+                    <td
+                      className={`py-0 pb-1 border-b-2 ${
+                        stepSelected >= 3
+                          ? "border-primary"
+                          : "border-slate-300"
+                      }`}
+                    ></td>
+                    <td className="py-0 pb-1">{getAvatar(4)}</td>
+                  </tr>
+                  <tr>
+                    {getTitle(0, "General Information")}
+                    <td className="py-0 pt-1"></td>
+                    {getTitle(1, "Capital Structure")}
+                    <td className="py-0 pt-1"></td>
+                    {getTitle(2, "Beneficial Ownership Declaration")}
+                    <td className="py-0 pt-1"></td>
+                    {getTitle(3, "Preview")}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
 
-        <div className="overflow-y-auto w-full bg-white" ref={middleRowRef}>
-          {displayComponent(stepSelected)}
-        </div>
+          <div className="overflow-y-auto w-full bg-white" ref={middleRowRef}>
+            {displayComponent(stepSelected)}
+          </div>
 
-        <div className="border-t-2 bg-white  rounded-b-lg w-full">
-          <div className="grid grid-cols-1">
-            <div className="flex flex-row justify-between p-3">
-              <button
-                className="btn btn-ghost hover:bg-red-300"
-                onClick={handleBackBtn}
-              >
-                {stepSelected == 0 ? "Cancel" : "Back"}
-              </button>
-              <div className="flex flex-row gap-10">
+          <div className="border-t-2 bg-white  rounded-b-lg w-full">
+            <div className="grid grid-cols-1">
+              <div className="flex flex-row justify-between p-3">
                 <button
-                  className={`btn bg-primary text-white ${
-                    stepSelected === listOfSteps.length - 1 &&
-                    formData.year < 2023
-                      ? ""
-                      : "hidden"
-                  }`}
-                  onClick={() => {
-                    document.getElementById("publishModal").showModal();
-                  }}
+                  className="btn btn-ghost hover:bg-error"
+                  onClick={handleBackBtn}
                 >
-                  Mark as Completed
+                  {stepSelected == 0 ? "Cancel" : "Back"}
                 </button>
-                <button
-                  // className={
-                  //   `btn bg-primary text-white ` + (step != 7 && "hidden")
-                  // }
-                  className={`btn bg-primary text-white `}
-                  onClick={() => {
-                    toggleSaveAsDraft();
-                  }}
-                >
-                  Save as Draft
-                </button>
-                <button
-                  className="btn bg-primary text-white"
-                  onClick={handleNextBtn}
-                >
-                  {listOfSteps.length - 1 == stepSelected ? "Publish" : "Next"}
-                </button>
+                <div className="flex flex-row gap-10">
+                  <button
+                    className={`btn bg-primary text-white ${
+                      stepSelected === listOfSteps.length - 1 &&
+                      formData.year < 2023
+                        ? ""
+                        : "hidden"
+                    }`}
+                    onClick={() => {
+                      document.getElementById("publishModal").showModal();
+                    }}
+                  >
+                    Mark as Completed
+                  </button>
+                  <button
+                    // className={
+                    //   `btn bg-primary text-white ` + (step != 7 && "hidden")
+                    // }
+                    className={`btn bg-primary text-white `}
+                    onClick={() => {
+                      toggleSaveAsDraft();
+                    }}
+                  >
+                    Save as Draft
+                  </button>
+                  <button
+                    className="btn bg-primary text-white"
+                    onClick={handleNextBtn}
+                  >
+                    {listOfSteps.length - 1 == stepSelected
+                      ? "Publish"
+                      : "Next"}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+        {formRecord.timestamps.length != 0 &&
+          formRecord.timestamps[0].status == "Reverted" && (
+            <div
+              className="absolute top-2 left-2 hover:bg-neutral-200 rounded cursor-pointer p-3"
+              onClick={() => {
+                document.getElementById("commentsModal").showModal();
+              }}
+            >
+              <div className="flex flex-col items-center justify-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="size-6 text-error"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+
+                <h1 className="poppins-bold text-sm text-error">Reverted</h1>
+              </div>
+            </div>
+          )}
       </div>
 
       {/* <div className="grid grid-cols-1 w-full place-items-start gap-5 h-full pb-5">

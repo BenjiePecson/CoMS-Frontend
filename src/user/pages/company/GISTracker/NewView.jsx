@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchRecord } from "../../../store/GIS/GISRecordSlice";
+import {
+  fetchRecord,
+  updateRecordGdriveFolders,
+} from "../../../store/GIS/GISRecordSlice";
 import { fetchUser } from "../../../store/user/UserSlice";
 import { showToast } from "../../../../assets/global";
 
@@ -14,6 +17,8 @@ import Step6 from "./steppers/step6";
 import Step7 from "./steppers/step7";
 import { setFormData } from "../../../store/GIS/GISFormSlice";
 import moment from "moment";
+import axios from "axios";
+import FrameWrapper from "../DashboardComponents/FrameWrapper";
 
 const getName = (fullName) => {
   if (!fullName) return;
@@ -24,8 +29,6 @@ const getName = (fullName) => {
 
   return `${firstName} ${lastNameInitial}.`;
 };
-
-const handleUpdateButton = () => {};
 
 const components = () => {
   const navigate = useNavigate();
@@ -123,20 +126,16 @@ const components = () => {
               </div>
             </div>
             <div className="flex flex-col text-end">
-              {timestamps.length != 0 ? (
-                <button
-                  className="btn btn-outline btn-sm rounded-full"
-                  onClick={() => {
-                    document.getElementById("statusDialog").showModal();
-                  }}
-                >
-                  {timestamps[0].status}
-                </button>
-              ) : (
-                <button className="btn btn-sm rounded-2xl btn-outline">
-                  {selectedRecord.status}
-                </button>
-              )}
+              <button
+                className="btn btn-outline btn-sm rounded-full"
+                onClick={() => {
+                  document.getElementById("statusDialog").showModal();
+                }}
+              >
+                {timestamps.length != 0
+                  ? timestamps[0].status
+                  : selectedRecord.status}
+              </button>
             </div>
           </div>
           <hr />
@@ -156,11 +155,50 @@ const components = () => {
       );
     };
     const attachmentsContent = () => {
-      return (
-        <>
+      const googleDrivePreview = () => {
+        return (
+          <div className="flex flex-col">
+            <div className="flex flex-row pb-5 items-center justify-between">
+              <h1 className="poppins-semibold text-sm">Google Drive Preview</h1>
+              <h1
+                className="poppins-regular text-sm text-blue-500 cursor-pointer flex flex-row items-end"
+                onClick={() => {
+                  window.open(
+                    `https://drive.google.com/drive/folders/${selectedRecord.folder_id}`,
+                    "_blank"
+                  );
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="size-6"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.5 3.75a1.5 1.5 0 0 1 1.5 1.5v13.5a1.5 1.5 0 0 1-1.5 1.5h-6a1.5 1.5 0 0 1-1.5-1.5V15a.75.75 0 0 0-1.5 0v3.75a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V5.25a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3V9A.75.75 0 1 0 9 9V5.25a1.5 1.5 0 0 1 1.5-1.5h6Zm-5.03 4.72a.75.75 0 0 0 0 1.06l1.72 1.72H2.25a.75.75 0 0 0 0 1.5h10.94l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 0 0-1.06 0Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Go to Drive
+              </h1>
+            </div>
+            <FrameWrapper gdrivefolder={selectedRecord.folder_id} />
+          </div>
+        );
+      };
+
+      const noAttachment = () => {
+        return (
           <div className="mx-auto text-center">There are no attachments.</div>
-        </>
-      );
+        );
+      };
+
+      if (selectedRecord.folder_id != "") {
+        return googleDrivePreview();
+      }
+      return noAttachment();
     };
 
     return (
@@ -177,8 +215,13 @@ const components = () => {
 };
 
 const dialogComponents = () => {
+  const { companyId, recordId } = useParams();
+  const selectedRecord = useSelector((state) => state.records.selectedRecord);
+
   const STATUS_DIALOG = "statusDialog";
   const PROCEED_DIALOG = "proceedDialog";
+  const COMPLETE_DIAlOG = "completeDialog";
+  const CHANGEDRIVE_DIALOG = "changedriveID";
 
   const statusDialog = (
     timeStamps = [],
@@ -189,33 +232,72 @@ const dialogComponents = () => {
   ) => {
     const currentUser = useSelector((state) => state.user.user);
 
+    const [isLoading, setIsLoading] = useState(false);
+
+    const formState = {
+      date_filed:
+        selectedRecord.date_filed != "" && selectedRecord.date_filed != null
+          ? selectedRecord.date_filed
+          : "",
+      folder_id:
+        selectedRecord.folder_id != "" && selectedRecord.folder_id != null
+          ? selectedRecord.folder_id
+          : "",
+    };
+
+    const dispatch = useDispatch();
+
+    const [formData, setFormData] = useState(formState);
+
+    const [gdrivefolders, setgdrivefolders] = useState("");
+
+    const [errors, setErrors] = useState({});
+
     const listOfTimeStampComponent = (
       index,
       status,
       datetime,
       modified_by,
       remarks,
-      btnContent
+      btnContent,
+      btnGenerate
     ) => {
       return (
         <li className="mb-10 ms-4" key={`status-${index}`}>
           <div
-            className={`absolute w-3 h-3 border-primary bg-primary rounded-full -start-1.5 border  dark:border-gray-900 dark:bg-gray-700 mt-2`}
+            className={`absolute w-3 h-3  ${
+              status == "Reverted"
+                ? "bg-error border-error"
+                : "bg-primary border-primary"
+            } rounded-full -start-1.5 border  dark:border-gray-900 dark:bg-gray-700 mt-2`}
           ></div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <h3
+            className={`text-lg font-semibold ${
+              status == "Reverted" ? "text-error" : "text-gray-900"
+            } dark:text-white`}
+          >
             {status}
           </h3>
 
-          <time className="mb-1 text-sm font-normal leading-none text-gray-500 dark:text-gray-500">
-            {moment(datetime).format("MMMM DD, YYYY hh:ss A")}
+          <time className="mb-1 italic text-sm font-normal leading-none text-gray-500 dark:text-gray-500">
+            {moment(datetime).format("MMMM DD, YYYY hh:mm A")}
           </time>
-          <p className="text-sm italic text-gray-600 dark:text-gray-400">
-            {modified_by}
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {getName(modified_by)}
           </p>
 
-          <p className="text-sm poppins-normal mt-2 text-gray-500">{remarks}</p>
+          <p
+            className={`text-sm poppins-normal text-gray-500 mt-2 ${
+              remarks != "" && "border-l-4 border-gray-200 p-2"
+            }`}
+          >
+            {remarks}
+          </p>
 
-          <div className="flex mt-5 gap-2">{btnContent}</div>
+          <div className="flex mt-5 gap-2">
+            {btnGenerate}
+            {btnContent}
+          </div>
         </li>
       );
     };
@@ -231,6 +313,45 @@ const dialogComponents = () => {
       );
     };
 
+    const warningSVG = (
+      <svg
+        width="91"
+        height="91"
+        viewBox="0 0 91 91"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M45.6423 23.8995V50.18M45.6423 67.7447L45.6861 67.6961M45.6422 89.6016C69.8546 89.6016 89.4829 69.9911 89.4829 45.8008C89.4829 21.6103 69.8546 2 45.6422 2C21.4297 2 1.80151 21.6103 1.80151 45.8008C1.80151 69.9911 21.4297 89.6016 45.6422 89.6016Z"
+          stroke="#F38F33"
+          strokeWidth="2.62921"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+
+    const handleProceedBtn = async (form) => {
+      let type = "error";
+      let message = "Failed to update this record.";
+      try {
+        form = { ...form, comments: form.remarks };
+        let response = await axios.patch(`/record/record/${recordId}`, form);
+        if (response.status === 200) {
+          type = "success";
+          message = "Record updated successfully!";
+          setListOfTimeStamps([form, ...timeStamps]);
+          dispatch(fetchRecord(recordId));
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        showToast(type, message);
+        document.getElementById(PROCEED_DIALOG).close();
+        document.getElementById(STATUS_DIALOG).close();
+      }
+    };
+
     return (
       <>
         <dialog id={STATUS_DIALOG} className="modal">
@@ -243,60 +364,127 @@ const dialogComponents = () => {
             </form>
             <div className="py-4 px-10">
               <ol className="relative border-s border-gray-400 dark:border-gray-700 w-full">
-                {timeStamps.map((timestamp, index) => {
-                  let btnContent = <></>;
-                  let nextStep = "";
+                {timeStamps.length != 0 ? (
+                  <>
+                    {timeStamps.map((timestamp_record, index) => {
+                      let btnContent = <></>;
+                      let btnGenerate = <></>;
+                      let nextStep = "";
+                      let status = "";
 
-                  switch (timestamp.status) {
-                    case STATUSES.pending_for_approval:
-                      if (timeStamps.length == 2) {
-                        nextStep = "Mark as Approved";
-                        status = STATUSES.approved;
-                      }
-                      break;
-                    case STATUSES.approved:
-                      if (timeStamps.length == 3) {
-                        nextStep = "Mark as Routed for Signature";
-                        status = STATUSES.routed_for_signature;
-                      }
-                      break;
-                    case STATUSES.routed_for_signature:
-                      if (timeStamps.length == 4) {
-                        nextStep = "Mark as Notarized";
-                        status = STATUSES.notarized;
-                      }
-                      break;
-                    case STATUSES.notarized:
-                      if (timeStamps.length == 5) {
-                        nextStep = "Mark as Filed with SEC";
-                        status = STATUSES.filed_with_sec;
-                      }
-                      break;
-                    case STATUSES.filed_with_sec:
-                      if (timeStamps.length == 6) {
-                        nextStep = "Mark as Completed";
-                        status = STATUSES.completed;
-                      }
-                      break;
-                    default:
-                      btnContent = <></>;
-                      break;
-                  }
+                      if (
+                        timeStamps.length != 0 &&
+                        timeStamps[0].status == timestamp_record.status
+                      ) {
+                        switch (timestamp_record.status) {
+                          // case STATUSES.pending_for_approval:
+                          //   nextStep = "Mark as Approved";
+                          //   status = STATUSES.approved;
+                          //   break;
+                          case STATUSES.approved:
+                            nextStep = "Mark as Routed for Signature";
+                            status = STATUSES.routed_for_signature;
+                            btnGenerate = (
+                              <button
+                                className="btn btn-sm btn-outline"
+                                disabled={isLoading}
+                                onClick={async () => {
+                                  try {
+                                    setIsLoading(true);
+                                    let response = await axios.get(
+                                      `/record/generate/${selectedRecord.recordId}`,
+                                      {
+                                        params: {
+                                          recordId: selectedRecord.recordId,
+                                        },
+                                      }
+                                    );
 
-                  btnContent = getButton(nextStep, () => {
-                    setTimeStamp({ ...timestamp, status: nextStep });
-                    document.getElementById(PROCEED_DIALOG).showModal();
-                  });
+                                    const newWindow = window.open(
+                                      "",
+                                      "_blank",
+                                      "width=1280,height=720"
+                                    );
 
-                  return listOfTimeStampComponent(
-                    index,
-                    timestamp.status,
-                    timestamp.datetime,
-                    timestamp.modified_by,
-                    timestamp.remarks,
-                    btnContent
-                  );
-                })}
+                                    if (newWindow) {
+                                      newWindow.document.write(response.data);
+                                      newWindow.document.close(); // Ensure the document is rendered
+                                    }
+                                  } catch (error) {
+                                    console.log(error);
+                                  } finally {
+                                    setIsLoading(false);
+                                  }
+                                }}
+                              >
+                                {isLoading && (
+                                  <span className="loading loading-spinner loading-xs"></span>
+                                )}
+                                Generate
+                              </button>
+                            );
+                            break;
+                          case STATUSES.routed_for_signature:
+                            nextStep = "Mark as Notarized";
+                            status = STATUSES.notarized;
+                            break;
+                          case STATUSES.notarized:
+                            nextStep = "Mark as Filed with SEC";
+                            status = STATUSES.filed_with_sec;
+                            break;
+                          case STATUSES.filed_with_sec:
+                            nextStep = "Mark as Completed";
+                            status = STATUSES.completed;
+                            break;
+                          default:
+                            btnContent = <></>;
+                            break;
+                        }
+                      }
+
+                      if (status == STATUSES.completed) {
+                        btnContent = getButton(nextStep, () => {
+                          setTimeStamp({
+                            ...timestamp,
+                            status: status,
+                            remarks: "",
+                          });
+
+                          setFormData(formState);
+                          setErrors({});
+                          document.getElementById(COMPLETE_DIAlOG).showModal();
+                        });
+                      } else {
+                        btnContent = getButton(nextStep, () => {
+                          setTimeStamp({
+                            ...timestamp,
+                            status: status,
+                            remarks: "",
+                          });
+                          document.getElementById(PROCEED_DIALOG).showModal();
+                        });
+                      }
+
+                      return listOfTimeStampComponent(
+                        index,
+                        timestamp_record.status,
+                        timestamp_record.datetime,
+                        timestamp_record.modified_by,
+                        timestamp_record.remarks,
+                        btnContent,
+                        btnGenerate
+                      );
+                    })}
+                  </>
+                ) : (
+                  listOfTimeStampComponent(
+                    0,
+                    selectedRecord.status,
+                    selectedRecord.updated_at,
+                    selectedRecord.modified_by,
+                    ""
+                  )
+                )}
               </ol>
             </div>
           </div>
@@ -323,37 +511,33 @@ const dialogComponents = () => {
                     strokeLinejoin="round"
                   />
                 </svg>
-                <h1 className="poppins-bold text-[15px]">Are you sure?</h1>
-                <h6>You want to proceed to the next step?</h6>
-                <label className="form-control w-full">
-                  <div className="label w-full">
-                    <span className="label-text">Remarks</span>
-                  </div>
-                  <textarea
-                    className={`textarea textarea-bordered h-24 ${
-                      false && " textarea-error"
-                    }`}
-                  ></textarea>
-                  {false && <span className="text-[12px] text-red-500"></span>}
-                </label>
+                <h1 className="poppins-bold text-[18px]">
+                  {timestamp.status == STATUSES.completed
+                    ? "Complete GIS File Process"
+                    : "Are you sure?"}
+                </h1>
+                <span className="poppins-normal text-[15px]">
+                  {timestamp.status == STATUSES.completed
+                    ? "Are you sure you want to complete the GIS file process?"
+                    : "You want to proceed to the next step?"}
+                </span>
+
+                {timestamp.status != STATUSES.completed && (
+                  <label className="form-control w-full">
+                    <div className="label w-full">
+                      <span className="label-text">Remarks</span>
+                    </div>
+                    <textarea
+                      className={`textarea textarea-bordered h-24`}
+                      onChange={(e) => {
+                        setTimeStamp({ ...timestamp, remarks: e.target.value });
+                      }}
+                      value={timestamp.remarks}
+                    ></textarea>
+                  </label>
+                )}
               </div>
-              <div className="flex flex-row gap-10 items-center justify-center">
-                <button
-                  onClick={(e) => {
-                    console.log(timestamp);
-                    // modified_by = "";
-                    let modified_by = getName(
-                      `${currentUser.first_name} ${currentUser.last_name}`
-                    );
-                    setListOfTimeStamps([timestamp, ...timeStamps]);
-                    showToast("success", "Record updated successfully!");
-                    document.getElementById(PROCEED_DIALOG).close();
-                    document.getElementById(STATUS_DIALOG).close();
-                  }}
-                  className="btn bg-primary text-white mt-2"
-                >
-                  Yes, proceed!
-                </button>
+              <div className="flex flex-row gap-10 items-center justify-center mt-5">
                 <button
                   onClick={(e) => {
                     document.getElementById(PROCEED_DIALOG).close();
@@ -362,7 +546,227 @@ const dialogComponents = () => {
                 >
                   Cancel
                 </button>
+                <button
+                  onClick={(e) => {
+                    const modified_by = `${currentUser.first_name} ${currentUser.last_name}`;
+
+                    let complete_form = { ...timestamp, modified_by };
+                    if (timestamp.status == STATUSES.completed) {
+                      complete_form = {
+                        ...complete_form,
+                        date_filed: formData.date_filed,
+                        folder_id: formData.folder_id,
+                      };
+                    }
+
+                    handleProceedBtn(complete_form);
+                  }}
+                  className="btn bg-primary text-white mt-2"
+                >
+                  Yes,{" "}
+                  {timestamp.status == STATUSES.completed
+                    ? "complete!"
+                    : "proceed!"}
+                </button>
               </div>
+            </div>
+          </div>
+        </dialog>
+
+        <dialog id={COMPLETE_DIAlOG} className="modal">
+          <div className="modal-box">
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-col w-full items-center justify-center gap-2">
+                <h1 className="poppins-semibold text-start w-full mb-3">
+                  Mark as Completed
+                </h1>
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="poppins-regular text-[12px]">
+                      Date Received <span className="text-red-500">*</span>
+                    </span>
+                  </div>
+                  <input
+                    type="date"
+                    className={`input input-bordered w-full ${
+                      errors.date_filed && `input-error`
+                    }`}
+                    name="date_filed"
+                    value={formData.date_filed}
+                    onChange={(e) => {
+                      setFormData({ ...formData, date_filed: e.target.value });
+
+                      if (e.target.value == "") {
+                        setErrors({
+                          ...errors,
+                          date_filed: "Date Received is required",
+                        });
+                      } else {
+                        setErrors({
+                          ...errors,
+                          date_filed: "",
+                        });
+                      }
+                    }}
+                  />
+                  {errors.date_filed && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.date_filed}
+                    </span>
+                  )}
+                </label>
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="poppins-regular text-[12px]">
+                      Google Drive Folder ID{" "}
+                      <span className="text-red-500">*</span>
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    className={`input input-bordered w-full ${
+                      errors.folder_id && `input-error`
+                    }`}
+                    name="folder_id"
+                    value={formData.folder_id}
+                    onChange={(e) => {
+                      setFormData({ ...formData, folder_id: e.target.value });
+
+                      if (e.target.value == "") {
+                        setErrors({ folder_id: "Folder ID is required" });
+                      } else {
+                        setErrors({ folder_id: "" });
+                      }
+                    }}
+                  />
+                  {errors.folder_id && (
+                    <span className="text-[12px] text-red-500">
+                      {errors.folder_id}
+                    </span>
+                  )}
+                </label>
+
+                <label className="form-control w-full">
+                  <div className="label w-full">
+                    <span className="label-text">Remarks</span>
+                  </div>
+                  <textarea
+                    className={`textarea textarea-bordered h-24`}
+                    onChange={(e) => {
+                      setTimeStamp({ ...timestamp, remarks: e.target.value });
+                    }}
+                    value={timestamp.remarks}
+                  ></textarea>
+                </label>
+              </div>
+              <div className="flex flex-row gap-10 items-center justify-between">
+                <button
+                  onClick={(e) => {
+                    document.getElementById(COMPLETE_DIAlOG).close();
+                  }}
+                  className="btn bg-[#CDCDCD] text-black mt-2"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={(e) => {
+                    let newErrors = {};
+                    if (formData.date_filed == "") {
+                      newErrors.date_filed = "Date Received is required";
+                    }
+
+                    if (formData.folder_id == "") {
+                      newErrors.folder_id = "Folder ID is required";
+                    }
+
+                    if (Object.keys(newErrors).length != 0) {
+                      setErrors(newErrors);
+                    } else {
+                      document.getElementById(COMPLETE_DIAlOG).close();
+                      document.getElementById(PROCEED_DIALOG).showModal();
+                    }
+                  }}
+                  className="btn bg-primary text-white mt-2"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        </dialog>
+
+        <dialog id={CHANGEDRIVE_DIALOG} className="modal">
+          <div className="modal-box">
+            <div className="flex flex-row justify-between py-4">
+              <form method="dialog">
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2">
+                  ✕
+                </button>
+              </form>
+            </div>
+            <div className="flex flex-col gap-5">
+              <h1 className="poppins-semibold text-md">
+                Update Google Drive Folder ID
+              </h1>
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="poppins-regular text-[12px]">
+                    Google Drive Folder ID{" "}
+                    <span className="text-red-500">*</span>
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  className={`input input-bordered w-full ${
+                    errors.gdrivefolders && `input-error`
+                  }`}
+                  name="gdrivefolders"
+                  value={gdrivefolders}
+                  onChange={(e) => {
+                    setgdrivefolders(e.target.value);
+                  }}
+                />
+                {errors.gdrivefolders && (
+                  <span className="text-[12px] text-red-500">
+                    {errors.gdrivefolders}
+                  </span>
+                )}
+              </label>
+
+              <button
+                className="btn bg-primary text-white"
+                onClick={async (e) => {
+                  try {
+                    let record = {
+                      ...selectedRecord,
+                      folder_id: gdrivefolders,
+                    };
+
+                    let response = await axios.patch(
+                      `/record/record/${record.recordId}`,
+                      {
+                        recordId: record.recordId,
+                        folder_id: record.folder_id,
+                      }
+                    );
+
+                    if (response.status === 200) {
+                      dispatch(
+                        updateRecordGdriveFolders({
+                          recordId: record.recordId,
+                          folder_id: record.folder_id,
+                        })
+                      );
+                    }
+                  } catch (error) {
+                    console.log(error);
+                  } finally {
+                    document.getElementById("changedriveID").close();
+                  }
+                }}
+              >
+                Save
+              </button>
             </div>
           </div>
         </dialog>
@@ -379,6 +783,8 @@ const NewView = () => {
 
   const getComponents = components();
   const getDialogComponents = dialogComponents();
+
+  const selectedRecord = useSelector((state) => state.records.selectedRecord);
 
   const STATUSES = {
     drafted: "Drafted",
@@ -399,28 +805,17 @@ const NewView = () => {
 
   const [timestamp, setTimeStamp] = useState(TIMESTAMP_STATE);
 
-  const [listOfTimeStamps, setListOfTimeStamps] = useState([
-    {
-      status: "Pending for Approval",
-      modified_by: "Hannah A.",
-      remarks:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus ea praesentium ducimus, deserunt exercitationem quibusdam perspiciatis eaque vitae aliquid omnis. Autem praesentium consectetur unde ipsa impedit dolores rem quod fugiat?",
-
-      datetime: new Date(),
-    },
-    {
-      status: "Drafted",
-      modified_by: "Hannah A.",
-      remarks: "",
-      datetime: new Date(),
-    },
-  ]);
+  const [listOfTimeStamps, setListOfTimeStamps] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     dispatch(fetchUser(token));
     dispatch(fetchRecord(recordId));
   }, []);
+
+  useEffect(() => {
+    setListOfTimeStamps(selectedRecord.timestamps);
+  }, [selectedRecord]);
 
   return (
     <>

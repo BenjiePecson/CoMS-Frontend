@@ -2,24 +2,24 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-function Notarization() {
+function FiledwithSEC() {
     const handleOpenModal = () => {
-        document.getElementById('notarization').showModal();
+        document.getElementById('filed').showModal();
     };
 
     const handleCloseModal = () => {
-        document.getElementById('notarization').close();
+        document.getElementById('filed').close();
     };
 
-    const [notarize, setNotarize] = useState([]);
+    const [filed, setFiled] = useState([]);
 
-    const fetchNotarize = async () => {
+    const fetchFiled = async () => {
         let response = await axios.get("/main-dashboard/");
-        setNotarize(response.data.notarization);
+        setFiled(response.data.filed);
     }
 
     useEffect(() => {
-        fetchNotarize();
+        fetchFiled();
     }, []);
 
     const tableComponent = (
@@ -34,8 +34,8 @@ function Notarization() {
                     </tr>
                 </thead>
                 <tbody>
-                    {notarize.length !== 0 ? (
-                        notarize.map((record) => {
+                    {filed.length !== 0 ? (
+                        filed.map((record) => {
                             return (
                                 <tr key={record.recordId}>
                                     <td>{record.recordName}</td>
@@ -79,23 +79,25 @@ function Notarization() {
     );
 
     return (
-        <div className="card bg-base-100 w-50 shadow-xl m-2">
-            <div className="card-body cursor-pointer" onClick={handleOpenModal}>
-                <h2 className="card-title text-center">For Notarization</h2>
-                <p className="text-center text-lg">{notarize.length}</p>
+        <div className="bg-blue-900 w-50 h-5/6 shadow-xl m-2 border border-white rounded-2xl">
+            <div className="cursor-pointer h-full p-4" onClick={handleOpenModal}>
+                <h2 className="text-center text-white font-semibold">Filed with SEC</h2>
+                <p className="text-center text-white text-sm">{filed.length}</p>
             </div>
 
-            <dialog id="notarization" className="modal">
+            <dialog id="filed" className="modal">
+                {/* <button className="btn" onClick={handleCloseModal}>Close</button> */}
                 <div className="modal-box w-11/12 max-w-5xl">
-                    <h3 className="font-bold text-lg">List of 'For Notarization'</h3>
+                    <h3 className="font-bold text-lg">List of 'Filed with SEC'</h3>
                     {tableComponent}
-                    <div className="modal-action">
-                        <button className="btn" onClick={handleCloseModal}>Close</button>
-                    </div>
                 </div>
+
+                <form method="dialog" className="modal-backdrop cursor-pointer bg-blue-900 opacity-40">
+                    <button>close</button>
+                </form>
             </dialog>
         </div>
     );
 };
 
-export default Notarization;
+export default FiledwithSEC;

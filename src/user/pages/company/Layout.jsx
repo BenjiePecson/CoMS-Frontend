@@ -611,6 +611,25 @@ const Layout = () => {
 
                     <Link
                       className={`flex flex-row hover:bg-[#667A8A] h-[45px] rounded-[3px] items-center my-1 ${
+                        active === "tasks-checklist" ? "bg-[#667A8A]" : ""
+                      } ${
+                        active === "tasks-checklist"
+                          ? "poppins-semibold"
+                          : "poppins-regular"
+                      } text-white`}
+                      to={`/company/${companyId}/tasks-checklist`}
+                      onClick={() => {
+                        setActive("tasks-checklist");
+                      }}
+                    >
+                      <div className="flex flex-row px-4 items-center">
+                        <div className="pr-4">{taskIcon}</div>
+                        <h1 className="text-white">Tasks new</h1>
+                      </div>
+                    </Link>
+
+                    <Link
+                      className={`flex flex-row hover:bg-[#667A8A] h-[45px] rounded-[3px] items-center my-1 ${
                         active === "businessRenewalPermit" ? "bg-[#667A8A]" : ""
                       } ${
                         active === "businessRenewalPermit"

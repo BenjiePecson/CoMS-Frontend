@@ -2,24 +2,25 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-function Drafted() {
+function PendingforApproval() {
     const handleOpenModal = () => {
-        document.getElementById('drafted').showModal();
+        document.getElementById('pending').showModal();
     };
 
     const handleCloseModal = () => {
-        document.getElementById('drafted').close();
+        document.getElementById('pending').close();
     };
 
-    const [drafted, setDrafted] = useState([]);
 
-    const fetchDrafted = async () => {
+    const [pending, setPending] = useState([]);
+
+    const fetchPending = async () => {
         let response = await axios.get("/main-dashboard/");
-        setDrafted(response.data.drafted);
+        setPending(response.data.pending);
     }
 
     useEffect(() => {
-        fetchDrafted();
+        fetchPending();
     }, []);
 
     const tableComponent = (
@@ -34,8 +35,8 @@ function Drafted() {
                     </tr>
                 </thead>
                 <tbody>
-                    {drafted.length !== 0 ? (
-                        drafted.map((record) => {
+                    {pending.length !== 0 ? (
+                        pending.map((record) => {
                             return (
                                 <tr key={record.recordId}>
                                     <td>{record.recordName}</td>
@@ -79,23 +80,25 @@ function Drafted() {
     );
 
     return (
-        <div className="card bg-base-100 w-50 shadow-xl m-2">
-            <div className="card-body cursor-pointer" onClick={handleOpenModal}>
-                <h2 className="card-title text-center">Drafted</h2>
-                <p className="text-center text-lg">{drafted.length}</p>
+        <div className="bg-blue-900 h-5/6 w-50 shadow-xl m-2 border border-white rounded-2xl">
+            <div className="cursor-pointer h-full p-4" onClick={handleOpenModal}>
+                <h2 className="text-center text-white font-semibold">Pending for Approval</h2>
+                <p className="text-center text-white text-sm">{pending.length}</p>
             </div>
 
-            <dialog id="drafted" className="modal">
+            <dialog id="pending" className="modal">
+                 {/* <button className="btn" onClick={handleCloseModal}>Close</button> */}
                 <div className="modal-box w-11/12 max-w-5xl">
-                    <h3 className="font-bold text-lg">List of 'Drafted'</h3>
+                    <h3 className="font-bold text-lg">List of 'Pending for Approval'</h3>
                     {tableComponent}
-                    <div className="modal-action">
-                        <button className="btn" onClick={handleCloseModal}>Close</button>
-                    </div>
                 </div>
+
+                <form method="dialog" className="modal-backdrop cursor-pointer bg-blue-900 opacity-40">
+                    <button>close</button>
+                </form>
             </dialog>
         </div>
     );
 };
 
-export default Drafted;
+export default PendingforApproval;

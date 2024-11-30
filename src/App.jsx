@@ -35,14 +35,19 @@ import ViewSecCert from "./user/pages/company/BoardMeetings/SecretaryCertificate
 import MainDashboard from "./user/pages/user/MainDashboard";
 
 import BusinessRenewal from "./user/pages/company/BusinessRenewal";
+import TaskChecklist from "./user/pages/company/TaskChecklist";
 import Quote from "./user/pages/user/Quote";
 
 import MC28Form from "./user/pages/company/MC28Form";
 import ViewMC28Form from "./user/pages/company/MC28Form/view";
 import DocumentDrafting from "./user/pages/company/DocumentDrafting";
 import ViewDocumentDrafting from "./user/pages/company/DocumentDrafting/view";
+
 import NewCreate from "./user/pages/company/GISTracker/NewCreate";
 import NewView from "./user/pages/company/GISTracker/NewView";
+
+import TaskView from "./user/pages/company/TaskView";
+
 
 // axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
@@ -156,6 +161,16 @@ function App() {
             />
 
             <Route path="company/:companyId/tasks" element={<Tasks />} />
+
+            <Route
+              path="company/:companyId/tasks-checklist"
+              element={<TaskChecklist />}
+            />
+
+            <Route
+              path="company/:companyId/tasks-checklist/view"
+              element={<TaskView />}
+            />
             <Route
               path="company/:companyId/businessRenewalPermit"
               element={<BusinessRenewal />}

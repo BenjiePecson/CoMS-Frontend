@@ -2,24 +2,24 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-function Approved() {
+function Notarization() {
     const handleOpenModal = () => {
-        document.getElementById('approved').showModal();
+        document.getElementById('notarization').showModal();
     };
 
     const handleCloseModal = () => {
-        document.getElementById('approved').close();
+        document.getElementById('notarization').close();
     };
 
-    const [approved, setApproved] = useState([]);
+    const [notarize, setNotarize] = useState([]);
 
-    const fetchApproved = async () => {
+    const fetchNotarize = async () => {
         let response = await axios.get("/main-dashboard/");
-        setApproved(response.data.approved);
+        setNotarize(response.data.notarization);
     }
 
     useEffect(() => {
-        fetchApproved();
+        fetchNotarize();
     }, []);
 
     const tableComponent = (
@@ -34,8 +34,8 @@ function Approved() {
                     </tr>
                 </thead>
                 <tbody>
-                    {approved.length !== 0 ? (
-                        approved.map((record) => {
+                    {notarize.length !== 0 ? (
+                        notarize.map((record) => {
                             return (
                                 <tr key={record.recordId}>
                                     <td>{record.recordName}</td>
@@ -79,23 +79,25 @@ function Approved() {
     );
 
     return (
-        <div className="card bg-base-100 w-50 shadow-xl m-2">
-            <div className="card-body cursor-pointer" onClick={handleOpenModal}>
-                <h2 className="card-title text-center">Approved</h2>
-                <p className="text-center text-lg">{approved.length}</p>
+        <div className="bg-blue-900 w-50 h-5/6 shadow-xl m-2 border border-white rounded-2xl">
+            <div className="cursor-pointer h-full p-4" onClick={handleOpenModal}>
+                <h2 className="text-center text-white font-semibold">For Notarization</h2>
+                <p className="text-center text-white text-sm">{notarize.length}</p>
             </div>
 
-            <dialog id="approved" className="modal">
+            <dialog id="notarization" className="modal">
+                {/* <button className="btn" onClick={handleCloseModal}>Close</button> */}
                 <div className="modal-box w-11/12 max-w-5xl">
-                    <h3 className="font-bold text-lg">List of 'For Approved'</h3>
+                    <h3 className="font-bold text-lg">List of 'For Notarization'</h3>
                     {tableComponent}
-                    <div className="modal-action">
-                        <button className="btn" onClick={handleCloseModal}>Close</button>
-                    </div>
                 </div>
+
+                <form method="dialog" className="modal-backdrop cursor-pointer bg-blue-900 opacity-40">
+                    <button>close</button>
+                </form>
             </dialog>
         </div>
     );
 };
 
-export default Approved;
+export default Notarization;

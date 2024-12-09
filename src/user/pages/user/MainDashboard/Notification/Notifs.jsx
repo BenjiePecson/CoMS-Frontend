@@ -39,7 +39,7 @@ export const Notifs = () => {
 
   return (
     <div className="w-full h-full shadow-xl p-2 rounded-2xl">
-      <div className="cursor-pointer h-full w-full" onClick={handleOpenModal}>
+      <div className="cursor-pointer h-full" onClick={handleOpenModal}>
         {content}
       </div>
 

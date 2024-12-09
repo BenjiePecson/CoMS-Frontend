@@ -1,7 +1,7 @@
 import React from 'react'
 
 const content = (
-    <div className="overflow-x-auto overflow-y-auto h-full">
+    <div className="overflow-x-auto overflow-y-auto h-full w-full">
             <table className="table table-xs overflow-y-hidden h-[14.5rem]">
                 <thead className='bg-blue-900'>
                 <tr>
@@ -189,7 +189,7 @@ export const OpenItems = () => {
     };
 
   return (
-    <div className="w-full shadow-xl p-2 rounded-2xl h-[15rem]">
+    <div className="w-full shadow-xl p-2 rounded-2xl h-[15rem] 2xl:h-full">
       <div className="cursor-pointer h-full w-full" onClick={handleOpenModal}>
         {content}
       </div>

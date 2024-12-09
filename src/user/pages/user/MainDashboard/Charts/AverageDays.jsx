@@ -55,7 +55,7 @@ const AverageDays = () => {
   };
 
   return (
-    <div className="bg-base-100 w-full h-full flex items-center rounded-2xl">
+    <div className="bg-base-100 w-full h-full flex items-center justify-center rounded-2xl">
       <div className="cursor-pointer" onClick={handleOpenModal}>
         <Bar data={data} options={options} className='max-w-full' />
       </div>

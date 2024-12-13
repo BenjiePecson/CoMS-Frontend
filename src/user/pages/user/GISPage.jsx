@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Header from "../../components/Header";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,9 +11,6 @@ import Unathorized from "../../components/Unathorized";
 import axios from "axios";
 
 const GISPage = () => {
-  // const companyRecords = useSelector((state) => state.records.records);
-  const records = useSelector((state) => state.records.records);
-  const currentUser = useSelector((state) => state.user.user);
 
   const dispatch = useDispatch();
 
@@ -184,13 +181,71 @@ const GISPage = () => {
     );
   };
 
+  const useTable = () => {
+    const dispatch = useDispatch();
+    const records = useSelector((state) => state.records.records);
+    const loading = useSelector((state) => state.records.status);
+
+    useEffect(() => {
+      if (!records && !loading) {
+        dispatch(fetchAllRecords("Pending for Approval"));
+      }
+    }, [dispatch, records, loading]);
+
+    // If data is not yet fetched, throw a promise for Suspense to catch
+    if (loading) {
+      throw new Promise((resolve) => setTimeout(resolve, 2000)); // Suspense will wait
+    }
+
+    return records;
+  };
+
+  const DataTableComponent = () => {
+    const records = useTable(); // This will trigger the data fetching logic
+    return (
+      <DataTable
+        columns={columns}
+        data={records}
+        persistTableHead={true}
+        customStyles={customStyles}
+        theme="customized"
+      />
+    );
+  };
+
   useEffect(() => {
     dispatch(fetchAllRecords("Pending for Approval"));
   }, []);
 
-  if (!currentUser.permissions.includes("View Permissions")) {
-    return <Unathorized />;
-  }
+  // if (!currentUser.permissions.includes("View GIS Approval")) {
+  //   return <Unathorized />;
+  // }
+
+  const TableSkeleton = () => {
+    return (
+      <div className="space-y-4 w-full">
+        {/* Table header skeleton */}
+        <div className="flex space-x-4 animate-pulse w-full">
+          <div className="w-24 h-6 bg-gray-300 rounded-md"></div>
+          <div className="w-48 h-6 bg-gray-300 rounded-md"></div>
+          <div className="w-64 h-6 bg-gray-300 rounded-md"></div>
+          <div className="w-64 h-6 bg-gray-300 rounded-md"></div>
+          <div className="w-64 h-6 bg-gray-300 rounded-md"></div>
+        </div>
+
+        {/* Table rows skeleton */}
+        {Array.from({ length: 5 }).map((_, index) => (
+          <div key={index} className="flex space-x-4 animate-pulse">
+            <div className="w-40 h-6 bg-gray-300 rounded-md"></div>
+            <div className="w-40 h-6 bg-gray-300 rounded-md"></div>
+            <div className="w-56 h-6 bg-gray-300 rounded-md"></div>
+            <div className="w-56 h-6 bg-gray-300 rounded-md"></div>
+            <div className="w-56 h-6 bg-gray-300 rounded-md"></div>
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <>
@@ -202,21 +257,19 @@ const GISPage = () => {
           ]}
         />
       </div> */}
+
       <div>
         {/* <div>
-          <Header />
-        </div> */}
+      <Header />
+    </div> */}
         <div className="flex flex-row w-full justify-between items-center mt-5">
           <div className="poppins-bold text-color-2 text-[24px]">GIS</div>
         </div>
+
         <div className="flex flex-col w-full mt-5">
-          <DataTable
-            columns={columns}
-            data={records}
-            persistTableHead={true}
-            customStyles={customStyles}
-            theme="customized"
-          />
+          <Suspense fallback={<TableSkeleton />}>
+            <DataTableComponent />
+          </Suspense>
         </div>
       </div>
     </>

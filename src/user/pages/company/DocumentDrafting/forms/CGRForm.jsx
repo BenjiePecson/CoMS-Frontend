@@ -27,6 +27,7 @@ const CGRForm = ({ formData, officers, handleOnChange, setFormData }) => {
             type="date"
             className="input input-bordered w-full"
             name="date_from"
+            value={formData.form_data.date_from}
             onChange={(e) => {
               handleOnChange(e, "Date From");
             }}
@@ -41,8 +42,26 @@ const CGRForm = ({ formData, officers, handleOnChange, setFormData }) => {
             type="date"
             className="input input-bordered w-full"
             name="date_to"
+            value={formData.form_data.date_to}
             onChange={(e) => {
               handleOnChange(e, "Date To");
+            }}
+          />
+        </label>
+      </div>
+
+      <div className="flex flex-col w-full">
+        <label className="form-control w-full">
+          <div className="label">
+            <span className="label-text">Office Address</span>
+          </div>
+          <input
+            type="text"
+            className="input input-bordered w-full"
+            name="office_address"
+            value={formData.form_data.office_address}
+            onChange={(e) => {
+              handleOnChange(e, "Office Address");
             }}
           />
         </label>
@@ -57,6 +76,7 @@ const CGRForm = ({ formData, officers, handleOnChange, setFormData }) => {
           <input
             type="text"
             name="revenue_q1"
+            value={formData.form_data.revenue_q1}
             onChange={(e) => {
               handleOnChange(e, "Q1 Revenue");
             }}
@@ -70,6 +90,7 @@ const CGRForm = ({ formData, officers, handleOnChange, setFormData }) => {
           <input
             type="text"
             name="revenue_q2"
+            value={formData.form_data.revenue_q2}
             onChange={(e) => {
               handleOnChange(e, "Q2 Revenue");
             }}
@@ -83,6 +104,7 @@ const CGRForm = ({ formData, officers, handleOnChange, setFormData }) => {
           <input
             type="text"
             name="revenue_q3"
+            value={formData.form_data.revenue_q3}
             onChange={(e) => {
               handleOnChange(e, "Q3 Revenue");
             }}
@@ -96,6 +118,7 @@ const CGRForm = ({ formData, officers, handleOnChange, setFormData }) => {
           <input
             type="text"
             name="revenue_q4"
+            value={formData.form_data.revenue_q4}
             onChange={(e) => {
               handleOnChange(e, "Q4 Revenue");
             }}

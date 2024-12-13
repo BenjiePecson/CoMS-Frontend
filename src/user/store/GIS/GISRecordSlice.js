@@ -28,7 +28,7 @@ const RecordState = {
 };
 
 export const fetchAllRecords = createAsyncThunk(
-  "records/fetchRecords",
+  "records/fetchAllRecords",
   async (status) => {
     let response = await axios.get(`/record/`, {
       params: { status },
@@ -63,7 +63,7 @@ const initialState = {
   records: [],
   record: RecordState,
   selectedRecord: RecordState,
-  status: "idle",
+  status: false,
   error: null,
 };
 
@@ -122,29 +122,42 @@ const GISRecordSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    //fetch all records
+    builder.addCase(fetchAllRecords.pending, (state) => {
+      state.status = true;
+    });
+    builder.addCase(fetchAllRecords.fulfilled, (state, action) => {
+      state.status = false;
+      state.records = action.payload;
+    });
+    builder.addCase(fetchAllRecords.rejected, (state, action) => {
+      state.status = false;
+      state.records = [];
+    });
+
     //fetch records
     builder.addCase(fetchRecords.pending, (state) => {
-      state.status = "pending";
+      state.status = true;
     });
     builder.addCase(fetchRecords.fulfilled, (state, action) => {
-      state.status = "fulfilled";
+      state.status = false;
       state.records = action.payload;
     });
     builder.addCase(fetchRecords.rejected, (state, action) => {
-      state.status = "rejected";
+      state.status = false;
       state.records = [];
     });
 
     //fetch record
     builder.addCase(fetchRecord.pending, (state) => {
-      state.status = "pending";
+      state.status = true;
     });
     builder.addCase(fetchRecord.fulfilled, (state, action) => {
-      state.status = "fulfilled";
+      state.status = false;
       state.selectedRecord = action.payload;
     });
     builder.addCase(fetchRecord.rejected, (state, action) => {
-      state.status = "rejected";
+      state.status = false;
       state.selectedRecord = RecordState;
     });
   },

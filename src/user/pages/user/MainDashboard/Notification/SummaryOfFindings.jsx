@@ -28,14 +28,12 @@ const content = (
     </div>
 );
 
-const SummaryOfFindings = () => {
-    const handleOpenModal = () => {
-        document.getElementById('summaryOfFindings').showModal();
-    };
+const SummaryOfFindings = ({dialogID}) => {
 
-    const handleCloseModal = () => {
-        document.getElementById('summaryOfFindings').close();
-    };
+  const handleOpenModal = () => {
+    document.getElementById(dialogID).showModal();
+};
+
 
   return (
     <div className="w-full h-full shadow-xl p-2 rounded-2xl">
@@ -43,7 +41,7 @@ const SummaryOfFindings = () => {
         {content}
       </div>
 
-      <dialog id="summaryOfFindings" className="modal">
+      <dialog id={dialogID} className="modal">
           {/* <button className="btn" onClick={handleCloseModal}>Close</button> */}
           <div className="modal-box w-11/12 max-w-5xl">
             <div className='flex flex-row justify-between'>

@@ -28,9 +28,9 @@ const content = (
     </div>
 );
 
-export const Notifs = () => {
+export const Notifs = ({dialogID}) => {
     const handleOpenModal = () => {
-        document.getElementById('notifs').showModal();
+        document.getElementById(dialogID).showModal();
     };
 
     const handleCloseModal = () => {
@@ -43,7 +43,7 @@ export const Notifs = () => {
         {content}
       </div>
 
-      <dialog id="notifs" className="modal">
+      <dialog id={dialogID} className="modal">
           {/* <button className="btn" onClick={handleCloseModal}>Close</button> */}
           <div className="modal-box w-11/12 max-w-5xl">
             <div className='flex flex-row justify-between'>

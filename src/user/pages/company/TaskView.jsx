@@ -16,12 +16,76 @@ const TaskView = () => {
       <div className="flex flex-col lg:flex-row">
         <div className="lg:w-[70%]">
           <div className="flex flex-col m-4">
-            <p className="text-[14px] font-medium">
+            {/* <p className="text-[14px] font-medium">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem
               ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
               tempor incididunt ut labore et dolore magna aliqua.
-            </p>
+            </p> */}
+            <h1 className="text-[#868686] font-semibold text-[20px] mt-3">
+              Pre-requisite
+            </h1>
+            <div className="card bg-base-100 shadow-sm">
+              <div className="card-body">
+                <div className="overflow-x-auto">
+                  <table className="table table-bordered table-zebra">
+                    {/* head */}
+                    <tbody>
+                      <tr>
+                        <th className="border-2 border-gray-200">
+                          Google Drive for Documents
+                        </th>
+                        <td className="border-2 border-gray-200">
+                          <button className="btn btn-sm bg-[#273069] text-white text-[10px] mr-2">
+                            View
+                          </button>
+                          <button className="btn btn-sm bg-[#273069] text-white text-[10px]">
+                            Edit
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th className="border-2 border-gray-200">
+                          Board Minutes that contain related resolution
+                        </th>
+                        <td className="border-2 border-gray-200">
+                          <button className="btn btn-sm bg-[#273069] text-white text-[10px] mr-2">
+                            View
+                          </button>
+                          <button className="btn btn-sm bg-[#273069] text-white text-[10px]">
+                            Edit
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th className="border-2 border-gray-200">Latest GIS</th>
+                        <td className="border-2 border-gray-200">
+                          <button className="btn btn-sm bg-[#273069] text-white text-[10px] mr-2">
+                            View
+                          </button>
+                          <button className="btn btn-sm bg-[#273069] text-white text-[10px]">
+                            Edit
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th className="border-2 border-gray-200">
+                          Secretary Certificate
+                        </th>
+                        <td className="border-2 border-gray-200">
+                          <button className="btn btn-sm bg-[#273069] text-white text-[10px] mr-2">
+                            View
+                          </button>
+                          <button className="btn btn-sm bg-[#273069] text-white text-[10px]">
+                            Edit
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
 
             <h1 className="text-[#868686] font-semibold text-[20px] mt-3">
               Checklist
@@ -34,16 +98,19 @@ const TaskView = () => {
                   <thead>
                     <tr className="font-bold text-[#1F384C]">
                       <th></th>
+
                       <th>File Name</th>
                       <th>Status</th>
-
+                      <th>Remarks</th>
+                      <th>Time Stamp</th>
                       <th></th>
                     </tr>
                   </thead>
                   <tbody>
                     {/* row 1 */}
                     <tr className="text-[#868686]">
-                      <th>1</th>
+                      <td>1</td>
+
                       <td>Certificate Gross Receipts </td>
                       <td>
                         {" "}
@@ -54,6 +121,26 @@ const TaskView = () => {
                           name="color"
                           options={colorOptions}
                         />{" "}
+                      </td>
+
+                      <td>Remarks</td>
+                      <td className="text-center">
+                        <button className="btn btn-sm bg-[#273069]">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="size-4 text-white"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                            />
+                          </svg>
+                        </button>
                       </td>
 
                       <td>
@@ -70,7 +157,7 @@ const TaskView = () => {
                         </button>
                       </td>
                     </tr>
-                    {/* row 1 */}
+                    {/* row 1
                     <tr className="text-[#868686]">
                       <th>2</th>
                       <td>Secretary Certificate of Authorization </td>
@@ -100,7 +187,7 @@ const TaskView = () => {
                       </td>
                     </tr>
                     {/* row 1 */}
-                    <tr className="text-[#868686]">
+                    {/* <tr className="text-[#868686]">
                       <th>3</th>
                       <td>Barangay Clearance</td>
                       <td>
@@ -115,7 +202,7 @@ const TaskView = () => {
                       </td>
 
                       <td></td>
-                    </tr>
+                    </tr> */}
                   </tbody>
                 </table>
               </div>

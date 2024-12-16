@@ -43,6 +43,7 @@ import ViewMC28Form from "./user/pages/company/MC28Form/view";
 import DocumentDrafting from "./user/pages/company/DocumentDrafting";
 import ViewDocumentDrafting from "./user/pages/company/DocumentDrafting/view";
 import TaskView from "./user/pages/company/TaskView";
+import Checklist from "./user/pages/user/Checklist";
 
 // axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
@@ -78,6 +79,7 @@ function App() {
             <Route path="/settings" element={<Settings />} />
             <Route path="/gis" element={<GISPage />} />
             <Route path="/gis/:recordId" element={<GISPageView />} />
+            <Route path="/checklist" element={<Checklist />} />
           </Route>
           <Route element={<UserLayout />}>
             <Route path="company/:companyId/" element={<Dashboard />} />

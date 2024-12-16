@@ -283,6 +283,19 @@ const Layout = () => {
                     </Link>
 
                     <Link
+                      to="/checklist"
+                      onClick={() => {
+                        setActive("/checklist");
+                      }}
+                    >
+                      <NavBar
+                        isActive={active === "/checklist"}
+                        text="Checklist"
+                        icon={quoteIcon}
+                      />
+                    </Link>
+
+                    <Link
                       to="/settings"
                       onClick={() => {
                         setActive("/settings");

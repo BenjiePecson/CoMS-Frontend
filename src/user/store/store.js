@@ -7,7 +7,7 @@ import NoticeOfMeetingSlice from "./boardmeetings/NoticeOfMeetingSlice";
 import SecretaryCertificateSlice from "./boardmeetings/SecretaryCertificateSlice";
 import MC28FormSlice from "./MC28Form/MC28FormSlice";
 import DocumentDraftingSlice from "./documentdrafting/DocumentDraftingSlice";
-
+import QuotesSlice from "./quotes/QuotesSlice";
 export const store = configureStore({
   reducer: {
     company: companyReducer,
@@ -18,6 +18,8 @@ export const store = configureStore({
     secretaryCertificate: SecretaryCertificateSlice,
     MC28Form: MC28FormSlice,
     DocumentDrafting: DocumentDraftingSlice,
+    quotes: QuotesSlice,
+    
   },
 });
 

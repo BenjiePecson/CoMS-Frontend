@@ -1,302 +1,191 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import DataTable, { createTheme } from "react-data-table-component";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Select from "react-select";
+import { fetchRecord } from "../../store/quotes/QuotesSlice";
 
 const Quote = () => {
-  const [data, setData] = useState(
-    Array.from({ length: 0 }, (_, index) => ({
-      id: index + 1,
-      name: `Item ${index + 1}`,
-      description: `Description for item ${index + 1}`,
-      extra: `Extra info for item ${index + 1}`,
-    }))
-  );
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const all_quotes = useSelector((state) => state.quotes.get_all_quotes);
 
-  const [newItem, setNewItem] = useState({
-    name: "",
-    description: "",
-    extra: "",
+  // Data table here - Anthony
+  const columns = [
+    {
+      name: "Quote Number",
+      selector: (row) => {
+        console.log(row);
+        return row.quote_number;
+      },
+    },
+    {
+      name: "Quote Name",
+      selector: (row) => {
+        console.log(row);
+        return row.quote_name;
+      },
+    },
+    {
+      name: "Quote Type",
+      selector: (row) => {
+        console.log(row);
+        return row.form_data.service_type;
+      },
+    },
+    {
+      name: "Actions",
+      selector: (row) => {
+        console.log(row);
+        return (
+          <div className="flex p-4 w-full h-[5rem]">
+            <button
+              onClick={() => {
+                dispatch(fetchRecord(row))
+                navigate(
+                  `/quote/view-quote/${row.quote_id}`
+                );
+              }}
+            >
+              <svg
+                className="w-full h-full justify-start"
+                viewBox="0 0 44 37"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >l
+                <rect width="44" height="37" rx="10" fill="#273069" />
+                <path
+                  d="M22.0003 20C23.1048 20 24.0003 19.1046 24.0003 18C24.0003 16.8954 23.1048 16 22.0003 16C20.8957 16 20.0003 16.8954 20.0003 18C20.0003 19.1046 20.8957 20 22.0003 20Z"
+                  fill="white"
+                />
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M12.458 18C13.7323 13.9429 17.5226 11 22.0002 11C26.4778 11 30.2681 13.9429 31.5424 18C30.2682 22.0571 26.4778 25 22.0002 25C17.5226 25 13.7323 22.0571 12.458 18ZM26.0003 18C26.0003 20.2091 24.2094 22 22.0003 22C19.7911 22 18.0003 20.2091 18.0003 18C18.0003 15.7909 19.7911 14 22.0003 14C24.2094 14 26.0003 15.7909 26.0003 18Z"
+                  fill="white"
+                />
+              </svg>
+            </button>
+          </div>
+        );
+      },
+    },
+  ];
+  //styles for the datatable - Anthony
+  createTheme("customized", {
+    text: {
+      primary: "#000000",
+    },
+    background: {
+      default: "transparent",
+    },
   });
 
-  const [companyDetails, setCompanyDetails] = useState({
-    companyName: "",
-    companyAddress: "",
-    representativeName: "",
-    position: "",
-    billingAccount: "",
-    agreementValidUntil: "",
-    subject: "",
-  });
-
-  const [currency, setCurrency] = useState("");
-
-  const handleCompanyDetailsChange = (e) => {
-    const { name, value } = e.target;
-    setCompanyDetails((prev) => ({ ...prev, [name]: value }));
+  const customStyles = {
+    headCells: {
+      style: {
+        font: "bold",
+      },
+    },
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewItem((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleAddItem = () => {
-    if (newItem.name && newItem.description) {
-      setData((prev) => [...prev, { id: prev.length + 1, ...newItem }]);
-      setNewItem({ name: "", description: "", extra: "" });
-    }
-  };
-
-  const handleRemoveItem = (id) => {
-    setData((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const handleCurrencyChange = (selectedOption) => {
-    setCurrency(selectedOption.value);
-  };
-
-  const handleSubmit = async () => {
-    const formData = {
-      ...companyDetails,
-      currency,
-      services: data,
-    };
-
-    console.log("Submitted Data: ", formData);
-    // You can now send formData to your backend API or handle it as needed
-
-    //TODO Apps script
-
-    try {
-      let response = await axios.get("/document-drafting-quotation-generate");
-
-      const newWindow = window.open("", "_blank", "width=1280,height=720");
-
-      if (newWindow) {
-        newWindow.document.write(response.data);
-        newWindow.document.close(); // Ensure the document is rendered
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
   return (
     <div>
-      <div className="flex flex-row w-full justify-between items-center mt-5">
-        <div className="poppins-bold text-color-2 text-[24px]">Quote</div>
-      </div>
-
-      <div className="card bg-base-100 shadow-xl flex flex-col">
-        <div className="card-body flex flex-col">
-          <div className="flex flex-col lg:flex-row">
-            <div className="container">
-              <h2 className="card-title">Company Details</h2>
-              <label className="form-control w-full max-w-xs">
-                <div className="label">
-                  <span className="label-text">Company Name</span>
-                </div>
-                <input
-                  type="text"
-                  name="companyName"
-                  value={companyDetails.companyName}
-                  onChange={handleCompanyDetailsChange}
-                  placeholder="Type here"
-                  className="input input-bordered input-sm w-full max-w-xs"
-                />
-              </label>
-              <label className="form-control w-full max-w-xs">
-                <div className="label">
-                  <span className="label-text">Company Address</span>
-                </div>
-                <input
-                  type="text"
-                  name="companyAddress"
-                  value={companyDetails.companyAddress}
-                  onChange={handleCompanyDetailsChange}
-                  placeholder="Type here"
-                  className="input input-bordered input-sm w-full max-w-xs"
-                />
-              </label>
-              <label className="form-control w-full max-w-xs">
-                <div className="label">
-                  <span className="label-text">Representative Name</span>
-                </div>
-                <input
-                  type="text"
-                  name="representativeName"
-                  value={companyDetails.representativeName}
-                  onChange={handleCompanyDetailsChange}
-                  placeholder="Type here"
-                  className="input input-bordered input-sm w-full max-w-xs"
-                />
-              </label>
-              <label className="form-control w-full max-w-xs">
-                <div className="label">
-                  <span className="label-text">Position</span>
-                </div>
-                <input
-                  type="text"
-                  name="position"
-                  value={companyDetails.position}
-                  onChange={handleCompanyDetailsChange}
-                  placeholder="Type here"
-                  className="input input-bordered input-sm w-full max-w-xs"
-                />
-              </label>
-            </div>
-            <div className="">
-              <div className="mx-auto lg:p-4">
-                <div className="flex justify-end">
-                  <label className="form-control w-full max-w-xs my-2">
-                    <Select
-                      options={[
-                        { value: "$", label: "USD" },
-                        { value: "PHP", label: "PHP" },
-                      ]}
-                      onChange={handleCurrencyChange}
-                      placeholder="Select Currency"
-                    />
-                  </label>
-                </div>
-                <div className="mb-4 flex flex-col lg:flex-row lg:space-x-2">
-                  <input
-                    type="text"
-                    name="name"
-                    value={newItem.name}
-                    onChange={handleInputChange}
-                    placeholder="Enter Service"
-                    className="input input-bordered input-sm"
-                  />
-                  <input
-                    type="number"
-                    name="description"
-                    value={newItem.description}
-                    onChange={handleInputChange}
-                    placeholder="Enter SF"
-                    className="input input-bordered input-sm"
-                  />
-
-                  <input
-                    type="number"
-                    name="extra"
-                    value={newItem.extra}
-                    onChange={handleInputChange}
-                    placeholder="Enter OOP"
-                    className="input input-bordered input-sm"
-                  />
-                  <button
-                    onClick={handleAddItem}
-                    className="btn btn-sm "
-                    disabled={!newItem.name || !newItem.description}
-                  >
-                    +
-                  </button>
-                </div>
-                <div className="border border-gray-300 rounded-lg overflow-hidden">
-                  <div className="flex text-sm text-left text-gray-500">
-                    <div className="lg:w-48 flex-shrink-0">
-                      <div className="bg-gray-100 px-4 py-3 text-xs font-medium text-gray-700 uppercase">
-                        Services
-                      </div>
-                    </div>
-                    <div className="flex-grow">
-                      <div className="bg-gray-100 px-4 py-3 text-xs font-medium text-gray-700 uppercase">
-                        SF
-                      </div>
-                    </div>
-                    <div className="flex-grow">
-                      <div className="bg-gray-100 px-4 py-3 text-xs font-medium text-gray-700 uppercase">
-                        OOP
-                      </div>
-                    </div>
-                    <div className="w-24 flex-shrink-0">
-                      <div className="bg-gray-100 px-4 py-3 text-xs font-medium text-gray-700 uppercase">
-                        ACTION
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="overflow-y-auto"
-                    style={{ maxHeight: "150px" }}
-                  >
-                    {data.map((item) => (
-                      <div
-                        key={item.id}
-                        className="flex text-sm text-gray-500 border-t border-gray-200 hover:bg-gray-50"
-                      >
-                        <div className="w-48 flex-shrink-0 px-4 py-3 break-words">
-                          {item.name}
-                        </div>
-                        <div className="flex-grow px-4 py-3 ">
-                          {item.description}
-                        </div>
-                        <div className="flex-grow px-4 py-3">
-                          {item.extra || "-"}
-                        </div>
-                        <div className="w-24 flex-shrink-0 px-4 py-3">
-                          <button
-                            onClick={() => handleRemoveItem(item.id)}
-                            className="btn btn-sm"
-                          >
-                            x
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+      <div className="flex flex-col w-full ">
+        <div className="flex flex-col sm:flex-row justify-between gap-2">
+          <div className="poppins-bold text-color-2 text-[24px] flex items-center">
+            Quote
           </div>
 
-          <div className="flex flex-col">
-            <div className="flex flex-col lg:flex-row">
-              <div className="w-[35%]">
-                <label className="form-control w-full max-w-xs">
-                  <div className="label">
-                    <span className="label-text">Billing Account</span>
-                  </div>
-                  <input
-                    type="text"
-                    name="billingAccount"
-                    value={companyDetails.billingAccount}
-                    onChange={handleCompanyDetailsChange}
-                    placeholder="Type here"
-                    className="input input-bordered input-sm w-full"
-                  />
-                </label>
-              </div>
-              <div className="flex flex-col lg:flex-row my-9">
-                <p className="w-full my-1">This agreement is valid until</p>
-                <input
-                  type="date"
-                  name="agreementValidUntil"
-                  value={companyDetails.agreementValidUntil}
-                  onChange={handleCompanyDetailsChange}
-                  className="input input-bordered input-sm mx-2 lg:px-[120px]"
+          <div>
+            <button
+              className="btn btn-md bg-primary border-none text-white flex flex-row justify-center items-center rounded-[15px]"
+              onClick={() => {
+                navigate(`/quote/new-quote`);
+              }}
+            >
+              <svg
+                width="20"
+                height="18"
+                viewBox="0 0 20 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M10 2.7C10.5523 2.7 11 3.10294 11 3.6V8.1H16C16.5523 8.1 17 8.50294 17 9C17 9.49705 16.5523 9.9 16 9.9H11V14.4C11 14.8971 10.5523 15.3 10 15.3C9.44772 15.3 9 14.8971 9 14.4V9.9H4C3.44772 9.9 3 9.49705 3 9C3 8.50294 3.44772 8.1 4 8.1L9 8.1V3.6C9 3.10294 9.44772 2.7 10 2.7Z"
+                  fill="#FCFCFC"
                 />
-              </div>
-            </div>
-            <div className="flex flex-row">
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="label-text">Subject</span>
-                </div>
-                <input
-                  type="text"
-                  name="subject"
-                  value={companyDetails.subject}
-                  onChange={handleCompanyDetailsChange}
-                  placeholder="Type here"
-                  className="input input-bordered input-sm w-full"
-                />
-              </label>
-              <button className="btn btn-sm my-9 mx-3" onClick={handleSubmit}>
-                SAVE
-              </button>
-            </div>
+              </svg>
+              FILE NEW QUOTE
+            </button>
           </div>
         </div>
+      </div>
+      <div className="flex flex-col  w-full mt-5">
+        {/*  Search Bar ito at Filtering - Anthony
+          <div className="flex flex-col sm:flex-row w-full  gap-5">
+            <div className="flex flex-row bg-white rounded-[14px] justify-center items-center gap-2 h-[32px] w-full md:max-w-xs">
+              <svg
+                width="17"
+                height="17"
+                viewBox="0 0 17 17"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="ml-5"
+              >
+                <circle
+                  cx="7.79183"
+                  cy="7.79165"
+                  r="4.95834"
+                  stroke="#33363F"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M14.1665 14.1667L12.0415 12.0417"
+                  stroke="#33363F"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+
+              <input
+                className="mr-5 w-full"
+                type="text"
+                placeholder="Search File"
+              />
+            </div>
+            <div className="flex flex-row items-center gap-2">
+              <div>Filtering</div>
+              <div>
+                <select
+                  className="select select-bordered select-xs"
+                  name=""
+                  id=""
+                >
+                  <option value="">All</option>
+                </select>
+              </div>
+              <div className="badge">Done</div>
+              <div className="badge">Pending</div>
+            </div>
+          </div> */}
+      </div>
+
+      {/* <div className="overflow-x-auto">{table}</div> */}
+
+      <div className="py-5">
+        {/* DataTable ito - Anthony
+           <div className="bg-white p-2 rounded-lg"> */}
+        <DataTable
+          columns={columns}
+          data={all_quotes}
+          persistTableHead={true}
+          customStyles={customStyles}
+          theme="customized"
+        />
       </div>
     </div>
   );

@@ -139,11 +139,28 @@ const Tasks = () => {
           <thead>
             <tr className="font-bold text-[#1F384C] bg-[#FFFFFF]">
               <th></th>
-              <th>Task</th>
-              <th>Date Created</th>
-              <th>Target Date</th>
-              <th>Assignee</th>
-              <th>Remarks</th>
+              <th rowSpan={2} x>
+                Company
+              </th>
+              <th rowSpan={2} x>
+                Task Name
+              </th>
+              <th colSpan={2} className="text-center">
+                PROJECT
+              </th>
+              <th colSpan={2} className="text-center">
+                TASK
+              </th>
+              <th rowSpan={2}>Remarks</th>
+              <th></th>
+            </tr>
+            <tr className="font-bold text-[#1F384C] bg-[#FFFFFF]">
+              <th></th>
+
+              <th>Open</th>
+              <th>Closed</th>
+              <th>Start</th>
+              <th>End</th>
               <th></th>
             </tr>
           </thead>
@@ -151,33 +168,39 @@ const Tasks = () => {
             {/* row 1 */}
             <tr className="text-[#868686]">
               <th>1</th>
-              <td>AIACS</td>
+              <th>OffSure BPO Services</th>
+              <td>GIS 2024</td>
               <td>00/00/0000</td>
               <td>00/00/0000</td>
+              <td>00/00/0000</td>
+              <td>00/00/0000</td>
+              <td>Remarks</td>
+
               <td>
-                <button className="btn btn-xs mx-1 mb-2">Michael</button>
-              </td>
-              <td>Quality Control Specialist</td>
-              <td>
-                <button className="btn btn-success btn-sm">View</button>
+                <button className="btn btn-success btn-sm mx-1">View</button>
+                <button className="btn btn-success btn-sm mx-1">Edit</button>
+                <button className="btn btn-success btn-sm mx-1">Delete</button>
               </td>
             </tr>
             <tr className="text-[#868686]">
               <th>2</th>
-              <td>AIACS</td>
+              <th>Half Sweet</th>
+              <td>Business Permit Renewal 2024</td>
               <td>00/00/0000</td>
               <td>00/00/0000</td>
-              <td>
-                <button className="btn btn-xs mx-1 mb-2">Michael</button>
-              </td>
-              <td>Quality Control Specialist</td>
+              <td>00/00/0000</td>
+              <td>00/00/0000</td>
+              <td>Remarks</td>
+
               <td>
                 <Link
                   to={`/company/${companyId}/tasks-checklist/view`}
-                  className="btn btn-success btn-sm"
+                  className="btn btn-success btn-sm mx-1"
                 >
                   View
                 </Link>
+                <button className="btn btn-success btn-sm mx-1">Edit</button>
+                <button className="btn btn-success btn-sm mx-1">Delete</button>
               </td>
             </tr>
           </tbody>

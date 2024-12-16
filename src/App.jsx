@@ -47,6 +47,7 @@ import NewCreate from "./user/pages/company/GISTracker/NewCreate";
 import NewView from "./user/pages/company/GISTracker/NewView";
 
 import TaskView from "./user/pages/company/TaskView";
+import Checklist from "./user/pages/user/Checklist";
 
 
 // axios.defaults.baseURL = "http://localhost:3000/";
@@ -83,6 +84,7 @@ function App() {
             <Route path="/settings" element={<Settings />} />
             <Route path="/gis" element={<GISPage />} />
             <Route path="/gis/:recordId" element={<GISPageView />} />
+            <Route path="/checklist" element={<Checklist />} />
           </Route>
           <Route element={<UserLayout />}>
             <Route path="company/:companyId/" element={<Dashboard />} />

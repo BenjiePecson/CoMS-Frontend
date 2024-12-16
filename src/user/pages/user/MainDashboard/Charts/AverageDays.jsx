@@ -4,7 +4,7 @@ import { Bar } from 'react-chartjs-2';
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const AverageDays = () => {
+const AverageDays = ({dialogID}) => {
   const options = {
     scales: {
       x: {
@@ -47,11 +47,12 @@ const AverageDays = () => {
   };
 
   const handleOpenModal = () => {
-    document.getElementById('averageDays').showModal();
+    console.log(dialogID);
+    document.getElementById(dialogID).showModal();
   };
 
   const handleCloseModal = () => {
-    document.getElementById('averageDays').close();
+    document.getElementById(dialogID).close();
   };
 
   return (
@@ -59,7 +60,7 @@ const AverageDays = () => {
       <div className="cursor-pointer" onClick={handleOpenModal}>
         <Bar data={data} options={options} className='max-w-full' />
       </div>
-      <dialog id="averageDays" className="modal">
+      <dialog id={dialogID} className="modal">
         {/* <button className="btn" onClick={handleCloseModal}>Close</button> */}
         <div className="modal-box w-11/12 max-w-5xl">
           <h3 className="font-bold text-lg">Average Days</h3>

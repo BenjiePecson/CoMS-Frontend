@@ -11,8 +11,9 @@ import Unathorized from "../../components/Unathorized";
 import axios from "axios";
 
 const GISPage = () => {
-
   const dispatch = useDispatch();
+
+  const user = useSelector((state) => state.user.user);
 
   const columns = [
     {
@@ -202,6 +203,11 @@ const GISPage = () => {
 
   const DataTableComponent = () => {
     const records = useTable(); // This will trigger the data fetching logic
+
+    if (!user.permissions.includes("View GIS Approval")) {
+      return <Unathorized />;
+    }
+
     return (
       <DataTable
         columns={columns}
@@ -216,10 +222,6 @@ const GISPage = () => {
   useEffect(() => {
     dispatch(fetchAllRecords("Pending for Approval"));
   }, []);
-
-  // if (!currentUser.permissions.includes("View GIS Approval")) {
-  //   return <Unathorized />;
-  // }
 
   const TableSkeleton = () => {
     return (
@@ -246,6 +248,14 @@ const GISPage = () => {
       </div>
     );
   };
+
+  if (user.permissions.length == 0) {
+    return (
+      <div className="flex w-full justify-center">
+        <span className="loading-spinner loading text-center"></span>
+      </div>
+    );
+  }
 
   return (
     <>

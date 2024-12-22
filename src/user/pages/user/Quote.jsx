@@ -4,7 +4,7 @@ import DataTable, { createTheme } from "react-data-table-component";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
-import { fetchRecord } from "../../store/quotes/QuotesSlice";
+import { fetchRecord, fetchRecords } from "../../store/quotes/QuotesSlice";
 
 const Quote = () => {
   const dispatch = useDispatch();
@@ -16,36 +16,35 @@ const Quote = () => {
     {
       name: "Quote Number",
       selector: (row) => {
-        console.log(row);
         return row.quote_number;
+      },
+    },
+    {
+      name: "Company Name",
+      selector: (row) => {
+        return row.form_data.recipient_company;
       },
     },
     {
       name: "Quote Name",
       selector: (row) => {
-        console.log(row);
         return row.quote_name;
       },
     },
     {
-      name: "Quote Type",
+      name: "Status",
       selector: (row) => {
-        console.log(row);
-        return row.form_data.service_type;
+        return row.timestamps[0].status;
       },
     },
     {
       name: "Actions",
       selector: (row) => {
-        console.log(row);
         return (
           <div className="flex p-4 w-full h-[5rem]">
             <button
               onClick={() => {
-                dispatch(fetchRecord(row))
-                navigate(
-                  `/quote/view-quote/${row.quote_id}`
-                );
+                navigate(`/quote/view-quote/${row.quote_id}`);
               }}
             >
               <svg
@@ -53,7 +52,8 @@ const Quote = () => {
                 viewBox="0 0 44 37"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-              >l
+              >
+                l
                 <rect width="44" height="37" rx="10" fill="#273069" />
                 <path
                   d="M22.0003 20C23.1048 20 24.0003 19.1046 24.0003 18C24.0003 16.8954 23.1048 16 22.0003 16C20.8957 16 20.0003 16.8954 20.0003 18C20.0003 19.1046 20.8957 20 22.0003 20Z"
@@ -89,6 +89,10 @@ const Quote = () => {
       },
     },
   };
+
+  useEffect(() => {
+    dispatch(fetchRecords());
+  }, []);
 
   return (
     <div>

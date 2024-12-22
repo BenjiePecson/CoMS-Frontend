@@ -1,22 +1,23 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+export const ScopeOfWorkState = {
+  task: "",
+  sub_task: "",
+  service_fee: "",
+  oop_expenses: "",
+};
+
 export const QouteFormDataState = {
   recipient_company: "",
-  recipient_name: "",
   recipient_address: "",
-  //for GIS
   recipient_email: "",
-  recipient_position: "",
-  
-  service_fee: 0,
-  out_of_pocket_expenses: 0,
-  due_date: "",
-  service_provider: "",
-  service_provider_position: "",
+  recipient_name: "",
   service_type: "",
-  scope_of_work: "",
-  company: "",
+  billing_account: "",
+  scope_of_work: [],
+  due_date: "",
+  currency: "",
 };
 
 const QuoteState = {
@@ -27,35 +28,32 @@ const QuoteState = {
   form_data: QouteFormDataState,
   folder_id: "",
   google_doc_id: "",
-  stamps: [],
+  timestamps: [],
   created_at: "",
   updated_at: "",
 };
 
 // export const fetchAllRecords = createAsyncThunk(
 //   "MC28Form/fetchAllRecords",
-//   async (status) => {
-//     let response = await axios.get(`/mc28forms/`, {
-//       params: { status },
-//     });
+//   async () => {
+//     let response = await axios.get(`/quotes`);
 //     return response.data;
 //   }
 // );
 
-// export const fetchRecords = createAsyncThunk(
-//   "MC28Form/fetchRecords",
-//   async (companyId) => {
-//     let response = await axios.get(`/mc28forms/${companyId}`);
-//     return response.data;
-//   }
-// );
+export const fetchRecords = createAsyncThunk(
+  "QuoteSlice/fetchRecords",
+  async (companyId) => {
+    let response = await axios.get(`/quotes`);
+    return response.data;
+  }
+);
 
 export const fetchRecord = createAsyncThunk(
   "QuoteSlice/fetchRecord",
-  async (quote) => {
-    // let response = await axios.get(`/mc28forms/${company_id}/${form_id}`);
-    // return response.data;
-    return quote;
+  async (quote_id) => {
+    let response = await axios.get(`/quotes/${quote_id}`);
+    return response.data;
   }
 );
 
@@ -90,20 +88,24 @@ const QuoteSlice = createSlice({
         (item) => item.quote_id !== action.payload
       );
     },
+
+    setToDefaultRecord: (state, action) => {
+      state.get_record = QuoteState;
+    },
   },
   extraReducers: (builder) => {
-    //fetch all records
-    // builder.addCase(fetchRecords.pending, (state) => {
-    //   state.status = "pending";
-    // });
-    // builder.addCase(fetchRecords.fulfilled, (state, action) => {
-    //   state.status = "fulfilled";
-    //   state.get_all_company_records = action.payload;
-    // });
-    // builder.addCase(fetchRecords.rejected, (state, action) => {
-    //   state.status = "rejected";
-    //   state.get_all_company_records = [];
-    // });
+    // fetch all records
+    builder.addCase(fetchRecords.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(fetchRecords.fulfilled, (state, action) => {
+      state.status = "fulfilled";
+      state.get_all_quotes = action.payload;
+    });
+    builder.addCase(fetchRecords.rejected, (state, action) => {
+      state.status = "rejected";
+      state.get_all_quotes = [];
+    });
 
     //fetch record
     builder.addCase(fetchRecord.pending, (state) => {
@@ -120,6 +122,6 @@ const QuoteSlice = createSlice({
   },
 });
 
-export const { addNewRecord, updateRecord, deleteRecord } =
-QuoteSlice.actions;
+export const { addNewRecord, updateRecord, deleteRecord, setToDefaultRecord } =
+  QuoteSlice.actions;
 export default QuoteSlice.reducer;

@@ -36,7 +36,9 @@ export const fetchUser = createAsyncThunk("user/fetchUser", async (token) => {
     // console.log(response.data);
   } catch (error) {
     console.log(error);
+    console.log("UserSlice catch");
     localStorage.removeItem("access_token");
+    location.reload();
   }
   return UserState;
 });

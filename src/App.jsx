@@ -47,6 +47,8 @@ import NewCreate from "./user/pages/company/GISTracker/NewCreate";
 import NewView from "./user/pages/company/GISTracker/NewView";
 
 import TaskView from "./user/pages/company/TaskView";
+import AddNewQuote from "./user/pages/user/Quote/AddNewQuote";
+import { ViewQuote } from "./user/pages/user/Quote/ViewQuote";
 import Checklist from "./user/pages/user/Checklist";
 
 
@@ -77,6 +79,9 @@ function App() {
             <Route path="/" element={<MainDashboard />} />
             <Route path="/company" element={<SelectCompany />} />
             <Route path="/quote" element={<Quote />} />
+              <Route path="/quote/new-quote" element={<AddNewQuote />} />
+              <Route path="/quote/view-quote/:quote_id?" element={<ViewQuote />} />
+
             <Route path="/users" element={<UsersPage />} />
             <Route path="/users-task" element={<UserDashboard />} />
             <Route path="/roles" element={<RolesPage />} />

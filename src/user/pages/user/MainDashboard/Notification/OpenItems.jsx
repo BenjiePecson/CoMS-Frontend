@@ -179,7 +179,7 @@ const content = (
         </div>
 );
 
-export const OpenItems = () => {
+export const OpenItems = ({dialogID}) => {
     const handleOpenModal = () => {
         document.getElementById('openItems').showModal();
     };
@@ -194,7 +194,7 @@ export const OpenItems = () => {
         {content}
       </div>
 
-      <dialog id="openItems" className="modal">
+      <dialog id={dialogID} className="modal">
           {/* <button className="btn" onClick={handleCloseModal}>Close</button> */}
           <div className="modal-box w-11/12 max-w-5xl">
             <div className='flex flex-row justify-between'>

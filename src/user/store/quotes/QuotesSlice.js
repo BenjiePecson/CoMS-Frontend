@@ -61,7 +61,7 @@ const initialState = {
   get_all_quotes: [],
   get_record: QuoteState,
   selected_record: QuoteState,
-  status: "idle",
+  status: false,
   error: null,
 };
 
@@ -96,27 +96,27 @@ const QuoteSlice = createSlice({
   extraReducers: (builder) => {
     // fetch all records
     builder.addCase(fetchRecords.pending, (state) => {
-      state.status = "pending";
+      state.status = true;
     });
     builder.addCase(fetchRecords.fulfilled, (state, action) => {
-      state.status = "fulfilled";
+      state.status = false;
       state.get_all_quotes = action.payload;
     });
     builder.addCase(fetchRecords.rejected, (state, action) => {
-      state.status = "rejected";
+      state.status = false;
       state.get_all_quotes = [];
     });
 
     //fetch record
     builder.addCase(fetchRecord.pending, (state) => {
-      state.status = "pending";
+      state.status = true;
     });
     builder.addCase(fetchRecord.fulfilled, (state, action) => {
-      state.status = "fulfilled";
+      state.status = false;
       state.get_record = action.payload;
     });
     builder.addCase(fetchRecord.rejected, (state, action) => {
-      state.status = "rejected";
+      state.status = false;
       state.get_record = QuoteState;
     });
   },

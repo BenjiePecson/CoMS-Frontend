@@ -1,15 +1,17 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import DataTable, { createTheme } from "react-data-table-component";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { fetchRecord, fetchRecords } from "../../store/quotes/QuotesSlice";
+import Unathorized from "../../components/Unathorized";
 
 const Quote = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const all_quotes = useSelector((state) => state.quotes.get_all_quotes);
+
+  const user = useSelector((state) => state.user.user);
 
   // Data table here - Anthony
   const columns = [
@@ -90,9 +92,84 @@ const Quote = () => {
     },
   };
 
+  const useTable = () => {
+    const dispatch = useDispatch();
+    const all_quotes = useSelector((state) => state.quotes.get_all_quotes);
+    const loading = useSelector((state) => state.quotes.status);
+
+    useEffect(() => {
+      if (!all_quotes && !loading) {
+        dispatch(fetchRecords());
+      }
+    }, [dispatch, all_quotes, loading]);
+
+    // If data is not yet fetched, throw a promise for Suspense to catch
+    if (loading) {
+      throw new Promise((resolve) => setTimeout(resolve, 2000)); // Suspense will wait
+    }
+
+    return all_quotes;
+  };
+
+  const DataTableComponent = () => {
+    const quotes = useTable(); // This will trigger the data fetching logic
+
+    if (!user.permissions.includes("View Quotes")) {
+      return <Unathorized />;
+    }
+
+    return (
+      <DataTable
+        columns={columns}
+        data={quotes}
+        persistTableHead={true}
+        customStyles={customStyles}
+        theme="customized"
+      />
+    );
+  };
+
+  const TableSkeleton = () => {
+    return (
+      <div className="space-y-4 w-full">
+        {/* Table header skeleton */}
+        <div className="flex space-x-4 animate-pulse w-full">
+          <div className="w-24 h-6 bg-gray-300 rounded-md"></div>
+          <div className="w-48 h-6 bg-gray-300 rounded-md"></div>
+          <div className="w-64 h-6 bg-gray-300 rounded-md"></div>
+          <div className="w-64 h-6 bg-gray-300 rounded-md"></div>
+          <div className="w-64 h-6 bg-gray-300 rounded-md"></div>
+        </div>
+
+        {/* Table rows skeleton */}
+        {Array.from({ length: 5 }).map((_, index) => (
+          <div key={index} className="flex space-x-4 animate-pulse">
+            <div className="w-40 h-6 bg-gray-300 rounded-md"></div>
+            <div className="w-40 h-6 bg-gray-300 rounded-md"></div>
+            <div className="w-56 h-6 bg-gray-300 rounded-md"></div>
+            <div className="w-56 h-6 bg-gray-300 rounded-md"></div>
+            <div className="w-56 h-6 bg-gray-300 rounded-md"></div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   useEffect(() => {
     dispatch(fetchRecords());
   }, []);
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
+
+  if (user.permissions.length == 0) {
+    return (
+      <div className="flex w-full justify-center">
+        <span className="loading-spinner loading text-center"></span>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -103,93 +180,39 @@ const Quote = () => {
           </div>
 
           <div>
-            <button
-              className="btn btn-md bg-primary border-none text-white flex flex-row justify-center items-center rounded-[15px]"
-              onClick={() => {
-                navigate(`/quote/new-quote`);
-              }}
-            >
-              <svg
-                width="20"
-                height="18"
-                viewBox="0 0 20 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M10 2.7C10.5523 2.7 11 3.10294 11 3.6V8.1H16C16.5523 8.1 17 8.50294 17 9C17 9.49705 16.5523 9.9 16 9.9H11V14.4C11 14.8971 10.5523 15.3 10 15.3C9.44772 15.3 9 14.8971 9 14.4V9.9H4C3.44772 9.9 3 9.49705 3 9C3 8.50294 3.44772 8.1 4 8.1L9 8.1V3.6C9 3.10294 9.44772 2.7 10 2.7Z"
-                  fill="#FCFCFC"
-                />
-              </svg>
-              FILE NEW QUOTE
-            </button>
+            {user.permissions.length != 0 &&
+              user.permissions.includes("Add Quotes") && (
+                <button
+                  className="btn btn-md bg-primary border-none text-white flex flex-row justify-center items-center rounded-[15px]"
+                  onClick={() => {
+                    navigate(`/quote/new-quote`);
+                  }}
+                >
+                  <svg
+                    width="20"
+                    height="18"
+                    viewBox="0 0 20 18"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M10 2.7C10.5523 2.7 11 3.10294 11 3.6V8.1H16C16.5523 8.1 17 8.50294 17 9C17 9.49705 16.5523 9.9 16 9.9H11V14.4C11 14.8971 10.5523 15.3 10 15.3C9.44772 15.3 9 14.8971 9 14.4V9.9H4C3.44772 9.9 3 9.49705 3 9C3 8.50294 3.44772 8.1 4 8.1L9 8.1V3.6C9 3.10294 9.44772 2.7 10 2.7Z"
+                      fill="#FCFCFC"
+                    />
+                  </svg>
+                  FILE NEW QUOTE
+                </button>
+              )}
           </div>
         </div>
       </div>
-      <div className="flex flex-col  w-full mt-5">
-        {/*  Search Bar ito at Filtering - Anthony
-          <div className="flex flex-col sm:flex-row w-full  gap-5">
-            <div className="flex flex-row bg-white rounded-[14px] justify-center items-center gap-2 h-[32px] w-full md:max-w-xs">
-              <svg
-                width="17"
-                height="17"
-                viewBox="0 0 17 17"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="ml-5"
-              >
-                <circle
-                  cx="7.79183"
-                  cy="7.79165"
-                  r="4.95834"
-                  stroke="#33363F"
-                  strokeWidth="2"
-                />
-                <path
-                  d="M14.1665 14.1667L12.0415 12.0417"
-                  stroke="#33363F"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-
-              <input
-                className="mr-5 w-full"
-                type="text"
-                placeholder="Search File"
-              />
-            </div>
-            <div className="flex flex-row items-center gap-2">
-              <div>Filtering</div>
-              <div>
-                <select
-                  className="select select-bordered select-xs"
-                  name=""
-                  id=""
-                >
-                  <option value="">All</option>
-                </select>
-              </div>
-              <div className="badge">Done</div>
-              <div className="badge">Pending</div>
-            </div>
-          </div> */}
-      </div>
-
-      {/* <div className="overflow-x-auto">{table}</div> */}
 
       <div className="py-5">
-        {/* DataTable ito - Anthony
-           <div className="bg-white p-2 rounded-lg"> */}
-        <DataTable
-          columns={columns}
-          data={all_quotes}
-          persistTableHead={true}
-          customStyles={customStyles}
-          theme="customized"
-        />
+        <Suspense fallback={<TableSkeleton />}>
+          <DataTableComponent />
+        </Suspense>
       </div>
     </div>
   );

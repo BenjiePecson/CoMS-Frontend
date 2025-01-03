@@ -29,7 +29,7 @@ export const AddNewQuote = () => {
   const handleOnChangeScope = (e) => {
     let { name, value } = e.target;
 
-    if ((name == "service_fee" || name == "oop_expenses") && value != 0) {
+    if (name == "service_fee" && value != 0) {
       value = Number(value);
     }
 
@@ -214,7 +214,7 @@ export const AddNewQuote = () => {
             <span className="label-text">Out-of-pocket Expenses</span>
           </div>
           <input
-            type="number"
+            type="text"
             name="oop_expenses"
             value={scopeData.oop_expenses}
             onChange={handleOnChangeScope}
@@ -423,17 +423,16 @@ export const AddNewQuote = () => {
 
           <div className="flex flex-col w-full py-5">
             {formData.scope_of_work.map((scope, index) => {
-              const sign = formData.currency == "USD" ? "$" : "₱";
               let service_fee = formatNumberWithCommaAndDecimal(
                 scope.service_fee
               );
-              let oop_expenses = formatNumberWithCommaAndDecimal(
-                scope.oop_expenses
-              );
-              let vat = formData.currency == "USD" ? "" : " + 12% VAT";
 
-              let display_service_fee = `${sign} ${service_fee}${vat}`;
-              let display_oop_expenses = `${sign} ${oop_expenses}`;
+              let display_service_fee =
+                formData.currency == "USD"
+                  ? `${service_fee} USD`
+                  : `PHP ${service_fee} + 12% VAT`;
+
+              let display_oop_expenses = scope.oop_expenses;
 
               return (
                 <div

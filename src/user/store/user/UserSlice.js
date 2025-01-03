@@ -2,21 +2,32 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const UserState = {
-  user: "",
-  username: "",
+  user_id: "",
+  email: "",
+  first_name: "",
+  last_name: "",
+  roles: [],
+  permissions: [],
+  slackId: "",
 };
 
-
-
-export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
-  const token = localStorage.getItem("access_token");
-  let access_token = token.split(" ")[1];
-
+export const fetchUser = createAsyncThunk("user/fetchUser", async (token) => {
   try {
     const response = await axios.post("/auth/check", {
-      token: access_token,
+      access_token: token,
     });
-    console.log(response.data);
+
+    if (response.data.auth) {
+      return {
+        user_id: response.data.user.user_id,
+        email: response.data.user.email,
+        first_name: response.data.user.first_name,
+        last_name: response.data.user.last_name,
+        roles: response.data.user.roles,
+        permissions: response.data.user.permissions,
+        slackId: response.data.user.slackId,
+      };
+    }
 
     // let response = await axios.get(
     //   `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
@@ -25,13 +36,15 @@ export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
     // console.log(response.data);
   } catch (error) {
     console.log(error);
+    console.log("UserSlice catch");
     localStorage.removeItem("access_token");
+    location.reload();
   }
-  return {};
+  return UserState;
 });
 
 const initialState = {
-  user: null,
+  user: UserState,
   status: "idle",
   error: null,
 };

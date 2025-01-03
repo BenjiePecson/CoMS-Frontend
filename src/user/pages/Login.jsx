@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { fetchUser } from "../store/user/UserSlice";
 import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
+import { showToast } from "../../assets/global";
 
 const Login = () => {
   const user = useSelector((state) => state.user.user);
@@ -13,15 +14,24 @@ const Login = () => {
   const googleLogin = useGoogleLogin({
     flow: "auth-code",
     onSuccess: async (codeResponse) => {
-      const response = await axios.post("/auth/google", {
-        code: codeResponse.code,
-      });
+      try {
+        const response = await axios.post("/auth/google", {
+          code: codeResponse.code,
+        });
 
-      if (response.data.success) {
-        localStorage.setItem("access_token", response.data.tokens.access_token);
-        navigate("/company");
+        if (response.data.success) {
+          localStorage.setItem("access_token", response.data.tokens.access_token);
+          dispatch(fetchUser(response.data.tokens.access_token));
+          navigate("/");
+        } else {
+          showToast("error", "Your account is currently inactive. Please contact the administrator for assistance.");
+        }
+      } catch (error) {
+        console.log(error);
+        showToast("error", "Error: Login Failed.")
+      } finally {
+        document.getElementById("overlay").close();
       }
-      document.getElementById("overlay").close();
     },
     onError: (errorResponse) => {
       console.log(errorResponse);
@@ -35,15 +45,15 @@ const Login = () => {
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (token != null && token != undefined) {
-      navigate("/company");
+      navigate("/");
     }
   }, []);
 
   return (
     <>
       <div className="flex flex-row w-full min-h-screen justify-center min-w-screen">
-        <div className="w-full md:w-2/5 px-[50px] mt-64">
-          <div className="text-center text-color-1">
+        <div className="w-full md:w-2/5 flex flex-col items-center justify-center">
+          <div className="text-center text-color-1 ">
             <h1 className="poppins-medium text-[24px]">
               Login to your Account
             </h1>
@@ -55,7 +65,7 @@ const Login = () => {
             </span>
           </div>
           <button
-            className="poppins-regular text-color-1 w-full bg-white h-[61px] mx-auto text-center border border-[#70746F] rounded-xl flex flex-row justify-center gap-2 items-center mt-10"
+            className="poppins-regular max-w-sm text-color-1 w-52 bg-white h-[61px] mx-auto text-center border border-[#70746F] rounded-xl flex flex-row justify-center gap-2 items-center mt-10"
             onClick={(e) => {
               document.getElementById("overlay").showModal();
 

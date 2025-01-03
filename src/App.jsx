@@ -18,9 +18,39 @@ import TreasurerCertificate from "./user/pages/company/BoardMeetings/TreasurerCe
 import GISPage from "./user/pages/user/GISPage";
 import GISPageView from "./user/pages/user/GISRecord/view";
 import NotFound from "./user/pages/NotFound";
-import Unathorized from "./user/pages/Unathorized";
+import Unathorized from "./user/components/Unathorized";
 import { Component } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import Tasks from "./user/pages/company/Tasks";
+import UsersPage from "./user/pages/user/UsersPage";
+import RolesPage from "./user/pages/user/RolesPage";
+import PermissionsPage from "./user/pages/user/PermissionsPage";
+import UserDashboard from "./user/pages/user/UserDashboard";
+import CompanySetting from "./user/pages/company/CompanySetting";
+import CreateNOM from "./user/pages/company/BoardMeetings/NoticeOfMeetings/CreateNOMPage";
+import ViewNOMPage from "./user/pages/company/BoardMeetings/NoticeOfMeetings/ViewNOMPage";
+import AddSecCert from "./user/pages/company/BoardMeetings/SecretaryCertificate/AddSecCert";
+import ViewSecCert from "./user/pages/company/BoardMeetings/SecretaryCertificate/ViewSecCert";
+import MainDashboard from "./user/pages/user/MainDashboard";
+
+import BusinessRenewal from "./user/pages/company/BusinessRenewal";
+import TaskChecklist from "./user/pages/company/TaskChecklist";
+import Quote from "./user/pages/user/Quote";
+
+import MC28Form from "./user/pages/company/MC28Form";
+import ViewMC28Form from "./user/pages/company/MC28Form/view";
+import DocumentDrafting from "./user/pages/company/DocumentDrafting";
+import ViewDocumentDrafting from "./user/pages/company/DocumentDrafting/view";
+
+import NewCreate from "./user/pages/company/GISTracker/NewCreate";
+import NewView from "./user/pages/company/GISTracker/NewView";
+
+import TaskView from "./user/pages/company/TaskView";
+import AddNewQuote from "./user/pages/user/Quote/AddNewQuote";
+import { ViewQuote } from "./user/pages/user/Quote/ViewQuote";
+import Checklist from "./user/pages/user/Checklist";
+
 
 // axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
@@ -40,17 +70,28 @@ function App() {
 
   return (
     <>
+      <ToastContainer />
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
 
-          <Route path="/" element={<Login />} />
+          {/* <Route path="/" element={<Login />} /> */}
 
           <Route element={<CompanyLayout />}>
+            <Route path="/" element={<MainDashboard />} />
             <Route path="/company" element={<SelectCompany />} />
+            <Route path="/quote" element={<Quote />} />
+              <Route path="/quote/new-quote" element={<AddNewQuote />} />
+              <Route path="/quote/view-quote/:quote_id?" element={<ViewQuote />} />
+
+            <Route path="/users" element={<UsersPage />} />
+            <Route path="/users-task" element={<UserDashboard />} />
+            <Route path="/roles" element={<RolesPage />} />
+            <Route path="/permissions" element={<PermissionsPage />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/gis" element={<GISPage />} />
             <Route path="/gis/:recordId" element={<GISPageView />} />
+            <Route path="/checklist" element={<Checklist />} />
           </Route>
           <Route element={<UserLayout />}>
             <Route path="company/:companyId/" element={<Dashboard />} />
@@ -58,17 +99,50 @@ function App() {
               path="company/:companyId/gis-tracker"
               element={<GISTracker />}
             />
+            <Route path="company/:companyId/MC28Form" element={<MC28Form />} />
             <Route
-              path="company/:companyId/gis-tracker/create/:recordId?"
-              element={<GIScreate />}
+              path="company/:companyId/mc28form/view/:form_id?"
+              element={<ViewMC28Form />}
             />
             <Route
-              path="company/:companyId/gis-tracker/view/:id?"
+              path="company/:companyId/document-drafting"
+              element={<DocumentDrafting />}
+            />
+            <Route
+              path="company/:companyId/document-drafting/view/:document_id?"
+              element={<ViewDocumentDrafting />}
+            />
+            <Route
+              path="company/:companyId/gis-tracker/create/:recordId?"
+              // element={<GIScreate />}
+              element={<NewCreate />}
+            />
+            {/* <Route
+              path="company/:companyId/gis-tracker-old/create/:recordId?"
+              element={<GIScreate />}
+              // element={<NewCreate />}
+            />
+            <Route
+              path="company/:companyId/gis-tracker-old/view/:recordId?"
               element={<GISview />}
+              // element={<NewView />}
+            /> */}
+            <Route
+              path="company/:companyId/gis-tracker/view/:recordId?"
+              // element={<GISview />}
+              element={<NewView />}
             />
             <Route
               path="company/:companyId/notice-of-meeting"
               element={<NoticeOfMeetings />}
+            />
+            <Route
+              path="company/:companyId/notice-of-meeting/create"
+              element={<CreateNOM />}
+            />
+            <Route
+              path="company/:companyId/notice-of-meeting/view/:nomId?"
+              element={<ViewNOMPage />}
             />
             <Route
               path="company/:companyId/minutes-of-meeting"
@@ -83,8 +157,36 @@ function App() {
               element={<SecretaryCertificate />}
             />
             <Route
+              path="company/:companyId/secretary-certificate/create"
+              element={<AddSecCert />}
+            />
+            <Route
+              path="company/:companyId/secretary-certificate/view/:seccert_id"
+              element={<ViewSecCert />}
+            />
+            <Route
               path="company/:companyId/treasurer-certificate"
               element={<TreasurerCertificate />}
+            />
+
+            <Route path="company/:companyId/tasks" element={<Tasks />} />
+
+            <Route
+              path="company/:companyId/tasks-checklist"
+              element={<TaskChecklist />}
+            />
+
+            <Route
+              path="company/:companyId/tasks-checklist/view"
+              element={<TaskView />}
+            />
+            <Route
+              path="company/:companyId/businessRenewalPermit"
+              element={<BusinessRenewal />}
+            />
+            <Route
+              path="company/:companyId/settings"
+              element={<CompanySetting />}
             />
           </Route>
           <Route path="/manager/" element={<Login />} />

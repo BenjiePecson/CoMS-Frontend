@@ -22,6 +22,8 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { fetchUser } from "../../store/user/UserSlice.js";
+import Breadcrumbs from "../../components/Breadcrumbs.jsx";
+import DataTable, { createTheme } from "react-data-table-component";
 
 const SelectCompany = () => {
   // const [companies, setCompanies] = useState(data);
@@ -38,6 +40,108 @@ const SelectCompany = () => {
   const editInputFile = useRef(null);
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
+  const [filteredCompanies, setFilteredCompanies] = useState([]);
+
+  const listOfCustomBG = ["eDLA Philippines Inc."];
+
+  const columns = [
+    {
+      // name: "Logo",
+      width: "20%",
+      cell: (company) => (
+        <div className="flex flex-row justify-center aspect-square w-full max-h-24 ">
+          <img
+            className={`w-3/4 object-contain m-5 ${
+              listOfCustomBG.includes(company.companyName) && "bg-slate-500"
+            }`}
+            src={company.logo}
+            alt="Logo..."
+          />
+        </div>
+      ),
+    },
+    {
+      name: "Company Name",
+      width: "30%",
+      selector: (company) => company.companyName,
+      sortable: true,
+    },
+    {
+      name: "SEC Certificate #",
+      width: "20%",
+      selector: (company) => company.secNumber,
+      sortable: true,
+    },
+    {
+      name: "Status",
+      width: "15%",
+      selector: (company) => (
+        <input
+          type="checkbox"
+          className="toggle toggle-success"
+          disabled={!company.status}
+          checked={company.status}
+          onChange={(e) => {
+            toggleStatus(company.companyId, !company.status);
+          }}
+        />
+      ),
+    },
+    {
+      name: "Action",
+      width: "15%",
+      selector: (company) => (
+        <div className="flex flex-row justify-between gap-2">
+          <button
+            onClick={() => {
+              toggleEdit(company);
+            }}
+            disabled={!company.status}
+          >
+            <svg
+              width="44"
+              height="37"
+              viewBox="0 0 44 37"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect width="44" height="37" rx="10" fill="#273069" />
+              <path
+                d="M15 26H30M22.6849 13.357L25.042 11L29.1667 15.1248L26.8097 17.4818M22.6849 13.357L18.0127 18.0292C17.8564 18.1855 17.7686 18.3975 17.7686 18.6185V22.398H21.5483C21.7693 22.398 21.9812 22.3103 22.1375 22.154L26.8097 17.4818M22.6849 13.357L26.8097 17.4818"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+
+          {/* <button
+        onClick={() => {
+          toggleDelete(company.id);
+        }}
+      >
+        <svg
+          width="44"
+          height="37"
+          viewBox="0 0 44 37"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect width="44" height="37" rx="10" fill="#CF0404" />
+          <path
+            d="M28.3333 17.667V25.5003C28.3333 25.7765 28.1095 26.0003 27.8333 26.0003H17.1667C16.8905 26.0003 16.6667 25.7765 16.6667 25.5003V17.667M20.8333 22.667V17.667M24.1667 22.667V17.667M30 14.3333H25.8333M25.8333 14.3333V11.5C25.8333 11.2239 25.6095 11 25.3333 11H19.6667C19.3905 11 19.1667 11.2239 19.1667 11.5V14.3333M25.8333 14.3333H19.1667M15 14.3333H19.1667"
+            stroke="white"
+            strokeWidth="1.95694"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button> */}
+        </div>
+      ),
+    },
+  ];
 
   const toggleAdd = () => {
     setFormData(company);
@@ -116,6 +220,9 @@ const SelectCompany = () => {
           form.append("secNumber", formData.secNumber);
           form.append("corporateTin", formData.corporateTin);
           form.append("dateRegistered", formData.dateRegistered);
+          form.append("sss", formData.sss);
+          form.append("hdmf", formData.hdmf);
+          form.append("philHealth", formData.philHealth);
           form.append("logo", logo);
 
           let response = await axios.patch(
@@ -138,6 +245,9 @@ const SelectCompany = () => {
               corporateTin: data.corporateTin,
               dateRegistered: data.dateRegistered,
               secNumber: data.secNumber,
+              sss: data.sss,
+              hdmf: data.hdmf,
+              philHealth: data.philHealth,
             };
 
             dispatch(updateCompany(newCompany));
@@ -163,6 +273,9 @@ const SelectCompany = () => {
         form.append("secNumber", formData.secNumber);
         form.append("corporateTin", formData.corporateTin);
         form.append("dateRegistered", formData.dateRegistered);
+        form.append("sss", formData.sss);
+        form.append("hdmf", formData.hdmf);
+        form.append("philHealth", formData.philHealth);
         form.append("logo", logo);
 
         try {
@@ -181,6 +294,9 @@ const SelectCompany = () => {
               secNumber: data.secNumber,
               corporateTin: data.corporateTin,
               dateRegistered: data.dateRegistered,
+              sss: data.sss,
+              hdmf: data.hdmf,
+              philHealth: data.philHealth,
               status: data.status,
             };
 
@@ -209,9 +325,6 @@ const SelectCompany = () => {
   //on change event for inputs
   const handleOnChange = async (e) => {
     const { name, value } = e.target;
-
-    console.log(name);
-    console.log(value);
 
     if (name === "logo") {
       setLogo(e.target.files[0]);
@@ -282,7 +395,7 @@ const SelectCompany = () => {
     }
 
     // if (checkCompanyLogo(logo) != "" && !isEdit) {
-    if (checkCompanyLogo(logo) != "") {
+    if (checkCompanyLogo(logo) != "" && !isEdit) {
       newErrors.logo = checkCompanyLogo(logo);
     }
 
@@ -520,17 +633,71 @@ const SelectCompany = () => {
       placeholder="Search"
       className="input input-bordered w-full text-[12px] h-10"
       onChange={(e) => {
-        setSearch(e.target.value);
+        const listOfCompanies = companies.filter((company) => {
+          if (e.target.value == "") {
+            return company;
+          } else if (
+            company.companyName
+              .toLocaleLowerCase()
+              .includes(e.target.value.toLocaleLowerCase()) ||
+            company.secNumber
+              .toLocaleLowerCase()
+              .includes(e.target.value.toLocaleLowerCase())
+          ) {
+            return company;
+          }
+        });
+        setFilteredCompanies(listOfCompanies);
       }}
     />
   );
+
+  createTheme("customized", {
+    text: {
+      primary: "#000000",
+    },
+    background: {
+      default: "transparent",
+    },
+  });
+
+  const customStyles = {
+    headCells: {
+      style: {
+        font: "bold",
+        color: "#808080",
+      },
+    },
+  };
+
+  const conditionalRowStyles = [
+    {
+      when: (row) => !row.status,
+      style: {
+        filter: "grayscale(100%)",
+        backgroundColor: "#D8D8D8",
+      },
+    },
+  ];
 
   useEffect(() => {
     dispatch(fetchCompanies());
   }, []);
 
+  useEffect(() => {
+    setFilteredCompanies(companies);
+  }, [companies]);
+
   return (
     <>
+      {/* <div>
+        <Breadcrumbs
+          lists={[
+            { goto: "/", text: "Home" },
+            { goto: "/", text: "Companies" },
+          ]}
+        />
+      </div> */}
       <div>
         {/* <div className="flex flex-col mb-5">
           <Header />
@@ -546,12 +713,28 @@ const SelectCompany = () => {
         </div>
 
         {/* bg-white p-5 md:p-10 rounded-[20px] shadow-lg */}
-        <div className="flex flex-col w-full mt-5">
+        {/* <div className="flex flex-col w-full mt-5">
           {status === "pending"
             ? "Loading..."
             : companies.length > 0
             ? table
             : noRecord}
+        </div> */}
+        <div className="flex flex-col w-full mt-5">
+          <DataTable
+            columns={columns}
+            data={filteredCompanies}
+            highlightOnHover
+            pointerOnHover
+            onRowClicked={(row) => {
+              if (row.status) {
+                window.location.href = `/company/${row.companyId}/`;
+              }
+            }}
+            theme="customized"
+            customStyles={customStyles}
+            conditionalRowStyles={conditionalRowStyles}
+          />
         </div>
       </div>
 
@@ -655,6 +838,65 @@ const SelectCompany = () => {
               {errors.corporateTin && (
                 <span className="text-[12px] text-red-500">
                   {errors.corporateTin}
+                </span>
+              )}
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">SSS</span>
+              </div>
+              <input
+                type="text"
+                className={`input input-bordered w-full ${
+                  errors.sss && `input-error`
+                }`}
+                name="sss"
+                value={formData.sss}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.sss && (
+                <span className="text-[12px] text-red-500">{errors.sss}</span>
+              )}
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">HDMF</span>
+              </div>
+              <input
+                type="text"
+                className={`input input-bordered w-full ${
+                  errors.hdmf && `input-error`
+                }`}
+                name="hdmf"
+                value={formData.hdmf}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.hdmf && (
+                <span className="text-[12px] text-red-500">{errors.hdmf}</span>
+              )}
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">PhilHealth</span>
+              </div>
+              <input
+                type="text"
+                className={`input input-bordered w-full ${
+                  errors.philHealth && `input-error`
+                }`}
+                name="philHealth"
+                value={formData.philHealth}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.philHealth && (
+                <span className="text-[12px] text-red-500">
+                  {errors.philHealth}
                 </span>
               )}
             </label>
@@ -795,6 +1037,65 @@ const SelectCompany = () => {
               {errors.corporateTin && (
                 <span className="text-[12px] text-red-500">
                   {errors.corporateTin}
+                </span>
+              )}
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">SSS</span>
+              </div>
+              <input
+                type="text"
+                className={`input input-bordered w-full ${
+                  errors.sss && `input-error`
+                }`}
+                name="sss"
+                value={formData.sss}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.sss && (
+                <span className="text-[12px] text-red-500">{errors.sss}</span>
+              )}
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">HDMF</span>
+              </div>
+              <input
+                type="text"
+                className={`input input-bordered w-full ${
+                  errors.hdmf && `input-error`
+                }`}
+                name="hdmf"
+                value={formData.hdmf}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.hdmf && (
+                <span className="text-[12px] text-red-500">{errors.hdmf}</span>
+              )}
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="poppins-regular text-[12px]">PhilHealth</span>
+              </div>
+              <input
+                type="text"
+                className={`input input-bordered w-full ${
+                  errors.philHealth && `input-error`
+                }`}
+                name="philHealth"
+                value={formData.philHealth}
+                onChange={(e) => {
+                  handleOnChange(e);
+                }}
+              />
+              {errors.philHealth && (
+                <span className="text-[12px] text-red-500">
+                  {errors.philHealth}
                 </span>
               )}
             </label>

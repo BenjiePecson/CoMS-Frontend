@@ -1,6 +1,21 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+export const individualState = {
+  individuals_id: "",
+  companyId: "",
+  surname: "",
+  given_name: "",
+  middle_name: "",
+  ext_name: "",
+  address: "",
+  nationality: "",
+  date_of_birth: "",
+  tax_identification_no: "",
+  created_at: "",
+  updated_at: "",
+};
+
 const CompanyState = {
   companyId: "",
   companyName: "",
@@ -8,18 +23,76 @@ const CompanyState = {
   secNumber: "",
   corporateTin: "",
   dateRegistered: "",
+  sss: "",
+  hdmf: "",
+  philHealth: "",
   status: true,
+  gdrivefolders: {
+    root: "",
+    MC28Form: "",
+    finaldocs: "",
+    sec_cert: "",
+    art_of_inc: "",
+    by_laws: "",
+    bir_or_cor: "",
+    lgu_business_permit: "",
+  },
+  latestGIS: {},
+  letterHeader: null,
+  listOfIndividuals: [],
 };
 
-export const fetchCompanies = createAsyncThunk("company/fetchCompanies", async () => {
-  let response = await axios.get("/company/");
-  return response.data;
-});
+export const fetchCompanies = createAsyncThunk(
+  "company/fetchCompanies",
+  async () => {
+    let response = await axios.get("/company/");
+    const companies = response.data.map((company) => {
+      if (company.gdrivefolders == null) {
+        company.gdrivefolders = CompanyState.gdrivefolders;
+      } else {
+        company.gdrivefolders = {
+          ...CompanyState.gdrivefolders,
+          ...JSON.parse(company.gdrivefolders),
+        };
+      }
+      if (company.listOfIndividuals == null) {
+        company.listOfIndividuals = CompanyState.listOfIndividuals;
+      }
+      return company;
+    });
+    return companies;
+  }
+);
 
-export const fetchCompany = createAsyncThunk("company/fetchCompany", async (companyId) => {
-  let response = await axios.get(`/company/${companyId}`);
-  return response.data;
-});
+export const fetchCompany = createAsyncThunk(
+  "company/fetchCompany",
+  async (companyId) => {
+    let response = await axios.get(`/company/${companyId}`);
+    const companies = response.data.map((company) => {
+      if (company.gdrivefolders == null) {
+        company.gdrivefolders = CompanyState.gdrivefolders;
+      } else {
+        company.gdrivefolders = {
+          ...CompanyState.gdrivefolders,
+          ...JSON.parse(company.gdrivefolders),
+        };
+      }
+      if (company.listOfIndividuals == null) {
+        company.listOfIndividuals = CompanyState.listOfIndividuals;
+      }
+      return company;
+    });
+
+    let responseCurrentGIS = await axios.get(`/record/currentGIS/${companyId}`);
+    if (Object.keys(responseCurrentGIS.data).length > 0) {
+      companies[0].latestGIS = responseCurrentGIS.data;
+    } else {
+      companies[0].latestGIS = {};
+    }
+
+    return companies;
+  }
+);
 
 const initialState = {
   companies: [],
@@ -33,7 +106,6 @@ const companySlice = createSlice({
   name: "company",
   initialState,
   reducers: {
-
     addCompany: (state, action) => {
       state.companies.push(action.payload);
     },
@@ -46,7 +118,9 @@ const companySlice = createSlice({
           obj.secNumber = action.payload.secNumber;
           obj.corporateTin = action.payload.corporateTin;
           obj.dateRegistered = action.payload.dateRegistered;
-
+          obj.sss = action.payload.sss;
+          obj.hdmf = action.payload.hdmf;
+          obj.philHealth = action.payload.philHealth;
         }
       });
     },
@@ -59,14 +133,41 @@ const companySlice = createSlice({
       });
     },
 
+    updateIndividual: (state, action) => {
+      state.selectedCompany.listOfIndividuals =
+        state.selectedCompany.listOfIndividuals.map((individual) => {
+          if (individual.individuals_id == action.payload.individuals_id) {
+            return action.payload;
+          }
+          return individual;
+        });
+    },
+
+    addListOfIndividuals: (state, action) => {
+      state.selectedCompany.listOfIndividuals.push(action.payload);
+    },
+
+    removeIndividual: (state, action) => {
+      state.selectedCompany.listOfIndividuals =
+        state.selectedCompany.listOfIndividuals.filter(
+          (u) => u.individuals_id != action.payload
+        );
+    },
+
     deleteCompanyTest: (state, action) => {
       state.companies = state.companies.filter(
         (item) => item.id !== action.payload.id
       );
     },
+
+    updateLetterHeader: (state, action) => {
+      state.selectedCompany = {
+        ...state.selectedCompany,
+        letterHeader: action.payload.letterHeader,
+      };
+    },
   },
   extraReducers: (builder) => {
-
     //Companies
     builder.addCase(fetchCompanies.pending, (state) => {
       state.status = "pending";
@@ -99,6 +200,10 @@ export const {
   addCompany,
   updateCompany,
   changeCompanyStatus,
+  addListOfIndividuals,
+  updateIndividual,
+  removeIndividual,
   deleteCompanyTest,
+  updateLetterHeader,
 } = companySlice.actions;
 export default companySlice.reducer;

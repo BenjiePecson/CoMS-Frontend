@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import imagePage1 from "../../../../assets/images/page1.jpg";
 import {
@@ -12,9 +12,32 @@ import {
   View,
 } from "@react-pdf/renderer";
 import Swal from "sweetalert2";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchRecord } from "../../../store/GIS/GISRecordSlice";
+import PageOne from "../../company/GISTracker/pdfPages/PageOne";
+import PageOneSpecial from "../../company/GISTracker/pdfPages/PageOneSpecial";
+import PageTwo from "../../company/GISTracker/pdfPages/PageTwo";
+import PageThree from "../../company/GISTracker/pdfPages/PageThree";
+import PageFour from "../../company/GISTracker/pdfPages/PageFour";
+import PageFive from "../../company/GISTracker/pdfPages/PageFive";
+import PageSix from "../../company/GISTracker/pdfPages/PageSix";
+import PageSeven from "../../company/GISTracker/pdfPages/PageSeven";
+import PageEight from "../../company/GISTracker/pdfPages/PageEight";
+import PageNine from "../../company/GISTracker/pdfPages/PageNine";
+import PageTen from "../../company/GISTracker/pdfPages/PageTen";
+import { showToast } from "../../../../assets/global";
+import axios from "axios";
 
 const view = () => {
+  const { recordId } = useParams();
+  const selectedRecord = useSelector((state) => state.records.selectedRecord);
+  const currentUser = useSelector((state) => state.user.user);
+
+  const [formData, setFormData] = useState(selectedRecord.draftingInput);
+
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const styles = StyleSheet.create({
     year: {
@@ -74,26 +97,379 @@ const view = () => {
       confirmButtonColor: "#273069",
       confirmButtonText: "Yes, approve it!",
       cancelButtonColor: "#B4B4B8",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        // deleteCompany(id);
-        navigate(-1);
-        Swal.fire({
-          title: "Success!",
-          text: "The record has been approved successfully.",
-          icon: "success",
-          showConfirmButton: false,
-          timer: 1500,
-        });
+        let type = "error";
+        let message = "Failed to approve the record.";
+        try {
+          const modified_by = `${currentUser.first_name} ${currentUser.last_name}`;
+
+          let response = await axios.patch(`/record/record/${recordId}`, {
+            status: "Approved",
+            modified_by,
+            comments: comment,
+          });
+
+          if (response.status === 200) {
+            type = "success";
+            message = "The record has been approved successfully.";
+            navigate("/gis");
+          }
+        } catch (error) {
+          console.log(error);
+        } finally {
+          showToast(type, message);
+        }
+        // Swal.fire({
+        //   title: "Success!",
+        //   text: "The record has been approved successfully.",
+        //   icon: "success",
+        //   showConfirmButton: false,
+        //   timer: 1500,
+        // });
       }
     });
   };
+
+  const revertBtn = async () => {
+    if (comment == "") {
+      setErrors({ ...errors, comments: "Comment is required." });
+      return;
+    }
+
+    let type = "error";
+    let message = "Failed to revert this record.";
+    try {
+      const modified_by = `${currentUser.first_name} ${currentUser.last_name}`;
+
+      let response = await axios.patch(`/record/record/${recordId}`, {
+        comments: comment,
+        status: "Reverted",
+        modified_by,
+      });
+      if (response.status === 200) {
+        type = "success";
+        message = "The record has been reverted successfully.";
+        navigate("/gis");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      showToast(type, message);
+    }
+  };
+
+  const handleChangeComment = (e) => {
+    setComment(e.target.value);
+    if (e.target.value != "") {
+      setErrors({ ...errors, comments: "" });
+    } else {
+      setErrors({ ...errors, comments: "Comment is required." });
+    }
+  };
+
+  const PDFViewerComponent = () => {
+    if (Object.keys(formData).length == 0) {
+      return;
+    }
+    return (
+      <PDFViewer
+        style={{
+          position: "relative",
+          height: "100vh",
+          width: "100%",
+        }}
+      >
+        <Document title={`${formData.corporate_name} GIS ${formData.year}`}>
+          {formData.isSpecialMeeting != undefined ? (
+            !formData.isSpecialMeeting ? (
+              <PageOne
+                //view1
+                formData={formData}
+                year={formData.year}
+                isAmended={formData.isAmended}
+                corporate_name={formData.corporate_name}
+                business_or_trade_name={formData.business_or_trade_name}
+                sec_registration_number={formData.sec_registration_number}
+                date_of_annual_meeting={formData.date_of_annual_meeting}
+                actual_date_of_annual_meeting={
+                  formData.actual_date_of_annual_meeting
+                }
+                complete_principal_office_address={
+                  formData.complete_principal_office_address
+                }
+                //view2
+                date_registered={formData.date_registered}
+                fiscal_year_end={formData.fiscal_year_end}
+                corporate_tin={formData.corporate_tin}
+                website_url_address={formData.website_url_address}
+                official_email_address={formData.official_email_address}
+                fax_number={formData.fax_number}
+                alternate_phone_number={formData.alternate_phone_number}
+                telephone_number={formData.telephone_number}
+                geographical_code={formData.geographical_code}
+                //view3
+                alternate_email_address={formData.alternate_email_address}
+                official_mobile_number={formData.official_mobile_number}
+                name_of_external_auditor={formData.name_of_external_auditor}
+                sec_accreditation_number={formData.sec_accreditation_number}
+                industry_classification={formData.industry_classification}
+                primary_purpose={formData.primary_purpose}
+              />
+            ) : (
+              <PageOneSpecial //view1
+                formData={formData}
+                year={formData.year}
+                isAmended={formData.isAmended}
+                corporate_name={formData.corporate_name}
+                business_or_trade_name={formData.business_or_trade_name}
+                sec_registration_number={formData.sec_registration_number}
+                date_of_annual_meeting={formData.date_of_annual_meeting}
+                actual_date_of_annual_meeting={
+                  formData.actual_date_of_annual_meeting
+                }
+                complete_principal_office_address={
+                  formData.complete_principal_office_address
+                }
+                //view2
+                date_registered={formData.date_registered}
+                fiscal_year_end={formData.fiscal_year_end}
+                corporate_tin={formData.corporate_tin}
+                website_url_address={formData.website_url_address}
+                official_email_address={formData.official_email_address}
+                fax_number={formData.fax_number}
+                alternate_phone_number={formData.alternate_phone_number}
+                telephone_number={formData.telephone_number}
+                geographical_code={formData.geographical_code}
+                //view3
+                alternate_email_address={formData.alternate_email_address}
+                official_mobile_number={formData.official_mobile_number}
+                name_of_external_auditor={formData.name_of_external_auditor}
+                sec_accreditation_number={formData.sec_accreditation_number}
+                industry_classification={formData.industry_classification}
+                primary_purpose={formData.primary_purpose}
+              />
+            )
+          ) : (
+            <PageOne
+              //view1
+              formData={formData}
+              year={formData.year}
+              amended={formData.amended}
+              corporate_name={formData.corporate_name}
+              business_or_trade_name={formData.business_or_trade_name}
+              sec_registration_number={formData.sec_registration_number}
+              date_of_annual_meeting={formData.date_of_annual_meeting}
+              actual_date_of_annual_meeting={
+                formData.actual_date_of_annual_meeting
+              }
+              complete_principal_office_address={
+                formData.complete_principal_office_address
+              }
+              //view2
+              date_registered={formData.date_registered}
+              fiscal_year_end={formData.fiscal_year_end}
+              corporate_tin={formData.corporate_tin}
+              website_url_address={formData.website_url_address}
+              official_email_address={formData.official_email_address}
+              fax_number={formData.fax_number}
+              alternate_phone_number={formData.alternate_phone_number}
+              telephone_number={formData.telephone_number}
+              geographical_code={formData.geographical_code}
+              //view3
+              alternate_email_address={formData.alternate_email_address}
+              official_mobile_number={formData.official_mobile_number}
+              name_of_external_auditor={formData.name_of_external_auditor}
+              sec_accreditation_number={formData.sec_accreditation_number}
+              industry_classification={formData.industry_classification}
+              primary_purpose={formData.primary_purpose}
+            />
+          )}
+          <PageTwo natureOfService={formData.nature_of_business} />
+          <PageThree
+            formData={formData}
+            corporate_name={formData.corporate_name}
+            auth_capital_stock={formData.auth_capital_stock.capital_stocks}
+            auth_capital_stock_total_number_of_shares={
+              formData.auth_capital_stock.total_number_of_shares
+            }
+            auth_capital_stock_total_amount={
+              formData.auth_capital_stock.total_amount
+            }
+            subscribe_capital_filipino={formData.subscribe_capital.filipino}
+            subscribe_capital_foreign={formData.subscribe_capital.foreign}
+            sub_total_number_of_shares_filipino={
+              formData.subscribe_capital.sub_total_number_of_shares_filipino
+            }
+            sub_total_amount_filipino={
+              formData.subscribe_capital.sub_total_amount_filipino
+            }
+            sub_total_ownership_filipino={
+              formData.subscribe_capital.sub_total_ownership_filipino
+            }
+            percentage_of_foreign_equity={
+              formData.subscribe_capital.percentage_of_foreign_equity
+            }
+            sub_total_number_of_shares_foreign={
+              formData.subscribe_capital.sub_total_number_of_shares_foreign
+            }
+            sub_total_amount_foreign={
+              formData.subscribe_capital.sub_total_amount_foreign
+            }
+            sub_total_ownership_foreign={
+              formData.subscribe_capital.sub_total_ownership_foreign
+            }
+            subscribe_capital_total_amount={
+              formData.subscribe_capital.total_amount
+            }
+            subscribe_capital_total_percent_of_ownership={
+              formData.subscribe_capital.total_percent_of_ownership
+            }
+            filipino_paid_up_capital={formData.paid_up_capital.filipino}
+            foreign_paid_up_capital={formData.paid_up_capital.foreign}
+            paid_up_sub_total_amount_filipino={
+              formData.paid_up_capital.sub_total_amount_filipino
+            }
+            paid_sub_total_ownership_filipino={
+              formData.paid_up_capital.sub_total_ownership_filipino
+            }
+            paid_sub_total_number_of_shares_filipino={
+              formData.paid_up_capital.sub_total_number_of_shares_filipino
+            }
+            paid_up_sub_total_amount_foreign={
+              formData.paid_up_capital.sub_total_amount_foreign
+            }
+            paid_sub_total_ownership_foreign={
+              formData.paid_up_capital.sub_total_ownership_foreign
+            }
+            paid_sub_total_number_of_shares_foreign={
+              formData.paid_up_capital.sub_total_number_of_shares_foreign
+            }
+            paid_up_capital_total_amount={formData.paid_up_capital.total_amount}
+            paid_up_capital_total_percent_of_ownership={
+              formData.paid_up_capital.total_percent_of_ownership
+            }
+            paid_total_percent_ownership={
+              formData.paid_up_capital.total_percent_of_ownership
+            }
+          />
+          <PageFour
+            formData={formData}
+            directors_or_officers={formData.directors_or_officers}
+            corporate_name={formData.corporate_name}
+          />
+          <PageFive
+            formData={formData}
+            corporate_name={formData.corporate_name}
+            total_number_of_stockholders={formData.total_number_of_stockholders}
+            number_of_stockholders_with_more_shares_each={
+              formData.number_of_stockholders_with_more_shares_each
+            }
+            total_assets_based_on_latest_audited={
+              formData.total_assets_based_on_latest_audited
+            }
+            stock_holders_information={
+              formData.stock_holders_information.information
+            }
+            subscribe_capital_total_amount={
+              formData.subscribe_capital.total_amount
+            }
+            subscribe_capital_total_percent_of_ownership={
+              formData.subscribe_capital.total_percent_of_ownership
+            }
+          />
+          <PageSix
+            formData={formData}
+            corporate_name={formData.corporate_name}
+            total_number_of_stockholders={formData.total_number_of_stockholders}
+            number_of_stockholders_with_more_shares_each={
+              formData.number_of_stockholders_with_more_shares_each
+            }
+            total_assets_based_on_latest_audited={
+              formData.total_assets_based_on_latest_audited
+            }
+            stock_holders_information={
+              formData.stock_holders_information.information
+            }
+            subscribe_capital_total_amount={
+              formData.subscribe_capital.total_amount
+            }
+            subscribe_capital_total_percent_of_ownership={
+              formData.subscribe_capital.total_percent_of_ownership
+            }
+          />
+          <PageSeven
+            formData={formData}
+            corporate_name={formData.corporate_name}
+            total_number_of_stockholders={formData.total_number_of_stockholders}
+            number_of_stockholders_with_more_shares_each={
+              formData.number_of_stockholders_with_more_shares_each
+            }
+            total_assets_based_on_latest_audited={
+              formData.total_assets_based_on_latest_audited
+            }
+            stock_holders_information={
+              formData.stock_holders_information.information
+            }
+            subscribe_capital_total_amount={
+              formData.subscribe_capital.total_amount
+            }
+            subscribe_capital_total_percent_of_ownership={
+              formData.subscribe_capital.total_percent_of_ownership
+            }
+          />
+          <PageEight corporate_name={formData.corporate_name} />
+          <PageNine
+            formData={formData}
+            corporate_secretary={formData.corporate_secretary}
+            coporate_name={formData.corporate_name}
+          />
+          <PageTen
+            formData={formData}
+            corporate_name={formData.corporate_name}
+            sec_registration_number={formData.sec_registration_number}
+            beneficial_ownership_declaration={
+              formData.beneficial_ownership_declaration
+            }
+            year={formData.year}
+          />
+        </Document>
+      </PDFViewer>
+    );
+  };
+
+  const getName = (fullname) => {
+    let fullnameShort = "";
+    if (fullname == "" || fullname == null) return;
+    const parts = fullname.split(" ");
+
+    fullnameShort = `${parts.shift()} ${parts.pop()[0]}.`;
+
+    return fullnameShort;
+  };
+
+  const getLastModified = () => {
+    let modified_by = selectedRecord.modified_by;
+
+    if (selectedRecord.timestamps.length != 0) {
+      modified_by = selectedRecord.timestamps[0].modified_by;
+    }
+    return getName(modified_by);
+  };
+
+  useEffect(() => {
+    dispatch(fetchRecord(recordId));
+  }, []);
+
+  useEffect(() => {
+    setFormData(selectedRecord.draftingInput);
+  }, [selectedRecord]);
 
   return (
     <>
       <button
         onClick={() => {
-          navigate(-1);
+          navigate("/gis");
         }}
         className="flex flex-row gap-3 my-5 p-2 items-center w-32"
       >
@@ -130,15 +506,17 @@ const view = () => {
             <div className="flex flex-col">
               <span className="poppins-medium text-[10px]">Company</span>
               <div className="flex flex-row gap-5">
-                <span className="poppins-bold text-[18px]">Fullsuite</span>
-                <span className="poppins-bold text-[18px]">FS GIS 2024</span>
+                <span className="poppins-bold text-[18px]">
+                  {selectedRecord.companyName}
+                </span>
+                {/* <span className="poppins-bold text-[18px]">{selectedRecord.recordName}</span> */}
               </div>
             </div>
           </div>
           <div className="flex flex-col text-end">
-            <span className="poppins-medium text-[10px]">Created By</span>
+            <span className="poppins-medium text-[10px]">Last Modified By</span>
             <span className="poppins-semibold text-[16px]">
-              Michael Artiaga
+              {getLastModified()}
             </span>
           </div>
         </div>
@@ -148,15 +526,7 @@ const view = () => {
             <div className="flex flex-col w-full">
               <div className="flex flex-col w-full">
                 <div className="w-full text-start h-screen">
-                  <PDFViewer
-                    style={{
-                      position: "relative",
-                      height: "100%",
-                      width: "100%",
-                    }}
-                  >
-                    {GISFormDocument}
-                  </PDFViewer>
+                  {PDFViewerComponent()}
                 </div>
               </div>
             </div>
@@ -177,13 +547,14 @@ const view = () => {
                 className="btn bg-[#6F7496] text-white btn-wide"
                 onClick={() => {
                   // toggleApprove(1);
-                  document.getElementById("approveModal").showModal();
+                  document.getElementById("revertModal").showModal();
                 }}
               >
                 Revert
               </button>
             </div>
             <div className="divider"></div>
+
             <label className="form-control w-full">
               <div className="label w-full">
                 <span className="label-text">
@@ -191,24 +562,30 @@ const view = () => {
                 </span>
               </div>
               <textarea
-                className="textarea textarea-bordered h-24"
+                className={`textarea textarea-bordered h-24 ${
+                  errors.comments && " textarea-error"
+                }`}
                 onChange={(e) => {
-                  setComment(e.target.value);
+                  handleChangeComment(e);
                 }}
-                defaultValue={comment}
+                value={comment}
               ></textarea>
+              {errors.comments && (
+                <span className="text-[12px] text-red-500">
+                  {errors.comments}
+                </span>
+              )}
             </label>
           </div>
         </div>
       </div>
 
-      <dialog id="approveModal" className="modal">
+      <dialog id="revertModal" className="modal">
         <div className="modal-box">
           <div className="flex flex-col gap-2">
-            <div className="flex flex-col w-full items-center justify-center">
+            <div className="flex flex-col w-full items-center justify-center gap-2">
               <svg
-                width="55"
-                height="55"
+                className="w-24 aspect-auto"
                 viewBox="0 0 55 55"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -231,26 +608,25 @@ const view = () => {
                   </span>
                 </div>
                 <textarea
-                  className="textarea textarea-bordered h-24"
+                  className={`textarea textarea-bordered h-24 ${
+                    errors.comments && " textarea-error"
+                  }`}
                   onChange={(e) => {
-                    setComment(e.target.value);
+                    handleChangeComment(e);
                   }}
-                  defaultValue={comment}
+                  value={comment}
                 ></textarea>
+                {errors.comments && (
+                  <span className="text-[12px] text-red-500">
+                    {errors.comments}
+                  </span>
+                )}
               </label>
             </div>
             <div className="flex flex-row gap-10 items-center justify-center">
               <button
                 onClick={(e) => {
-                  console.log("Revert");
-                  navigate(-1);
-                  Swal.fire({
-                    title: "Success!",
-                    text: "The record has been reverted successfully.",
-                    icon: "success",
-                    showConfirmButton: false,
-                    timer: 1500,
-                  });
+                  revertBtn();
                 }}
                 className="btn bg-[#6F7496] text-white mt-2"
               >
@@ -258,7 +634,7 @@ const view = () => {
               </button>
               <button
                 onClick={(e) => {
-                  document.getElementById("approveModal").close();
+                  document.getElementById("revertModal").close();
                 }}
                 className="btn bg-[#CDCDCD] text-black mt-2"
               >

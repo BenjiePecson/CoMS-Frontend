@@ -14,6 +14,8 @@ const Layout = () => {
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
 
+  const [loading, setLoading] = useState(true);
+
   const lightMode = (
     <>
       <svg
@@ -72,6 +74,48 @@ const Layout = () => {
     </svg>
   );
 
+  const usersIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className="size-6"
+    >
+      <path
+        fillRule="evenodd"
+        d="M8.25 6.75a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0ZM15.75 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM2.25 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM6.31 15.117A6.745 6.745 0 0 1 12 12a6.745 6.745 0 0 1 6.709 7.498.75.75 0 0 1-.372.568A12.696 12.696 0 0 1 12 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 0 1-.372-.568 6.787 6.787 0 0 1 1.019-4.38Z"
+        clipRule="evenodd"
+      />
+      <path d="M5.082 14.254a8.287 8.287 0 0 0-1.308 5.135 9.687 9.687 0 0 1-1.764-.44l-.115-.04a.563.563 0 0 1-.373-.487l-.01-.121a3.75 3.75 0 0 1 3.57-4.047ZM20.226 19.389a8.287 8.287 0 0 0-1.308-5.135 3.75 3.75 0 0 1 3.57 4.047l-.01.121a.563.563 0 0 1-.373.486l-.115.04c-.567.2-1.156.349-1.764.441Z" />
+    </svg>
+  );
+
+  const dashboardIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="#EFF2F4"
+      className="size-7"
+    >
+      <path
+        fillRule="evenodd"
+        d="M3 6a3 3 0 0 1 3-3h2.25a3 3 0 0 1 3 3v2.25a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6Zm9.75 0a3 3 0 0 1 3-3H18a3 3 0 0 1 3 3v2.25a3 3 0 0 1-3 3h-2.25a3 3 0 0 1-3-3V6ZM3 15.75a3 3 0 0 1 3-3h2.25a3 3 0 0 1 3 3V18a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-2.25Zm9.75 0a3 3 0 0 1 3-3H18a3 3 0 0 1 3 3V18a3 3 0 0 1-3 3h-2.25a3 3 0 0 1-3-3v-2.25Z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+
+  const quoteIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="#EFF2F4"
+      className="size-6"
+    >
+      <path d="M19.5 21a3 3 0 0 0 3-3v-4.5a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3V18a3 3 0 0 0 3 3h15ZM1.5 10.146V6a3 3 0 0 1 3-3h5.379a2.25 2.25 0 0 1 1.59.659l2.122 2.121c.14.141.331.22.53.22H19.5a3 3 0 0 1 3 3v1.146A4.483 4.483 0 0 0 19.5 9h-15a4.483 4.483 0 0 0-3 1.146Z" />
+    </svg>
+  );
+
   const logout = async () => {
     // const token = localStorage.getItem("access_token").split(" ")[1];
 
@@ -87,7 +131,7 @@ const Layout = () => {
     setActive(
       window.location.pathname.split("/")[1] === "" ||
         window.location.pathname.split("/")[1] === undefined
-        ? "/company"
+        ? "/dashboard"
         : `/${window.location.pathname.split("/")[1]}`
     );
   }, [window.location.pathname]);
@@ -95,160 +139,278 @@ const Layout = () => {
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (token == null || token == undefined) {
-      alert("Session expired. Please login again.");
-
       navigate("/login");
+      alert("Session expired. Please login again.");
+    } else {
+      dispatch(fetchUser(token));
+      setLoading(false);
     }
   }, []);
 
   return (
-    <div>
-      <div className="drawer lg:drawer-open">
-        <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-        <div className="drawer-content flex flex-col">
-          <div className="flex justify-end bg-[#FFFFFF] shadow-md">
-            <label
-              htmlFor="my-drawer-2"
-              className="btn btn-ghost bg-[#f7f7f7] shadow-sm lg:hidden w-16 m-2"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </label>
-          </div>
-          <div className="flex flex-col min-h-screen p-5 w-full">
-            <Outlet />
-          </div>
-        </div>
-        <div className="drawer-side">
-          <label
-            htmlFor="my-drawer-2"
-            aria-label="close sidebar"
-            className="drawer-overlay"
-          ></label>
-          <ul className="menu m-0 p-0 w-80 min-h-full bg-[#031C30] pt-4 text-base-content flex flex-col justify-between">
-            {/* Sidebar content here */}
-
-            <div className="container">
-              <div className="px-4 py-5">
-                <svg
-                  width="37"
-                  height="35"
-                  viewBox="0 0 37 35"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+    <>
+      {loading ? (
+        <></>
+      ) : (
+        <div>
+          <div className="drawer lg:drawer-open">
+            <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
+            <div className="drawer-content flex flex-col">
+              <div className="flex justify-start bg-[#FFFFFF] shadow-md">
+                <label
+                  htmlFor="my-drawer-2"
+                  className="btn btn-ghost bg-[#f7f7f7] shadow-sm lg:hidden w-16 m-2"
                 >
-                  <rect
-                    x="0.522949"
-                    y="0.0307617"
-                    width="35.8685"
-                    height="34.9054"
-                    rx="7.50769"
-                    fill="white"
-                  />
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M13.6951 9.84751C13.1835 9.34317 13.1835 8.52548 13.6951 8.02114L17.5027 4.2676C18.0143 3.76326 18.8438 3.76326 19.3554 4.2676L23.163 8.02114C23.6746 8.52548 23.6746 9.34317 23.163 9.84751L19.3554 13.6011C18.8438 14.1054 18.0143 14.1054 17.5027 13.6011L13.6951 9.84751ZM17.7309 17.9513C17.4751 17.6991 17.4751 17.2903 17.7309 17.0381L17.9837 16.7888C18.2396 16.5366 18.6543 16.5366 18.9101 16.7888L19.163 17.0381C19.4188 17.2903 19.4188 17.6991 19.163 17.9513L18.9101 18.2006C18.6543 18.4528 18.2396 18.4528 17.9837 18.2006L17.7309 17.9513ZM22.6811 16.6008C22.1694 17.1052 22.1694 17.9228 22.6811 18.4272L26.4887 22.1807C27.0003 22.6851 27.8298 22.6851 28.3414 22.1807L32.149 18.4272C32.6606 17.9228 32.6606 17.1051 32.149 16.6008L28.3414 12.8473C27.8298 12.3429 27.0003 12.3429 26.4887 12.8473L22.6811 16.6008ZM4.76505 18.4176C4.25345 17.9132 4.25345 17.0955 4.76505 16.5912L8.57268 12.8376C9.08428 12.3333 9.91376 12.3333 10.4254 12.8376L14.233 16.5912C14.7446 17.0955 14.7446 17.9132 14.233 18.4176L10.4254 22.1711C9.91376 22.6754 9.08428 22.6754 8.57268 22.1711L4.76505 18.4176ZM13.6951 25.1195C13.1835 25.6238 13.1835 26.4415 13.6951 26.9459L17.5027 30.6994C18.0143 31.2037 18.8438 31.2037 19.3554 30.6994L23.163 26.9459C23.6746 26.4415 23.6746 25.6238 23.163 25.1195L19.3554 21.3659C18.8438 20.8616 18.0143 20.8616 17.5027 21.3659L13.6951 25.1195Z"
-                    fill="#2196F3"
-                  />
-                </svg>
-              </div>
-
-              <div className="px-4">
-                <Link
-                  to="/company"
-                  onClick={() => {
-                    setActive("/company");
-                  }}
-                >
-                  <NavBar
-                    isActive={active === "/company"}
-                    text="Company"
-                    icon={companyIcon}
-                  />
-                </Link>
-
-                <Link
-                  to="/gis"
-                  onClick={() => {
-                    setActive("/gis");
-                  }}
-                >
-                  <NavBar
-                    isActive={active === "/gis"}
-                    text="GIS"
-                    icon={trackerIcon}
-                  />
-                </Link>
-
-                <Link
-                  to="/settings"
-                  onClick={() => {
-                    setActive("/settings");
-                  }}
-                >
-                  <NavBar
-                    isActive={active === "/settings"}
-                    text="Profile Settings"
-                    icon={settingsIcon}
-                  />
-                </Link>
-              </div>
-            </div>
-            <div className="px-4">
-              <div className="flex flex-row text-white justify-between items-center">
-                <div className="flex flex-row items-center gap-5">
-                  {lightMode}
-                </div>
-                <div>
-                  <input
-                    type="checkbox"
-                    className="toggle"
-                    onChange={() => {
-                      setIsDarkMode(!isDarkMode);
-                    }}
-                    value={isDarkMode}
-                  />
-                </div>
-              </div>
-
-              <div
-                className="flex flex-row hover:bg-[#667A8A] h-[45px] rounded-[3px] items-center my-4 bg-[#667A8A] cursor-pointer"
-                onClick={() => {
-                  logout();
-                }}
-              >
-                <div className="px-5">
                   <svg
-                    width="27"
-                    height="26"
-                    viewBox="0 0 27 26"
-                    fill="none"
                     xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-6 h-6"
                   >
                     <path
-                      d="M11.9191 0.933289C15.0255 0.933289 17.559 3.42334 17.559 6.48898V12.4826H9.92032C9.37289 12.4826 8.94003 12.9081 8.94003 13.4461C8.94003 13.9716 9.37289 14.4096 9.92032 14.4096H17.559V20.3907C17.559 23.4564 15.0255 25.9589 11.8936 25.9589H5.69361C2.5745 25.9589 0.0410156 23.4689 0.0410156 20.4032V6.50149C0.0410156 3.42334 2.58723 0.933289 5.70634 0.933289H11.9191ZM20.7375 9.12944C21.1129 8.74154 21.726 8.74154 22.1014 9.11692L25.7551 12.7582C25.9428 12.9458 26.0429 13.1836 26.0429 13.4464C26.0429 13.6966 25.9428 13.9469 25.7551 14.1221L22.1014 17.7633C21.9137 17.951 21.6634 18.0511 21.4257 18.0511C21.1754 18.0511 20.9252 17.951 20.7375 17.7633C20.3621 17.3879 20.3621 16.7748 20.7375 16.3994L22.7395 14.4098H17.5592V12.4829H22.7395L20.7375 10.4933C20.3621 10.1179 20.3621 9.50482 20.7375 9.12944Z"
-                      fill="white"
+                      fillRule="evenodd"
+                      d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
+                      clipRule="evenodd"
                     />
                   </svg>
-                </div>
-                <div className={"poppins-semibold text-white"}>Logout</div>
+                </label>
+              </div>
+              <div className="flex flex-col min-h-screen p-5 w-full">
+                <Outlet />
               </div>
             </div>
-          </ul>
+            <div className="drawer-side">
+              <label
+                htmlFor="my-drawer-2"
+                aria-label="close sidebar"
+                className="drawer-overlay"
+              ></label>
+              <ul className="menu m-0 p-0 w-80 min-h-full bg-[#031C30] pt-4 text-base-content flex flex-col justify-between">
+                {/* Sidebar content here */}
+
+                <div className="container">
+                  <div className="px-4 py-5">
+                    <svg
+                      width="37"
+                      height="35"
+                      viewBox="0 0 37 35"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <rect
+                        x="0.522949"
+                        y="0.0307617"
+                        width="35.8685"
+                        height="34.9054"
+                        rx="7.50769"
+                        fill="white"
+                      />
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M13.6951 9.84751C13.1835 9.34317 13.1835 8.52548 13.6951 8.02114L17.5027 4.2676C18.0143 3.76326 18.8438 3.76326 19.3554 4.2676L23.163 8.02114C23.6746 8.52548 23.6746 9.34317 23.163 9.84751L19.3554 13.6011C18.8438 14.1054 18.0143 14.1054 17.5027 13.6011L13.6951 9.84751ZM17.7309 17.9513C17.4751 17.6991 17.4751 17.2903 17.7309 17.0381L17.9837 16.7888C18.2396 16.5366 18.6543 16.5366 18.9101 16.7888L19.163 17.0381C19.4188 17.2903 19.4188 17.6991 19.163 17.9513L18.9101 18.2006C18.6543 18.4528 18.2396 18.4528 17.9837 18.2006L17.7309 17.9513ZM22.6811 16.6008C22.1694 17.1052 22.1694 17.9228 22.6811 18.4272L26.4887 22.1807C27.0003 22.6851 27.8298 22.6851 28.3414 22.1807L32.149 18.4272C32.6606 17.9228 32.6606 17.1051 32.149 16.6008L28.3414 12.8473C27.8298 12.3429 27.0003 12.3429 26.4887 12.8473L22.6811 16.6008ZM4.76505 18.4176C4.25345 17.9132 4.25345 17.0955 4.76505 16.5912L8.57268 12.8376C9.08428 12.3333 9.91376 12.3333 10.4254 12.8376L14.233 16.5912C14.7446 17.0955 14.7446 17.9132 14.233 18.4176L10.4254 22.1711C9.91376 22.6754 9.08428 22.6754 8.57268 22.1711L4.76505 18.4176ZM13.6951 25.1195C13.1835 25.6238 13.1835 26.4415 13.6951 26.9459L17.5027 30.6994C18.0143 31.2037 18.8438 31.2037 19.3554 30.6994L23.163 26.9459C23.6746 26.4415 23.6746 25.6238 23.163 25.1195L19.3554 21.3659C18.8438 20.8616 18.0143 20.8616 17.5027 21.3659L13.6951 25.1195Z"
+                        fill="#2196F3"
+                      />
+                    </svg>
+                  </div>
+
+                  <div className="px-4">
+                    <Link
+                      to="/"
+                      onClick={() => {
+                        setActive("/dashboard");
+                      }}
+                    >
+                      <NavBar
+                        isActive={active === "/dashboard"}
+                        text="Dashboard"
+                        icon={dashboardIcon}
+                      />
+                    </Link>
+
+                    <Link
+                      to="/company"
+                      onClick={() => {
+                        setActive("/company");
+                      }}
+                    >
+                      <NavBar
+                        isActive={active === "/company"}
+                        text="Company"
+                        icon={companyIcon}
+                      />
+                    </Link>
+
+                    {/* <Link
+                      to="/users-task"
+                      onClick={() => {
+                        setActive("/users-task");
+                      }}
+                    >
+                      <NavBar
+                        isActive={active === "/users-task"}
+                        text="Users Task"
+                        icon={companyIcon}
+                      />
+                    </Link> */}
+
+                    {user.permissions.includes("View GIS Approval") && (
+                      <Link
+                        to="/gis"
+                        onClick={() => {
+                          setActive("/gis");
+                        }}
+                      >
+                        <NavBar
+                          isActive={active === "/gis"}
+                          text="GIS"
+                          icon={trackerIcon}
+                        />
+                      </Link>
+                    )}
+
+                    <Link
+                      to="/quote"
+                      onClick={() => {
+                        setActive("/quote");
+                      }}
+                    >
+                      <NavBar
+                        isActive={active === "/quote"}
+                        text="Quote"
+                        icon={quoteIcon}
+                      />
+                    </Link>
+
+                    <Link
+                      to="/checklist"
+                      onClick={() => {
+                        setActive("/checklist");
+                      }}
+                    >
+                      <NavBar
+                        isActive={active === "/checklist"}
+                        text="Checklist"
+                        icon={quoteIcon}
+                      />
+                    </Link>
+
+                    <Link
+                      to="/settings"
+                      onClick={() => {
+                        setActive("/settings");
+                      }}
+                    >
+                      <NavBar
+                        isActive={active === "/settings"}
+                        text="Profile Settings"
+                        icon={settingsIcon}
+                      />
+                    </Link>
+
+                    {(user.permissions.includes("View Users") ||
+                      user.permissions.includes("View Roles") ||
+                      user.permissions.includes("View Permissions")) && (
+                      <li>
+                        <details open>
+                          <summary className="h-[45px] my-1 flex flex-row justify-between items-center text-white">
+                            <div className="flex flex-row items-center gap-4">
+                              {usersIcon} User Management
+                            </div>
+                          </summary>
+                          <ul>
+                            {user.permissions.includes("View Users") && (
+                              <Link
+                                to="/users"
+                                onClick={() => {
+                                  setActive("/users");
+                                }}
+                              >
+                                <NavBar
+                                  isActive={active === "/users"}
+                                  text="Users"
+                                />
+                              </Link>
+                            )}
+                            {user.permissions.includes("View Roles") && (
+                              <Link
+                                to="/roles"
+                                onClick={() => {
+                                  setActive("/roles");
+                                }}
+                              >
+                                <NavBar
+                                  isActive={active === "/roles"}
+                                  text="Roles"
+                                />
+                              </Link>
+                            )}
+
+                            {user.permissions.includes("View Permissions") && (
+                              <Link
+                                to="/permissions"
+                                onClick={() => {
+                                  setActive("/permissions");
+                                }}
+                              >
+                                <NavBar
+                                  isActive={active === "/permissions"}
+                                  text="Permissions"
+                                />
+                              </Link>
+                            )}
+                          </ul>
+                        </details>
+                      </li>
+                    )}
+                  </div>
+                </div>
+                <div className="px-4">
+                  <div className="flex flex-row text-white justify-between items-center">
+                    <div className="flex flex-row items-center gap-5">
+                      {lightMode}
+                    </div>
+                    <div>
+                      <input
+                        type="checkbox"
+                        className="toggle"
+                        onChange={() => {
+                          setIsDarkMode(!isDarkMode);
+                        }}
+                        value={isDarkMode}
+                      />
+                    </div>
+                  </div>
+
+                  <div
+                    className="flex flex-row hover:bg-[#667A8A] h-[45px] rounded-[3px] items-center my-4 bg-[#667A8A] cursor-pointer"
+                    onClick={() => {
+                      logout();
+                    }}
+                  >
+                    <div className="px-5">
+                      <svg
+                        width="27"
+                        height="26"
+                        viewBox="0 0 27 26"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M11.9191 0.933289C15.0255 0.933289 17.559 3.42334 17.559 6.48898V12.4826H9.92032C9.37289 12.4826 8.94003 12.9081 8.94003 13.4461C8.94003 13.9716 9.37289 14.4096 9.92032 14.4096H17.559V20.3907C17.559 23.4564 15.0255 25.9589 11.8936 25.9589H5.69361C2.5745 25.9589 0.0410156 23.4689 0.0410156 20.4032V6.50149C0.0410156 3.42334 2.58723 0.933289 5.70634 0.933289H11.9191ZM20.7375 9.12944C21.1129 8.74154 21.726 8.74154 22.1014 9.11692L25.7551 12.7582C25.9428 12.9458 26.0429 13.1836 26.0429 13.4464C26.0429 13.6966 25.9428 13.9469 25.7551 14.1221L22.1014 17.7633C21.9137 17.951 21.6634 18.0511 21.4257 18.0511C21.1754 18.0511 20.9252 17.951 20.7375 17.7633C20.3621 17.3879 20.3621 16.7748 20.7375 16.3994L22.7395 14.4098H17.5592V12.4829H22.7395L20.7375 10.4933C20.3621 10.1179 20.3621 9.50482 20.7375 9.12944Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </div>
+                    <div className={"poppins-semibold text-white"}>Logout</div>
+                  </div>
+                </div>
+              </ul>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 

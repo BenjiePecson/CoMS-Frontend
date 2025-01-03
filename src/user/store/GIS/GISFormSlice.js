@@ -3,18 +3,18 @@ import axios from "axios";
 
 export const authCapitalStockState = {
   type_of_shares: "",
-  number_of_shares: "",
-  par_or_stated_value: "",
-  amount: "",
+  number_of_shares: 0,
+  par_or_stated_value: 0,
+  amount: 0,
 };
 
 export const filipinoSubscribeCapitalState = {
-  number_of_stock_holders: "",
+  number_of_stock_holders: 0,
   types_of_shares: "",
-  number_of_shares: "",
+  number_of_shares: 0,
   number_of_shares_in_hands: "",
   par_or_stated_value: "",
-  amount: "",
+  amount: 0,
   percent_of_ownership: "",
 };
 
@@ -48,7 +48,7 @@ export const foreignPaidUpCapitalState = {
   percent_of_ownership: "",
 };
 
-const subscribeCapitalState = {
+export const subscribeCapitalState = {
   filipino: [],
   foreign: [],
   sub_total_number_of_shares_filipino: 0,
@@ -63,7 +63,7 @@ const subscribeCapitalState = {
   percentage_of_foreign_equity: 0,
 };
 
-const paidUpCapitalState = {
+export const paidUpCapitalState = {
   filipino: [],
   foreign: [],
   sub_total_number_of_shares_filipino: 0,
@@ -88,6 +88,7 @@ export const directorsOrOfficersState = {
   officer: "",
   executive_committe: "",
   tax_id_number: "",
+  individuals_id: "",
 };
 
 export const beneficialOwnershipDeclarationState = {
@@ -113,6 +114,12 @@ export const stockholdersInformationState = {
   tax_id_number: "",
   total_number: 0,
   total_amount: 0,
+};
+
+export const affiliationsState = {
+  name: "N/A",
+  sec_no: "N/A",
+  address: "N/A",
 };
 
 const formDataState = {
@@ -151,8 +158,8 @@ const formDataState = {
   subscribe_capital: subscribeCapitalState,
   paid_up_capital: paidUpCapitalState,
   directors_or_officers: [],
-  total_number_of_stockholders: "",
-  number_of_stockholders_with_more_shares_each: "",
+  total_number_of_stockholders: 0,
+  number_of_stockholders_with_more_shares_each: 0,
   total_assets_based_on_latest_audited: "",
   stock_holders_information: {
     information: [],
@@ -161,6 +168,10 @@ const formDataState = {
   },
   corporate_secretary: "",
   beneficial_ownership_declaration: [],
+  affiliations: {
+    parent: affiliationsState,
+    subsidiary_affiliate: [affiliationsState],
+  },
 };
 
 const initialState = {
@@ -201,6 +212,6 @@ export const {
   setSubscribeCapital,
   setPaidUpCapital,
   setDirectorsOrOfficers,
-  setStockHoldersInformation
+  setStockHoldersInformation,
 } = GISFormSlice.actions;
 export default GISFormSlice.reducer;

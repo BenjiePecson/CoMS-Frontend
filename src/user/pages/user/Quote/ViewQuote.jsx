@@ -209,6 +209,10 @@ export const ViewQuote = () => {
         col2: selectedRecord.form_data.recipient_email,
       },
       {
+        col1: "Billing Account",
+        col2: selectedRecord.form_data.billing_account,
+      },
+      {
         col1: "Subject",
         col2: selectedRecord.form_data.service_type,
       },
@@ -222,14 +226,17 @@ export const ViewQuote = () => {
               let service_fee = formatNumberWithCommaAndDecimal(
                 scope.service_fee
               );
-              let oop_expenses = formatNumberWithCommaAndDecimal(
-                scope.oop_expenses
-              );
+              // let oop_expenses = formatNumberWithCommaAndDecimal(
+              //   scope.oop_expenses
+              // );
               let vat =
                 selectedRecord.form_data.currency == "USD" ? "" : " + 12% VAT";
 
-              let display_service_fee = `${sign}${service_fee}${vat}`;
-              let display_oop_expenses = `${sign}${oop_expenses}`;
+              let display_service_fee =
+                selectedRecord.form_data.currency == "USD"
+                  ? `${service_fee} USD`
+                  : `PHP ${service_fee} + 12% VAT`;
+              let display_oop_expenses = scope.oop_expenses;
               return (
                 <ul
                   key={`list-of-scope-${index}`}
@@ -769,9 +776,9 @@ export const ViewQuote = () => {
                     </svg>
                   </div>
                   <div className="text-justify text-sm">
-                    <span className="font-semibold">Note: </span>Please ensure that all details are
-                    correct before downloading the file for the client's
-                    signature.
+                    <span className="font-semibold">Note: </span>Please ensure
+                    that all details are correct before downloading the file for
+                    the client's signature.
                   </div>
                 </div>
               </div>

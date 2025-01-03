@@ -159,10 +159,6 @@ const Quote = () => {
     dispatch(fetchRecords());
   }, []);
 
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
-
   if (user.permissions.length == 0) {
     return (
       <div className="flex w-full justify-center">

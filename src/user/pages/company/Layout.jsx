@@ -609,7 +609,7 @@ const Layout = () => {
                       </div>
                     </Link>
 
-                    <Link
+                    {/* <Link
                       className={`flex flex-row hover:bg-[#667A8A] h-[45px] rounded-[3px] items-center my-1 ${
                         active === "tasks-checklist" ? "bg-[#667A8A]" : ""
                       } ${
@@ -626,7 +626,7 @@ const Layout = () => {
                         <div className="pr-4">{taskIcon}</div>
                         <h1 className="text-white">Tasks new</h1>
                       </div>
-                    </Link>
+                    </Link> */}
 
                     <Link
                       className={`flex flex-row hover:bg-[#667A8A] h-[45px] rounded-[3px] items-center my-1 ${

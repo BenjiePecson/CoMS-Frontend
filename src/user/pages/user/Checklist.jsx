@@ -90,13 +90,16 @@ const Checklist = () => {
     setChecklists(updatedChecklists);
   };
 
-  const handleSubmit = () => {
-    console.log({
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevent form refresh
+
+    const data = {
       name,
       links,
       checklists,
-    });
-    window.location.reload();
+    };
+
+    console.log("Submitted Data:", data);
   };
 
   return (

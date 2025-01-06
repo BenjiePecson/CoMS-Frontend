@@ -49,7 +49,6 @@ import NewView from "./user/pages/company/GISTracker/NewView";
 import TaskView from "./user/pages/company/TaskView";
 import Checklist from "./user/pages/user/Checklist";
 
-
 // axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
 const baseUrl =
@@ -85,6 +84,8 @@ function App() {
             <Route path="/gis" element={<GISPage />} />
             <Route path="/gis/:recordId" element={<GISPageView />} />
             <Route path="/checklist" element={<Checklist />} />
+            <Route path="/task-checklist" element={<TaskChecklist />} />
+            <Route path="/project-management/123" element={<TaskView />} />
           </Route>
           <Route element={<UserLayout />}>
             <Route path="company/:companyId/" element={<Dashboard />} />
@@ -164,15 +165,11 @@ function App() {
 
             <Route path="company/:companyId/tasks" element={<Tasks />} />
 
-            <Route
+            {/* <Route
               path="company/:companyId/tasks-checklist"
               element={<TaskChecklist />}
-            />
+            /> */}
 
-            <Route
-              path="company/:companyId/tasks-checklist/view"
-              element={<TaskView />}
-            />
             <Route
               path="company/:companyId/businessRenewalPermit"
               element={<BusinessRenewal />}

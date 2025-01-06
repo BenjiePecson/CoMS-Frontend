@@ -27,10 +27,6 @@ const Tasks = () => {
       <Breadcrumbs
         lists={[
           { goto: "/", text: "Home" },
-          {
-            goto: `/company/${selectedCompany.companyId}`,
-            text: `${selectedCompany.companyName}`,
-          },
 
           { goto: "/", text: "Tasks" },
         ]}
@@ -134,73 +130,87 @@ const Tasks = () => {
           </dialog>
         </div>
 
-        <table className="table">
+        <table className="table border-collapse w-full">
           {/* head */}
           <thead>
-            <tr className="font-bold text-[#1F384C] bg-[#FFFFFF]">
-              <th></th>
-              <th rowSpan={2} x>
+            <tr className="font-bold text-[#1F384C] bg-[#FFFFFF] border-b-2 border-[#1F384C]">
+              <th className="border border-[#1F384C] px-2 py-1"></th>
+              <th rowSpan={2} className="border border-[#1F384C] px-2 py-1">
                 Company
               </th>
-              <th rowSpan={2} x>
+              <th rowSpan={2} className="border border-[#1F384C] px-2 py-1">
                 Task Name
               </th>
-              <th colSpan={2} className="text-center">
+              <th
+                colSpan={2}
+                className="text-center border border-[#1F384C] px-2 py-1"
+              >
                 PROJECT
               </th>
-              <th colSpan={2} className="text-center">
-                TASK
-              </th>
-              <th rowSpan={2}>Remarks</th>
-              <th></th>
-            </tr>
-            <tr className="font-bold text-[#1F384C] bg-[#FFFFFF]">
-              <th></th>
 
-              <th>Open</th>
-              <th>Closed</th>
-              <th>Start</th>
-              <th>End</th>
-              <th></th>
+              <th rowSpan={2} className="border border-[#1F384C] px-2 py-1">
+                Remarks
+              </th>
+              <th className="border border-[#1F384C] px-2 py-1"></th>
+            </tr>
+            <tr className="font-bold text-[#1F384C] bg-[#FFFFFF] border-b-2 border-[#1F384C]">
+              <th className="border border-[#1F384C] px-2 py-1"></th>
+              <th className="border border-[#1F384C] px-2 py-1">Open</th>
+              <th className="border border-[#1F384C] px-2 py-1">Closed</th>
+
+              <th className="border border-[#1F384C] px-2 py-1"></th>
             </tr>
           </thead>
           <tbody>
             {/* row 1 */}
-            <tr className="text-[#868686]">
+            <tr className="text-[#868686] hover:bg-gray-50">
               <th>1</th>
               <th>OffSure BPO Services</th>
               <td>GIS 2024</td>
-              <td>00/00/0000</td>
-              <td>00/00/0000</td>
-              <td>00/00/0000</td>
-              <td>00/00/0000</td>
+              <td></td>
+
+              <td></td>
               <td>Remarks</td>
 
               <td>
-                <button className="btn btn-success btn-sm mx-1">View</button>
-                <button className="btn btn-success btn-sm mx-1">Edit</button>
-                <button className="btn btn-success btn-sm mx-1">Delete</button>
+                <div className="flex space-x-2">
+                  <button className="btn btn-outline btn-primary btn-sm">
+                    View
+                  </button>
+                  <button className="btn btn-outline btn-secondary btn-sm">
+                    Edit
+                  </button>
+                  <button className="btn btn-outline btn-error btn-sm">
+                    Delete
+                  </button>
+                </div>
               </td>
             </tr>
-            <tr className="text-[#868686]">
+            <tr className="text-[#868686] hover:bg-gray-50">
               <th>2</th>
               <th>Half Sweet</th>
               <td>Business Permit Renewal 2024</td>
-              <td>00/00/0000</td>
-              <td>00/00/0000</td>
-              <td>00/00/0000</td>
-              <td>00/00/0000</td>
+
+              <td></td>
+
+              <td></td>
               <td>Remarks</td>
 
               <td>
-                <Link
-                  to={`/company/${companyId}/tasks-checklist/view`}
-                  className="btn btn-success btn-sm mx-1"
-                >
-                  View
-                </Link>
-                <button className="btn btn-success btn-sm mx-1">Edit</button>
-                <button className="btn btn-success btn-sm mx-1">Delete</button>
+                <div className="flex space-x-2">
+                  <Link
+                    to={"/project-management/123"}
+                    className="btn btn-outline btn-primary btn-sm"
+                  >
+                    View
+                  </Link>
+                  <button className="btn btn-outline btn-secondary btn-sm">
+                    Edit
+                  </button>
+                  <button className="btn btn-outline btn-error btn-sm">
+                    Delete
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>

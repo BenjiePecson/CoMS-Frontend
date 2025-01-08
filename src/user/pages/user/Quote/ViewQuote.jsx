@@ -199,14 +199,6 @@ export const ViewQuote = () => {
         col2: selectedRecord.quote_name,
       },
       {
-        col1: "Folder ID",
-        col2: selectedRecord.folder_id,
-      },
-      {
-        col1: "Document ID",
-        col2: selectedRecord.google_doc_id,
-      },
-      {
         col1: "Recipient Company",
         col2: selectedRecord.form_data.recipient_company,
       },
@@ -1152,12 +1144,6 @@ export const ViewQuote = () => {
               </div>
             </div>
           </div>
-          {/* <div className="flex flex-col text-end">
-            <div className="border rounded-full border-black px-3 py-1 text-center text-sm font-semibold">
-              {selectedRecord.timestamps.length > 0 &&
-                selectedRecord.timestamps[0].status}
-            </div>
-          </div> */}
         </div>
         <hr />
       </div>
@@ -1185,7 +1171,7 @@ export const ViewQuote = () => {
                       >
                         <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
                       </svg>{" "}
-                      Edit Details
+                      Update Details
                     </div>
                   ) : (
                     <div className=" flex flex-row gap-2 items-center text-white">
@@ -1197,7 +1183,7 @@ export const ViewQuote = () => {
                       >
                         <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
                       </svg>{" "}
-                      Edit Details
+                      Update Details
                     </div>
                   )}
                 </div>
@@ -1226,6 +1212,79 @@ export const ViewQuote = () => {
                       )}
                     </ol>
                   )}
+                </div>
+              </div>
+              <div className="card bg-white p-5 text-start w-full">
+                <div className="flex flex-col gap-2">
+                  <p className="poppins-regular text-sm font-semibold">
+                    Attachments
+                  </p>
+                  <div className="card bg-white p-3 text-start w-full border cursor-pointer">
+                    <div className="flex flex-row gap-2 items-center">
+                      <div className="flex flex-col items-center justify-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="size-6"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0 0 16.5 9h-1.875a1.875 1.875 0 0 1-1.875-1.875V5.25A3.75 3.75 0 0 0 9 1.5H5.625ZM7.5 15a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 7.5 15Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H8.25Z"
+                            clipRule="evenodd"
+                          />
+                          <path d="M12.971 1.816A5.23 5.23 0 0 1 14.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 0 1 3.434 1.279 9.768 9.768 0 0 0-6.963-6.963Z" />
+                        </svg>
+                      </div>
+                      <div className="text-justify text-sm">
+                        <span className="font-medium">Signed Document</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="card bg-white p-3 text-start w-full border cursor-pointer">
+                    <div className="flex flex-row gap-2 items-center">
+                      <div className="flex flex-col items-center justify-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="size-6"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0 0 16.5 9h-1.875a1.875 1.875 0 0 1-1.875-1.875V5.25A3.75 3.75 0 0 0 9 1.5H5.625ZM7.5 15a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 7.5 15Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H8.25Z"
+                            clipRule="evenodd"
+                          />
+                          <path d="M12.971 1.816A5.23 5.23 0 0 1 14.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 0 1 3.434 1.279 9.768 9.768 0 0 0-6.963-6.963Z" />
+                        </svg>
+                      </div>
+                      <div className="text-justify text-sm">
+                        <span className="font-medium">Invoice</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="card bg-white p-3 text-start w-full border cursor-pointer">
+                    <div className="flex flex-row gap-2 items-center">
+                      <div className="flex flex-col items-center justify-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="size-6"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0 0 16.5 9h-1.875a1.875 1.875 0 0 1-1.875-1.875V5.25A3.75 3.75 0 0 0 9 1.5H5.625ZM7.5 15a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 7.5 15Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H8.25Z"
+                            clipRule="evenodd"
+                          />
+                          <path d="M12.971 1.816A5.23 5.23 0 0 1 14.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 0 1 3.434 1.279 9.768 9.768 0 0 0-6.963-6.963Z" />
+                        </svg>
+                      </div>
+                      <div className="text-justify text-sm">
+                        <span className="font-medium">Proof of Payment</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="card bg-white p-5 text-start w-full">

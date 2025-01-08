@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import Select from "react-select";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import { useSelector } from "react-redux";
-import Unathorized from "../../components/Unathorized";
+import Unauthorized from "../../components/Unauthorized";
 
 const RolesPage = () => {
   const user = useSelector((state) => state.user.user);
@@ -704,7 +704,7 @@ const RolesPage = () => {
         </>
       );
     }
-    return <Unathorized />;
+    return <Unauthorized />;
   }
 };
 

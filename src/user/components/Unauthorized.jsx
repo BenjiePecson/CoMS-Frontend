@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Unathorized = () => {
+const Unauthorized = () => {
   const unauthorizedSVG = (
     <svg
       viewBox="0 0 616 382"
@@ -249,4 +249,4 @@ const Unathorized = () => {
   );
 };
 
-export default Unathorized;
+export default Unauthorized;

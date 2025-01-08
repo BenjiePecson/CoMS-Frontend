@@ -421,7 +421,19 @@ export const AddNewQuote = () => {
 
           {renderForms}
 
-          <div className="flex flex-col w-full py-5">
+          <div className="flex flex-col w-full">
+            {formData.scope_of_work.length == 0 && (
+              <>
+                <div class="text-sm leading-6 text-slate-600 dark:text-slate-400">
+                  <p>
+                    <span className="font-bold">
+                      No scope of work added yet.{" "}
+                    </span>
+                    Click the add button above to add a new scope of work.
+                  </p>
+                </div>
+              </>
+            )}
             {formData.scope_of_work.map((scope, index) => {
               let service_fee = formatNumberWithCommaAndDecimal(
                 scope.service_fee

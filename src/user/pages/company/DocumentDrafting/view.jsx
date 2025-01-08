@@ -223,19 +223,19 @@ const ViewDocumentDrafting = () => {
 
       console.log("generate");
 
-      // let response = await axios.get("/document-drafting-generate", {
-      //   params: {
-      //     company_id: selectedRecord.company_id,
-      //     document_id: selectedRecord.document_id,
-      //   },
-      // });
+      let response = await axios.get("/document-drafting-generate", {
+        params: {
+          company_id: selectedRecord.company_id,
+          document_id: selectedRecord.document_id,
+        },
+      });
 
-      // const newWindow = window.open("", "_blank", "width=1280,height=720");
+      const newWindow = window.open("", "_blank", "width=1280,height=720");
 
-      // if (newWindow) {
-      //   newWindow.document.write(response.data);`
-      //   newWindow.document.close(); // Ensure the document is rendered
-      // }
+      if (newWindow) {
+        newWindow.document.write(response.data);
+        newWindow.document.close(); // Ensure the document is rendered
+      }
     } catch (error) {
       console.log(error);
       showToast("error", "Failed to generate the record.");

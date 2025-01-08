@@ -69,116 +69,39 @@ const ViewDocumentDrafting = () => {
     (state) => state.DocumentDrafting.selected_record
   );
 
-  const toggleUpdate = (setStatus, dialogText, btnText) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: dialogText,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#273069",
-      confirmButtonText: btnText,
-      cancelButtonColor: "#CDCDCD",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        let status = "error";
-        let message = "Failed to update the record.";
-        try {
-          let response = await axios.patch(
-            `/record/record/${selectedRecord.recordId}`,
-            { status: setStatus }
-          );
-
-          if (response.status === 200) {
-            status = "success";
-            message = "Record was updated successfully.";
-            // navigate(`/company/${companyId}/secretary-certificate`);
-            dispatch(fetchRecord(recordId));
-          }
-        } catch (error) {
-          console.log(error);
-        } finally {
-          showToast(status, message);
-        }
-      }
-    });
+  const formatIntegerWithComma = (integerPart) => {
+    return integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  const toggleApprove = (ev) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You want to proceed to the next step?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#273069",
-      confirmButtonText: "Yes, proceed!",
-      cancelButtonColor: "#CDCDCD",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        let status = "error";
-        let message = "Failed to update the record.";
-        try {
-          let updateData = {
-            status: "Approved",
-          };
+  const formatDecimalPlaces = (decimalPart) => {
+    if (decimalPart === undefined) {
+      return "00"; // No decimal part, return "00"
+    }
 
-          let response = await axios.patch(
-            `/record/record/${selectedRecord.recordId}`,
-            updateData
-          );
+    // Truncate or round to a maximum of four decimal places
+    let formattedDecimalPart = decimalPart.substring(0, 4);
 
-          if (response.status === 200) {
-            status = "success";
-            message = "Record was updated successfully.";
-            // navigate(`/company/${companyId}/secretary-certificate`);
-            dispatch(fetchRecord(recordId));
-          }
-        } catch (error) {
-          console.log(error);
-        } finally {
-          showToast(status, message);
-        }
-        ///
-      }
-    });
+    // Ensure exactly two decimal places
+    if (formattedDecimalPart.length === 0) {
+      return "00"; // No decimal part at all
+    } else if (formattedDecimalPart.length === 1) {
+      return `${formattedDecimalPart}0`; // One decimal place, append one zero
+    } else if (formattedDecimalPart.length === 2) {
+      return `${formattedDecimalPart}`; // Two decimal places
+    } else if (formattedDecimalPart.length === 3) {
+      return `${formattedDecimalPart}`; // Three decimal places
+    } else {
+      return formattedDecimalPart; // Four decimal places or more, no extra padding needed
+    }
   };
 
-  const toggleRouteForSignature = (ev) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You want to proceed to the next step?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#273069",
-      confirmButtonText: "Yes, proceed!",
-      cancelButtonColor: "#CDCDCD",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        let status = "error";
-        let message = "Failed to update the record.";
-        try {
-          let updateData = {
-            status: "Routed for Signature",
-          };
-
-          let response = await axios.patch(
-            `/record/record/${selectedRecord.recordId}`,
-            updateData
-          );
-
-          if (response.status === 200) {
-            status = "success";
-            message = "Record was updated successfully.";
-            // navigate(`/company/${companyId}/secretary-certificate`);
-            dispatch(fetchRecord(recordId));
-          }
-        } catch (error) {
-          console.log(error);
-        } finally {
-          showToast(status, message);
-        }
-        ///
-      }
-    });
+  const formatNumberWithCommaAndDecimal = (number) => {
+    if (number == null || number == "") return "0.00";
+    const numStr = number.toString();
+    const [integerPart, decimalPart] = numStr.split(".");
+    const formattedIntegerPart = formatIntegerWithComma(integerPart);
+    const formattedDecimalPart = formatDecimalPlaces(decimalPart);
+    return `${formattedIntegerPart}.${formattedDecimalPart}`;
   };
 
   const toggleEdit = () => {
@@ -301,7 +224,10 @@ const ViewDocumentDrafting = () => {
                   Q1 {selectedRecord.form_data.year}
                 </div>
                 <div>
-                  Php {Number(selectedRecord.form_data.revenue_q1).toFixed(2)}
+                  Php{" "}
+                  {formatNumberWithCommaAndDecimal(
+                    selectedRecord.form_data.revenue_q1
+                  )}
                 </div>
               </div>
               <div className="flex flex-flex gap-1 w-full justify-between">
@@ -309,7 +235,10 @@ const ViewDocumentDrafting = () => {
                   Q2 {selectedRecord.form_data.year}
                 </div>
                 <div>
-                  Php {Number(selectedRecord.form_data.revenue_q2).toFixed(2)}
+                  Php{" "}
+                  {formatNumberWithCommaAndDecimal(
+                    selectedRecord.form_data.revenue_q2
+                  )}
                 </div>
               </div>
               <div className="flex flex-flex gap-1 w-full justify-between">
@@ -317,7 +246,10 @@ const ViewDocumentDrafting = () => {
                   Q3 {selectedRecord.form_data.year}
                 </div>
                 <div>
-                  Php {Number(selectedRecord.form_data.revenue_q3).toFixed(2)}
+                  Php{" "}
+                  {formatNumberWithCommaAndDecimal(
+                    selectedRecord.form_data.revenue_q3
+                  )}
                 </div>
               </div>
               <div className="flex flex-flex gap-1 w-full justify-between">
@@ -325,14 +257,19 @@ const ViewDocumentDrafting = () => {
                   Q4 {selectedRecord.form_data.year}
                 </div>
                 <div>
-                  Php {Number(selectedRecord.form_data.revenue_q4).toFixed(2)}
+                  Php{" "}
+                  {formatNumberWithCommaAndDecimal(
+                    selectedRecord.form_data.revenue_q4
+                  )}
                 </div>
               </div>
               <div className="flex flex-flex gap-1 w-full justify-between">
                 <div>Total Revenue</div>
                 <div className="font-bold">
                   Php{" "}
-                  {Number(selectedRecord.form_data.total_revenue).toFixed(2)}
+                  {formatNumberWithCommaAndDecimal(
+                    selectedRecord.form_data.total_revenue
+                  )}
                 </div>
               </div>
             </div>
@@ -892,36 +829,42 @@ const ViewDocumentDrafting = () => {
 
     const data = formData.form_data;
 
+    let sum = 0;
+
     if (
       name == "revenue_q1" ||
       name == "revenue_q2" ||
       name == "revenue_q3" ||
       name == "revenue_q4"
     ) {
-      let sum = 0;
+      let newValue = parseFloat(value);
+
       let q1 = Number(data.revenue_q1);
       let q2 = Number(data.revenue_q2);
       let q3 = Number(data.revenue_q3);
       let q4 = Number(data.revenue_q4);
-      let newValue = Number(value);
 
       if (name == "revenue_q1") {
         sum = newValue + q2 + q3 + q4;
       }
+
       if (name == "revenue_q2") {
-        sum = newValue + q1 + q3 + q4;
+        sum = q1 + newValue + q3 + q4;
       }
+
       if (name == "revenue_q3") {
-        sum = newValue + q2 + q1 + q4;
+        sum = q1 + q2 + newValue + q4;
       }
+
       if (name == "revenue_q4") {
-        sum = newValue + q2 + q3 + q1;
+        sum = q1 + q2 + q3 + newValue;
       }
+
       setFormData({
         ...formData,
         form_data: {
           ...formData.form_data,
-          [name]: newValue,
+          [name]: value,
           total_revenue: sum,
         },
       });
@@ -1117,6 +1060,8 @@ const ViewDocumentDrafting = () => {
         },
       ]);
       setFormData(selectedRecord);
+
+      console.log(selectedRecord);
     }
   }, [selectedRecord]);
 

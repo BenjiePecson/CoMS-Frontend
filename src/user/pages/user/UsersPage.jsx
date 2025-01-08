@@ -6,7 +6,7 @@ import Select from "react-select";
 import { showToast } from "../../../assets/global";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import { useSelector } from "react-redux";
-import Unathorized from "../../components/Unathorized";
+import Unauthorized from "../../components/Unauthorized";
 
 const UsersPage = () => {
 
@@ -443,7 +443,7 @@ const UsersPage = () => {
         </>
       );
     }
-    return <Unathorized />;
+    return <Unauthorized />;
   }
 
 

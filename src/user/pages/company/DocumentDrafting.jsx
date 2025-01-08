@@ -288,10 +288,70 @@ const DocumentDrafting = () => {
     }
   };
 
+  // const handleOnChange = async (e, fieldName) => {
+  //   const { name, value } = e.target;
+
+  //   const data = formData.form_data;
+
+  //   if (
+  //     name == "revenue_q1" ||
+  //     name == "revenue_q2" ||
+  //     name == "revenue_q3" ||
+  //     name == "revenue_q4"
+  //   ) {
+  //     let sum = 0;
+  //     let q1 = Number(data.revenue_q1);
+  //     let q2 = Number(data.revenue_q2);
+  //     let q3 = Number(data.revenue_q3);
+  //     let q4 = Number(data.revenue_q4);
+  //     let newValue = Number(value);
+
+  //     if (name == "revenue_q1") {
+  //       sum = newValue + q2 + q3 + q4;
+  //     }
+  //     if (name == "revenue_q2") {
+  //       sum = newValue + q1 + q3 + q4;
+  //     }
+  //     if (name == "revenue_q3") {
+  //       sum = newValue + q2 + q1 + q4;
+  //     }
+  //     if (name == "revenue_q4") {
+  //       sum = newValue + q2 + q3 + q1;
+  //     }
+  //     setFormData({
+  //       ...formData,
+  //       form_data: {
+  //         ...formData.form_data,
+  //         [name]: newValue,
+  //         total_revenue: sum,
+  //       },
+  //     });
+  //   } else {
+  //     setFormData({
+  //       ...formData,
+  //       form_data: {
+  //         ...formData.form_data,
+  //         [name]: value,
+  //       },
+  //     });
+  //   }
+
+  //   if (value == "") {
+  //     setErrors({
+  //       ...errors,
+  //       [name]: `${fieldName} is required.`,
+  //     });
+  //   } else {
+  //     setErrors({ ...errors, [name]: "" });
+  //   }
+  // };
+
   const handleOnChange = async (e, fieldName) => {
     const { name, value } = e.target;
 
     const data = formData.form_data;
+
+    let sum = 0;
 
     if (
       name == "revenue_q1" ||
@@ -299,30 +359,34 @@ const DocumentDrafting = () => {
       name == "revenue_q3" ||
       name == "revenue_q4"
     ) {
-      let sum = 0;
+      let newValue = parseFloat(value);
+
       let q1 = Number(data.revenue_q1);
       let q2 = Number(data.revenue_q2);
       let q3 = Number(data.revenue_q3);
       let q4 = Number(data.revenue_q4);
-      let newValue = Number(value);
 
       if (name == "revenue_q1") {
         sum = newValue + q2 + q3 + q4;
       }
+
       if (name == "revenue_q2") {
-        sum = newValue + q1 + q3 + q4;
+        sum = q1 + newValue + q3 + q4;
       }
+
       if (name == "revenue_q3") {
-        sum = newValue + q2 + q1 + q4;
+        sum = q1 + q2 + newValue + q4;
       }
+
       if (name == "revenue_q4") {
-        sum = newValue + q2 + q3 + q1;
+        sum = q1 + q2 + q3 + newValue;
       }
+
       setFormData({
         ...formData,
         form_data: {
           ...formData.form_data,
-          [name]: newValue,
+          [name]: value,
           total_revenue: sum,
         },
       });

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { fetchRecord, fetchRecords } from "../../store/quotes/QuotesSlice";
-import Unathorized from "../../components/Unathorized";
+import Unauthorized from "../../components/Unauthorized";
 
 const Quote = () => {
   const dispatch = useDispatch();
@@ -74,6 +74,7 @@ const Quote = () => {
       },
     },
   ];
+
   //styles for the datatable - Anthony
   createTheme("customized", {
     text: {
@@ -115,7 +116,7 @@ const Quote = () => {
     const quotes = useTable(); // This will trigger the data fetching logic
 
     if (!user.permissions.includes("View Quotes")) {
-      return <Unathorized />;
+      return <Unauthorized />;
     }
 
     return (

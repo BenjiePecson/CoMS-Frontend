@@ -38,27 +38,31 @@ export const ViewQuote = () => {
   };
 
   const [timestamp, setTimeStamp] = useState(TIMESTAMP_STATE);
-  const [errors, setErrors] = useState({});
-  const [formData, setFormData] = useState({});
+
+  const formDataState = {
+    signed_document_url: "",
+  };
+  const [formData, setFormData] = useState(formDataState);
+  const [errors, setErrors] = useState(formDataState);
 
   const [listOfTimeStamps, setListOfTimeStamps] = useState([]);
   const [isEditHidden, setIsEditHidden] = useState(true);
 
   const STATUSES = {
     drafted: "Drafted",
-    modified: "Modified",
-    approved: "Approved",
-    pending_signature: "Pending Signature",
-    pending_payment: "Pending Payment",
+    sent_for_signature: "Sent for Signature",
     signed: "Signed",
+    for_revision: "For Revision",
+    sent_invoice: "Sent Invoice",
     paid: "Paid",
-    reverted: "Reverted",
     completed: "Completed",
   };
 
   const STATUS_DIALOG = "statusDialog";
   const PROCEED_DIALOG = "proceedDialog";
-  const COMPLETE_DIAlOG = "completeDialog";
+  const SIGNED_DIALOG = "signedDialog";
+  const INVOICE_DIALOG = "invoiceDialog";
+  const PAID_DIALOG = "invoiceDialog";
   const EDIT_DIALOG = "editDialog";
 
   const getName = (fullName) => {
@@ -317,70 +321,19 @@ export const ViewQuote = () => {
                 listOfTimeStamps[0].status == timestamp_record.status
               ) {
                 switch (timestamp_record.status) {
-                  // case STATUSES.test:
-                  //   nextStep = "Mark as Routed for Signature";
-                  //   status = STATUSES.routed_for_signature;
-                  //   btnGenerate = (
-                  //     <button
-                  //       className="btn btn-sm btn-outline"
-                  //       disabled={isLoading}
-                  //       onClick={async () => {
-                  //         try {
-                  //           setIsLoading(true);
-                  //           let response = await axios.get(
-                  //             `/record/generate/${selectedRecord.recordId}`,
-                  //             {
-                  //               params: {
-                  //                 recordId: selectedRecord.recordId,
-                  //               },
-                  //             }
-                  //           );
-                  //           const newWindow = window.open(
-                  //             "",
-                  //             "_blank",
-                  //             "width=1280,height=720"
-                  //           );
-                  //           if (newWindow) {
-                  //             newWindow.document.write(response.data);
-                  //             newWindow.document.close(); // Ensure the document is rendered
-                  //           }
-                  //         } catch (error) {
-                  //           console.log(error);
-                  //         } finally {
-                  //           setIsLoading(false);
-                  //         }
-                  //       }}
-                  //     >
-                  //       {isLoading && (
-                  //         <span className="loading loading-spinner loading-xs"></span>
-                  //       )}
-                  //       Generate
-                  //     </button>
-                  //   );
-                  //   break;
-                  case STATUSES.modified:
-                    if (index == 0) {
-                      nextStep = "Mark as Approved";
-                      status = STATUSES.approved;
-                    }
-                    break;
                   case STATUSES.drafted:
-                    nextStep = "Mark as Approved";
-                    status = STATUSES.approved;
+                    nextStep = "Mark as Sent for Signature";
+                    status = STATUSES.sent_for_signature;
                     break;
-                  case STATUSES.approved:
-                    nextStep = "Mark as Pending Signature";
-                    status = STATUSES.pending_signature;
-                    break;
-                  case STATUSES.pending_signature:
-                    nextStep = "Mark as Pending Payment";
-                    status = STATUSES.pending_payment;
-                    break;
-                  case STATUSES.pending_payment:
-                    nextStep = "Mark as Signed";
-                    status = STATUSES.signed;
+                  case STATUSES.for_revision:
+                    nextStep = "Mark as Sent for Signature";
+                    status = STATUSES.sent_for_signature;
                     break;
                   case STATUSES.signed:
+                    nextStep = "Mark as Sent Invoice";
+                    status = STATUSES.sent_invoice;
+                    break;
+                  case STATUSES.sent_invoice:
                     nextStep = "Mark as Paid";
                     status = STATUSES.paid;
                     break;
@@ -394,14 +347,43 @@ export const ViewQuote = () => {
                 }
               }
 
-              btnContent = getButton(nextStep, () => {
-                setTimeStamp({
-                  ...timestamp,
-                  status: status,
-                  remarks: "",
+              if (index == 0) {
+                btnContent = getButton(nextStep, () => {
+                  setTimeStamp({
+                    ...timestamp,
+                    status: status,
+                    remarks: "",
+                  });
+                  document.getElementById(PROCEED_DIALOG).showModal();
                 });
-                document.getElementById(PROCEED_DIALOG).showModal();
-              });
+              }
+
+              if (
+                timestamp_record.status == STATUSES.sent_for_signature &&
+                listOfTimeStamps[0].status == timestamp_record.status &&
+                index == 0
+              ) {
+                btnContent = (
+                  <>
+                    {getButton("Mark as Signed", () => {
+                      setTimeStamp({
+                        ...timestamp,
+                        status: STATUSES.signed,
+                        remarks: "",
+                      });
+                      document.getElementById(SIGNED_DIALOG).showModal();
+                    })}
+                    {getButton("Mark as For Revision", () => {
+                      setTimeStamp({
+                        ...timestamp,
+                        status: STATUSES.for_revision,
+                        remarks: "",
+                      });
+                      document.getElementById(PROCEED_DIALOG).showModal();
+                    })}
+                  </>
+                );
+              }
 
               return listOfTimeStampComponent(
                 index,
@@ -474,7 +456,7 @@ export const ViewQuote = () => {
           form_data: formSelectedData,
         },
         modified_by,
-        status: "Modified",
+        status: "Drafted",
       };
 
       let response = await axios.patch(`/quotes/${quote_id}`, modified_data);
@@ -589,79 +571,70 @@ export const ViewQuote = () => {
           </div>
         </dialog>
 
-        <dialog id={COMPLETE_DIAlOG} className="modal">
+        <dialog id={SIGNED_DIALOG} className="modal">
           <div className="modal-box">
             <div className="flex flex-col gap-2">
               <div className="flex flex-col w-full items-center justify-center gap-2">
-                <h1 className="poppins-semibold text-start w-full mb-3">
-                  Mark as Completed
-                </h1>
-                <label className="form-control w-full">
-                  <div className="label">
-                    <span className="poppins-regular text-[12px]">
-                      Date Received <span className="text-red-500">*</span>
-                    </span>
-                  </div>
-                  <input
-                    type="date"
-                    className={`input input-bordered w-full ${
-                      errors.date_filed && `input-error`
-                    }`}
-                    name="date_filed"
-                    value={formData.date_filed}
-                    onChange={(e) => {
-                      setFormData({ ...formData, date_filed: e.target.value });
-
-                      if (e.target.value == "") {
-                        setErrors({
-                          ...errors,
-                          date_filed: "Date Received is required",
-                        });
-                      } else {
-                        setErrors({
-                          ...errors,
-                          date_filed: "",
-                        });
-                      }
-                    }}
+                <svg
+                  className="w-16 aspect-auto"
+                  viewBox="0 0 55 55"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M27.3717 14.6853V29.9083M27.3717 40.0827L27.397 40.0545M27.3716 52.7433C41.3839 52.7433 52.7433 41.3839 52.7433 27.3716C52.7433 13.3593 41.3839 2 27.3716 2C13.3593 2 2 13.3593 2 27.3716C2 41.3839 13.3593 52.7433 27.3716 52.7433Z"
+                    stroke="#F38F33"
+                    strokeWidth="2.62921"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
-                  {errors.date_filed && (
-                    <span className="text-[12px] text-red-500">
-                      {errors.date_filed}
-                    </span>
-                  )}
-                </label>
+                </svg>
+                <h1 className="poppins-bold text-[18px]">Are you sure?</h1>
+                <span className="poppins-normal text-[15px]">
+                  You want to proceed to the next step?
+                </span>
+
                 <label className="form-control w-full">
                   <div className="label">
-                    <span className="poppins-regular text-[12px]">
-                      Google Drive Folder ID{" "}
+                    <span className="label-text">
+                      Signed Document URL
                       <span className="text-red-500">*</span>
                     </span>
                   </div>
                   <input
                     type="text"
-                    className={`input input-bordered w-full ${
-                      errors.folder_id && `input-error`
-                    }`}
-                    name="folder_id"
-                    value={formData.folder_id}
+                    className="input input-bordered w-full"
+                    value={formData.signed_document_url}
                     onChange={(e) => {
-                      setFormData({ ...formData, folder_id: e.target.value });
+                      setFormData({
+                        ...formData,
+                        signed_document_url: e.target.value,
+                      });
 
                       if (e.target.value == "") {
-                        setErrors({ folder_id: "Folder ID is required" });
+                        setErrors({
+                          ...errors,
+                          signed_document_url:
+                            "Signed Document URL is required.",
+                        });
                       } else {
-                        setErrors({ folder_id: "" });
+                        setErrors({
+                          ...errors,
+                          signed_document_url: "",
+                        });
                       }
                     }}
                   />
-                  {errors.folder_id && (
-                    <span className="text-[12px] text-red-500">
-                      {errors.folder_id}
+                  <div className="label">
+                    <span className="label-text text-red-500">
+                      {errors.signed_document_url && (
+                        <span className="text-red-500">
+                          Signed Document is Required
+                        </span>
+                      )}
                     </span>
-                  )}
+                  </div>
                 </label>
-
                 <label className="form-control w-full">
                   <div className="label w-full">
                     <span className="label-text">Remarks</span>
@@ -675,10 +648,10 @@ export const ViewQuote = () => {
                   ></textarea>
                 </label>
               </div>
-              <div className="flex flex-row gap-10 items-center justify-between">
+              <div className="flex flex-row gap-10 items-center justify-center mt-5">
                 <button
                   onClick={(e) => {
-                    document.getElementById(COMPLETE_DIAlOG).close();
+                    document.getElementById(SIGNED_DIALOG).close();
                   }}
                   className="btn bg-[#CDCDCD] text-black mt-2"
                 >
@@ -686,25 +659,31 @@ export const ViewQuote = () => {
                 </button>
                 <button
                   onClick={(e) => {
-                    let newErrors = {};
-                    if (formData.date_filed == "") {
-                      newErrors.date_filed = "Date Received is required";
+                    const newErrors = {};
+
+                    if (formData.signed_document_url == "") {
+                      newErrors.signed_document_url =
+                        "Signed Document URL is required.";
+                      setErrors({
+                        signed_document_url: "Signed Document URL is required.",
+                      });
                     }
 
-                    if (formData.folder_id == "") {
-                      newErrors.folder_id = "Folder ID is required";
-                    }
+                    if (Object.values(newErrors).length == 0) {
+                      const modified_by = `${currentUser.first_name} ${currentUser.last_name}`;
 
-                    if (Object.keys(newErrors).length != 0) {
-                      setErrors(newErrors);
-                    } else {
-                      document.getElementById(COMPLETE_DIAlOG).close();
-                      document.getElementById(PROCEED_DIALOG).showModal();
+                      let complete_form = { ...timestamp, modified_by };
+
+                      console.log(complete_form);
+
+                      return;
+
+                      handleProceedBtn(complete_form);
                     }
                   }}
                   className="btn bg-primary text-white mt-2"
                 >
-                  Submit
+                  Yes, proceed!
                 </button>
               </div>
             </div>
@@ -720,7 +699,7 @@ export const ViewQuote = () => {
                     Update Details
                   </h1>
                   <button
-                    className="text-red-500"
+                    className="text-red-500  btn-circle btn btn-sm btn-ghost"
                     onClick={(e) => {
                       document.getElementById(EDIT_DIALOG).close();
                     }}

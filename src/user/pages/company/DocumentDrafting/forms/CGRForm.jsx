@@ -1,6 +1,41 @@
 import React from "react";
 
 const CGRForm = ({ formData, officers, handleOnChange, setFormData }) => {
+  const formatIntegerWithComma = (integerPart) => {
+    return integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  const formatDecimalPlaces = (decimalPart) => {
+    if (decimalPart === undefined) {
+      return "00"; // No decimal part, return "00"
+    }
+
+    // Truncate or round to a maximum of four decimal places
+    let formattedDecimalPart = decimalPart.substring(0, 4);
+
+    // Ensure exactly two decimal places
+    if (formattedDecimalPart.length === 0) {
+      return "00"; // No decimal part at all
+    } else if (formattedDecimalPart.length === 1) {
+      return `${formattedDecimalPart}0`; // One decimal place, append one zero
+    } else if (formattedDecimalPart.length === 2) {
+      return `${formattedDecimalPart}`; // Two decimal places
+    } else if (formattedDecimalPart.length === 3) {
+      return `${formattedDecimalPart}`; // Three decimal places
+    } else {
+      return formattedDecimalPart; // Four decimal places or more, no extra padding needed
+    }
+  };
+
+  const formatNumberWithCommaAndDecimal = (number) => {
+    if (number == null || number == "") return "0.00";
+    const numStr = number.toString();
+    const [integerPart, decimalPart] = numStr.split(".");
+    const formattedIntegerPart = formatIntegerWithComma(integerPart);
+    const formattedDecimalPart = formatDecimalPlaces(decimalPart);
+    return `${formattedIntegerPart}.${formattedDecimalPart}`;
+  };
+
   return (
     <div className="flex flex-col gap-2">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
@@ -74,7 +109,7 @@ const CGRForm = ({ formData, officers, handleOnChange, setFormData }) => {
             <span className="label-text">Q1 {formData.form_data.year}</span>
           </div>
           <input
-            type="text"
+            type="number"
             name="revenue_q1"
             value={formData.form_data.revenue_q1}
             onChange={(e) => {
@@ -88,7 +123,7 @@ const CGRForm = ({ formData, officers, handleOnChange, setFormData }) => {
             <span className="label-text">Q2 {formData.form_data.year}</span>
           </div>
           <input
-            type="text"
+            type="number"
             name="revenue_q2"
             value={formData.form_data.revenue_q2}
             onChange={(e) => {
@@ -102,7 +137,7 @@ const CGRForm = ({ formData, officers, handleOnChange, setFormData }) => {
             <span className="label-text">Q3 {formData.form_data.year}</span>
           </div>
           <input
-            type="text"
+            type="number"
             name="revenue_q3"
             value={formData.form_data.revenue_q3}
             onChange={(e) => {
@@ -116,7 +151,7 @@ const CGRForm = ({ formData, officers, handleOnChange, setFormData }) => {
             <span className="label-text">Q4 {formData.form_data.year}</span>
           </div>
           <input
-            type="text"
+            type="number"
             name="revenue_q4"
             value={formData.form_data.revenue_q4}
             onChange={(e) => {
@@ -133,7 +168,10 @@ const CGRForm = ({ formData, officers, handleOnChange, setFormData }) => {
             <span>
               <span className="font-bold">Total Revenue: </span>
               <span>
-                Php {Number(formData.form_data.total_revenue).toFixed(2)}
+                Php{" "}
+                {formatNumberWithCommaAndDecimal(
+                  formData.form_data.total_revenue
+                )}
               </span>
             </span>
           )}

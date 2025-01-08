@@ -8,7 +8,7 @@ export const ScopeOfWorkState = {
   oop_expenses: "",
 };
 
-export const QouteFormDataState = {
+export const QuoteFormDataState = {
   recipient_company: "",
   recipient_address: "",
   recipient_email: "",
@@ -20,14 +20,21 @@ export const QouteFormDataState = {
   currency: "",
 };
 
+const QuoteAttachmentsState = {
+  signed_document_url: "",
+  invoice_url: "",
+  proof_of_payment_url: "",
+};
+
 const QuoteState = {
   quote_id: "",
   quote_number: "",
   quote_name: "",
   status: "",
-  form_data: QouteFormDataState,
+  form_data: QuoteFormDataState,
   folder_id: "",
   google_doc_id: "",
+  attachments: QuoteAttachmentsState,
   timestamps: [],
   created_at: "",
   updated_at: "",
@@ -45,7 +52,13 @@ export const fetchRecords = createAsyncThunk(
   "QuoteSlice/fetchRecords",
   async (companyId) => {
     let response = await axios.get(`/quotes`);
-    return response.data;
+    const quotes = response.data.map((quote) => {
+      if (quote.attachments == null) {
+        quote.attachments = QuoteAttachmentsState;
+      }
+      return quote;
+    });
+    return quotes;
   }
 );
 
@@ -53,7 +66,13 @@ export const fetchRecord = createAsyncThunk(
   "QuoteSlice/fetchRecord",
   async (quote_id) => {
     let response = await axios.get(`/quotes/${quote_id}`);
-    return response.data;
+
+    let quotes = response.data;
+
+    if (quotes.attachments == null) {
+      quotes.attachments = QuoteAttachmentsState;
+    }
+    return quotes;
   }
 );
 

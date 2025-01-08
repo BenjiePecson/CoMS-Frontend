@@ -6,7 +6,7 @@ import { showToast } from "../../../assets/global";
 import Swal from "sweetalert2";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import { useSelector } from "react-redux";
-import Unathorized from "../../components/Unathorized";
+import Unauthorized from "../../components/Unauthorized";
 
 const PermissionsPage = () => {
   const user = useSelector((state) => state.user.user);
@@ -481,7 +481,7 @@ const PermissionsPage = () => {
         </>
       );
     }
-    return <Unathorized />;
+    return <Unauthorized />;
   }
 };
 

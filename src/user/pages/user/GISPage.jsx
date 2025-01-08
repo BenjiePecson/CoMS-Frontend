@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import DataTable, { createTheme } from "react-data-table-component";
 import moment from "moment";
-import Unathorized from "../../components/Unathorized";
+import Unauthorized from "../../components/Unauthorized";
 import axios from "axios";
 
 const GISPage = () => {
@@ -205,7 +205,7 @@ const GISPage = () => {
     const records = useTable(); // This will trigger the data fetching logic
 
     if (!user.permissions.includes("View GIS Approval")) {
-      return <Unathorized />;
+      return <Unauthorized />;
     }
 
     return (

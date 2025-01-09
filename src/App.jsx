@@ -50,6 +50,7 @@ import TaskView from "./user/pages/company/TaskView";
 import AddNewQuote from "./user/pages/user/Quote/AddNewQuote";
 import { ViewQuote } from "./user/pages/user/Quote/ViewQuote";
 import Checklist from "./user/pages/user/Checklist";
+import AddTask from "./user/pages/company/AddTask";
 
 // axios.defaults.baseURL = "http://localhost:3000/";
 // axios.defaults.baseURL = "http://192.168.88.214:3000/";
@@ -78,8 +79,11 @@ function App() {
             <Route path="/" element={<MainDashboard />} />
             <Route path="/company" element={<SelectCompany />} />
             <Route path="/quote" element={<Quote />} />
-              <Route path="/quote/new-quote" element={<AddNewQuote />} />
-              <Route path="/quote/view-quote/:quote_id?" element={<ViewQuote />} />
+            <Route path="/quote/new-quote" element={<AddNewQuote />} />
+            <Route
+              path="/quote/view-quote/:quote_id?"
+              element={<ViewQuote />}
+            />
 
             <Route path="/users" element={<UsersPage />} />
             <Route path="/users-task" element={<UserDashboard />} />
@@ -91,6 +95,7 @@ function App() {
             <Route path="/checklist" element={<Checklist />} />
             <Route path="/task-checklist" element={<TaskChecklist />} />
             <Route path="/project-management/123" element={<TaskView />} />
+            <Route path="/task-checklist/addtask" element={<AddTask />} />
           </Route>
           <Route element={<UserLayout />}>
             <Route path="company/:companyId/" element={<Dashboard />} />

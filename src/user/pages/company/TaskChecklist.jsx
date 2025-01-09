@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import { useSelector } from "react-redux";
 import Select from "react-select";
+import addTask from "../../components/addTask";
 
 const Tasks = () => {
   const { companyId } = useParams();
@@ -34,100 +35,23 @@ const Tasks = () => {
       <div className="overflow-x-auto">
         <div className="flex flex-row justify-between my-3">
           <h1 className="font-bold text-[24px]">Task</h1>
-          <button
-            className="flex flex-row justify-center items-center gap-1 bg-[#667A8A] text-white rounded-xl px-5 py-2 "
-            onClick={() => document.getElementById("my_modal_3").showModal()}
-          >
-            <svg
-              width="13"
-              height="10"
-              viewBox="0 0 13 10"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12.0418 4.33337H7.29183V0.333374H5.7085V4.33337H0.958496V5.66671H5.7085V9.66671H7.29183V5.66671H12.0418V4.33337Z"
-                fill="white"
-              />
-            </svg>
-            Add Task
-          </button>
-
-          <dialog id="my_modal_3" className="modal">
-            <div className="modal-box">
-              <form method="dialog">
-                {/* if there is a button in form, it will close the modal */}
-                <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                  ✕
-                </button>
-              </form>
-              <h3 className="font-bold text-lg">Add Task</h3>
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="label-text">Task Name </span>
-                </div>
-                <input
-                  type="text"
-                  placeholder="Type here"
-                  className="input input-bordered input-sm w-full"
+          <Link to={"/task-checklist/addtask"}>
+            <button className="flex flex-row justify-center items-center gap-1 bg-[#667A8A] text-white rounded-xl px-5 py-2 ">
+              <svg
+                width="13"
+                height="10"
+                viewBox="0 0 13 10"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12.0418 4.33337H7.29183V0.333374H5.7085V4.33337H0.958496V5.66671H5.7085V9.66671H7.29183V5.66671H12.0418V4.33337Z"
+                  fill="white"
                 />
-              </label>
-
-              <label className="form-control">
-                <div className="label">
-                  <span className="label-text">Task Description</span>
-                </div>
-                <textarea
-                  className="textarea textarea-bordered h-24"
-                  placeholder="Bio"
-                ></textarea>
-              </label>
-
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="label-text">Workflow </span>
-                </div>{" "}
-                <Select
-                  className="basic-single"
-                  classNamePrefix="select"
-                  defaultValue={colorOptions[0]}
-                  name="color"
-                  options={colorOptions}
-                />{" "}
-              </label>
-
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="label-text">Checklist</span>
-                </div>
-                <Select
-                  isMulti
-                  name="colors"
-                  options={options}
-                  className="basic-multi-select"
-                  classNamePrefix="select"
-                />
-              </label>
-
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="label-text">Target Date </span>
-                </div>
-                <input
-                  type="date"
-                  className="input input-bordered input-sm w-full"
-                />
-              </label>
-
-              <div className="mt-5 flex justify-end">
-                <button className="btn btn-sm bg-[#273069] text-white mx-1">
-                  Add
-                </button>
-
-                <button className="btn btn-sm mx-1">Cancel</button>
-              </div>
-            </div>
-          </dialog>
+              </svg>
+              Add Task
+            </button>
+          </Link>
         </div>
 
         <table className="table border-collapse w-full">

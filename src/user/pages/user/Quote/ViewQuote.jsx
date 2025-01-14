@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   fetchRecord,
+  QuoteAttachmentsState,
   ScopeOfWorkState,
 } from "../../../store/quotes/QuotesSlice";
 import RecordNotFound from "../../../components/RecordNotFound";
@@ -39,11 +40,8 @@ export const ViewQuote = () => {
 
   const [timestamp, setTimeStamp] = useState(TIMESTAMP_STATE);
 
-  const formDataState = {
-    signed_document_url: "",
-  };
-  const [formData, setFormData] = useState(formDataState);
-  const [errors, setErrors] = useState(formDataState);
+  const [formData, setFormData] = useState(QuoteAttachmentsState);
+  const [errors, setErrors] = useState(QuoteAttachmentsState);
 
   const [listOfTimeStamps, setListOfTimeStamps] = useState([]);
   const [isEditHidden, setIsEditHidden] = useState(true);
@@ -62,7 +60,7 @@ export const ViewQuote = () => {
   const PROCEED_DIALOG = "proceedDialog";
   const SIGNED_DIALOG = "signedDialog";
   const INVOICE_DIALOG = "invoiceDialog";
-  const PAID_DIALOG = "invoiceDialog";
+  const PAID_DIALOG = "paidDialog";
   const EDIT_DIALOG = "editDialog";
 
   const getName = (fullName) => {
@@ -118,7 +116,8 @@ export const ViewQuote = () => {
     modified_by,
     remarks,
     btnContent,
-    btnGenerate
+    btnGenerate,
+    attachments = ""
   ) => {
     return (
       <li className="mb-10 ms-4" key={`status-${index}`}>
@@ -152,6 +151,34 @@ export const ViewQuote = () => {
           {remarks}
         </p>
 
+        {attachments != "" && (
+          <div
+            className={`flex flex-row gap-1 items-center text-sm poppins-normal text-gray-500 mt-2 cursor-pointer`}
+            onClick={() => {
+              window.open(attachments, "_blank");
+            }}
+          >
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="size-4 text-black"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M19.902 4.098a3.75 3.75 0 0 0-5.304 0l-4.5 4.5a3.75 3.75 0 0 0 1.035 6.037.75.75 0 0 1-.646 1.353 5.25 5.25 0 0 1-1.449-8.45l4.5-4.5a5.25 5.25 0 1 1 7.424 7.424l-1.757 1.757a.75.75 0 1 1-1.06-1.06l1.757-1.757a3.75 3.75 0 0 0 0-5.304Zm-7.389 4.267a.75.75 0 0 1 1-.353 5.25 5.25 0 0 1 1.449 8.45l-4.5 4.5a5.25 5.25 0 1 1-7.424-7.424l1.757-1.757a.75.75 0 1 1 1.06 1.06l-1.757 1.757a3.75 3.75 0 1 0 5.304 5.304l4.5-4.5a3.75 3.75 0 0 0-1.035-6.037.75.75 0 0 1-.354-1Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+
+            <p className="text-md line-clamp-1 underline text-blue-400">
+              {attachments}
+            </p>
+          </div>
+        )}
+
         <div className="flex mt-5 gap-2">
           {btnGenerate}
           {btnContent}
@@ -176,6 +203,7 @@ export const ViewQuote = () => {
     let message = "Failed to update this record.";
     try {
       form = { ...form, comments: form.remarks };
+
       let response = await axios.patch(`/quotes/${quote_id}`, form);
       if (response.status === 200) {
         type = "success";
@@ -189,6 +217,9 @@ export const ViewQuote = () => {
       showToast(type, message);
       document.getElementById(PROCEED_DIALOG).close();
       document.getElementById(STATUS_DIALOG).close();
+      document.getElementById(SIGNED_DIALOG).close();
+      document.getElementById(INVOICE_DIALOG).close();
+      document.getElementById(PAID_DIALOG).close();
     }
   };
 
@@ -313,8 +344,7 @@ export const ViewQuote = () => {
             {listOfTimeStamps.map((timestamp_record, index) => {
               let btnContent = <></>;
               let btnGenerate = <></>;
-              let nextStep = "";
-              let status = "";
+              let attachments = "";
 
               if (
                 listOfTimeStamps.length != 0 &&
@@ -322,24 +352,70 @@ export const ViewQuote = () => {
               ) {
                 switch (timestamp_record.status) {
                   case STATUSES.drafted:
-                    nextStep = "Mark as Sent for Signature";
-                    status = STATUSES.sent_for_signature;
+                    if (index == 0) {
+                      btnContent = getButton(
+                        "Mark as Sent for Signature",
+                        () => {
+                          setTimeStamp({
+                            ...timestamp,
+                            status: STATUSES.sent_for_signature,
+                            remarks: "",
+                          });
+                          document.getElementById(PROCEED_DIALOG).showModal();
+                        }
+                      );
+                    }
                     break;
                   case STATUSES.for_revision:
-                    nextStep = "Mark as Sent for Signature";
-                    status = STATUSES.sent_for_signature;
+                    if (index == 0) {
+                      btnContent = getButton(
+                        "Mark as Sent for Signature",
+                        () => {
+                          setTimeStamp({
+                            ...timestamp,
+                            status: STATUSES.sent_for_signature,
+                            remarks: "",
+                          });
+                          document.getElementById(PROCEED_DIALOG).showModal();
+                        }
+                      );
+                    }
                     break;
                   case STATUSES.signed:
-                    nextStep = "Mark as Sent Invoice";
-                    status = STATUSES.sent_invoice;
+                    if (index == 0) {
+                      btnContent = getButton("Mark as Sent Invoice", () => {
+                        setTimeStamp({
+                          ...timestamp,
+                          status: STATUSES.sent_invoice,
+                          remarks: "",
+                        });
+                        document.getElementById(INVOICE_DIALOG).showModal();
+                      });
+                    }
                     break;
                   case STATUSES.sent_invoice:
-                    nextStep = "Mark as Paid";
-                    status = STATUSES.paid;
+                    if (index == 0) {
+                      btnContent = getButton("Mark as Paid", () => {
+                        setTimeStamp({
+                          ...timestamp,
+                          status: STATUSES.paid,
+                          remarks: "",
+                        });
+                        document.getElementById(PAID_DIALOG).showModal();
+                      });
+                    }
                     break;
                   case STATUSES.paid:
-                    nextStep = "Mark as Completed";
-                    status = STATUSES.completed;
+                    if (index == 0) {
+                      btnContent = getButton("Mark as Completed", () => {
+                        setTimeStamp({
+                          ...timestamp,
+                          status: STATUSES.completed,
+                          remarks: "",
+                        });
+                        document.getElementById(PROCEED_DIALOG).showModal();
+                      });
+                    }
                     break;
                   default:
                     btnContent = <></>;
@@ -347,15 +423,21 @@ export const ViewQuote = () => {
                 }
               }
 
-              if (index == 0) {
-                btnContent = getButton(nextStep, () => {
-                  setTimeStamp({
-                    ...timestamp,
-                    status: status,
-                    remarks: "",
-                  });
-                  document.getElementById(PROCEED_DIALOG).showModal();
-                });
+              //for attachments
+              if (listOfTimeStamps.length != 0) {
+                switch (timestamp_record.status) {
+                  case STATUSES.signed:
+                    attachments =
+                      selectedRecord.attachments.signed_document_url;
+                    break;
+                  case STATUSES.sent_invoice:
+                    attachments = selectedRecord.attachments.invoice_url;
+                    break;
+                  case STATUSES.paid:
+                    attachments =
+                      selectedRecord.attachments.proof_of_payment_url;
+                    break;
+                }
               }
 
               if (
@@ -371,6 +453,7 @@ export const ViewQuote = () => {
                         status: STATUSES.signed,
                         remarks: "",
                       });
+                      setFormData(QuoteAttachmentsState);
                       document.getElementById(SIGNED_DIALOG).showModal();
                     })}
                     {getButton("Mark as For Revision", () => {
@@ -392,7 +475,8 @@ export const ViewQuote = () => {
                 timestamp_record.modified_by,
                 timestamp_record.remarks,
                 btnContent,
-                btnGenerate
+                btnGenerate,
+                attachments
               );
             })}
           </>
@@ -511,12 +595,12 @@ export const ViewQuote = () => {
                 </svg>
                 <h1 className="poppins-bold text-[18px]">
                   {timestamp.status == STATUSES.completed
-                    ? "Complete GIS File Process"
-                    : "Are you sure?"}
+                    ? "Complete Quote Process"
+                    : ""}
                 </h1>
                 <span className="poppins-normal text-[15px]">
                   {timestamp.status == STATUSES.completed
-                    ? "Are you sure you want to complete the GIS file process?"
+                    ? "Are you sure you want to complete the quote process?"
                     : "You want to proceed to the next step?"}
                 </span>
 
@@ -548,7 +632,11 @@ export const ViewQuote = () => {
                   onClick={(e) => {
                     const modified_by = `${currentUser.first_name} ${currentUser.last_name}`;
 
-                    let complete_form = { ...timestamp, modified_by };
+                    let complete_form = {
+                      ...timestamp,
+                      modified_by,
+                      attachments: selectedRecord.attachments,
+                    };
                     if (timestamp.status == STATUSES.completed) {
                       complete_form = {
                         ...complete_form,
@@ -603,7 +691,9 @@ export const ViewQuote = () => {
                   </div>
                   <input
                     type="text"
-                    className="input input-bordered w-full"
+                    className={`input input-bordered w-full ${
+                      errors.signed_document_url && "input-error"
+                    }`}
                     value={formData.signed_document_url}
                     onChange={(e) => {
                       setFormData({
@@ -629,7 +719,7 @@ export const ViewQuote = () => {
                     <span className="label-text text-red-500">
                       {errors.signed_document_url && (
                         <span className="text-red-500">
-                          Signed Document is Required
+                          {errors.signed_document_url}
                         </span>
                       )}
                     </span>
@@ -672,11 +762,252 @@ export const ViewQuote = () => {
                     if (Object.values(newErrors).length == 0) {
                       const modified_by = `${currentUser.first_name} ${currentUser.last_name}`;
 
-                      let complete_form = { ...timestamp, modified_by };
+                      let complete_form = {
+                        ...timestamp,
+                        attachments: formData,
+                        modified_by,
+                      };
 
-                      console.log(complete_form);
+                      handleProceedBtn(complete_form);
+                    }
+                  }}
+                  className="btn bg-primary text-white mt-2"
+                >
+                  Yes, proceed!
+                </button>
+              </div>
+            </div>
+          </div>
+        </dialog>
 
-                      return;
+        <dialog id={INVOICE_DIALOG} className="modal">
+          <div className="modal-box">
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-col w-full items-center justify-center gap-2">
+                <svg
+                  className="w-16 aspect-auto"
+                  viewBox="0 0 55 55"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M27.3717 14.6853V29.9083M27.3717 40.0827L27.397 40.0545M27.3716 52.7433C41.3839 52.7433 52.7433 41.3839 52.7433 27.3716C52.7433 13.3593 41.3839 2 27.3716 2C13.3593 2 2 13.3593 2 27.3716C2 41.3839 13.3593 52.7433 27.3716 52.7433Z"
+                    stroke="#F38F33"
+                    strokeWidth="2.62921"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <h1 className="poppins-bold text-[18px]">Are you sure?</h1>
+                <span className="poppins-normal text-[15px]">
+                  You want to proceed to the next step?
+                </span>
+
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="label-text">
+                      Invoice URL
+                      <span className="text-red-500">*</span>
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    className={`input input-bordered w-full ${
+                      errors.invoice_url && "input-error"
+                    }`}
+                    value={formData.invoice_url}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        invoice_url: e.target.value,
+                      });
+
+                      if (e.target.value == "") {
+                        setErrors({
+                          ...errors,
+                          invoice_url: "Invoice URL is required.",
+                        });
+                      } else {
+                        setErrors({
+                          ...errors,
+                          invoice_url: "",
+                        });
+                      }
+                    }}
+                  />
+                  <div className="label">
+                    <span className="label-text text-red-500">
+                      {errors.invoice_url && (
+                        <span className="text-red-500">
+                          {errors.invoice_url}
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                </label>
+                <label className="form-control w-full">
+                  <div className="label w-full">
+                    <span className="label-text">Remarks</span>
+                  </div>
+                  <textarea
+                    className={`textarea textarea-bordered h-24`}
+                    onChange={(e) => {
+                      setTimeStamp({ ...timestamp, remarks: e.target.value });
+                    }}
+                    value={timestamp.remarks}
+                  ></textarea>
+                </label>
+              </div>
+              <div className="flex flex-row gap-10 items-center justify-center mt-5">
+                <button
+                  onClick={(e) => {
+                    document.getElementById(INVOICE_DIALOG).close();
+                  }}
+                  className="btn bg-[#CDCDCD] text-black mt-2"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={(e) => {
+                    const newErrors = {};
+
+                    if (formData.invoice_url == "") {
+                      newErrors.invoice_url = "Invoice URL is required.";
+                      setErrors({
+                        invoice_url: "Invoice URL is required.",
+                      });
+                    }
+
+                    if (Object.values(newErrors).length == 0) {
+                      const modified_by = `${currentUser.first_name} ${currentUser.last_name}`;
+
+                      let complete_form = {
+                        ...timestamp,
+                        attachments: formData,
+                        modified_by,
+                      };
+
+                      handleProceedBtn(complete_form);
+                    }
+                  }}
+                  className="btn bg-primary text-white mt-2"
+                >
+                  Yes, proceed!
+                </button>
+              </div>
+            </div>
+          </div>
+        </dialog>
+
+        <dialog id={PAID_DIALOG} className="modal">
+          <div className="modal-box">
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-col w-full items-center justify-center gap-2">
+                <svg
+                  className="w-16 aspect-auto"
+                  viewBox="0 0 55 55"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M27.3717 14.6853V29.9083M27.3717 40.0827L27.397 40.0545M27.3716 52.7433C41.3839 52.7433 52.7433 41.3839 52.7433 27.3716C52.7433 13.3593 41.3839 2 27.3716 2C13.3593 2 2 13.3593 2 27.3716C2 41.3839 13.3593 52.7433 27.3716 52.7433Z"
+                    stroke="#F38F33"
+                    strokeWidth="2.62921"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <h1 className="poppins-bold text-[18px]">Are you sure?</h1>
+                <span className="poppins-normal text-[15px]">
+                  You want to proceed to the next step?
+                </span>
+
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="label-text">
+                      Proof of Payment URL
+                      <span className="text-red-500">*</span>
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    className={`input input-bordered w-full ${
+                      errors.proof_of_payment_url && "input-error"
+                    }`}
+                    value={formData.proof_of_payment_url}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        proof_of_payment_url: e.target.value,
+                      });
+
+                      if (e.target.value == "") {
+                        setErrors({
+                          ...errors,
+                          proof_of_payment_url:
+                            "Proof of Payment URL is required.",
+                        });
+                      } else {
+                        setErrors({
+                          ...errors,
+                          proof_of_payment_url: "",
+                        });
+                      }
+                    }}
+                  />
+                  <div className="label">
+                    <span className="label-text text-red-500">
+                      {errors.proof_of_payment_url && (
+                        <span className="text-red-500">
+                          {errors.proof_of_payment_url}
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                </label>
+                <label className="form-control w-full">
+                  <div className="label w-full">
+                    <span className="label-text">Remarks</span>
+                  </div>
+                  <textarea
+                    className={`textarea textarea-bordered h-24`}
+                    onChange={(e) => {
+                      setTimeStamp({ ...timestamp, remarks: e.target.value });
+                    }}
+                    value={timestamp.remarks}
+                  ></textarea>
+                </label>
+              </div>
+              <div className="flex flex-row gap-10 items-center justify-center mt-5">
+                <button
+                  onClick={(e) => {
+                    document.getElementById(PAID_DIALOG).close();
+                  }}
+                  className="btn bg-[#CDCDCD] text-black mt-2"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={(e) => {
+                    const newErrors = {};
+
+                    if (formData.proof_of_payment_url == "") {
+                      newErrors.proof_of_payment_url =
+                        "Proof of Payment URL is required.";
+                      setErrors({
+                        proof_of_payment_url:
+                          "Proof of Payment URL is required.",
+                      });
+                    }
+
+                    if (Object.values(newErrors).length == 0) {
+                      const modified_by = `${currentUser.first_name} ${currentUser.last_name}`;
+
+                      let complete_form = {
+                        ...timestamp,
+                        attachments: formData,
+                        modified_by,
+                      };
 
                       handleProceedBtn(complete_form);
                     }
@@ -1055,6 +1386,88 @@ export const ViewQuote = () => {
     );
   };
 
+  const noAttachmentComponent = (
+    <div className="card bg-white p-3 text-start w-full border">
+      <div className="flex flex-col w-full p-5 text-center justify-center items-center">
+        <img src="/no_attachments.svg" alt="" className="w-[50%] md:w-full" />
+        <span className="text-center poppins-semibold pt-3 text-[12px]">
+          No attachments yet.
+        </span>
+      </div>
+    </div>
+  );
+
+  const attachmentComponent = () => {
+    let attachments = [];
+
+    Object.entries(selectedRecord.attachments).map(([key, value]) => {
+      if (value != "") {
+        let title = "";
+        if (key == "signed_document_url") {
+          title = "Signed Document";
+        }
+        if (key == "invoice_url") {
+          title = "Invoice";
+        }
+        if (key == "proof_of_payment_url") {
+          title = "Proof of Payment";
+        }
+        attachments.push({ [title]: value });
+      }
+    });
+
+    const noAttachmentSVG = (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        className="size-6"
+      >
+        <path
+          fillRule="evenodd"
+          d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0 0 16.5 9h-1.875a1.875 1.875 0 0 1-1.875-1.875V5.25A3.75 3.75 0 0 0 9 1.5H5.625ZM7.5 15a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 7.5 15Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H8.25Z"
+          clipRule="evenodd"
+        />
+        <path d="M12.971 1.816A5.23 5.23 0 0 1 14.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 0 1 3.434 1.279 9.768 9.768 0 0 0-6.963-6.963Z" />
+      </svg>
+    );
+
+    return (
+      <>
+        <div className="card bg-white p-5 text-start w-full">
+          <div className="flex flex-col gap-2">
+            <p className="poppins-regular text-sm font-semibold">Attachments</p>
+
+            {attachments.length != 0
+              ? attachments.map((attachment) => {
+                  return (
+                    <div
+                      key={`attachment-${Object.keys(attachment)}`}
+                      className="card bg-white p-3 text-start w-full border cursor-pointer"
+                      onClick={() => {
+                        window.open(Object.values(attachment), "_blank");
+                      }}
+                    >
+                      <div className="flex flex-row gap-2 items-center">
+                        <div className="flex flex-col items-center justify-center">
+                          {noAttachmentSVG}
+                        </div>
+                        <div className="text-justify text-sm">
+                          <span className="font-medium">
+                            {Object.keys(attachment)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              : noAttachmentComponent}
+          </div>
+        </div>
+      </>
+    );
+  };
+
   useEffect(() => {
     dispatch(fetchRecord(quote_id));
   }, []);
@@ -1064,6 +1477,7 @@ export const ViewQuote = () => {
       setListOfTimeStamps(selectedRecord.timestamps);
       setFormSelectedData(selectedRecord.form_data);
       setIsLoading(false);
+      setFormData(selectedRecord.attachments);
     }
   }, [selectedRecord]);
 
@@ -1077,7 +1491,7 @@ export const ViewQuote = () => {
 
   return (
     <>
-      <div className="flex flex-row w-full justify-between mb-2">
+      <div className="flex flex-row w-full justify-between mb-2 spinner">
         <button
           onClick={() => {
             navigate(`/quote`);
@@ -1193,79 +1607,7 @@ export const ViewQuote = () => {
                   )}
                 </div>
               </div>
-              <div className="card bg-white p-5 text-start w-full">
-                <div className="flex flex-col gap-2">
-                  <p className="poppins-regular text-sm font-semibold">
-                    Attachments
-                  </p>
-                  <div className="card bg-white p-3 text-start w-full border cursor-pointer">
-                    <div className="flex flex-row gap-2 items-center">
-                      <div className="flex flex-col items-center justify-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          className="size-6"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0 0 16.5 9h-1.875a1.875 1.875 0 0 1-1.875-1.875V5.25A3.75 3.75 0 0 0 9 1.5H5.625ZM7.5 15a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 7.5 15Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H8.25Z"
-                            clipRule="evenodd"
-                          />
-                          <path d="M12.971 1.816A5.23 5.23 0 0 1 14.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 0 1 3.434 1.279 9.768 9.768 0 0 0-6.963-6.963Z" />
-                        </svg>
-                      </div>
-                      <div className="text-justify text-sm">
-                        <span className="font-medium">Signed Document</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="card bg-white p-3 text-start w-full border cursor-pointer">
-                    <div className="flex flex-row gap-2 items-center">
-                      <div className="flex flex-col items-center justify-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          className="size-6"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0 0 16.5 9h-1.875a1.875 1.875 0 0 1-1.875-1.875V5.25A3.75 3.75 0 0 0 9 1.5H5.625ZM7.5 15a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 7.5 15Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H8.25Z"
-                            clipRule="evenodd"
-                          />
-                          <path d="M12.971 1.816A5.23 5.23 0 0 1 14.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 0 1 3.434 1.279 9.768 9.768 0 0 0-6.963-6.963Z" />
-                        </svg>
-                      </div>
-                      <div className="text-justify text-sm">
-                        <span className="font-medium">Invoice</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="card bg-white p-3 text-start w-full border cursor-pointer">
-                    <div className="flex flex-row gap-2 items-center">
-                      <div className="flex flex-col items-center justify-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          className="size-6"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0 0 16.5 9h-1.875a1.875 1.875 0 0 1-1.875-1.875V5.25A3.75 3.75 0 0 0 9 1.5H5.625ZM7.5 15a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 7.5 15Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H8.25Z"
-                            clipRule="evenodd"
-                          />
-                          <path d="M12.971 1.816A5.23 5.23 0 0 1 14.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 0 1 3.434 1.279 9.768 9.768 0 0 0-6.963-6.963Z" />
-                        </svg>
-                      </div>
-                      <div className="text-justify text-sm">
-                        <span className="font-medium">Proof of Payment</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {attachmentComponent()}
               <div className="card bg-white p-5 text-start w-full">
                 <div className="flex flex-row gap-2">
                   <div className="flex flex-col items-center justify-center">

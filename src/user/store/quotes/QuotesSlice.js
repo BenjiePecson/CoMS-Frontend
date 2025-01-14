@@ -20,7 +20,7 @@ export const QuoteFormDataState = {
   currency: "",
 };
 
-const QuoteAttachmentsState = {
+export const QuoteAttachmentsState = {
   signed_document_url: "",
   invoice_url: "",
   proof_of_payment_url: "",

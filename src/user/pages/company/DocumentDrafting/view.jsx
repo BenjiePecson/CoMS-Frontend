@@ -1060,8 +1060,6 @@ const ViewDocumentDrafting = () => {
         },
       ]);
       setFormData(selectedRecord);
-
-      console.log(selectedRecord);
     }
   }, [selectedRecord]);
 

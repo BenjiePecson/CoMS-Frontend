@@ -20,6 +20,7 @@ import NoDisputeForm from "./DocumentDrafting/forms/NoDisputeForm";
 import ListOfStockholdersForm from "./DocumentDrafting/forms/ListOfStockholdersForm";
 import ForAuthorizationForm from "./DocumentDrafting/forms/ForAuthorizationForm";
 import AffidavitForm from "./DocumentDrafting/forms/AffidavitForm";
+import AffidavitOfNonOperationForm from "./DocumentDrafting/forms/AffidavitOfNonOperationForm";
 
 const DocumentDrafting = () => {
   const { companyId } = useParams();
@@ -47,6 +48,7 @@ const DocumentDrafting = () => {
     "SECCERT - List of Stockholders",
     "SECCERT - For Authorization",
     "Affidavit of Loss",
+    "Affidavit of Non-Operation",
   ]);
 
   const [listOfStockholder, setlistOfStockholder] = useState([]);
@@ -574,6 +576,16 @@ const DocumentDrafting = () => {
                 />
               )}
 
+              {formData.form_data.type == documents[7] && (
+                <AffidavitOfNonOperationForm
+                  formData={formData}
+                  selectedCompany={selectedCompany}
+                  setFormData={setFormData}
+                  handleOnChange={handleOnChange}
+                  handleOnChangeAppointees={handleOnChangeAppointees}
+                />
+              )}
+
               <div className="flex flex-row justify-end mt-4">
                 {/* <button
                   onClick={(e) => {
@@ -604,6 +616,9 @@ const DocumentDrafting = () => {
     );
   };
 
+  //Function test to check formData
+  
+
   const formDefault = () => {
     if (selectedCompany.companyId != "") {
       let newFormData = { ...formData };
@@ -612,6 +627,7 @@ const DocumentDrafting = () => {
 
       if (Object.keys(selectedCompany.latestGIS).length != 0) {
         new_form_data.corporate_name = selectedCompany.latestGIS.corporate_name;
+        new_form_data.corporate_tin = selectedCompany.latestGIS.corporate_tin;
         new_form_data.office_address =
           selectedCompany.latestGIS.complete_principal_office_address;
 

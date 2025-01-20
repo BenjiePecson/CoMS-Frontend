@@ -20,6 +20,7 @@ export const stockholderState = {
 export const DocumentDraftingDataState = {
   type: "Certificate of Gross Sales/Receipts",
   corporate_name: "",
+  corporate_tin: "",
   office_address: "",
 
   //CGR
@@ -92,8 +93,6 @@ export const fetchAllRecords = createAsyncThunk(
     let response = await axios.get(`/document-drafting/`, {
       params: { status },
     });
-
-    console.log(response.data);
 
     return response.data;
   }

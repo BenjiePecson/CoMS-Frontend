@@ -13,6 +13,7 @@ import NoDisputeForm from "./forms/NoDisputeForm";
 import PreEmptiveRightsForm from "./forms/PreEmptiveRightsForm";
 import SPAForm from "./forms/SPAForm";
 import CGRForm from "./forms/CGRForm";
+import AffidavitOfNonOperationForm from "./forms/AffidavitOfNonOperationForm";
 
 const ViewDocumentDrafting = () => {
   const { companyId, document_id } = useParams();
@@ -51,6 +52,7 @@ const ViewDocumentDrafting = () => {
     "SECCERT - List of Stockholders",
     "SECCERT - For Authorization",
     "Affidavit of Loss",
+    "Affidavit of Non-Operation",
   ]);
 
   const STATUS_DIALOG = "status-dialog";
@@ -143,9 +145,7 @@ const ViewDocumentDrafting = () => {
   const handleOnGenerate = async () => {
     try {
       setIsLoading(true);
-
-      console.log("generate");
-
+      
       let response = await axios.get("/document-drafting-generate", {
         params: {
           company_id: selectedRecord.company_id,
@@ -631,6 +631,50 @@ const ViewDocumentDrafting = () => {
           ),
         },
       ];
+    } else if (selectedRecord.form_data.type === documents[7]) {
+      // Affidavit of Loss
+      listOfRow = [
+        {
+          col1: "Type",
+          col2: selectedRecord.form_data.type,
+        },
+        {
+          col1: "Appointees",
+          col2: (
+            <>
+              <div className="flex flex-col gap-3 w-full">
+                {selectedRecord.form_data.appointees.map((appointee, index) => {
+                  return (
+                    <div
+                      key={`appointees-${index + 1}`}
+                      className="flex flex-col gap-1"
+                    >
+                      <div className="font-bold">{appointee.name}</div>
+                      <div>{appointee.id_no}</div>
+                      <div>{appointee.date_place_issued}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          ),
+        },
+        {
+          col1: "Corporate Secretary",
+          col2: (
+            <>
+              <div className="flex flex-col gap-3 w-full">
+                <div className="flex flex-col gap-1">
+                  <div className="font-bold">
+                    {selectedRecord.form_data.officer_name}
+                  </div>
+                  <div>{selectedRecord.form_data.office_address}</div>
+                </div>
+              </div>
+            </>
+          ),
+        },
+      ];
     }
 
     return tableData(listOfRow);
@@ -1009,6 +1053,16 @@ const ViewDocumentDrafting = () => {
 
                   {formData.form_data.type == documents[6] && (
                     <AffidavitForm
+                      formData={formData}
+                      selectedCompany={selectedCompany}
+                      setFormData={setFormData}
+                      handleOnChange={handleOnChange}
+                      handleOnChangeAppointees={handleOnChangeAppointees}
+                    />
+                  )}
+
+                  {formData.form_data.type == documents[7] && (
+                    <AffidavitOfNonOperationForm
                       formData={formData}
                       selectedCompany={selectedCompany}
                       setFormData={setFormData}

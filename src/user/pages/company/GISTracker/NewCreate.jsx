@@ -529,7 +529,7 @@ const NewCreate = () => {
                     let message = "Failed to publish the record.";
                     try {
                       let form = formRecord;
-                      form.status = "Pending for Approval";
+                      form.status = "Drafted";
                       form.draftingInput = formData;
                       const name = `${currentUser.first_name} ${currentUser.last_name}`;
                       form.modified_by = name;
@@ -893,70 +893,6 @@ const NewCreate = () => {
             </div>
           )}
       </div>
-
-      {/* <div className="grid grid-cols-1 w-full place-items-start gap-5 h-full pb-5">
-        <div className="flex flex-col rounded-2xl w-full bg-white shadow-sm border h-full">
-          <div className="border-b-2">
-            <div className="overflow-x-auto mx-10 ">
-              <div className="flex flex-row gap-5 py-5 rounded-t-2xl items-center justify-start md:justify-center w-full text-sm">
-                {steppersComponent()}
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 items-center justify-center w-full place-items-center h-full">
-            {displayComponent(stepSelected)}
-          </div>
-
-          <div className="border-t-2">
-            <div className="grid grid-cols-1">
-              <div className="flex flex-row justify-between p-3">
-                <button
-                  className="btn btn-ghost hover:bg-red-300"
-                  onClick={handleBackBtn}
-                >
-                  {stepSelected == 0 ? "Cancel" : "Back"}
-                </button>
-                <div className="flex flex-row gap-10">
-                  <button
-                    className={`btn bg-primary text-white ${
-                      stepSelected === listOfSteps.length - 1 &&
-                      formData.year < 2023
-                        ? ""
-                        : "hidden"
-                    }`}
-                    onClick={() => {
-                      // toggleSubmit();
-                      document.getElementById("publishModal").showModal();
-                    }}
-                  >
-                    Mark as Completed
-                  </button>
-                  <button
-                    // className={
-                    //   `btn bg-primary text-white ` + (step != 7 && "hidden")
-                    // }
-                    className={`btn bg-primary text-white `}
-                    onClick={() => {
-                      toggleSaveAsDraft();
-                    }}
-                  >
-                    Save as Draft
-                  </button>
-                  <button
-                    className="btn bg-primary text-white"
-                    onClick={handleNextBtn}
-                  >
-                    {listOfSteps.length - 1 == stepSelected
-                      ? "Publish"
-                      : "Next"}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
 
       {dialogComponents()}
     </>

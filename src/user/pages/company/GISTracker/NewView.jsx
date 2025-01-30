@@ -8,20 +8,19 @@ import {
 import { fetchUser } from "../../../store/user/UserSlice";
 import { showToast } from "../../../../assets/global";
 
-import Step1 from "./steppers/step1";
-import Step2 from "./steppers/step2";
-import Step3 from "./steppers/step3";
-import Step4 from "./steppers/step4";
-import Step5 from "./steppers/step5";
-import Step6 from "./steppers/step6";
 import Step7 from "./steppers/step7";
 import { setFormData } from "../../../store/GIS/GISFormSlice";
 import moment from "moment";
 import axios from "axios";
 import FrameWrapper from "../DashboardComponents/FrameWrapper";
+import Step1 from "./steppers/step1";
+import Step2 from "./steppers/step2";
+import Step3 from "./steppers/step3";
+import Step4 from "./steppers/step4";
+import Step6 from "./steppers/step4";
 
 const getName = (fullName) => {
-  if (!fullName) return;
+  if (fullName == " " || !fullName) return;
 
   const [firstName, ...lastNameParts] = fullName.split(" ");
 
@@ -37,6 +36,99 @@ const components = () => {
   const selectedRecord = useSelector((state) => state.records.selectedRecord);
 
   const [collapseOpen, setCollapseOpen] = useState("General Information Sheet");
+
+  const [selectedTab, setSelectedTab] = useState(0);
+
+  const generalInformationContent = () => {
+    return (
+      <>
+        <div className="flex flex-col gap-5">
+          <Step1 />
+          <hr />
+          <Step2 />
+          <hr />
+          <Step4 />
+        </div>
+      </>
+    );
+  };
+
+  const capitalStructureContent = () => {
+    return (
+      <>
+        <div className="flex flex-col gap-5">
+          <Step3 />
+        </div>
+      </>
+    );
+  };
+
+  const BODContent = () => {
+    return (
+      <>
+        <div className="flex flex-col gap-5">
+          <Step6 />
+        </div>
+      </>
+    );
+  };
+
+  const GISContent = () => {
+    return (
+      <>
+        <div className="flex flex-col gap-5">
+          <Step7 />
+        </div>
+      </>
+    );
+  };
+
+  const attachmentsContent = () => {
+    const googleDrivePreview = () => {
+      return (
+        <div className="flex flex-col">
+          <div className="flex flex-row pb-5 items-center justify-between">
+            <h1 className="poppins-semibold text-sm">Google Drive Preview</h1>
+            <h1
+              className="poppins-regular text-sm text-blue-500 cursor-pointer flex flex-row items-end"
+              onClick={() => {
+                window.open(
+                  `https://drive.google.com/drive/folders/${selectedRecord.folder_id}`,
+                  "_blank"
+                );
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="size-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M16.5 3.75a1.5 1.5 0 0 1 1.5 1.5v13.5a1.5 1.5 0 0 1-1.5 1.5h-6a1.5 1.5 0 0 1-1.5-1.5V15a.75.75 0 0 0-1.5 0v3.75a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V5.25a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3V9A.75.75 0 1 0 9 9V5.25a1.5 1.5 0 0 1 1.5-1.5h6Zm-5.03 4.72a.75.75 0 0 0 0 1.06l1.72 1.72H2.25a.75.75 0 0 0 0 1.5h10.94l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 0 0-1.06 0Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Go to Drive
+            </h1>
+          </div>
+          <FrameWrapper gdrivefolder={selectedRecord.folder_id} />
+        </div>
+      );
+    };
+
+    const noAttachment = () => {
+      return (
+        <div className="mx-auto text-center">There are no attachments.</div>
+      );
+    };
+
+    if (selectedRecord.folder_id != "") {
+      return googleDrivePreview();
+    }
+    return noAttachment();
+  };
 
   const handleCollapseOpen = (accordionName) => {
     if (!accordionName || accordionName == collapseOpen) {
@@ -145,78 +237,77 @@ const components = () => {
   };
 
   const accordion = () => {
-    const GISContent = () => {
-      return (
-        <>
-          <div className="flex flex-col gap-5">
-            <Step7 />
-          </div>
-        </>
-      );
-    };
-    const attachmentsContent = () => {
-      const googleDrivePreview = () => {
-        return (
-          <div className="flex flex-col">
-            <div className="flex flex-row pb-5 items-center justify-between">
-              <h1 className="poppins-semibold text-sm">Google Drive Preview</h1>
-              <h1
-                className="poppins-regular text-sm text-blue-500 cursor-pointer flex flex-row items-end"
-                onClick={() => {
-                  window.open(
-                    `https://drive.google.com/drive/folders/${selectedRecord.folder_id}`,
-                    "_blank"
-                  );
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="size-6"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M16.5 3.75a1.5 1.5 0 0 1 1.5 1.5v13.5a1.5 1.5 0 0 1-1.5 1.5h-6a1.5 1.5 0 0 1-1.5-1.5V15a.75.75 0 0 0-1.5 0v3.75a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V5.25a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3V9A.75.75 0 1 0 9 9V5.25a1.5 1.5 0 0 1 1.5-1.5h6Zm-5.03 4.72a.75.75 0 0 0 0 1.06l1.72 1.72H2.25a.75.75 0 0 0 0 1.5h10.94l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 0 0-1.06 0Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                Go to Drive
-              </h1>
-            </div>
-            <FrameWrapper gdrivefolder={selectedRecord.folder_id} />
-          </div>
-        );
-      };
-
-      const noAttachment = () => {
-        return (
-          <div className="mx-auto text-center">There are no attachments.</div>
-        );
-      };
-
-      if (selectedRecord.folder_id != "") {
-        return googleDrivePreview();
-      }
-      return noAttachment();
-    };
-
     return (
       <>
         <div className="flex flex-col gap-2 w-full">
-          {accordionComponent("General Information Sheet", GISContent())}
+          {accordionComponent(
+            "General Information",
+            generalInformationContent()
+          )}
+          {accordionComponent("Capital Structure", capitalStructureContent())}
+          {accordionComponent("Beneficial Ownership Declaration", BODContent())}
+          {accordionComponent("File Preview", GISContent())}
           {accordionComponent("Attachments", attachmentsContent())}
         </div>
       </>
     );
   };
 
-  return { head, accordion };
+  const tabs = () => {
+    return (
+      <>
+        <div className="flex flex-col w-full overflow-x-auto">
+          <div role="tablist" className="tabs tabs-lifted">
+            {[
+              {
+                label: "General Information",
+                content: generalInformationContent(),
+              },
+              {
+                label: "Capital Structure",
+                content: capitalStructureContent(),
+              },
+              {
+                label: "Beneficial Ownership Declaration",
+                content: BODContent(),
+              },
+              { label: "File Preview", content: GISContent() },
+              { label: "Attachments", content: attachmentsContent() },
+            ].map((tab, index) => {
+              return (
+                <React.Fragment key={`tab-${index}`}>
+                  <input
+                    type="radio"
+                    name="my_tab"
+                    role="tab"
+                    className="tab text-nowrap font-medium"
+                    aria-label={tab.label}
+                    checked={selectedTab === index}
+                    onChange={() => setSelectedTab(index)}
+                  />
+                  <div
+                    role="tabpanel"
+                    className="tab-content bg-base-100 border-base-300 rounded-box p-6"
+                    key={`content-${index}`}
+                  >
+                    {tab.content}
+                  </div>
+                </React.Fragment>
+              );
+            })}
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  return { head, accordion, tabs };
 };
 
 const dialogComponents = () => {
   const { companyId, recordId } = useParams();
   const selectedRecord = useSelector((state) => state.records.selectedRecord);
+  const selectedFormData = useSelector((state) => state.formGIS.formData);
 
   const STATUS_DIALOG = "statusDialog";
   const PROCEED_DIALOG = "proceedDialog";
@@ -260,8 +351,14 @@ const dialogComponents = () => {
       modified_by,
       remarks,
       btnContent,
-      btnGenerate
+      btnGenerate,
+      attachments = ""
     ) => {
+      attachments =
+        attachments != ""
+          ? `https://docs.google.com/spreadsheets/d/${attachments}/`
+          : "";
+
       return (
         <li className="mb-10 ms-4" key={`status-${index}`}>
           <div
@@ -293,6 +390,36 @@ const dialogComponents = () => {
           >
             {remarks}
           </p>
+
+          {attachments != "" && (
+            <div
+              className={`flex flex-row gap-1 items-center text-sm poppins-normal text-gray-500 mt-2`}
+            >
+              <div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="size-4 text-black"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M19.902 4.098a3.75 3.75 0 0 0-5.304 0l-4.5 4.5a3.75 3.75 0 0 0 1.035 6.037.75.75 0 0 1-.646 1.353 5.25 5.25 0 0 1-1.449-8.45l4.5-4.5a5.25 5.25 0 1 1 7.424 7.424l-1.757 1.757a.75.75 0 1 1-1.06-1.06l1.757-1.757a3.75 3.75 0 0 0 0-5.304Zm-7.389 4.267a.75.75 0 0 1 1-.353 5.25 5.25 0 0 1 1.449 8.45l-4.5 4.5a5.25 5.25 0 1 1-7.424-7.424l1.757-1.757a.75.75 0 1 1 1.06 1.06l-1.757 1.757a3.75 3.75 0 1 0 5.304 5.304l4.5-4.5a3.75 3.75 0 0 0-1.035-6.037.75.75 0 0 1-.354-1Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+
+              <p
+                className="text-md line-clamp-1 underline text-blue-400 cursor-pointer"
+                onClick={() => {
+                  window.open(attachments, "_blank");
+                }}
+              >
+                {attachments}
+              </p>
+            </div>
+          )}
 
           <div className="flex mt-5 gap-2">
             {btnGenerate}
@@ -362,7 +489,7 @@ const dialogComponents = () => {
                 ✕
               </button>
             </form>
-            <div className="py-4 px-10">
+            <div className="py-4 px-10 flex flex-col gap-3">
               <ol className="relative border-s border-gray-400 dark:border-gray-700 w-full">
                 {timeStamps.length != 0 ? (
                   <>
@@ -371,58 +498,60 @@ const dialogComponents = () => {
                       let btnGenerate = <></>;
                       let nextStep = "";
                       let status = "";
+                      let attachments = "";
 
                       if (
                         timeStamps.length != 0 &&
                         timeStamps[0].status == timestamp_record.status
                       ) {
                         switch (timestamp_record.status) {
-                          // case STATUSES.pending_for_approval:
-                          //   nextStep = "Mark as Approved";
-                          //   status = STATUSES.approved;
-                          //   break;
+                          case STATUSES.drafted:
+                            nextStep = "Mark as Pending for Approval";
+                            status = STATUSES.pending_for_approval;
+                            // btnGenerate = (
+                            //   <button
+                            //     className="btn btn-sm btn-outline"
+                            //     disabled={isLoading}
+                            //     onClick={async () => {
+                            //       try {
+                            //         setIsLoading(true);
+                            //         let response = await axios.get(
+                            //           `/record/generate/${selectedRecord.recordId}`,
+                            //           {
+                            //             params: {
+                            //               recordId: selectedRecord.recordId,
+                            //             },
+                            //           }
+                            //         );
+
+                            //         const newWindow = window.open("", "_blank");
+
+                            //         if (newWindow) {
+                            //           newWindow.document.write(response.data);
+                            //           newWindow.document.close(); // Ensure the document is rendered
+                            //         }
+                            //         dispatch(fetchRecord(recordId));
+                            //       } catch (error) {
+                            //         console.log(error);
+                            //       } finally {
+                            //         setIsLoading(false);
+                            //       }
+                            //     }}
+                            //   >
+                            //     {isLoading && (
+                            //       <span className="loading loading-spinner loading-xs"></span>
+                            //     )}
+                            //     Generate
+                            //   </button>
+                            // );
+                            break;
+                          case STATUSES.pending_for_approval:
+                            nextStep = "Mark as Approved";
+                            status = STATUSES.approved;
+                            break;
                           case STATUSES.approved:
                             nextStep = "Mark as Routed for Signature";
                             status = STATUSES.routed_for_signature;
-                            btnGenerate = (
-                              <button
-                                className="btn btn-sm btn-outline"
-                                disabled={isLoading}
-                                onClick={async () => {
-                                  try {
-                                    setIsLoading(true);
-                                    let response = await axios.get(
-                                      `/record/generate/${selectedRecord.recordId}`,
-                                      {
-                                        params: {
-                                          recordId: selectedRecord.recordId,
-                                        },
-                                      }
-                                    );
-
-                                    const newWindow = window.open(
-                                      "",
-                                      "_blank",
-                                      "width=1280,height=720"
-                                    );
-
-                                    if (newWindow) {
-                                      newWindow.document.write(response.data);
-                                      newWindow.document.close(); // Ensure the document is rendered
-                                    }
-                                  } catch (error) {
-                                    console.log(error);
-                                  } finally {
-                                    setIsLoading(false);
-                                  }
-                                }}
-                              >
-                                {isLoading && (
-                                  <span className="loading loading-spinner loading-xs"></span>
-                                )}
-                                Generate
-                              </button>
-                            );
                             break;
                           case STATUSES.routed_for_signature:
                             nextStep = "Mark as Notarized";
@@ -465,6 +594,16 @@ const dialogComponents = () => {
                         });
                       }
 
+                      //for attachments
+                      if (Object.values(selectedRecord.attachments) != "") {
+                        switch (timestamp_record.status) {
+                          case STATUSES.drafted:
+                            attachments =
+                              selectedRecord.attachments.google_sheets;
+                            break;
+                        }
+                      }
+
                       return listOfTimeStampComponent(
                         index,
                         timestamp_record.status,
@@ -472,7 +611,8 @@ const dialogComponents = () => {
                         timestamp_record.modified_by,
                         timestamp_record.remarks,
                         btnContent,
-                        btnGenerate
+                        btnGenerate,
+                        attachments
                       );
                     })}
                   </>
@@ -482,10 +622,52 @@ const dialogComponents = () => {
                     selectedRecord.status,
                     selectedRecord.updated_at,
                     selectedRecord.modified_by,
-                    ""
+                    "",
+                    <></>,
+                    <></>,
+                    selectedRecord.attachments.google_sheets
                   )
                 )}
               </ol>
+              <div className="flex flex-row gap-3">
+                <button
+                  className="btn btn-sm btn-outline"
+                  disabled={isLoading}
+                  onClick={async () => {
+                    try {
+                      setIsLoading(true);
+
+                      const newForm = { ...selectedRecord };
+                      newForm.draftingInput = selectedFormData;
+
+                      let response = await axios.post(
+                        `/record/generate/${selectedRecord.recordId}`,
+                        newForm
+                      );
+
+                      if (response.status === 200) {
+                        const newWindow = window.open("", "_blank");
+
+                        if (newWindow) {
+                          newWindow.document.write(response.data);
+                          newWindow.document.close(); // Ensure the document is rendered
+                        }
+
+                        dispatch(fetchRecord(recordId));
+                      }
+                    } catch (error) {
+                      console.log(error);
+                    } finally {
+                      setIsLoading(false);
+                    }
+                  }}
+                >
+                  {isLoading && (
+                    <span className="loading loading-spinner loading-xs"></span>
+                  )}
+                  Generate and Sync
+                </button>
+              </div>
             </div>
           </div>
           <form method="dialog" className="modal-backdrop">
@@ -821,7 +1003,8 @@ const NewView = () => {
     <>
       <div className="grid grid-cols-1 w-full">
         {getComponents.head(listOfTimeStamps)}
-        {getComponents.accordion()}
+
+        {getComponents.tabs()}
       </div>
 
       {getDialogComponents.statusDialog(

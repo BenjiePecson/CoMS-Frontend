@@ -8,6 +8,10 @@ export const gdrivefoldersState = {
   filed: "",
 };
 
+export const ATTACHMENTS_STATE = {
+  google_sheets: "",
+};
+
 const RecordState = {
   recordId: "",
   companyId: "",
@@ -24,6 +28,7 @@ const RecordState = {
   timestamps: [],
   created_at: "",
   updated_at: "",
+  attachments: ATTACHMENTS_STATE,
   // gdrivefolders: gdrivefoldersState,
 };
 
@@ -33,7 +38,15 @@ export const fetchAllRecords = createAsyncThunk(
     let response = await axios.get(`/record/`, {
       params: { status },
     });
-    return response.data;
+
+    let records = response.data.map((record) => {
+      if (record.attachments == null) {
+        record.attachments = ATTACHMENTS_STATE;
+      }
+      return record;
+    });
+
+    return records;
   }
 );
 
@@ -41,13 +54,14 @@ export const fetchRecords = createAsyncThunk(
   "records/fetchRecords",
   async (companyId) => {
     let response = await axios.get(`/record/company/${companyId}`);
-    // let records = response.data.map((record) => {
-    //   if (record.gdrivefolders == null) {
-    //     record.gdrivefolders = gdrivefoldersState;
-    //   }
-    //   return record;
-    // });
-    return response.data;
+    let records = response.data.map((record) => {
+      if (record.attachments == null) {
+        record.attachments = ATTACHMENTS_STATE;
+      }
+      return record;
+    });
+
+    return records;
   }
 );
 
@@ -55,7 +69,13 @@ export const fetchRecord = createAsyncThunk(
   "records/fetchRecord",
   async (recordId) => {
     let response = await axios.get(`/record/record/${recordId}`);
-    return response.data;
+
+    let record = { ...response.data };
+
+    if (record.attachments == null) {
+      record.attachments = ATTACHMENTS_STATE;
+    }
+    return record;
   }
 );
 

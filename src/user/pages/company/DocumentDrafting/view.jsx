@@ -53,6 +53,7 @@ const ViewDocumentDrafting = () => {
     "SECCERT - For Authorization",
     "Affidavit of Loss",
     "Affidavit of Non-Operation",
+    "Cover Sheet for Audited Financial Statements",
   ]);
 
   const STATUS_DIALOG = "status-dialog";
@@ -675,10 +676,87 @@ const ViewDocumentDrafting = () => {
           ),
         },
       ];
+    } else if (selectedRecord.form_data.type === documents[8]) {
+      // Affidavit of Loss
+      listOfRow = [
+        {
+          col1: "Type",
+          col2: selectedRecord.form_data.type,
+        },
+        {
+          col1: "SEC Registration Number",
+          col2: selectedRecord.form_data.sec_registration_number,
+        },
+        {
+          col1: "Company Name",
+          col2: selectedRecord.form_data.corporate_name,
+        },
+        {
+          col1: "Principal Office",
+          col2: selectedRecord.form_data.office_address,
+        },
+        {
+          col1: "Form Type",
+          col2: selectedRecord.form_data.form_type,
+        },
+        {
+          col1: "Department Requiring the Report",
+          col2: selectedRecord.form_data.department,
+        },
+      {
+        col1: "Secondary License",
+        col2: selectedRecord.form_data.secondary_license || "N/A",
+      },
+      {
+        col1: "Official Email Address",
+        col2: selectedRecord.form_data.official_email_address,
+      },
+      {
+        col1: "Official Telephone Number",
+        col2: selectedRecord.form_data.official_telephone_number || "N/A",
+      },
+      {
+        col1: "Official Mobile Number",
+        col2: selectedRecord.form_data.official_mobile_number || "N/A",
+      },
+      {
+        col1: "Number of Shareholders",
+        col2: selectedRecord.form_data.number_of_shareholders,
+      },
+      {
+        col1: "Date of Annual Meeting",
+        col2: selectedRecord.form_data.date_of_annual_meeting,
+      },
+      {
+        col1: "Fiscal Year End",
+        col2: selectedRecord.form_data.fiscal_year_end,
+      },
+      {
+        col1: "Contact Person Name",
+        col2: selectedRecord.form_data.contact_person_name,
+      },
+      {
+        col1: "Contact Person Telephone Number",
+        col2: selectedRecord.form_data.contact_person_telephone_number || "N/A",
+      },
+      {
+        col1: "Contact Person Mobile Number",
+        col2: selectedRecord.form_data.contact_person_mobile_number || "N/A",
+      },
+      {
+        col1: "Contact Person Address",
+        col2: selectedRecord.form_data.contact_person_address || "N/A",
+      },
+        
+      ];
     }
 
     return tableData(listOfRow);
   };
+
+  useEffect(() => {   
+    console.log(selectedRecord);
+  }, [selectedRecord]);
 
   const listOfTimeStampComponent = (
     index,

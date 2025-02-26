@@ -72,6 +72,27 @@ export const DocumentDraftingDataState = {
   ],
 
   appointees: [appointeeState],
+
+  //Cover Sheet
+  sec_registration_number: "",
+  form_type: "AAFS",
+  department: "",
+  secondary_license: "",
+
+  //Company Shit - Covershit
+  official_email_address: "",
+  telephone_number: "",
+  official_mobile_number: "",
+  number_of_shareholders: "",
+  date_of_annual_meeting: "",
+  fiscal_year_end: "",
+
+  //Contact Person Shit - Covershit
+  contact_person_name: "",
+  contact_person_email: "",
+  contact_person_telephone_number: "",
+  contact_person_mobile_number: "",
+  contact_person_address: "",
 };
 
 const DocumentDraftingState = {

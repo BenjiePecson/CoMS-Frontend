@@ -21,6 +21,7 @@ import ListOfStockholdersForm from "./DocumentDrafting/forms/ListOfStockholdersF
 import ForAuthorizationForm from "./DocumentDrafting/forms/ForAuthorizationForm";
 import AffidavitForm from "./DocumentDrafting/forms/AffidavitForm";
 import AffidavitOfNonOperationForm from "./DocumentDrafting/forms/AffidavitOfNonOperationForm";
+import CoverSheetForm from "./DocumentDrafting/forms/CoverSheetForm";
 
 const DocumentDrafting = () => {
   const { companyId } = useParams();
@@ -49,6 +50,7 @@ const DocumentDrafting = () => {
     "SECCERT - For Authorization",
     "Affidavit of Loss",
     "Affidavit of Non-Operation",
+    "Cover Sheet for Audited Financial Statements",
   ]);
 
   const [listOfStockholder, setlistOfStockholder] = useState([]);
@@ -586,6 +588,16 @@ const DocumentDrafting = () => {
                 />
               )}
 
+              {formData.form_data.type == documents[8] && (
+                <CoverSheetForm
+                  formData={formData}
+                  selectedCompany={selectedCompany}
+                  setFormData={setFormData}
+                  handleOnChange={handleOnChange}
+                  handleOnChangeAppointees={handleOnChangeAppointees}
+                />
+              )}
+
               <div className="flex flex-row justify-end mt-4">
                 {/* <button
                   onClick={(e) => {
@@ -617,19 +629,31 @@ const DocumentDrafting = () => {
   };
 
   //Function test to check formData
-  
 
   const formDefault = () => {
     if (selectedCompany.companyId != "") {
       let newFormData = { ...formData };
 
       let new_form_data = { ...formData.form_data };
+      
 
       if (Object.keys(selectedCompany.latestGIS).length != 0) {
         new_form_data.corporate_name = selectedCompany.latestGIS.corporate_name;
         new_form_data.corporate_tin = selectedCompany.latestGIS.corporate_tin;
         new_form_data.office_address =
           selectedCompany.latestGIS.complete_principal_office_address;
+        new_form_data.sec_registration_number = selectedCompany.latestGIS.sec_registration_number;
+
+        //for cover sheet
+        new_form_data.department = "CRMD";
+        new_form_data.secondary_license = "N/A";
+        new_form_data.official_email_address = selectedCompany.latestGIS.official_email_address;
+        //Company 
+        new_form_data.telephone_number = selectedCompany.latestGIS.telephone_number;
+        new_form_data.official_mobile_number = selectedCompany.latestGIS.official_mobile_number;
+        new_form_data.number_of_shareholders = selectedCompany.latestGIS.number_of_shareholders;
+        new_form_data.date_of_annual_meeting = selectedCompany.latestGIS.date_of_annual_meeting;
+        new_form_data.fiscal_year_end = selectedCompany.latestGIS.fiscal_year_end;
 
         if (selectedCompany.latestGIS.directors_or_officers.length != 0) {
           let officer = selectedCompany.latestGIS.directors_or_officers[0];

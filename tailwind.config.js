@@ -17,7 +17,7 @@ export default {
           ...require("daisyui/src/theming/themes")["light"],
           primary: "blue",
           secondary: "teal",
-        },
+        }, 
       },
       {
         extend: {

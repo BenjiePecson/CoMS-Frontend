@@ -54,6 +54,7 @@ const ViewDocumentDrafting = () => {
     "Affidavit of Loss",
     "Affidavit of Non-Operation",
     "Cover Sheet for Audited Financial Statements",
+    "SMR - Statement of Management's Responsibility for Financial Statements",
   ]);
 
   const STATUS_DIALOG = "status-dialog";
@@ -146,7 +147,7 @@ const ViewDocumentDrafting = () => {
   const handleOnGenerate = async () => {
     try {
       setIsLoading(true);
-      
+
       let response = await axios.get("/document-drafting-generate", {
         params: {
           company_id: selectedRecord.company_id,
@@ -677,7 +678,7 @@ const ViewDocumentDrafting = () => {
         },
       ];
     } else if (selectedRecord.form_data.type === documents[8]) {
-      // Affidavit of Loss
+      // Cover Sheet for Audited Financial Statements
       listOfRow = [
         {
           col1: "Type",
@@ -703,60 +704,100 @@ const ViewDocumentDrafting = () => {
           col1: "Department Requiring the Report",
           col2: selectedRecord.form_data.department,
         },
-      {
-        col1: "Secondary License",
-        col2: selectedRecord.form_data.secondary_license || "N/A",
-      },
-      {
-        col1: "Official Email Address",
-        col2: selectedRecord.form_data.official_email_address,
-      },
-      {
-        col1: "Official Telephone Number",
-        col2: selectedRecord.form_data.official_telephone_number || "N/A",
-      },
-      {
-        col1: "Official Mobile Number",
-        col2: selectedRecord.form_data.official_mobile_number || "N/A",
-      },
-      {
-        col1: "Number of Shareholders",
-        col2: selectedRecord.form_data.number_of_shareholders,
-      },
-      {
-        col1: "Date of Annual Meeting",
-        col2: selectedRecord.form_data.date_of_annual_meeting,
-      },
-      {
-        col1: "Fiscal Year End",
-        col2: selectedRecord.form_data.fiscal_year_end,
-      },
-      {
-        col1: "Contact Person Name",
-        col2: selectedRecord.form_data.contact_person_name,
-      },
-      {
-        col1: "Contact Person Telephone Number",
-        col2: selectedRecord.form_data.contact_person_telephone_number || "N/A",
-      },
-      {
-        col1: "Contact Person Mobile Number",
-        col2: selectedRecord.form_data.contact_person_mobile_number || "N/A",
-      },
-      {
-        col1: "Contact Person Address",
-        col2: selectedRecord.form_data.contact_person_address || "N/A",
-      },
-        
+        {
+          col1: "Secondary License",
+          col2: selectedRecord.form_data.secondary_license || "N/A",
+        },
+        {
+          col1: "Official Email Address",
+          col2: selectedRecord.form_data.official_email_address,
+        },
+        {
+          col1: "Official Telephone Number",
+          col2: selectedRecord.form_data.official_telephone_number || "N/A",
+        },
+        {
+          col1: "Official Mobile Number",
+          col2: selectedRecord.form_data.official_mobile_number || "N/A",
+        },
+        {
+          col1: "Number of Shareholders",
+          col2: selectedRecord.form_data.number_of_shareholders,
+        },
+        {
+          col1: "Date of Annual Meeting",
+          col2: selectedRecord.form_data.date_of_annual_meeting,
+        },
+        {
+          col1: "Fiscal Year End",
+          col2: selectedRecord.form_data.fiscal_year_end,
+        },
+        {
+          col1: "Contact Person Name",
+          col2: selectedRecord.form_data.contact_person_name,
+        },
+        {
+          col1: "Contact Person Telephone Number",
+          col2: selectedRecord.form_data.contact_person_telephone_number || "N/A",
+        },
+        {
+          col1: "Contact Person Mobile Number",
+          col2: selectedRecord.form_data.contact_person_mobile_number || "N/A",
+        },
+        {
+          col1: "Contact Person Address",
+          col2: selectedRecord.form_data.contact_person_address || "N/A",
+        },
+
+      ];
+    } else if (selectedRecord.form_data.type === documents[9]) {
+      // SMR
+      listOfRow = [
+        {
+          col1: "Type",
+          col2: selectedRecord.form_data.type,
+        },
+        {
+          col1: "Company Name",
+          col2: selectedRecord.form_data.corporate_name,
+        },
+        {
+          col1: "Audited Years In Question",
+          col2: selectedRecord.form_data.audited_years_in_question,
+        },
+        {
+          col1: "Principal Office",
+          col2: selectedRecord.form_data.office_address,
+        },
+        {
+          col1: "President Name",
+          col2: selectedRecord.form_data.president_name,
+        },
+        {
+          col1: "Treasurer Name",
+          col2: selectedRecord.form_data.treasurer_name,
+        },
+        {
+          col1: "RDO Number",
+          col2: selectedRecord.form_data.rdo_number,
+        },
+        {
+          col1: "RDO Address",
+          col2: selectedRecord.form_data.rdo_address,
+        },
+        {
+          col1: "RDO City",
+          col2: selectedRecord.form_data.rdo_city,
+        },
       ];
     }
 
     return tableData(listOfRow);
   };
 
-  useEffect(() => {   
-    console.log(selectedRecord);
-  }, [selectedRecord]);
+  // useEffect(() => {   
+  //   console.log(selectedRecord);
+  // }, [selectedRecord]);
 
   const listOfTimeStampComponent = (
     index,
@@ -770,16 +811,14 @@ const ViewDocumentDrafting = () => {
     return (
       <li className="mb-10 ms-4" key={`status-${index}`}>
         <div
-          className={`absolute w-3 h-3  ${
-            status == "Reverted"
-              ? "bg-error border-error"
-              : "bg-primary border-primary"
-          } rounded-full -start-1.5 border  dark:border-gray-900 dark:bg-gray-700 mt-2`}
+          className={`absolute w-3 h-3  ${status == "Reverted"
+            ? "bg-error border-error"
+            : "bg-primary border-primary"
+            } rounded-full -start-1.5 border  dark:border-gray-900 dark:bg-gray-700 mt-2`}
         ></div>
         <h3
-          className={`text-lg font-semibold ${
-            status == "Reverted" ? "text-error" : "text-gray-900"
-          } dark:text-white`}
+          className={`text-lg font-semibold ${status == "Reverted" ? "text-error" : "text-gray-900"
+            } dark:text-white`}
         >
           {status}
         </h3>
@@ -792,9 +831,8 @@ const ViewDocumentDrafting = () => {
         </p>
 
         <p
-          className={`text-sm poppins-normal text-gray-500 mt-2 ${
-            remarks != "" && "border-l-4 border-gray-200 p-2"
-          }`}
+          className={`text-sm poppins-normal text-gray-500 mt-2 ${remarks != "" && "border-l-4 border-gray-200 p-2"
+            }`}
         >
           {remarks}
         </p>

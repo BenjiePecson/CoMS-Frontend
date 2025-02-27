@@ -79,7 +79,7 @@ export const DocumentDraftingDataState = {
   department: "",
   secondary_license: "",
 
-  //Company Shit - Covershit
+  //Cover Sheet - Company Info
   official_email_address: "",
   telephone_number: "",
   official_mobile_number: "",
@@ -87,12 +87,21 @@ export const DocumentDraftingDataState = {
   date_of_annual_meeting: "",
   fiscal_year_end: "",
 
-  //Contact Person Shit - Covershit
+  //Cover Sheet - Contact Person
   contact_person_name: "",
   contact_person_email: "",
   contact_person_telephone_number: "",
   contact_person_mobile_number: "",
   contact_person_address: "",
+
+  //SMR
+  audited_years_in_question: "",
+  president_name: "",
+  treasurer_name: "",
+  rdo_number: "",
+  rdo_address: "",
+  rdo_city: "",
+
 };
 
 const DocumentDraftingState = {

@@ -22,6 +22,7 @@ import ForAuthorizationForm from "./DocumentDrafting/forms/ForAuthorizationForm"
 import AffidavitForm from "./DocumentDrafting/forms/AffidavitForm";
 import AffidavitOfNonOperationForm from "./DocumentDrafting/forms/AffidavitOfNonOperationForm";
 import CoverSheetForm from "./DocumentDrafting/forms/CoverSheetForm";
+import SMRForm from "./DocumentDrafting/forms/SMRForm";
 
 const DocumentDrafting = () => {
   const { companyId } = useParams();
@@ -51,6 +52,7 @@ const DocumentDrafting = () => {
     "Affidavit of Loss",
     "Affidavit of Non-Operation",
     "Cover Sheet for Audited Financial Statements",
+    "SMR - Statement of Management's Responsibility for Financial Statements"
   ]);
 
   const [listOfStockholder, setlistOfStockholder] = useState([]);
@@ -94,13 +96,11 @@ const DocumentDrafting = () => {
             modified_by = `${fullname[0]} ${fullname[1][0]}`;
           } else if (fullname.length > 2 && fullname[0] != undefined) {
             if (fullname[fullname.length - 1][0] != undefined) {
-              modified_by = `${fullname[0]} ${
-                fullname[fullname.length - 1][0]
-              }`;
+              modified_by = `${fullname[0]} ${fullname[fullname.length - 1][0]
+                }`;
             } else if (fullname[fullname.length - 2][0] != undefined) {
-              modified_by = `${fullname[0]} ${
-                fullname[fullname.length - 2][0]
-              }`;
+              modified_by = `${fullname[0]} ${fullname[fullname.length - 2][0]
+                }`;
             } else {
               modified_by = `${fullname[0]}`;
             }
@@ -598,6 +598,18 @@ const DocumentDrafting = () => {
                 />
               )}
 
+              {
+                formData.form_data.type == documents[9] && (
+                  <SMRForm
+                    formData={formData}
+                    officers={officers}
+                    setFormData={setFormData}
+                    handleOnChange={handleOnChange}
+                    handleOnChangeAppointees={handleOnChangeAppointees}
+                  />
+                )
+              }
+
               <div className="flex flex-row justify-end mt-4">
                 {/* <button
                   onClick={(e) => {
@@ -635,7 +647,7 @@ const DocumentDrafting = () => {
       let newFormData = { ...formData };
 
       let new_form_data = { ...formData.form_data };
-      
+
 
       if (Object.keys(selectedCompany.latestGIS).length != 0) {
         new_form_data.corporate_name = selectedCompany.latestGIS.corporate_name;
@@ -648,7 +660,7 @@ const DocumentDrafting = () => {
         new_form_data.department = "CRMD";
         new_form_data.secondary_license = "N/A";
         new_form_data.official_email_address = selectedCompany.latestGIS.official_email_address;
-        //Company 
+        //for cover sheet - company info
         new_form_data.telephone_number = selectedCompany.latestGIS.telephone_number;
         new_form_data.official_mobile_number = selectedCompany.latestGIS.official_mobile_number;
         new_form_data.number_of_shareholders = selectedCompany.latestGIS.number_of_shareholders;
@@ -667,6 +679,13 @@ const DocumentDrafting = () => {
             if (officer.officer.toLowerCase().includes("secretary")) {
               new_form_data.corp_sec = officer.name;
               new_form_data.corp_sec_address = officer.current_residual_address;
+            }
+            //for smr officers
+            if (officer.officer.toLowerCase().includes("president")) {
+              new_form_data.president_name = officer.name;
+            }
+            if (officer.officer.toLowerCase().includes("treasurer")) {
+              new_form_data.treasurer_name = officer.name;
             }
             return officer.officer != "N/A";
           }

@@ -1,9 +1,12 @@
 import React from "react";
 
-export const CoverSheetForm = ({ formData, officers, handleOnChange, setFormData }
-) => {
-   // console.log(formData);
-    
+export const CoverSheetForm = ({
+  formData,
+  officers,
+  handleOnChange,
+  setFormData,
+}) => {
+
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-col w-full">
@@ -26,9 +29,9 @@ export const CoverSheetForm = ({ formData, officers, handleOnChange, setFormData
           disabled
           name="company_name"
           value={formData.form_data.corporate_name}
-            onChange={(e) => {
-                handleOnChange(e, "Company Name");
-            }}
+          onChange={(e) => {
+            handleOnChange(e, "Company Name");
+          }}
         />
 
         <span className="label-text">Principal Office</span>
@@ -60,13 +63,12 @@ export const CoverSheetForm = ({ formData, officers, handleOnChange, setFormData
           value={formData.form_data.department}
           onChange={(e) => {
             handleOnChange(e, "Department");
-          }
-          }
+          }}
         >
-          <option value={'CRMD'}>CRMD</option>
-          <option value={'CED'}>CED</option>
-          <option value={'CFD'}>CFD</option>
-          <option value={'MFD'}>MFD</option>
+          <option value={"CRMD"}>CRMD</option>
+          <option value={"CED"}>CED</option>
+          <option value={"CFD"}>CFD</option>
+          <option value={"MFD"}>MFD</option>
         </select>
 
         <span className="label-text">Secondary License</span>
@@ -80,8 +82,8 @@ export const CoverSheetForm = ({ formData, officers, handleOnChange, setFormData
           }}
         />
 
-<div className="divider">Company Information</div>
-<span className="label-text">Email Address</span>
+        <div className="divider">Company Information</div>
+        <span className="label-text">Email Address</span>
         <input
           type="email"
           className="input input-bordered w-full"
@@ -93,7 +95,7 @@ export const CoverSheetForm = ({ formData, officers, handleOnChange, setFormData
           }}
         />
 
-<span className="label-text">Telephone Number</span>
+        <span className="label-text">Telephone Number</span>
         <input
           type="text"
           className="input input-bordered w-full"
@@ -104,8 +106,7 @@ export const CoverSheetForm = ({ formData, officers, handleOnChange, setFormData
           }}
         />
 
-
-<span className="label-text">Mobile Number</span>
+        <span className="label-text">Mobile Number</span>
         <input
           type="text"
           className="input input-bordered w-full"
@@ -116,7 +117,7 @@ export const CoverSheetForm = ({ formData, officers, handleOnChange, setFormData
           }}
         />
 
-<span className="label-text">Number of Shareholders</span>
+        <span className="label-text">Number of Shareholders</span>
         <input
           type="number"
           className="input input-bordered w-full"
@@ -127,7 +128,7 @@ export const CoverSheetForm = ({ formData, officers, handleOnChange, setFormData
           }}
         />
 
-<span className="label-text">Annual Meeting</span>
+        <span className="label-text">Annual Meeting</span>
         <input
           type="input"
           className="input input-bordered w-full"
@@ -139,7 +140,7 @@ export const CoverSheetForm = ({ formData, officers, handleOnChange, setFormData
           }}
         />
 
-<span className="label-text">Fiscal Year</span>
+        <span className="label-text">Fiscal Year</span>
         <input
           type="input"
           className="input input-bordered w-full"
@@ -152,7 +153,7 @@ export const CoverSheetForm = ({ formData, officers, handleOnChange, setFormData
         />
 
         <div className="divider">Contact Person Information</div>
-        
+
         <span className="label-text">Name</span>
         <input
           type="text"
@@ -170,7 +171,7 @@ export const CoverSheetForm = ({ formData, officers, handleOnChange, setFormData
           className="input input-bordered w-full"
           disabled
           name="contact_person_email"
-            value={formData.form_data.contact_person_email}
+          value={formData.form_data.official_email_address}
         />
 
         <span className="label-text">Telephone Number</span>
@@ -205,10 +206,8 @@ export const CoverSheetForm = ({ formData, officers, handleOnChange, setFormData
             handleOnChange(e, "Address");
           }}
         />
-
       </div>
     </div>
-    
   );
 };
 

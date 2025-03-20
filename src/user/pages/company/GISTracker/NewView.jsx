@@ -17,7 +17,7 @@ import Step1 from "./steppers/step1";
 import Step2 from "./steppers/step2";
 import Step3 from "./steppers/step3";
 import Step4 from "./steppers/step4";
-import Step6 from "./steppers/step4";
+import Step6 from "./steppers/step6";
 
 const getName = (fullName) => {
   if (fullName == " " || !fullName) return;
